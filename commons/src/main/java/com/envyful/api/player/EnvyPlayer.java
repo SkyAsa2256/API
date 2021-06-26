@@ -29,6 +29,6 @@ public interface EnvyPlayer<T> {
 
     void message(List<String> messages);
 
-    <A, B> PlayerAttribute<B> getAttribute(Class<B> plugin);
+    <A extends PlayerAttribute<B>, B> A getAttribute(Class<B> plugin);
 
 }

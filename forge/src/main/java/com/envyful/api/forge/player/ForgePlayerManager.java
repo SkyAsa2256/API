@@ -1,5 +1,7 @@
 package com.envyful.api.forge.player;
 
+import com.envyful.api.concurrency.UtilConcurrency;
+import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.player.attribute.PlayerAttribute;
 import com.envyful.api.player.attribute.data.PlayerAttributeData;
@@ -76,16 +78,29 @@ public class ForgePlayerManager implements PlayerManager<ForgeEnvyPlayer, Entity
             this.manager = manager;
         }
 
-        //TODO: saving, loading & instantiating attributes here pls
-
         @SubscribeEvent(priority = EventPriority.LOWEST)
         public void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
-            this.manager.cachedPlayers.put(event.player.getUniqueID(), new ForgeEnvyPlayer((EntityPlayerMP) event.player));
+            ForgeEnvyPlayer player = new ForgeEnvyPlayer((EntityPlayerMP) event.player);
+            this.manager.cachedPlayers.put(event.player.getUniqueID(), player);
+
+            UtilConcurrency.runAsync(() -> {
+                for (PlayerAttributeData attributeDatum : this.manager.attributeData) {
+                    PlayerAttribute<?> instance = attributeDatum.getInstance(player);
+                    instance.load();
+                    attributeDatum.addToMap(player.attributes, instance);
+                }
+            });
         }
 
         @SubscribeEvent(priority = EventPriority.LOWEST)
         public void onPlayerJoin(PlayerEvent.PlayerLoggedOutEvent event) {
-            this.manager.cachedPlayers.remove(event.player.getUniqueID());
+            ForgeEnvyPlayer player = this.manager.cachedPlayers.remove(event.player.getUniqueID());
+
+            UtilConcurrency.runAsync(() -> {
+                for (PlayerAttribute<?> value : player.attributes.values()) {
+                    value.save();
+                }
+            });
         }
     }
 }

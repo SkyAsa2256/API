@@ -19,7 +19,7 @@ public class ForgeEnvyPlayer implements EnvyPlayer<EntityPlayerMP> {
 
     private final EntityPlayerMP player;
 
-    private final Map<Class<?>, PlayerAttribute<?>> attributes = Maps.newHashMap();
+    protected final Map<Class<?>, PlayerAttribute<?>> attributes = Maps.newHashMap();
 
     protected ForgeEnvyPlayer(EntityPlayerMP player) {
         this.player = player;

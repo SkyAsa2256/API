@@ -5,6 +5,7 @@ import com.envyful.api.player.attribute.PlayerAttribute;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
 
 /**
  *
@@ -62,5 +63,16 @@ public class PlayerAttributeData {
         }
 
         return null;
+    }
+
+    /**
+     *
+     * Adds the instance to the given map to ensure encapsulation is followed.
+     *
+     * @param map The map being added to
+     * @param instance The instance being added to the map using the manager class as a key
+     */
+    public void addToMap(Map<Class<?>, PlayerAttribute<?>> map, PlayerAttribute<?> instance) {
+        map.put(this.managerClass, instance);
     }
 }

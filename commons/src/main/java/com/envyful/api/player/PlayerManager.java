@@ -1,5 +1,7 @@
 package com.envyful.api.player;
 
+import com.envyful.api.player.attribute.PlayerAttribute;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -66,6 +68,6 @@ public interface PlayerManager<A extends EnvyPlayer<B>, B> {
       * @param manager The manager object to be passed through the attribute constructor at instantiation
       * @param attribute The class of the attribute being registered
       */
-     void registerAttribute(Object manager, Class<?> attribute);
+     void registerAttribute(Object manager, Class<? extends PlayerAttribute<?>> attribute);
 
 }

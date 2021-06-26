@@ -1,6 +1,8 @@
 package com.envyful.api.forge.player;
 
 import com.envyful.api.player.PlayerManager;
+import com.envyful.api.player.attribute.PlayerAttribute;
+import com.envyful.api.player.attribute.data.PlayerAttributeData;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -24,6 +26,7 @@ import java.util.UUID;
 public class ForgePlayerManager implements PlayerManager<ForgeEnvyPlayer, EntityPlayerMP> {
 
     private final Map<UUID, ForgeEnvyPlayer> cachedPlayers = Maps.newHashMap();
+    private final List<PlayerAttributeData> attributeData = Lists.newArrayList();
 
     /**
      *
@@ -58,6 +61,11 @@ public class ForgePlayerManager implements PlayerManager<ForgeEnvyPlayer, Entity
     @Override
     public List<ForgeEnvyPlayer> getOnlinePlayers() {
         return Collections.unmodifiableList(Lists.newArrayList(this.cachedPlayers.values()));
+    }
+
+    @Override
+    public void registerAttribute(Object manager, Class<? extends PlayerAttribute<?>> attribute) {
+        this.attributeData.add(new PlayerAttributeData(manager, attribute));
     }
 
     private final class PlayerListener {

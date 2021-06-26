@@ -23,19 +23,15 @@ import java.util.UUID;
  * Forge implementation of the {@link PlayerManager} interface.
  * Registers the {@link PlayerListener} class as a listener with forge on instantiation so that it can
  * automatically update the cache when player log in and out of the server.
- * //TODO: write builder class & discuss here
+ *
+ * Simple instantiation as not enough arguments to warrant a builder class and
  */
 public class ForgePlayerManager implements PlayerManager<ForgeEnvyPlayer, EntityPlayerMP> {
 
     private final Map<UUID, ForgeEnvyPlayer> cachedPlayers = Maps.newHashMap();
     private final List<PlayerAttributeData> attributeData = Lists.newArrayList();
 
-    /**
-     *
-     * Protected as only accessible from builder class (//TODO)
-     *
-     */
-    protected ForgePlayerManager() {
+    public ForgePlayerManager() {
         MinecraftForge.EVENT_BUS.register(new PlayerListener(this));
     }
 

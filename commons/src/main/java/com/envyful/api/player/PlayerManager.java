@@ -58,4 +58,14 @@ public interface PlayerManager<A extends EnvyPlayer<B>, B> {
       */
      List<A> getOnlinePlayers();
 
+     /**
+      *
+      * Registers an {@link com.envyful.api.player.attribute.PlayerAttribute) class so that when the player object is
+      * instantiated it can be created (using reflection) from the registry in the PlayerManager implementation.
+      *
+      * @param manager The manager object to be passed through the attribute constructor at instantiation
+      * @param attribute The class of the attribute being registered
+      */
+     void registerAttribute(Object manager, Class<?> attribute);
+
 }

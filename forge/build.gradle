@@ -42,6 +42,8 @@ shadowJar {
     archiveName = rootProject.name + '-Forge.jar'
 
     relocate('org.spongepowered.configurate', 'com.envyful.api.commons.shade.configurate')
+    relocate('org.yaml.snakeyaml', 'com.envyful.api.commons.shade.snakeyaml')
+    relocate('io.leangen.geantyref', 'com.envyful.api.commons.shade.geantyref')
 
     exclude "**/module-info.class"
 }

@@ -39,9 +39,11 @@ dependencies {
     shadow group: 'org.spongepowered', name: 'configurate-yaml', version: '4.0.0'
 
     shadow project(':commons')
-    shadow project(':forge')
+    shadow(project(':forge')) {
+        exclude group: 'net.minecraftforge'
+    }
 
-    implementation fg.deobf('com.pixelmonmod.pixelmon:Pixelmon-1.12.2-8.2.0-server:1.0')
+    compileOnly fg.deobf('com.pixelmonmod.pixelmon:Pixelmon-1.12.2-8.2.0-server:1.0')
 }
 
 shadowJar {
@@ -49,7 +51,10 @@ shadowJar {
     archiveName = rootProject.name + '-Pixelmon-Reforged.jar'
 
     relocate('org.spongepowered.configurate', 'com.envyful.api.commons.shade.configurate')
+    relocate('org.yaml.snakeyaml', 'com.envyful.api.commons.shade.snakeyaml')
+    relocate('io.leangen.geantyref', 'com.envyful.api.commons.shade.geantyref')
 
+    exclude 'net.minecraft'
     exclude "**/module-info.class"
 }
 

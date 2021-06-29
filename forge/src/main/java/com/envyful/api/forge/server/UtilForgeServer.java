@@ -2,6 +2,8 @@ package com.envyful.api.forge.server;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 
 /**
  *
@@ -10,17 +12,7 @@ import net.minecraftforge.common.MinecraftForge;
  */
 public class UtilForgeServer {
 
-    private static MinecraftServer server;
-
-    /**
-     *
-     * Sets the server to be cached and used later
-     *
-     * @param server The minecraft server
-     */
-    public static void setServer(MinecraftServer server) {
-        UtilForgeServer.server = server;
-    }
+    private static final MinecraftServer SERVER = FMLCommonHandler.instance().getMinecraftServerInstance();
 
     /**
      *
@@ -31,10 +23,6 @@ public class UtilForgeServer {
      * @param command The command to execyte
      */
     public static void executeCommand(String command) {
-        if (server == null) {
-            return;
-        }
-
-        server.getCommandManager().executeCommand(server, command);
+        SERVER.getCommandManager().executeCommand(SERVER, command);
     }
 }

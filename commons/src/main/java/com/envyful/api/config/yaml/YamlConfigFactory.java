@@ -1,11 +1,13 @@
 package com.envyful.api.config.yaml;
 
 import com.envyful.api.config.data.ConfigPath;
+import com.envyful.api.config.yaml.data.YamlConfigStyle;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.reference.ConfigurationReference;
 import org.spongepowered.configurate.reference.ValueReference;
 import org.spongepowered.configurate.reference.WatchServiceListener;
+import org.spongepowered.configurate.yaml.NodeStyle;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.io.IOException;
@@ -35,6 +37,7 @@ public class YamlConfigFactory {
             throw new IOException("Cannot load config " + clazz.getSimpleName() + " as it's missing @ConfigPath annotation");
         }
 
+        NodeStyle style = getNodeStyle(clazz);
         Path configFile = Paths.get(annotation.value());
 
         if (!configFile.toFile().exists()) {
@@ -43,7 +46,7 @@ public class YamlConfigFactory {
         }
 
         WatchServiceListener listener = WatchServiceListener.builder().build();
-        ConfigurationReference<CommentedConfigurationNode> base = listenToConfig(listener, configFile);
+        ConfigurationReference<CommentedConfigurationNode> base = listenToConfig(listener, configFile, style);
 
         if (base == null) {
             throw new IOException("Error config loaded as null");
@@ -63,9 +66,21 @@ public class YamlConfigFactory {
         return instance;
     }
 
-    private static ConfigurationReference<CommentedConfigurationNode> listenToConfig(WatchServiceListener listener, Path configFile) {
+    private static NodeStyle getNodeStyle(Class<?> clazz) {
+        YamlConfigStyle annotation = clazz.getAnnotation(YamlConfigStyle.class);
+
+        if (annotation == null) {
+            return NodeStyle.BLOCK;
+        }
+
+        return annotation.value();
+    }
+
+    private static ConfigurationReference<CommentedConfigurationNode> listenToConfig(WatchServiceListener listener, Path configFile,
+                                                                                     NodeStyle style) {
         try {
             return listener.listenToConfiguration(file -> YamlConfigurationLoader.builder()
+                    .nodeStyle(style)
                     .defaultOptions(opts -> opts.shouldCopyDefaults(true))
                     .path(file).build(), configFile);
         } catch (ConfigurateException e) {

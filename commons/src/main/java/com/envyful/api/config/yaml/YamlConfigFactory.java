@@ -36,6 +36,12 @@ public class YamlConfigFactory {
         }
 
         Path configFile = Paths.get(annotation.value());
+
+        if (!configFile.toFile().exists()) {
+            configFile.getParent().toFile().mkdirs();
+            configFile.toFile().createNewFile();
+        }
+
         WatchServiceListener listener = WatchServiceListener.builder().build();
         ConfigurationReference<CommentedConfigurationNode> base = listenToConfig(listener, configFile);
 

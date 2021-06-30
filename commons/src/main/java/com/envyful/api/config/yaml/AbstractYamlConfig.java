@@ -18,8 +18,8 @@ import org.spongepowered.configurate.reference.ValueReference;
 @ConfigSerializable
 public abstract class AbstractYamlConfig implements Config {
 
-    protected ConfigurationReference<CommentedConfigurationNode> base;
-    protected ValueReference<?, CommentedConfigurationNode> config;
+    protected transient ConfigurationReference<CommentedConfigurationNode> base;
+    protected transient ValueReference<?, CommentedConfigurationNode> config;
 
     protected AbstractYamlConfig() {}
     

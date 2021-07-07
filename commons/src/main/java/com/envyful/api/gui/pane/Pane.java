@@ -1,4 +1,4 @@
-package com.envyful.api.gui.page;
+package com.envyful.api.gui.pane;
 
 import com.envyful.api.gui.item.Displayable;
 

@@ -1,8 +1,8 @@
 package com.envyful.api.gui.factory;
 
 import com.envyful.api.gui.Gui;
-import com.envyful.api.gui.page.Pane;
-import com.envyful.api.gui.page.type.PagedPane;
+import com.envyful.api.gui.pane.Pane;
+import com.envyful.api.gui.pane.type.PagedPane;
 
 /**
  *

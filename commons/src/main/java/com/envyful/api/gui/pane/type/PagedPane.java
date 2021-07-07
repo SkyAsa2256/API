@@ -1,6 +1,6 @@
-package com.envyful.api.gui.page.type;
+package com.envyful.api.gui.pane.type;
 
-import com.envyful.api.gui.page.Pane;
+import com.envyful.api.gui.pane.Pane;
 
 /**
  *

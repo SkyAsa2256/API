@@ -53,4 +53,55 @@ public interface Pane {
      */
     void clear();
 
+    /**
+     *
+     * Pane builder interface
+     *
+     */
+    interface Builder {
+
+        /**
+         *
+         * Sets the top left X position
+         *
+         * @param topLeftX The top let X pos
+         * @return The builder
+         */
+        Builder topLeftX(int topLeftX);
+
+        /**
+         *
+         * Sets the top left Y position
+         *
+         * @param topLeftY The top let Y pos
+         * @return The builder
+         */
+        Builder topLeftY(int topLeftY);
+
+        /**
+         *
+         * Sets the width of the pane
+         *
+         * @param width The width of the new pane
+         * @return The builder
+         */
+        Builder width(int width);
+
+        /**
+         *
+         * Sets the height of the pane
+         *
+         * @param height The height of the pane
+         * @return The builder
+         */
+        Builder height(int height);
+
+        /**
+         *
+         * Builds the pane on the specifications provided
+         *
+         * @return The new pane
+         */
+        Pane build();
+    }
 }

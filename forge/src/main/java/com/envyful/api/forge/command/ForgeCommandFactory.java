@@ -38,7 +38,7 @@ public class ForgeCommandFactory implements CommandFactory<MinecraftServer, ICom
 
     private final List<ArgumentInjector<?, ICommandSender>> registeredInjectors = Lists.newArrayList();
 
-    public ForgeCommandFactory(MinecraftServer server) {
+    public ForgeCommandFactory() {
         this.registerInjector(EntityPlayerMP.class, (sender, args) -> sender.getServer().getPlayerList().getPlayerByUsername(args[0]));
     }
 

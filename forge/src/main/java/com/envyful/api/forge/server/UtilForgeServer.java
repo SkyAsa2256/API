@@ -1,9 +1,7 @@
 package com.envyful.api.forge.server;
 
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 
 /**
  *

@@ -40,7 +40,7 @@ public interface PagedPane extends Pane {
 
     /**
      *
-     * Pane builder interface
+     * PagedPane builder interface
      *
      */
     interface Builder extends Pane.Builder {

@@ -2,6 +2,9 @@ package com.envyful.api.gui.item;
 
 import com.envyful.api.player.EnvyPlayer;
 
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
+
 /**
  *
  * An interface that represents a displayable item in a page / container that can be clicked, and periodically updated.
@@ -39,6 +42,51 @@ public interface Displayable {
         RIGHT,
 
         ;
+
+    }
+
+    /**
+     *
+     * An interface to build the platform's implementation of the Displayable interface
+     *
+     * @param <T> The platform's ItemStack class
+     */
+    interface Builder<T> {
+
+        /**
+         *
+         * Sets the itemstack for the displayable
+         *
+         * @param itemStack The item to be displayed
+         * @return The builder
+         */
+        Builder<T> itemStack(T itemStack);
+
+        /**
+         *
+         * Sets the click handler for the displayable
+         *
+         * @param clickHandler The consumer for when the displayable is clicked
+         * @return The builder
+         */
+        Builder<T> clickHandler(BiFunction<EnvyPlayer<?>, ClickType, Boolean> clickHandler);
+
+        /**
+         *
+         * Sets the update handler for the displayable
+         *
+         * @param updateHandler The consumer for when the displayable is updated
+         * @return The builder
+         */
+        Builder<T> updateHandler(Consumer<EnvyPlayer<?>> updateHandler);
+
+        /**
+         *
+         * Creates the displayable from the specifications
+         *
+         * @return The new displayable implementation
+         */
+        Displayable build();
 
     }
 }

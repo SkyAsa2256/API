@@ -1,6 +1,7 @@
 package com.envyful.api.gui.factory;
 
 import com.envyful.api.gui.Gui;
+import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.gui.pane.type.PagedPane;
 
@@ -11,7 +12,7 @@ import com.envyful.api.gui.pane.type.PagedPane;
  */
 public class GuiFactory {
 
-    private static PlatformGuiFactory platformFactory = null;
+    private static PlatformGuiFactory<?> platformFactory = null;
 
     /**
      *
@@ -21,6 +22,21 @@ public class GuiFactory {
      */
     public static void setPlatformFactory(PlatformGuiFactory platformFactory) {
         GuiFactory.platformFactory = platformFactory;
+    }
+
+
+    /**
+     *
+     * Gets a new instance of the platform's displayable builder
+     *
+     * @return The new displayable builder
+     */
+    public static Displayable.Builder<?> displayableBuilder() {
+        if (platformFactory == null) {
+            throw new RuntimeException("Platform's factory hasn't been set yet!");
+        }
+
+        return platformFactory.displayableBuilder();
     }
 
     /**

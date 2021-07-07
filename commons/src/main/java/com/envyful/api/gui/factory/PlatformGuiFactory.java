@@ -1,6 +1,7 @@
 package com.envyful.api.gui.factory;
 
 import com.envyful.api.gui.Gui;
+import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.gui.pane.type.PagedPane;
 
@@ -9,7 +10,15 @@ import com.envyful.api.gui.pane.type.PagedPane;
  * Factory interface for handling creating the platform specific builder implementations
  *
  */
-public interface PlatformGuiFactory {
+public interface PlatformGuiFactory<T> {
+
+    /**
+     *
+     * Gets the platform's {@link Displayable.Builder<T>} class as a new instance
+     *
+     * @return The new displayable builder for the given platform
+     */
+    Displayable.Builder<T> displayableBuilder();
 
     /**
      *

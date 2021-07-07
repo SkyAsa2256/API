@@ -38,4 +38,38 @@ public interface PagedPane extends Pane {
      */
     void setPane(int page, Pane pane);
 
+    /**
+     *
+     * Pane builder interface
+     *
+     */
+    interface Builder extends Pane.Builder {
+
+        /**
+         *
+         * Sets the next page's pane
+         *
+         * @param pane The next page
+         * @return The builder
+         */
+        PagedPane.Builder setNextPage(Pane pane);
+
+        /**
+         *
+         * Sets the previous page's pane
+         *
+         * @param pane The previous page
+         * @return The builder
+         */
+        PagedPane.Builder setPreviousPage(Pane pane);
+
+        /**
+         *
+         * Builds the pane on the specifications provided
+         *
+         * @return The new pane
+         */
+        @Override
+        PagedPane build();
+    }
 }

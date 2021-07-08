@@ -29,10 +29,12 @@ public class GuiFactory {
      *
      * Gets a new instance of the platform's displayable builder
      *
+     * @param unused Used for automatic type detection (So you don't have to do <ItemStack>displayableBuilder [ugly])
      * @return The new displayable builder
+     * @param <T> The type for the displayable
      */
     @SuppressWarnings("unchecked")
-    public static <T> Displayable.Builder<T> displayableBuilder(T t) {
+    public static <T> Displayable.Builder<T> displayableBuilder(Class<T> unused) {
         if (platformFactory == null) {
             throw new RuntimeException("Platform's factory hasn't been set yet!");
         }

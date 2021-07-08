@@ -1,5 +1,6 @@
 package com.envyful.api.forge.gui.pane;
 
+import com.envyful.api.forge.gui.item.EmptySlot;
 import com.envyful.api.forge.gui.item.ForgeStaticDisplayable;
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
@@ -32,7 +33,13 @@ public class ForgeStaticPane implements Pane {
         this.topLeftY = topLeftY;
         this.width = width;
         this.height = height;
-        this.items = new ForgeStaticPaneDisplayable[width][height];
+        this.items = new ForgeStaticPaneDisplayable[height][width];
+
+        for (int x = 0; x < this.width; x++) {
+            for (int y = 0; y < this.height; y++) {
+                this.items[y][x] = new EmptySlot(this,x + y * 9);
+            }
+        }
     }
 
     @Override
@@ -41,7 +48,7 @@ public class ForgeStaticPane implements Pane {
             return;
         }
 
-        this.items[this.lastPos.getX()][this.lastPos.getY()] = new ForgeStaticPaneDisplayable(this, displayable,
+        this.items[this.lastPos.getY()][this.lastPos.getX()] = new ForgeStaticPaneDisplayable(this, displayable,
                 this.lastPos.getX(), this.lastPos.getY());
 
         if (this.width == (this.lastPos.getX() + 1)) {
@@ -66,7 +73,7 @@ public class ForgeStaticPane implements Pane {
             throw new RuntimeException("Cannot set an Y position greater than the height");
         }
 
-        this.items[posX][posY] = new ForgeStaticPaneDisplayable(this, displayable, posX, posY);
+        this.items[posY][posX] = new ForgeStaticPaneDisplayable(this, displayable, posX, posY);
     }
 
     @Override
@@ -95,16 +102,17 @@ public class ForgeStaticPane implements Pane {
     public List<Slot> getSlots() {
         List<Slot> slots = Lists.newArrayList();
 
-        for (int x = 0; x < this.width; x++) {
-            for (int y = 0; y < this.height; y++) {
-                ForgeStaticPaneDisplayable item = this.items[x][y];
+        for (int i = 0; i < (this.width * this.height); ++i) {
+            int x = i % (this.width);
+            int y = i / this.width;
 
-                if (item == null || item.getDisplayable() == null) {
-                    continue;
-                }
+            ForgeStaticPaneDisplayable item = this.items[y][x];
 
-                slots.add(item);
+            if (item == null || item.getDisplayable() == null) {
+                continue;
             }
+
+            slots.add(item);
         }
 
         return slots;
@@ -115,7 +123,7 @@ public class ForgeStaticPane implements Pane {
 
         for (int x = 0; x < this.width; x++) {
             for (int y = 0; y < this.height; y++) {
-                ForgeStaticPaneDisplayable item = this.items[x][y];
+                ForgeStaticPaneDisplayable item = this.items[y][x];
 
                 if (item == null || item.getDisplayable() == null) {
                     continue;
@@ -137,12 +145,12 @@ public class ForgeStaticPane implements Pane {
         return yPos <= (this.topLeftY + this.height) && xPos <= (this.topLeftX + this.width);
     }
 
-    public static final class ForgeStaticPaneDisplayable extends Slot {
+    public static class ForgeStaticPaneDisplayable extends Slot {
 
         private final Displayable displayable;
 
         public ForgeStaticPaneDisplayable(ForgeStaticPane pane, Displayable displayable, int xPosition, int yPosition) {
-            super(null, xPosition + (9 * yPosition), pane.topLeftX + xPosition,
+            super(null, xPosition + yPosition * 9, pane.topLeftX + xPosition,
                     pane.topLeftY + yPosition);
 
             this.displayable = displayable;
@@ -150,6 +158,11 @@ public class ForgeStaticPane implements Pane {
 
         public Displayable getDisplayable() {
             return this.displayable;
+        }
+
+        @Override
+        public ItemStack getStack() {
+            return ForgeStaticDisplayable.Converter.toNative((ForgeStaticDisplayable) this.displayable);
         }
     }
 

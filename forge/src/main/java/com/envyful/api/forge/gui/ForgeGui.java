@@ -1,6 +1,5 @@
 package com.envyful.api.forge.gui;
 
-import com.envyful.api.forge.gui.item.EmptySlot;
 import com.envyful.api.forge.gui.pane.ForgeStaticPane;
 import com.envyful.api.forge.player.ForgeEnvyPlayer;
 import com.envyful.api.gui.Gui;
@@ -8,7 +7,6 @@ import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
-import com.google.common.collect.Lists;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ClickType;
@@ -16,13 +14,9 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.SPacketOpenWindow;
-import net.minecraft.util.NonNullList;
+import net.minecraft.network.play.server.SPacketSetSlot;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  *
@@ -36,7 +30,7 @@ public class ForgeGui implements Gui {
     private final PlayerManager<ForgeEnvyPlayer, EntityPlayerMP> playerManager;
     private final ForgeStaticPane[] panes;
 
-    private ForgeGui(String title, int height, PlayerManager<ForgeEnvyPlayer, EntityPlayerMP> playerManager, Pane... panes) {
+    ForgeGui(String title, int height, PlayerManager<ForgeEnvyPlayer, EntityPlayerMP> playerManager, Pane... panes) {
         this.title = new TextComponentString(title);
         this.height = height;
         this.playerManager = playerManager;
@@ -60,7 +54,7 @@ public class ForgeGui implements Gui {
         }
 
         EntityPlayerMP parent = ((ForgeEnvyPlayer) player).getParent();
-        ForgeGuiContainer container = new ForgeGuiContainer(this);
+        ForgeGuiContainer container = new ForgeGuiContainer(this, parent);
 
         parent.closeContainer();
         parent.openContainer = container;
@@ -78,14 +72,20 @@ public class ForgeGui implements Gui {
     private final class ForgeGuiContainer extends Container {
 
         private final ForgeGui gui;
+        private final EntityPlayerMP player;
 
-        public ForgeGuiContainer(ForgeGui gui) {
+        public ForgeGuiContainer(ForgeGui gui, EntityPlayerMP player) {
+            this.windowId = 1;
             this.gui = gui;
+            this.player = player;
 
             this.update(this.gui.panes);
         }
 
         public void update(ForgeStaticPane[] panes) {
+            this.inventorySlots.clear();
+            this.inventoryItemStacks.clear();
+
             for (ForgeStaticPane pane : panes) {
                 if (pane == null) {
                     continue;
@@ -96,13 +96,13 @@ public class ForgeGui implements Gui {
             }
 
             for (int i = 9; i < 36; i++) {
-                inventorySlots.add(new EmptySlot(i - 9));
-                inventoryItemStacks.add(ItemStack.EMPTY);
+                inventorySlots.add(new Slot(this.player.inventory, i - 9, 0, 0));
+                inventoryItemStacks.add(this.player.inventory.getStackInSlot(i));
             }
 
             for (int i = 0; i < 9; i++) {
-                inventorySlots.add(new EmptySlot( i + 27));
-                inventoryItemStacks.add(ItemStack.EMPTY);
+                inventorySlots.add(new Slot(this.player.inventory, i + 27, 0, 0));
+                inventoryItemStacks.add(this.player.inventory.getStackInSlot(i));
             }
         }
 
@@ -112,12 +112,42 @@ public class ForgeGui implements Gui {
         }
 
         @Override
+        public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
+            return ItemStack.EMPTY;
+        }
+
+        @Override
+        public boolean canMergeSlot(ItemStack stack, Slot slotIn) {
+            return false;
+        }
+
+        @Override
+        protected boolean mergeItemStack(ItemStack stack, int startIndex, int endIndex, boolean reverseDirection) {
+            return false;
+        }
+
+        @Override
+        public void putStackInSlot(int slotID, ItemStack stack) {}
+
+        @Override
+        public boolean canDragIntoSlot(Slot slotIn) {
+            return false;
+        }
+
+        @Override
         public ItemStack slotClick(int slot, int dragType, ClickType clickTypeIn, EntityPlayer player) {
             if (slot <= -1) {
                 return ItemStack.EMPTY;
             }
 
-            Displayable.ClickType clickType = this.convertClickType(clickTypeIn);
+            this.refreshPlayerContents();
+
+            if (clickTypeIn == ClickType.CLONE || clickTypeIn == ClickType.QUICK_CRAFT) {
+                this.clearPlayerCursor();
+                return ItemStack.EMPTY;
+            }
+
+            Displayable.ClickType clickType = this.convertClickType(dragType);
 
             if (clickType == null) {
                 return ItemStack.EMPTY;
@@ -153,63 +183,24 @@ public class ForgeGui implements Gui {
             return ItemStack.EMPTY;
         }
 
-        private Displayable.ClickType convertClickType(ClickType typeIn) {
-            switch(typeIn) {
-                case CLONE :
-                    return Displayable.ClickType.MIDDLE;
-                case PICKUP:
-                    return Displayable.ClickType.RIGHT;
-                case PICKUP_ALL:
-                    return Displayable.ClickType.LEFT;
-                default :
-                    return null;
+        private Displayable.ClickType convertClickType(int id) {
+            switch(id) {
+                case 0 : return Displayable.ClickType.LEFT;
+                case 1 : return Displayable.ClickType.RIGHT;
+                case 2 : return Displayable.ClickType.MIDDLE;
+                default : return null;
             }
         }
-    }
 
-    /**
-     *
-     * Builder implementation for the ForgeGui
-     *
-     */
-    public static final class Builder implements Gui.Builder {
-
-        private String title;
-        private int height = 5;
-        private List<Pane> panes = Lists.newArrayList();
-        private PlayerManager<ForgeEnvyPlayer, EntityPlayerMP> playerManager;
-
-        @Override
-        public Gui.Builder title(String title) {
-            this.title = title;
-            return this;
+        private void refreshPlayerContents() {
+            player.sendAllContents(player.openContainer, inventoryItemStacks);
+            player.inventoryContainer.detectAndSendChanges();
+            player.sendAllContents(player.inventoryContainer, player.inventoryContainer.inventoryItemStacks);
         }
 
-        @Override
-        public Gui.Builder height(int height) {
-            this.height = height;
-            return this;
-        }
-
-        @Override
-        public Gui.Builder addPane(Pane pane) {
-            this.panes.add(pane);
-            return this;
-        }
-
-        @Override
-        public Gui.Builder setPlayerManager(PlayerManager<?, ?> playerManager) {
-            this.playerManager = (PlayerManager<ForgeEnvyPlayer, EntityPlayerMP>) playerManager;
-            return this;
-        }
-
-        @Override
-        public Gui build() {
-            if (this.playerManager == null) {
-                throw new RuntimeException("Cannot build GUI without PlayerManager being set");
-            }
-
-            return new ForgeGui(this.title, this.height, this.playerManager, this.panes.toArray(new Pane[0]));
+        private void clearPlayerCursor() {
+            SPacketSetSlot setCursorSlot = new SPacketSetSlot(-1, 0, ItemStack.EMPTY);
+            player.connection.sendPacket(setCursorSlot);
         }
     }
 }

@@ -87,6 +87,10 @@ public class ForgeGui implements Gui {
             NonNullList<ItemStack> display = NonNullList.create();
 
             for (ForgeStaticPane pane : panes) {
+                if (pane == null) {
+                    continue;
+                }
+
                 slots.addAll(pane.getSlots());
                 display.addAll(pane.getDisplayItems());
             }

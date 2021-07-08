@@ -188,7 +188,7 @@ public class ForgeStaticPane implements Pane {
 
         @Override
         public Pane build() {
-            return new ForgeStaticPane(this.width, this.height, this.topLeftX, this.topLeftY);
+            return new ForgeStaticPane(this.topLeftX, this.topLeftY, this.height, this.width);
         }
     }
 }

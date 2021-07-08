@@ -18,9 +18,8 @@ public interface Displayable {
      *
      * @param player The player that clicked the object
      * @param clickType The type of click that occurred
-     * @return If the event should be cancelled
      */
-    boolean onClick(EnvyPlayer<?> player, ClickType clickType);
+    void onClick(EnvyPlayer<?> player, ClickType clickType);
 
     /**
      *

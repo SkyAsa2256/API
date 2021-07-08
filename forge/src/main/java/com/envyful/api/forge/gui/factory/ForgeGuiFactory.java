@@ -1,6 +1,7 @@
 package com.envyful.api.forge.gui.factory;
 
 import com.envyful.api.forge.gui.ForgeGui;
+import com.envyful.api.forge.gui.ForgeGuiBuilder;
 import com.envyful.api.forge.gui.item.ForgeStaticDisplayable;
 import com.envyful.api.forge.gui.pane.ForgeStaticPane;
 import com.envyful.api.gui.Gui;
@@ -34,6 +35,6 @@ public class ForgeGuiFactory implements PlatformGuiFactory<ItemStack> {
 
     @Override
     public Gui.Builder guiBuilder() {
-        return new ForgeGui.Builder();
+        return new ForgeGuiBuilder();
     }
 }

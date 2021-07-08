@@ -31,12 +31,13 @@ public class GuiFactory {
      *
      * @return The new displayable builder
      */
-    public static Displayable.Builder<?> displayableBuilder() {
+    @SuppressWarnings("unchecked")
+    public static <T> Displayable.Builder<T> displayableBuilder(T t) {
         if (platformFactory == null) {
             throw new RuntimeException("Platform's factory hasn't been set yet!");
         }
 
-        return platformFactory.displayableBuilder();
+        return (Displayable.Builder<T>) platformFactory.displayableBuilder();
     }
 
     /**

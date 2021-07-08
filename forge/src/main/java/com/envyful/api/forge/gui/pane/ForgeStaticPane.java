@@ -129,6 +129,14 @@ public class ForgeStaticPane implements Pane {
         return display;
     }
 
+    public boolean inPane(int xPos, int yPos) {
+        if (xPos < this.topLeftX || yPos < this.topLeftY) {
+            return false;
+        }
+
+        return yPos <= (this.topLeftY + this.height) && xPos <= (this.topLeftX + this.width);
+    }
+
     public static final class ForgeStaticPaneDisplayable extends Slot {
 
         private final Displayable displayable;

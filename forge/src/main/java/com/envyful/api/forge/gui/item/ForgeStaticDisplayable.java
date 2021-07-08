@@ -4,7 +4,7 @@ import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.player.EnvyPlayer;
 import net.minecraft.item.ItemStack;
 
-import java.util.function.BiFunction;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 /**
@@ -16,10 +16,10 @@ import java.util.function.Consumer;
 public class ForgeStaticDisplayable implements Displayable {
 
     private final ItemStack itemStack;
-    private final BiFunction<EnvyPlayer<?>, ClickType, Boolean> clickHandler;
+    private final BiConsumer<EnvyPlayer<?>, ClickType> clickHandler;
     private final Consumer<EnvyPlayer<?>> updateHandler;
 
-    public ForgeStaticDisplayable(ItemStack itemStack, BiFunction<EnvyPlayer<?>, ClickType, Boolean> clickHandler,
+    public ForgeStaticDisplayable(ItemStack itemStack, BiConsumer<EnvyPlayer<?>, ClickType> clickHandler,
                                   Consumer<EnvyPlayer<?>> updateHandler) {
         this.itemStack = itemStack;
         this.clickHandler = clickHandler;
@@ -27,8 +27,8 @@ public class ForgeStaticDisplayable implements Displayable {
     }
 
     @Override
-    public boolean onClick(EnvyPlayer<?> player, ClickType clickType) {
-        return this.clickHandler.apply(player, clickType);
+    public void onClick(EnvyPlayer<?> player, ClickType clickType) {
+        this.clickHandler.accept(player, clickType);
     }
 
     @Override
@@ -45,8 +45,8 @@ public class ForgeStaticDisplayable implements Displayable {
     public static final class Builder implements Displayable.Builder<ItemStack> {
 
         private ItemStack itemStack;
-        private BiFunction<EnvyPlayer<?>, ClickType, Boolean> clickHandler;
-        private Consumer<EnvyPlayer<?>> updateHandler;
+        private BiConsumer<EnvyPlayer<?>, ClickType> clickHandler = (envyPlayer, clickType) -> {};
+        private Consumer<EnvyPlayer<?>> updateHandler = envyPlayer -> {};
 
         @Override
         public Displayable.Builder<ItemStack> itemStack(ItemStack itemStack) {
@@ -55,7 +55,7 @@ public class ForgeStaticDisplayable implements Displayable {
         }
 
         @Override
-        public Displayable.Builder<ItemStack> clickHandler(BiFunction<EnvyPlayer<?>, ClickType, Boolean> clickHandler) {
+        public Displayable.Builder<ItemStack> clickHandler(BiConsumer<EnvyPlayer<?>, ClickType> clickHandler) {
             this.clickHandler = clickHandler;
             return this;
         }

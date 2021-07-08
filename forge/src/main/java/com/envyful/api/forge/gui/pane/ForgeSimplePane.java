@@ -1,7 +1,7 @@
 package com.envyful.api.forge.gui.pane;
 
 import com.envyful.api.forge.gui.item.EmptySlot;
-import com.envyful.api.forge.gui.item.ForgeStaticDisplayable;
+import com.envyful.api.forge.gui.item.ForgeSimpleDisplayable;
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.type.Pair;
@@ -23,7 +23,7 @@ public class ForgeSimplePane implements Pane {
     private final int topLeftY;
     private final int width;
     private final int height;
-    private final ForgeStaticPaneDisplayable[][] items;
+    private final SimpleDisplayableSlot[][] items;
 
     private boolean full = false;
     private Pair<Integer, Integer> lastPos = Pair.of(0, 0);
@@ -33,7 +33,7 @@ public class ForgeSimplePane implements Pane {
         this.topLeftY = topLeftY;
         this.width = width;
         this.height = height;
-        this.items = new ForgeStaticPaneDisplayable[height][width];
+        this.items = new SimpleDisplayableSlot[height][width];
 
         for (int x = 0; x < this.width; x++) {
             for (int y = 0; y < this.height; y++) {
@@ -48,7 +48,7 @@ public class ForgeSimplePane implements Pane {
             return;
         }
 
-        this.items[this.lastPos.getY()][this.lastPos.getX()] = new ForgeStaticPaneDisplayable(this, displayable,
+        this.items[this.lastPos.getY()][this.lastPos.getX()] = new SimpleDisplayableSlot(this, displayable,
                 this.lastPos.getX(), this.lastPos.getY());
 
         if (this.width == (this.lastPos.getX() + 1)) {
@@ -73,7 +73,7 @@ public class ForgeSimplePane implements Pane {
             throw new RuntimeException("Cannot set an Y position greater than the height");
         }
 
-        this.items[posY][posX] = new ForgeStaticPaneDisplayable(this, displayable, posX, posY);
+        this.items[posY][posX] = new SimpleDisplayableSlot(this, displayable, posX, posY);
     }
 
     @Override
@@ -106,7 +106,7 @@ public class ForgeSimplePane implements Pane {
             int x = i % (this.width);
             int y = i / this.width;
 
-            ForgeStaticPaneDisplayable item = this.items[y][x];
+            SimpleDisplayableSlot item = this.items[y][x];
 
             if (item == null || item.getDisplayable() == null) {
                 continue;
@@ -123,14 +123,14 @@ public class ForgeSimplePane implements Pane {
 
         for (int x = 0; x < this.width; x++) {
             for (int y = 0; y < this.height; y++) {
-                ForgeStaticPaneDisplayable item = this.items[y][x];
+                SimpleDisplayableSlot item = this.items[y][x];
 
                 if (item == null || item.getDisplayable() == null) {
                     continue;
                 }
 
-                display.add(ForgeStaticDisplayable.Converter
-                        .toNative((ForgeStaticDisplayable) item.getDisplayable()));
+                display.add(ForgeSimpleDisplayable.Converter
+                        .toNative((ForgeSimpleDisplayable) item.getDisplayable()));
             }
         }
 
@@ -145,11 +145,11 @@ public class ForgeSimplePane implements Pane {
         return yPos <= (this.topLeftY + this.height) && xPos <= (this.topLeftX + this.width);
     }
 
-    public static class ForgeStaticPaneDisplayable extends Slot {
+    public static class SimpleDisplayableSlot extends Slot {
 
         private final Displayable displayable;
 
-        public ForgeStaticPaneDisplayable(ForgeSimplePane pane, Displayable displayable, int xPosition, int yPosition) {
+        public SimpleDisplayableSlot(ForgeSimplePane pane, Displayable displayable, int xPosition, int yPosition) {
             super(null, xPosition + yPosition * 9, pane.topLeftX + xPosition,
                     pane.topLeftY + yPosition);
 
@@ -162,7 +162,7 @@ public class ForgeSimplePane implements Pane {
 
         @Override
         public ItemStack getStack() {
-            return ForgeStaticDisplayable.Converter.toNative((ForgeStaticDisplayable) this.displayable);
+            return ForgeSimpleDisplayable.Converter.toNative((ForgeSimpleDisplayable) this.displayable);
         }
     }
 

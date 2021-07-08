@@ -168,7 +168,7 @@ public class ForgeGui implements Gui {
                 }
 
                 for (Slot paneSlot : pane.getSlots()) {
-                    if (!(paneSlot instanceof ForgeSimplePane.ForgeStaticPaneDisplayable)) {
+                    if (!(paneSlot instanceof ForgeSimplePane.SimpleDisplayableSlot)) {
                         continue;
                     }
 
@@ -176,7 +176,7 @@ public class ForgeGui implements Gui {
                         continue;
                     }
 
-                    ((ForgeSimplePane.ForgeStaticPaneDisplayable) paneSlot).getDisplayable().onClick(envyPlayer, clickType);
+                    ((ForgeSimplePane.SimpleDisplayableSlot) paneSlot).getDisplayable().onClick(envyPlayer, clickType);
                 }
             }
 

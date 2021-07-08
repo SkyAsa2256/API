@@ -13,13 +13,13 @@ import java.util.function.Consumer;
  * set.
  *
  */
-public class ForgeStaticDisplayable implements Displayable {
+public class ForgeSimpleDisplayable implements Displayable {
 
     private final ItemStack itemStack;
     private final BiConsumer<EnvyPlayer<?>, ClickType> clickHandler;
     private final Consumer<EnvyPlayer<?>> updateHandler;
 
-    public ForgeStaticDisplayable(ItemStack itemStack, BiConsumer<EnvyPlayer<?>, ClickType> clickHandler,
+    public ForgeSimpleDisplayable(ItemStack itemStack, BiConsumer<EnvyPlayer<?>, ClickType> clickHandler,
                                   Consumer<EnvyPlayer<?>> updateHandler) {
         this.itemStack = itemStack;
         this.clickHandler = clickHandler;
@@ -37,7 +37,7 @@ public class ForgeStaticDisplayable implements Displayable {
     }
 
     public static final class Converter {
-        public static ItemStack toNative(ForgeStaticDisplayable displayable) {
+        public static ItemStack toNative(ForgeSimpleDisplayable displayable) {
             return displayable.itemStack;
         }
     }
@@ -72,7 +72,7 @@ public class ForgeStaticDisplayable implements Displayable {
                 throw new RuntimeException("Cannot create displayable without itemstack");
             }
 
-            return new ForgeStaticDisplayable(this.itemStack, this.clickHandler, this.updateHandler);
+            return new ForgeSimpleDisplayable(this.itemStack, this.clickHandler, this.updateHandler);
         }
     }
 }

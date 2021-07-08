@@ -17,7 +17,7 @@ import java.util.List;
  * Simple implementation of the {@link Pane} interface where the height and width of the pane are unchanging.
  *
  */
-public class ForgeStaticPane implements Pane {
+public class ForgeSimplePane implements Pane {
 
     private final int topLeftX;
     private final int topLeftY;
@@ -28,7 +28,7 @@ public class ForgeStaticPane implements Pane {
     private boolean full = false;
     private Pair<Integer, Integer> lastPos = Pair.of(0, 0);
 
-    private ForgeStaticPane(int topLeftX, int topLeftY, int height, int width) {
+    private ForgeSimplePane(int topLeftX, int topLeftY, int height, int width) {
         this.topLeftX = topLeftX;
         this.topLeftY = topLeftY;
         this.width = width;
@@ -149,7 +149,7 @@ public class ForgeStaticPane implements Pane {
 
         private final Displayable displayable;
 
-        public ForgeStaticPaneDisplayable(ForgeStaticPane pane, Displayable displayable, int xPosition, int yPosition) {
+        public ForgeStaticPaneDisplayable(ForgeSimplePane pane, Displayable displayable, int xPosition, int yPosition) {
             super(null, xPosition + yPosition * 9, pane.topLeftX + xPosition,
                     pane.topLeftY + yPosition);
 
@@ -201,7 +201,7 @@ public class ForgeStaticPane implements Pane {
 
         @Override
         public Pane build() {
-            return new ForgeStaticPane(this.topLeftX, this.topLeftY, this.height, this.width);
+            return new ForgeSimplePane(this.topLeftX, this.topLeftY, this.height, this.width);
         }
     }
 }

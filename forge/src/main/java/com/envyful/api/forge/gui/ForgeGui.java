@@ -1,6 +1,6 @@
 package com.envyful.api.forge.gui;
 
-import com.envyful.api.forge.gui.pane.ForgeStaticPane;
+import com.envyful.api.forge.gui.pane.ForgeSimplePane;
 import com.envyful.api.forge.player.ForgeEnvyPlayer;
 import com.envyful.api.gui.Gui;
 import com.envyful.api.gui.item.Displayable;
@@ -28,21 +28,21 @@ public class ForgeGui implements Gui {
     private final ITextComponent title;
     private final int height;
     private final PlayerManager<ForgeEnvyPlayer, EntityPlayerMP> playerManager;
-    private final ForgeStaticPane[] panes;
+    private final ForgeSimplePane[] panes;
 
     ForgeGui(String title, int height, PlayerManager<ForgeEnvyPlayer, EntityPlayerMP> playerManager, Pane... panes) {
         this.title = new TextComponentString(title);
         this.height = height;
         this.playerManager = playerManager;
-        this.panes = new ForgeStaticPane[panes.length];
+        this.panes = new ForgeSimplePane[panes.length];
         int i = 0;
 
         for (Pane pane : panes) {
-            if (!(pane instanceof ForgeStaticPane)) {
+            if (!(pane instanceof ForgeSimplePane)) {
                 continue;
             }
 
-            this.panes[i] = (ForgeStaticPane) pane;
+            this.panes[i] = (ForgeSimplePane) pane;
             ++i;
         }
     }
@@ -82,11 +82,11 @@ public class ForgeGui implements Gui {
             this.update(this.gui.panes);
         }
 
-        public void update(ForgeStaticPane[] panes) {
+        public void update(ForgeSimplePane[] panes) {
             this.inventorySlots.clear();
             this.inventoryItemStacks.clear();
 
-            for (ForgeStaticPane pane : panes) {
+            for (ForgeSimplePane pane : panes) {
                 if (pane == null) {
                     continue;
                 }
@@ -162,13 +162,13 @@ public class ForgeGui implements Gui {
             int xPos = slot / 9;
             int yPos = slot % 9;
 
-            for (ForgeStaticPane pane : this.gui.panes) {
+            for (ForgeSimplePane pane : this.gui.panes) {
                 if (!pane.inPane(xPos, yPos)) {
                     continue;
                 }
 
                 for (Slot paneSlot : pane.getSlots()) {
-                    if (!(paneSlot instanceof ForgeStaticPane.ForgeStaticPaneDisplayable)) {
+                    if (!(paneSlot instanceof ForgeSimplePane.ForgeStaticPaneDisplayable)) {
                         continue;
                     }
 
@@ -176,7 +176,7 @@ public class ForgeGui implements Gui {
                         continue;
                     }
 
-                    ((ForgeStaticPane.ForgeStaticPaneDisplayable) paneSlot).getDisplayable().onClick(envyPlayer, clickType);
+                    ((ForgeSimplePane.ForgeStaticPaneDisplayable) paneSlot).getDisplayable().onClick(envyPlayer, clickType);
                 }
             }
 

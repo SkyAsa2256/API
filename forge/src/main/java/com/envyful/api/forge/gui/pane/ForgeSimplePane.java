@@ -65,11 +65,11 @@ public class ForgeSimplePane implements Pane {
 
     @Override
     public void set(int posX, int posY, Displayable displayable) {
-        if (posX >= this.width) {
+        if (posX >= (this.topLeftX + this.width)) {
             throw new RuntimeException("Cannot set an X position greater than the width");
         }
 
-        if (posY >= this.height) {
+        if (posY >= (this.topLeftY + this.height)) {
             throw new RuntimeException("Cannot set an Y position greater than the height");
         }
 
@@ -99,42 +99,8 @@ public class ForgeSimplePane implements Pane {
         }
     }
 
-    public List<Slot> getSlots() {
-        List<Slot> slots = Lists.newArrayList();
-
-        for (int i = 0; i < (this.width * this.height); ++i) {
-            int x = i % (this.width);
-            int y = i / this.width;
-
-            SimpleDisplayableSlot item = this.items[y][x];
-
-            if (item == null || item.getDisplayable() == null) {
-                continue;
-            }
-
-            slots.add(item);
-        }
-
-        return slots;
-    }
-
-    public NonNullList<ItemStack> getDisplayItems() {
-        NonNullList<ItemStack> display = NonNullList.create();
-
-        for (int x = 0; x < this.width; x++) {
-            for (int y = 0; y < this.height; y++) {
-                SimpleDisplayableSlot item = this.items[y][x];
-
-                if (item == null || item.getDisplayable() == null) {
-                    continue;
-                }
-
-                display.add(ForgeSimpleDisplayable.Converter
-                        .toNative((ForgeSimpleDisplayable) item.getDisplayable()));
-            }
-        }
-
-        return display;
+    public SimpleDisplayableSlot[][] getItems() {
+        return this.items;
     }
 
     public boolean inPane(int xPos, int yPos) {
@@ -142,7 +108,15 @@ public class ForgeSimplePane implements Pane {
             return false;
         }
 
-        return yPos <= (this.topLeftY + this.height) && xPos <= (this.topLeftX + this.width);
+        return yPos < (this.topLeftY + this.height) && xPos < (this.topLeftX + this.width);
+    }
+
+    public int updateIndex(int index) {
+        return index + (9 * this.topLeftY) + this.topLeftX;
+    }
+
+    public Pair<Integer, Integer> convertXandY(int x, int y) {
+        return Pair.of(x - this.topLeftX, y - this.topLeftY);
     }
 
     public static class SimpleDisplayableSlot extends Slot {

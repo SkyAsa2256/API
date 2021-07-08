@@ -1,5 +1,6 @@
 package com.envyful.api.forge.gui;
 
+import com.envyful.api.forge.gui.item.EmptySlot;
 import com.envyful.api.forge.gui.pane.ForgeSimplePane;
 import com.envyful.api.forge.player.ForgeEnvyPlayer;
 import com.envyful.api.gui.Gui;
@@ -7,6 +8,8 @@ import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
+import com.envyful.api.type.Pair;
+import com.google.common.collect.Lists;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ClickType;
@@ -15,6 +18,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.SPacketOpenWindow;
 import net.minecraft.network.play.server.SPacketSetSlot;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 
@@ -28,12 +32,14 @@ public class ForgeGui implements Gui {
     private final ITextComponent title;
     private final int height;
     private final PlayerManager<ForgeEnvyPlayer, EntityPlayerMP> playerManager;
+    private final ForgeSimplePane parentPane;
     private final ForgeSimplePane[] panes;
 
     ForgeGui(String title, int height, PlayerManager<ForgeEnvyPlayer, EntityPlayerMP> playerManager, Pane... panes) {
         this.title = new TextComponentString(title);
         this.height = height;
         this.playerManager = playerManager;
+        this.parentPane = (ForgeSimplePane) new ForgeSimplePane.Builder().height(height).topLeftX(0).topLeftY(0).width(9).build();
         this.panes = new ForgeSimplePane[panes.length];
         int i = 0;
 
@@ -83,16 +89,31 @@ public class ForgeGui implements Gui {
         }
 
         public void update(ForgeSimplePane[] panes) {
-            this.inventorySlots.clear();
-            this.inventoryItemStacks.clear();
+            this.inventorySlots = Lists.newArrayList();
+            this.inventoryItemStacks = NonNullList.create();
+
+            for (int i = 0; i < (9 * this.gui.height); i++) {
+                this.inventorySlots.add(new EmptySlot(this.gui.parentPane, i));
+                this.inventoryItemStacks.add(ItemStack.EMPTY);
+            }
 
             for (ForgeSimplePane pane : panes) {
                 if (pane == null) {
                     continue;
                 }
 
-                inventorySlots.addAll(pane.getSlots());
-                inventoryItemStacks.addAll(pane.getDisplayItems());
+                for (int y = 0; y < pane.getItems().length; y++) {
+                    ForgeSimplePane.SimpleDisplayableSlot[] row = pane.getItems()[y];
+
+                    for (int x = 0; x < row.length; x++) {
+                        ForgeSimplePane.SimpleDisplayableSlot item = row[x];
+
+                        int index = pane.updateIndex((9 * y) + x);
+
+                        this.inventorySlots.set(index, item);
+                        this.inventoryItemStacks.set(index, item.getStack());
+                    }
+                }
             }
 
             for (int i = 9; i < 36; i++) {
@@ -159,25 +180,18 @@ public class ForgeGui implements Gui {
                 return ItemStack.EMPTY;
             }
 
-            int xPos = slot / 9;
-            int yPos = slot % 9;
+            int xPos = slot % 9;
+            int yPos = slot / 9;
 
             for (ForgeSimplePane pane : this.gui.panes) {
                 if (!pane.inPane(xPos, yPos)) {
                     continue;
                 }
 
-                for (Slot paneSlot : pane.getSlots()) {
-                    if (!(paneSlot instanceof ForgeSimplePane.SimpleDisplayableSlot)) {
-                        continue;
-                    }
+                Pair<Integer, Integer> panePosition = pane.convertXandY(xPos, yPos);
 
-                    if (paneSlot.xPos != xPos || paneSlot.yPos != yPos) {
-                        continue;
-                    }
-
-                    ((ForgeSimplePane.SimpleDisplayableSlot) paneSlot).getDisplayable().onClick(envyPlayer, clickType);
-                }
+                ForgeSimplePane.SimpleDisplayableSlot simpleDisplayableSlot = pane.getItems()[panePosition.getY()][panePosition.getX()];
+                simpleDisplayableSlot.getDisplayable().onClick(envyPlayer, clickType);
             }
 
             return ItemStack.EMPTY;

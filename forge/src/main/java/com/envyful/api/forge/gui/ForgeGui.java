@@ -1,5 +1,6 @@
 package com.envyful.api.forge.gui;
 
+import com.envyful.api.forge.gui.item.EmptySlot;
 import com.envyful.api.forge.gui.pane.ForgeStaticPane;
 import com.envyful.api.forge.player.ForgeEnvyPlayer;
 import com.envyful.api.gui.Gui;
@@ -19,7 +20,9 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -45,7 +48,7 @@ public class ForgeGui implements Gui {
                 continue;
             }
 
-            panes[i] = pane;
+            this.panes[i] = (ForgeStaticPane) pane;
             ++i;
         }
     }
@@ -62,7 +65,7 @@ public class ForgeGui implements Gui {
         parent.closeContainer();
         parent.openContainer = container;
         parent.currentWindowId = 1;
-        parent.connection.sendPacket(new SPacketOpenWindow(parent.currentWindowId, "minecraft:container", this.title, 54));
+        parent.connection.sendPacket(new SPacketOpenWindow(parent.currentWindowId, "minecraft:container", this.title, 9 * this.height));
         container.detectAndSendChanges();
         parent.sendAllContents(container, container.inventoryItemStacks);
     }
@@ -83,30 +86,24 @@ public class ForgeGui implements Gui {
         }
 
         public void update(ForgeStaticPane[] panes) {
-            List<Slot> slots = Lists.newArrayList();
-            NonNullList<ItemStack> display = NonNullList.create();
-
             for (ForgeStaticPane pane : panes) {
                 if (pane == null) {
                     continue;
                 }
 
-                slots.addAll(pane.getSlots());
-                display.addAll(pane.getDisplayItems());
+                inventorySlots.addAll(pane.getSlots());
+                inventoryItemStacks.addAll(pane.getDisplayItems());
             }
 
             for (int i = 9; i < 36; i++) {
-                inventorySlots.add(new Slot(null, i - 9, 0, 0));
+                inventorySlots.add(new EmptySlot(i - 9));
                 inventoryItemStacks.add(ItemStack.EMPTY);
             }
 
             for (int i = 0; i < 9; i++) {
-                inventorySlots.add(new Slot(null, i + 27, 0, 0));
+                inventorySlots.add(new EmptySlot( i + 27));
                 inventoryItemStacks.add(ItemStack.EMPTY);
             }
-
-            this.inventorySlots = slots;
-            this.inventoryItemStacks = display;
         }
 
         @Override

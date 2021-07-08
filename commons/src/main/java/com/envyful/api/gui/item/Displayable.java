@@ -2,7 +2,7 @@ package com.envyful.api.gui.item;
 
 import com.envyful.api.player.EnvyPlayer;
 
-import java.util.function.BiFunction;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 /**
@@ -68,7 +68,7 @@ public interface Displayable {
          * @param clickHandler The consumer for when the displayable is clicked
          * @return The builder
          */
-        Builder<T> clickHandler(BiFunction<EnvyPlayer<?>, ClickType, Boolean> clickHandler);
+        Builder<T> clickHandler(BiConsumer<EnvyPlayer<?>, ClickType> clickHandler);
 
         /**
          *

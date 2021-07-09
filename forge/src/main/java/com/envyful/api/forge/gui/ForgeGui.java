@@ -10,6 +10,7 @@ import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.type.Pair;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ClickType;
@@ -21,6 +22,9 @@ import net.minecraft.network.play.server.SPacketSetSlot;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
+
+import java.util.Map;
+import java.util.UUID;
 
 /**
  *
@@ -34,6 +38,8 @@ public class ForgeGui implements Gui {
     private final PlayerManager<ForgeEnvyPlayer, EntityPlayerMP> playerManager;
     private final ForgeSimplePane parentPane;
     private final ForgeSimplePane[] panes;
+
+    private final Map<UUID, ForgeGuiContainer> containers = Maps.newHashMap();
 
     ForgeGui(String title, int height, PlayerManager<ForgeEnvyPlayer, EntityPlayerMP> playerManager, Pane... panes) {
         this.title = new TextComponentString(title);
@@ -68,6 +74,14 @@ public class ForgeGui implements Gui {
         parent.connection.sendPacket(new SPacketOpenWindow(parent.currentWindowId, "minecraft:container", this.title, 9 * this.height));
         container.detectAndSendChanges();
         parent.sendAllContents(container, container.inventoryItemStacks);
+
+        ForgeGuiTracker.addGui(player, this);
+    }
+
+    public void update() {
+        for (ForgeGuiContainer value : this.containers.values()) {
+            value.update(this.panes);
+        }
     }
 
     /**
@@ -215,6 +229,14 @@ public class ForgeGui implements Gui {
         private void clearPlayerCursor() {
             SPacketSetSlot setCursorSlot = new SPacketSetSlot(-1, 0, ItemStack.EMPTY);
             player.connection.sendPacket(setCursorSlot);
+        }
+
+        @Override
+        public void onContainerClosed(EntityPlayer playerIn) {
+            super.onContainerClosed(playerIn);
+
+            EnvyPlayer<?> player = this.gui.playerManager.getPlayer(playerIn.getUniqueID());
+            ForgeGuiTracker.removePlayer(player);
         }
     }
 }

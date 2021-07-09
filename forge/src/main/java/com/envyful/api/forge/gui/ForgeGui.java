@@ -23,6 +23,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -39,7 +40,7 @@ public class ForgeGui implements Gui {
     private final ForgeSimplePane parentPane;
     private final ForgeSimplePane[] panes;
 
-    private final Map<UUID, ForgeGuiContainer> containers = Maps.newHashMap();
+    private final List<ForgeGuiContainer> containers = Lists.newArrayList();
 
     ForgeGui(String title, int height, PlayerManager<ForgeEnvyPlayer, EntityPlayerMP> playerManager, Pane... panes) {
         this.title = new TextComponentString(title);
@@ -75,11 +76,12 @@ public class ForgeGui implements Gui {
         container.detectAndSendChanges();
         parent.sendAllContents(container, container.inventoryItemStacks);
 
+        this.containers.add(container);
         ForgeGuiTracker.addGui(player, this);
     }
 
     public void update() {
-        for (ForgeGuiContainer value : this.containers.values()) {
+        for (ForgeGuiContainer value : this.containers) {
             value.update(this.panes);
         }
     }

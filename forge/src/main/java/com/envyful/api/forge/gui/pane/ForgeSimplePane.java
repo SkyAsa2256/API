@@ -6,9 +6,11 @@ import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.type.Pair;
 import com.google.common.collect.Lists;
+import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.text.TextComponentString;
 
 import java.util.List;
 
@@ -24,6 +26,7 @@ public class ForgeSimplePane implements Pane {
     private final int width;
     private final int height;
     private final SimpleDisplayableSlot[][] items;
+    private final InventoryBasic inventoryBasic;
 
     private boolean full = false;
     private Pair<Integer, Integer> lastPos = Pair.of(0, 0);
@@ -33,6 +36,7 @@ public class ForgeSimplePane implements Pane {
         this.topLeftY = topLeftY;
         this.width = width;
         this.height = height;
+        this.inventoryBasic = new InventoryBasic("", false, 1);
         this.items = new SimpleDisplayableSlot[height][width];
 
         for (int x = 0; x < this.width; x++) {
@@ -124,7 +128,7 @@ public class ForgeSimplePane implements Pane {
         private final Displayable displayable;
 
         public SimpleDisplayableSlot(ForgeSimplePane pane, Displayable displayable, int xPosition, int yPosition) {
-            super(null, xPosition + yPosition * 9, pane.topLeftX + xPosition,
+            super(pane.inventoryBasic, xPosition + yPosition * 9, pane.topLeftX + xPosition,
                     pane.topLeftY + yPosition);
 
             this.displayable = displayable;

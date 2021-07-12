@@ -1,13 +1,15 @@
 package com.envyful.api.forge.gui;
 
-import com.envyful.api.concurrency.UtilConcurrency;
 import com.envyful.api.forge.listener.LazyListener;
 import com.envyful.api.player.EnvyPlayer;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -17,7 +19,8 @@ import java.util.UUID;
  */
 public class ForgeGuiTracker {
 
-    private static final Map<UUID, ForgeGui> OPEN_GUIS = Maps.newConcurrentMap();
+    private static final Map<UUID, ForgeGui> OPEN_GUIS = Maps.newHashMap();
+    private static final Set<UUID> REQUIRED_UPDATE = Sets.newHashSet();
 
     static {
         new ForgeGuiTickListener();
@@ -31,6 +34,18 @@ public class ForgeGuiTracker {
         OPEN_GUIS.remove(player.getUuid());
     }
 
+    public static void enqueueUpdate(EnvyPlayer<?> player) {
+        REQUIRED_UPDATE.add(player.getUuid());
+    }
+
+    public static boolean requiresUpdate(EntityPlayerMP player) {
+        return REQUIRED_UPDATE.contains(player.getUniqueID());
+    }
+
+    public static void dequeueUpdate(EntityPlayerMP player) {
+        REQUIRED_UPDATE.remove(player.getUniqueID());
+    }
+
     private static final class ForgeGuiTickListener extends LazyListener {
 
         private int tick = 0;
@@ -41,17 +56,15 @@ public class ForgeGuiTracker {
 
         @SubscribeEvent
         public void onServerTick(TickEvent.ServerTickEvent event) {
+            ++tick;
+
             if (tick % 10 != 0) {
                 return;
             }
 
-            ++tick;
-
-            UtilConcurrency.runAsync(() -> {
-                for (ForgeGui value : OPEN_GUIS.values()) {
-                    value.update();
-                }
-            });
+            for (ForgeGui value : OPEN_GUIS.values()) {
+                value.update();
+            }
         }
     }
 }

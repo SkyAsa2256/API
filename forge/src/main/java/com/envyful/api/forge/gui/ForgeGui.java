@@ -10,7 +10,6 @@ import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.type.Pair;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ClickType;
@@ -22,10 +21,9 @@ import net.minecraft.network.play.server.SPacketSetSlot;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
+import scala.xml.dtd.REQUIRED;
 
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 /**
  *
@@ -82,7 +80,7 @@ public class ForgeGui implements Gui {
 
     public void update() {
         for (ForgeGuiContainer value : this.containers) {
-            value.update(this.panes);
+            value.update(this.panes, false);
         }
     }
 
@@ -95,21 +93,33 @@ public class ForgeGui implements Gui {
 
         private final ForgeGui gui;
         private final EntityPlayerMP player;
+        private final List<EmptySlot> emptySlots = Lists.newArrayList();
 
         public ForgeGuiContainer(ForgeGui gui, EntityPlayerMP player) {
             this.windowId = 1;
             this.gui = gui;
             this.player = player;
 
-            this.update(this.gui.panes);
+            this.update(this.gui.panes, true);
         }
 
-        public void update(ForgeSimplePane[] panes) {
+        public void update(ForgeSimplePane[] panes, boolean force) {
             this.inventorySlots = Lists.newArrayList();
             this.inventoryItemStacks = NonNullList.create();
+            boolean createEmptySlots = this.emptySlots.isEmpty();
+
+            if (!createEmptySlots) {
+                this.inventorySlots.addAll(this.emptySlots);
+            }
 
             for (int i = 0; i < (9 * this.gui.height); i++) {
-                this.inventorySlots.add(new EmptySlot(this.gui.parentPane, i));
+                if (createEmptySlots) {
+                    EmptySlot emptySlot = new EmptySlot(this.gui.parentPane, i);
+
+                    this.emptySlots.add(emptySlot);
+                    this.inventorySlots.add(emptySlot);
+                }
+
                 this.inventoryItemStacks.add(ItemStack.EMPTY);
             }
 
@@ -133,13 +143,19 @@ public class ForgeGui implements Gui {
             }
 
             for (int i = 9; i < 36; i++) {
-                inventorySlots.add(new Slot(this.player.inventory, i - 9, 0, 0));
-                inventoryItemStacks.add(this.player.inventory.getStackInSlot(i));
+                ItemStack itemStack = player.inventory.mainInventory.get(i);
+                inventorySlots.add(new Slot(player.inventory, i, 0, 0));
+                inventoryItemStacks.add(itemStack);
+            }
+            // Sets the slots for the hotbar.
+            for (int i = 0; i < 9; i++) {
+                ItemStack itemStack = player.inventory.mainInventory.get(i);
+                inventorySlots.add(new Slot(player.inventory, i, 0, 0));
+                inventoryItemStacks.add(itemStack);
             }
 
-            for (int i = 0; i < 9; i++) {
-                inventorySlots.add(new Slot(this.player.inventory, i + 27, 0, 0));
-                inventoryItemStacks.add(this.player.inventory.getStackInSlot(i));
+            if (force || ForgeGuiTracker.requiresUpdate(this.player)) {
+                this.refreshPlayerContents();
             }
         }
 
@@ -208,6 +224,7 @@ public class ForgeGui implements Gui {
 
                 ForgeSimplePane.SimpleDisplayableSlot simpleDisplayableSlot = pane.getItems()[panePosition.getY()][panePosition.getX()];
                 simpleDisplayableSlot.getDisplayable().onClick(envyPlayer, clickType);
+                ForgeGuiTracker.enqueueUpdate(envyPlayer);
             }
 
             return ItemStack.EMPTY;
@@ -223,9 +240,8 @@ public class ForgeGui implements Gui {
         }
 
         private void refreshPlayerContents() {
-            player.sendAllContents(player.openContainer, inventoryItemStacks);
-            player.inventoryContainer.detectAndSendChanges();
-            player.sendAllContents(player.inventoryContainer, player.inventoryContainer.inventoryItemStacks);
+            this.player.sendAllContents(this, this.inventoryItemStacks);
+            ForgeGuiTracker.dequeueUpdate(this.player);
         }
 
         private void clearPlayerCursor() {

@@ -52,6 +52,19 @@ public class ForgeTaskBuilder {
         return this;
     }
 
+
+    /**
+     *
+     * Sets the task to be executed
+     *
+     * @param task The task
+     * @return The builder
+     */
+    public ForgeTaskBuilder task(Runnable task) {
+        this.task = task;
+        return this;
+    }
+
     /**
      *
      * Runs the task

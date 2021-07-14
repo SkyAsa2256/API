@@ -82,6 +82,11 @@ public class ForgePlayerManager implements PlayerManager<ForgeEnvyPlayer, Entity
             UtilConcurrency.runAsync(() -> {
                 for (PlayerAttributeData attributeDatum : this.manager.attributeData) {
                     PlayerAttribute<?> instance = attributeDatum.getInstance(player);
+
+                    if (instance == null) {
+                        continue;
+                    }
+
                     instance.load();
                     attributeDatum.addToMap(player.attributes, instance);
                 }
@@ -89,12 +94,18 @@ public class ForgePlayerManager implements PlayerManager<ForgeEnvyPlayer, Entity
         }
 
         @SubscribeEvent(priority = EventPriority.LOWEST)
-        public void onPlayerJoin(PlayerEvent.PlayerLoggedOutEvent event) {
+        public void onPlayerQuit(PlayerEvent.PlayerLoggedOutEvent event) {
             ForgeEnvyPlayer player = this.manager.cachedPlayers.remove(event.player.getUniqueID());
+
+            if (player == null) {
+                return;
+            }
 
             UtilConcurrency.runAsync(() -> {
                 for (PlayerAttribute<?> value : player.attributes.values()) {
-                    value.save();
+                    if (value != null) {
+                        value.save();
+                    }
                 }
             });
         }

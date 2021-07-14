@@ -85,14 +85,12 @@ public class ForgeTaskBuilder {
         UtilForgeConcurrency.EXECUTOR_SERVICE.submit(() -> {
             while (true) {
                 try {
-                    if (UtilForgeConcurrency.TICK_LISTENER.hasTask(runnable)) {
-                        Thread.sleep(100L);
-                    }
+                    Thread.sleep(50L);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
-                UtilForgeConcurrency.TICK_LISTENER.addTask(runnable);
+                runnable.run();
             }
         });
     }
@@ -101,6 +99,7 @@ public class ForgeTaskBuilder {
 
         private final ForgeTaskBuilder taskBuilder;
 
+        private int delayTicks = 0;
         private int ticks = 0;
         private int lastRunTicks = 0;
 
@@ -110,17 +109,19 @@ public class ForgeTaskBuilder {
 
         @Override
         public void run() {
-            ++this.ticks;
+            ++this.delayTicks;
 
-            if (this.ticks <= this.taskBuilder.delayTicks) {
+            if (this.delayTicks <= this.taskBuilder.delayTicks) {
                 return;
             }
+
+            ++this.ticks;
 
             if (this.lastRunTicks == 0 || (this.ticks - this.lastRunTicks) == this.taskBuilder.intervalTicks) {
                 this.lastRunTicks = this.ticks;
 
                 if (this.taskBuilder.async) {
-                    this.taskBuilder.task.run();
+                    UtilForgeConcurrency.EXECUTOR_SERVICE.submit(() -> this.taskBuilder.task.run());
                 } else {
                     UtilForgeConcurrency.runSync(this.taskBuilder.task);
                 }

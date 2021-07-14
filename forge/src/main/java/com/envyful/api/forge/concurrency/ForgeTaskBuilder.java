@@ -83,15 +83,17 @@ public class ForgeTaskBuilder {
         RepeatedRunnable runnable = new RepeatedRunnable(this);
 
         UtilForgeConcurrency.EXECUTOR_SERVICE.submit(() -> {
-            try {
-                if (UtilForgeConcurrency.TICK_LISTENER.hasTask(runnable)) {
-                    Thread.sleep(100L);
+            while (true) {
+                try {
+                    if (UtilForgeConcurrency.TICK_LISTENER.hasTask(runnable)) {
+                        Thread.sleep(100L);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
 
-            UtilForgeConcurrency.TICK_LISTENER.addTask(runnable);
+                UtilForgeConcurrency.TICK_LISTENER.addTask(runnable);
+            }
         });
     }
 

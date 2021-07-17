@@ -1,7 +1,6 @@
 package com.envyful.api.forge.command;
 
 import com.envyful.api.command.CommandFactory;
-import com.envyful.api.command.annotate.Child;
 import com.envyful.api.command.annotate.Command;
 import com.envyful.api.command.annotate.Permissible;
 import com.envyful.api.command.annotate.SubCommands;
@@ -64,10 +63,6 @@ public class ForgeCommandFactory implements CommandFactory<MinecraftServer, ICom
 
         String defaultPermission = this.getDefaultPermission(clazz);
 
-        if (clazz.getAnnotation(Child.class) != null) {
-            throw new CommandLoadException(clazz.getSimpleName(), "cannot register child commands as a root command");
-        }
-
         if (instance  == null) {
             instance = this.createInstance(clazz);
 
@@ -91,8 +86,18 @@ public class ForgeCommandFactory implements CommandFactory<MinecraftServer, ICom
             Annotation[][] annotations = declaredMethod.getParameterAnnotations();
             ForgeSenderType senderType = null;
             int senderPosition = -1;
+            int justArgsPos = -1;
 
             for (int i = 0; i < parameterTypes.length; i++) {
+                if (parameterTypes[i] == String[].class) {
+                    justArgsPos = i;
+                    continue;
+                }
+
+                if (annotations.length <= i) {
+                    continue;
+                }
+
                 if (annotations[i][0] instanceof Sender) {
                     senderType = ForgeSenderType.get(parameterTypes[i]);
                     senderPosition = i;
@@ -106,7 +111,8 @@ public class ForgeCommandFactory implements CommandFactory<MinecraftServer, ICom
             }
 
             subExecutors.add(new CommandExecutor(processorData.value(), senderType, senderPosition, instance, declaredMethod,
-                    processorData.executeAsync(), requiredPermission, arguments.toArray(new ForgeFunctionInjector<?>[0])));
+                    processorData.executeAsync(), justArgsPos, requiredPermission,
+                    arguments.toArray(new ForgeFunctionInjector<?>[0])));
         }
 
         return new ForgeCommand(this, commandData.value(), commandData.description(), defaultPermission,

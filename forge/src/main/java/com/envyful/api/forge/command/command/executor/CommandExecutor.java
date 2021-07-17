@@ -23,6 +23,7 @@ public class CommandExecutor {
     private final Object commandClass;
     private final Method executor;
     private final boolean executeAsync;
+    private final int justArgsPos;
     private final int requiredArgs;
     private final String requiredPermission;
     private final ArgumentInjector<?, ICommandSender>[] arguments;
@@ -41,13 +42,14 @@ public class CommandExecutor {
      * @param arguments The injected argument types
      */
     public CommandExecutor(String identifier, ForgeSenderType sender, int senderPosition, Object commandClass, Method executor,
-                           boolean executeAsync, String requiredPermission, ArgumentInjector<?, ICommandSender>[] arguments) {
+                           boolean executeAsync, int justArgsPos, String requiredPermission, ArgumentInjector<?, ICommandSender>[] arguments) {
         this.identifier = identifier;
         this.senderPosition = senderPosition;
         this.sender = sender;
         this.commandClass = commandClass;
         this.executor = executor;
         this.executeAsync = executeAsync;
+        this.justArgsPos = justArgsPos;
         this.requiredPermission = requiredPermission;
         this.arguments = arguments;
         this.requiredArgs = this.calculateRequiredArgs();
@@ -137,21 +139,23 @@ public class CommandExecutor {
      */
     public boolean execute(ICommandSender sender, String[] arguments) {
         Object[] args = new Object[Math.max(1, arguments.length)];
+        int pos = 0;
 
         for (int i = 0; i < (this.arguments.length + 1); i++) {
-            if (i == this.senderPosition) {
+            if (pos == this.senderPosition || pos == this.justArgsPos) {
+                ++pos;
                 continue;
             }
 
-            int position = i > this.senderPosition ? i - 1 : i;
+            int position = pos > this.senderPosition ? pos - 1 : pos;
             ArgumentInjector<?, ICommandSender> argument = this.arguments[position];
 
             if (argument.doesRequireMultipleArgs()) {
                 String[] remainingArgs = Arrays.copyOfRange(arguments, position, arguments.length);
 
-                args[i] = argument.instantiateClass(sender, remainingArgs);
+                args[pos] = argument.instantiateClass(sender, remainingArgs);
 
-                if (args[i] == null) {
+                if (args[pos] == null) {
                     return false;
                 }
             } else {
@@ -164,6 +168,10 @@ public class CommandExecutor {
         }
 
         args[this.senderPosition] = this.sender.getType().cast(sender);
+
+        if (this.justArgsPos != -1) {
+            args[this.justArgsPos] = arguments;
+        }
 
         try {
             this.executor.invoke(this.commandClass, args);

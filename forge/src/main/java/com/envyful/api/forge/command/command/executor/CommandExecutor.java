@@ -138,7 +138,7 @@ public class CommandExecutor {
      * @return If the command failed to run
      */
     public boolean execute(ICommandSender sender, String[] arguments) {
-        Object[] args = new Object[Math.max(1, arguments.length)];
+        Object[] args = new Object[Math.max(this.justArgsPos == -1 ? 1 : 2, arguments.length)];
         int pos = 0;
 
         for (int i = 0; i < (this.arguments.length + 1); i++) {

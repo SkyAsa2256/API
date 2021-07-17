@@ -80,10 +80,12 @@ public class ForgeCommand extends CommandBase {
             return;
         }
 
-        for (ForgeCommand subCommand : this.subCommands) {
-            if (this.fitsCommand(args[0], subCommand)) {
-                subCommand.executeSync(server, sender, Arrays.copyOfRange(args, 1, args.length));
-                return;
+        if (args.length > 1) {
+            for (ForgeCommand subCommand : this.subCommands) {
+                if (this.fitsCommand(args[0], subCommand)) {
+                    subCommand.executeSync(server, sender, Arrays.copyOfRange(args, 1, args.length));
+                    return;
+                }
             }
         }
 

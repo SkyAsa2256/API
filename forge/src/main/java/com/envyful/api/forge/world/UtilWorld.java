@@ -29,4 +29,14 @@ public class UtilWorld {
         return null;
     }
 
+    /**
+     *
+     * Obtains the name of the world and abstracts the impl away from the platform.
+     *
+     * @param world The world
+     * @return The name of the world
+     */
+    public static String getName(World world) {
+        return world.getWorldInfo().getWorldName();
+    }
 }

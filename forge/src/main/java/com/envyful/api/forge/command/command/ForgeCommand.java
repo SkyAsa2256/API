@@ -15,6 +15,7 @@ import net.minecraft.util.text.TextComponentString;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -90,9 +91,10 @@ public class ForgeCommand extends CommandBase {
         }
 
         for (CommandExecutor executor : this.executors) {
-            if (executor.getIdentifier().isEmpty() && args.length == 0) {
-                this.attemptRun(executor, sender, args);
-                return;
+            if (executor.getIdentifier().isEmpty()) {
+                if (this.attemptRun(executor, sender, args)) {
+                    return;
+                }
             }
 
             if (!executor.getIdentifier().equalsIgnoreCase(args[0]) || (executor.getIdentifier().isEmpty() && !args[0].isEmpty())) {
@@ -104,7 +106,7 @@ public class ForgeCommand extends CommandBase {
             }
         }
 
-        this.getUsage(sender);
+        sender.sendMessage(new TextComponentString(this.getUsage(sender)));
     }
 
     private boolean attemptRun(CommandExecutor executor, ICommandSender sender, String[] args) {
@@ -122,15 +124,13 @@ public class ForgeCommand extends CommandBase {
             return executor.execute(sender, args);
         }
 
-        String[] newArgs = Arrays.copyOfRange(args, 0, args.length - 1);
-
-        if (executor.getRequiredArgs() == newArgs.length) {
+        if (executor.getRequiredArgs() == (args.length + 1)) {
             if (!executor.isExecutedAsync()) {
-                UtilForgeConcurrency.runSync(() -> executor.execute(sender, newArgs));
+                UtilForgeConcurrency.runSync(() -> executor.execute(sender, args));
                 return true;
             }
 
-            return executor.execute(sender, newArgs);
+            return executor.execute(sender, args);
         }
 
         return false;

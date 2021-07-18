@@ -7,6 +7,7 @@ import net.minecraft.command.ICommandSender;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -63,8 +64,12 @@ public class CommandExecutor {
      * @return Number of args required for the sub command
      */
     private int calculateRequiredArgs() {
+        if (this.justArgsPos != -1) {
+            return -1;
+        }
+
         for (ArgumentInjector<?, ICommandSender> argument : this.arguments) {
-            if (argument.doesRequireMultipleArgs()) {
+            if (argument != null && argument.doesRequireMultipleArgs()) {
                 return -1;
             }
         }
@@ -138,30 +143,30 @@ public class CommandExecutor {
      * @return If the command failed to run
      */
     public boolean execute(ICommandSender sender, String[] arguments) {
-        Object[] args = new Object[Math.max(this.justArgsPos == -1 ? 1 : 2, arguments.length)];
-        int pos = 0;
+        Object[] args = new Object[this.arguments.length];
+        int subtract = 0;
 
-        for (int i = 0; i < (this.arguments.length + 1); i++) {
-            if (pos == this.senderPosition || pos == this.justArgsPos) {
-                ++pos;
+        for (int i = 0; i < this.arguments.length; i++) {
+            ArgumentInjector<?, ICommandSender> argument = this.arguments[i];
+
+            if (argument == null) {
+                args[i] = null;
+                ++subtract;
                 continue;
             }
 
-            int position = pos > this.senderPosition ? pos - 1 : pos;
-            ArgumentInjector<?, ICommandSender> argument = this.arguments[position];
-
             if (argument.doesRequireMultipleArgs()) {
-                String[] remainingArgs = Arrays.copyOfRange(arguments, position, arguments.length);
+                String[] remainingArgs = Arrays.copyOfRange(arguments, i, arguments.length);
 
-                args[pos] = argument.instantiateClass(sender, remainingArgs);
+                args[i] = argument.instantiateClass(sender, remainingArgs);
 
-                if (args[pos] == null) {
+                if (args[i] == null) {
                     return false;
                 }
             } else {
-                args[position] = argument.instantiateClass(sender, arguments[position]);
+                args[i] = argument.instantiateClass(sender, arguments[i - subtract]);
 
-                if (args[position] == null) {
+                if (args[i] == null) {
                     return false;
                 }
             }
@@ -173,11 +178,15 @@ public class CommandExecutor {
             args[this.justArgsPos] = arguments;
         }
 
+        return this.execute(args);
+    }
+
+    private boolean execute(Object... args) {
         try {
             this.executor.invoke(this.commandClass, args);
             return true;
         } catch (IllegalAccessException | InvocationTargetException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
 
         return false;

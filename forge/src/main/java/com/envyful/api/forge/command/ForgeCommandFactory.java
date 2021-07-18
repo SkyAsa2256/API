@@ -39,6 +39,7 @@ public class ForgeCommandFactory implements CommandFactory<MinecraftServer, ICom
 
     public ForgeCommandFactory() {
         this.registerInjector(EntityPlayerMP.class, (sender, args) -> sender.getServer().getPlayerList().getPlayerByUsername(args[0]));
+        this.registerInjector(int.class, (iCommandSender, args) -> Integer.parseInt(args[0]));
     }
 
     @Override
@@ -90,6 +91,7 @@ public class ForgeCommandFactory implements CommandFactory<MinecraftServer, ICom
 
             for (int i = 0; i < parameterTypes.length; i++) {
                 if (parameterTypes[i] == String[].class) {
+                    arguments.add(null);
                     justArgsPos = i;
                     continue;
                 }
@@ -101,6 +103,7 @@ public class ForgeCommandFactory implements CommandFactory<MinecraftServer, ICom
                 if (annotations[i][0] instanceof Sender) {
                     senderType = ForgeSenderType.get(parameterTypes[i]);
                     senderPosition = i;
+                    arguments.add(null);
                 } else {
                     arguments.add(this.getInjectorFor(parameterTypes[i]));
                 }

@@ -14,6 +14,7 @@ shadowJar {
     relocate('org.spongepowered.configurate', 'com.envyful.api.commons.shade.configurate')
     relocate('org.yaml.snakeyaml', 'com.envyful.api.commons.shade.snakeyaml')
     relocate('io.leangen.geantyref', 'com.envyful.api.commons.shade.geantyref')
+    relocate('com.zaxxer', 'com.envyful.api.commons.shade.hikari')
 
     exclude "**/module-info.class"
 }

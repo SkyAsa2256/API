@@ -102,11 +102,11 @@ public class PageBuilder<T> {
      */
     public void send(ICommandSender sender, int page) {
         for (int i = (page * this.pageSize); i < ((page + 1) * this.pageSize); ++i) {
-            if (i > this.values.size()) {
+            if (i >= this.values.size()) {
                 break;
             }
 
-            sender.sendMessage(new TextComponentString(this.mainColor + i + ". " + this.offColor + this.converter.apply(this.values.get(i))));
+            sender.sendMessage(new TextComponentString(this.mainColor + (i + 1) + ". " + this.offColor + this.converter.apply(this.values.get(i))));
         }
     }
 }

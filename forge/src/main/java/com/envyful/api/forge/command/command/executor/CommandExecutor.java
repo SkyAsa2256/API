@@ -172,7 +172,11 @@ public class CommandExecutor {
             }
         }
 
-        args[this.senderPosition] = this.sender.getType().cast(sender);
+        if (this.sender.getType().equals(sender.getClass())) {
+            args[this.senderPosition] = sender;
+        } else {
+            args[this.senderPosition] = this.sender.getType().cast(sender);
+        }
 
         if (this.justArgsPos != -1) {
             args[this.justArgsPos] = arguments;

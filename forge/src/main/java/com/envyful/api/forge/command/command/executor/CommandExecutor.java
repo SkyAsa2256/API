@@ -147,6 +147,10 @@ public class CommandExecutor {
         int subtract = 0;
 
         for (int i = 0; i < this.arguments.length; i++) {
+            if ((i - subtract) >= arguments.length) {
+                break;
+            }
+
             ArgumentInjector<?, ICommandSender> argument = this.arguments[i];
 
             if (argument == null) {

@@ -103,6 +103,10 @@ public class ForgeCommand extends CommandBase {
                 }
             }
 
+            if (args.length == 0) {
+                continue;
+            }
+
             if (!executor.getIdentifier().equalsIgnoreCase(args[0]) || (executor.getIdentifier().isEmpty() && !args[0].isEmpty())) {
                 continue;
             }

@@ -4,16 +4,22 @@ import com.envyful.api.concurrency.UtilConcurrency;
 import com.envyful.api.forge.command.ForgeCommandFactory;
 import com.envyful.api.forge.command.command.executor.CommandExecutor;
 import com.envyful.api.forge.concurrency.UtilForgeConcurrency;
+import com.google.common.collect.Lists;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -148,5 +154,64 @@ public class ForgeCommand extends CommandBase {
         }
 
         return false;
+    }
+
+    @Override
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos) {
+        if (this.subCommands.size() == 0) {
+            if (args.length == 0) {
+                return this.getAllPlayers();
+            } else {
+                return this.getPlayers(sender, args[0]);
+            }
+        }
+
+        if (args.length == 0) {
+            return this.getAccessibleSubCommands(sender);
+        }
+
+        if (args.length == 1) {
+            return this.getMatching(args[0], this.getAccessibleSubCommands(sender));
+        }
+
+        return Collections.emptyList();
+    }
+
+    protected List<String> getPlayers(ICommandSender sender, String name) {
+        if (name.isEmpty()) {
+            return this.getAllPlayers();
+        }
+
+        return this.getMatching(name, this.getAllPlayers());
+    }
+
+    protected List<String> getAllPlayers() {
+        List<EntityPlayerMP> players = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayers();
+        return players.stream().map(EntityPlayerMP::getName).collect(Collectors.toList());
+    }
+
+    protected List<String> getAccessibleSubCommands(ICommandSender sender) {
+        List<String> subCommands = Lists.newArrayList();
+
+        for (ForgeCommand subCommand : this.subCommands) {
+            if (!(sender instanceof EntityPlayerMP)
+                    || subCommand.checkPermission(FMLCommonHandler.instance().getMinecraftServerInstance(), sender)) {
+                subCommands.add(subCommand.name);
+            }
+        }
+
+        return subCommands;
+    }
+
+    protected List<String> getMatching(String arg, List<String> potential) {
+        List<String> args = Lists.newArrayList();
+
+        for (String s : potential) {
+            if (s.toLowerCase().startsWith(arg.toLowerCase())) {
+                args.add(s);
+            }
+        }
+
+        return args;
     }
 }

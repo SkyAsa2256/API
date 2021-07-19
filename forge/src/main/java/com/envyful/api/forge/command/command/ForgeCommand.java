@@ -132,7 +132,13 @@ public class ForgeCommand extends CommandBase {
 
         if (executor.getRequiredArgs() == (args.length + 1)) {
             if (!executor.isExecutedAsync()) {
-                UtilForgeConcurrency.runSync(() -> executor.execute(sender, args));
+                UtilForgeConcurrency.runSync(() -> {
+                    if (executor.execute(sender, args)) {
+                        return;
+                    }
+
+                    sender.sendMessage(new TextComponentString(this.getUsage(sender)));
+                });
                 return true;
             }
 

@@ -189,9 +189,7 @@ public class CommandExecutor {
         try {
             this.executor.invoke(this.commandClass, args);
             return true;
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
+        } catch (IllegalAccessException | InvocationTargetException e) {}
 
         return false;
     }

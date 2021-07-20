@@ -27,7 +27,7 @@ public class UpdateBuilder<T> {
     private String repo;
     private String version;
 
-    private boolean upToDate = true;
+    protected boolean upToDate = true;
 
     protected UpdateBuilder() {}
 

@@ -1,12 +1,10 @@
 package com.envyful.api.forge.concurrency.listener;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import scala.tools.nsc.Global;
 
-import java.util.List;
+import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -16,15 +14,17 @@ import java.util.Set;
  */
 public class ServerTickListener {
 
-    private final Set<Runnable> tasks = Sets.newHashSet();
+    private final Set<Runnable> tasks = Sets.newConcurrentHashSet();
 
     @SubscribeEvent
     public void onServerTick(TickEvent.ServerTickEvent event) {
-        for (Runnable task : this.tasks) {
-            task.run();
-        }
+        Iterator<Runnable> iterator = tasks.iterator();
 
-        this.tasks.clear();
+        while (iterator.hasNext()) {
+            Runnable next = iterator.next();
+            next.run();
+            iterator.remove();
+        }
     }
 
     public void addTask(Runnable runnable) {

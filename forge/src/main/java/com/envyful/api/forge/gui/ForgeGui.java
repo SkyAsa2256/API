@@ -24,6 +24,7 @@ import net.minecraft.util.text.TextComponentString;
 import scala.xml.dtd.REQUIRED;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  *
@@ -35,15 +36,18 @@ public class ForgeGui implements Gui {
     private final ITextComponent title;
     private final int height;
     private final PlayerManager<ForgeEnvyPlayer, EntityPlayerMP> playerManager;
+    private final Consumer<ForgeEnvyPlayer> closeConsumer;
     private final ForgeSimplePane parentPane;
     private final ForgeSimplePane[] panes;
 
     private final List<ForgeGuiContainer> containers = Lists.newArrayList();
 
-    ForgeGui(String title, int height, PlayerManager<ForgeEnvyPlayer, EntityPlayerMP> playerManager, Pane... panes) {
+    ForgeGui(String title, int height, PlayerManager<ForgeEnvyPlayer, EntityPlayerMP> playerManager,
+             Consumer<ForgeEnvyPlayer> closeConsumer, Pane... panes) {
         this.title = new TextComponentString(title);
         this.height = height;
         this.playerManager = playerManager;
+        this.closeConsumer = closeConsumer;
         this.parentPane = (ForgeSimplePane) new ForgeSimplePane.Builder().height(height).topLeftX(0).topLeftY(0).width(9).build();
         this.panes = new ForgeSimplePane[panes.length];
         int i = 0;
@@ -254,6 +258,11 @@ public class ForgeGui implements Gui {
             super.onContainerClosed(playerIn);
 
             EnvyPlayer<?> player = this.gui.playerManager.getPlayer(playerIn.getUniqueID());
+
+            if (this.gui.closeConsumer != null) {
+                this.gui.closeConsumer.accept((ForgeEnvyPlayer) player);
+            }
+
             ForgeGuiTracker.removePlayer(player);
         }
     }

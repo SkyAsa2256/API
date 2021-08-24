@@ -4,6 +4,8 @@ import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
 
+import java.util.function.Consumer;
+
 /**
  *
  * An interface representing chest GUIs for the platform specific implementation
@@ -62,6 +64,15 @@ public interface Gui {
          * @return The builder
          */
         Builder setPlayerManager(PlayerManager<?, ?> playerManager);
+
+        /**
+         *
+         * Sets the consumer for when the GUI is closed.
+         *
+         * @param consumer The close consumer
+         * @return The builder
+         */
+        Builder setCloseConsumer(Consumer<EnvyPlayer<?>> consumer);
 
         /**
          *

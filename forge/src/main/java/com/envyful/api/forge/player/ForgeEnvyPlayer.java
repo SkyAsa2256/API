@@ -5,6 +5,7 @@ import com.envyful.api.player.attribute.PlayerAttribute;
 import com.google.common.collect.Maps;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import java.util.List;
 import java.util.Map;
@@ -52,6 +53,18 @@ public class ForgeEnvyPlayer implements EnvyPlayer<EntityPlayerMP> {
         for (String message : messages) {
             this.message(message);
         }
+    }
+
+    @Override
+    public void executeCommands(String... commands) {
+        for (String command : commands) {
+            this.executeCommand(command);
+        }
+    }
+
+    @Override
+    public void executeCommand(String command) {
+        FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(this.player, command);
     }
 
     @Override

@@ -14,6 +14,18 @@ public class UtilPlayer {
 
     /**
      *
+     * Forces the player to run a command
+     *
+     * @param player The player running the command
+     * @param command The command
+     */
+    public static void runCommand(EntityPlayerMP player, String command) {
+        FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager()
+                .executeCommand(player, command);
+    }
+
+    /**
+     *
      * Gets the online player with the given name.
      * Returns null if not online
      *

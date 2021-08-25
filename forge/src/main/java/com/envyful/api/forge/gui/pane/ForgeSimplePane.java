@@ -52,8 +52,15 @@ public class ForgeSimplePane implements Pane {
             return;
         }
 
-        this.items[this.lastPos.getY()][this.lastPos.getX()] = new SimpleDisplayableSlot(this, displayable,
-                this.lastPos.getX(), this.lastPos.getY());
+        SimpleDisplayableSlot slot;
+
+        if (displayable == null) {
+            slot = new EmptySlot(this, this.lastPos.getY() * this.lastPos.getX() * 9);
+        } else {
+            slot = new SimpleDisplayableSlot(this, displayable, this.lastPos.getX(), this.lastPos.getY());
+        }
+
+        this.items[this.lastPos.getY()][this.lastPos.getX()] = slot;
 
         if (this.width == (this.lastPos.getX() + 1)) {
             if (this.height == (this.lastPos.getY() + 1)) {
@@ -77,7 +84,15 @@ public class ForgeSimplePane implements Pane {
             throw new RuntimeException("Cannot set an Y position greater than the height");
         }
 
-        this.items[posY][posX] = new SimpleDisplayableSlot(this, displayable, posX, posY);
+        SimpleDisplayableSlot slot;
+
+        if (displayable == null) {
+            slot = new EmptySlot(this, posX * posY * 9);
+        } else {
+            slot = new SimpleDisplayableSlot(this, displayable, posX, posY);
+        }
+
+        this.items[posY][posX] = slot;
     }
 
     @Override

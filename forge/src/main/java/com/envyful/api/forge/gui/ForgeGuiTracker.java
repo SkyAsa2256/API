@@ -27,14 +27,26 @@ public class ForgeGuiTracker {
     }
 
     public static void addGui(EnvyPlayer<?> player, ForgeGui gui) {
+        if (player == null) {
+            return;
+        }
+
         OPEN_GUIS.put(player.getUuid(), gui);
     }
 
     public static void removePlayer(EnvyPlayer<?> player) {
+        if (player == null) {
+            return;
+        }
+
         OPEN_GUIS.remove(player.getUuid());
     }
 
     public static void enqueueUpdate(EnvyPlayer<?> player) {
+        if (player == null) {
+            return;
+        }
+
         REQUIRED_UPDATE.add(player.getUuid());
     }
 

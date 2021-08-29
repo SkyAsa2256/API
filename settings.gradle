@@ -1,5 +1,5 @@
 rootProject.name = 'EnvyAPI'
-rootProject.version = "0.2.5"
+rootProject.version = "0.2.6"
 include 'commons'
 include 'forge'
 include 'reforged'

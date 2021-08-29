@@ -4,12 +4,11 @@ on:
   push:
     branches:
     - main
-    paths:
-    - '**.gradle'
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    if: startsWith(github.event.commits[0].message, 'v')
     steps:
       - name: Checkout code
         uses: actions/checkout@v2

@@ -1,10 +1,12 @@
 package com.envyful.api.database.impl;
 
+import com.envyful.api.config.type.SQLDatabaseDetails;
 import com.envyful.api.database.Database;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 import java.sql.Connection;
+import java.sql.SQLData;
 import java.sql.SQLException;
 import java.util.concurrent.TimeUnit;
 
@@ -16,6 +18,11 @@ import java.util.concurrent.TimeUnit;
 public class SimpleHikariDatabase implements Database {
 
     private HikariDataSource hikari;
+
+    public SimpleHikariDatabase(SQLDatabaseDetails details) {
+        this(details.getPoolName(), details.getIp(), details.getPort(), details.getUsername(),
+                details.getPassword(), details.getDatabase());
+    }
 
     public SimpleHikariDatabase(String name, String ip, int port, String username, String password, String database) {
         HikariConfig config = new HikariConfig();

@@ -19,7 +19,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.event.commits[0].message//v/ }}
+          tag_name: ${{ github.event.commits[0].message }}
           release_name: Release ${{ github.event.commits[0].message }}
           body: |
             Auto generated release

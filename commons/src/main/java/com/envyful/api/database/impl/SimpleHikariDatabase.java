@@ -30,7 +30,6 @@ public class SimpleHikariDatabase implements Database {
         config.setMaximumPoolSize(30);
         config.setPoolName(name);
         config.setJdbcUrl("jdbc:mysql://" + ip + ":" + port + "/" + database);
-        config.setDriverClassName("com.mysql.cj.jdbc.Driver");
         config.addDataSourceProperty("serverName", ip);
         config.addDataSourceProperty("port", port);
         config.addDataSourceProperty("databaseName", database);

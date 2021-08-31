@@ -4,6 +4,7 @@ import com.envyful.api.concurrency.UtilConcurrency;
 import com.envyful.api.forge.command.ForgeCommandFactory;
 import com.envyful.api.forge.command.command.executor.CommandExecutor;
 import com.envyful.api.forge.concurrency.UtilForgeConcurrency;
+import com.envyful.api.forge.player.util.UtilPlayer;
 import com.google.common.collect.Lists;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.CommandBase;
@@ -66,7 +67,11 @@ public class ForgeCommand extends CommandBase {
     @Override
     @ParametersAreNonnullByDefault
     public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
-        return sender.canUseCommand(this.getRequiredPermissionLevel(), this.basePermission);
+        if (this.basePermission.isEmpty() || !(sender instanceof EntityPlayerMP)) {
+            return true;
+        }
+
+        return UtilPlayer.hasPermission((EntityPlayerMP) sender, this.basePermission);
     }
 
     @Override

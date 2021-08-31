@@ -2,6 +2,7 @@ package com.envyful.api.forge.player.util;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 import java.util.UUID;
 
@@ -11,6 +12,15 @@ import java.util.UUID;
  *
  */
 public class UtilPlayer {
+
+    public static boolean hasPermission(EntityPlayerMP player, String permission) {
+        return (PermissionAPI.hasPermission(player, permission) || player.canUseCommand(4, permission) || isOP(player));
+    }
+
+    public static boolean isOP(EntityPlayerMP player) {
+        return FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getOppedPlayers()
+                .getEntry(player.getGameProfile()) != null;
+    }
 
     /**
      *

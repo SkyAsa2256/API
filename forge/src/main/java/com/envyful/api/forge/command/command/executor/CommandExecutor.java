@@ -2,7 +2,10 @@ package com.envyful.api.forge.command.command.executor;
 
 import com.envyful.api.command.injector.ArgumentInjector;
 import com.envyful.api.forge.command.command.ForgeSenderType;
+import com.envyful.api.forge.player.util.UtilPlayer;
+import ibxm.Player;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayerMP;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -129,7 +132,11 @@ public class CommandExecutor {
             return true;
         }
 
-        return sender.canUseCommand(4, this.requiredPermission);
+        if (!(sender instanceof EntityPlayerMP)) {
+            return true;
+        }
+
+        return UtilPlayer.hasPermission((EntityPlayerMP) sender, this.requiredPermission);
     }
 
     /**

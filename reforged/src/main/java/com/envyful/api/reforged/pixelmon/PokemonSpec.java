@@ -1,6 +1,7 @@
 package com.envyful.api.reforged.pixelmon;
 
 import com.envyful.api.forge.items.UtilItemStack;
+import com.envyful.api.reforged.pixelmon.sprite.UtilSprite;
 import com.envyful.api.type.requirement.Requirement;
 import com.google.common.collect.Lists;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
@@ -39,6 +40,26 @@ public class PokemonSpec {
         this.ivRequirement = ivRequirement;
         this.natures = natures;
         this.growths = growths;
+    }
+
+    /**
+     *
+     * Gets a photo of the species of the {@link PokemonSpec}
+     *
+     * @return The photo generated
+     */
+    public ItemStack getPhoto() {
+        return UtilSprite.getPixelmonSprite(this.species);
+    }
+
+    /**
+     *
+     * Gets the name of the Pokemon represented by the {@link PokemonSpec}
+     *
+     * @return The name
+     */
+    public String getDisplayName() {
+        return this.species.getPokemonName();
     }
 
     /**

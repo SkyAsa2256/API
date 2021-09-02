@@ -49,7 +49,7 @@ public class ConfigInterface {
 
                 for(int y = 0; y < height; y++) {
                     for (int x = 0; x < 9; x++) {
-                        conversion.add(primary);
+                        configItems.add(primary);
                     }
                 }
 

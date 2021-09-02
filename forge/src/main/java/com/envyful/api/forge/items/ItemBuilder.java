@@ -41,6 +41,26 @@ public class ItemBuilder implements Cloneable {
 
     /**
      *
+     * Converts {@link ItemStack} to builder
+     *
+     * @param itemStack The itemstack being converted
+     */
+    public ItemBuilder(ItemStack itemStack) {
+        this.type = itemStack.getItem();
+        this.amount = itemStack.getCount();
+        this.damage = itemStack.getItemDamage();
+        this.name = itemStack.getDisplayName();
+        this.lore = UtilItemStack.getLore(itemStack);
+
+        if (itemStack.getTagCompound() != null) {
+            for (String s : itemStack.getTagCompound().getKeySet()) {
+                this.nbtData.put(s, itemStack.getTagCompound().getTag(s));
+            }
+        }
+    }
+
+    /**
+     *
      * Sets the type of item that the itemstack will be
      *
      * @param type The minecraft type of the item

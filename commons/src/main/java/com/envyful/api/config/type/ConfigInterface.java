@@ -1,9 +1,12 @@
 package com.envyful.api.config.type;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -16,7 +19,7 @@ public class ConfigInterface {
     private String title = "";
     private int height = 6;
     private String fillType = FillType.BLOCK.name();
-    private List<ConfigItem> fillerItems = Lists.newArrayList(new ConfigItem());
+    private Map<String, ConfigItem> fillerItems = Maps.newHashMap(ImmutableMap.of("one", new ConfigItem()));
 
     public ConfigInterface() {}
 
@@ -33,7 +36,7 @@ public class ConfigInterface {
     }
 
     public List<ConfigItem> getFillerItems() {
-        return this.getFillType().convert(this.fillerItems, this.getHeight());
+        return this.getFillType().convert(Lists.newArrayList(this.fillerItems.values()), this.getHeight());
     }
 
     public enum FillType {

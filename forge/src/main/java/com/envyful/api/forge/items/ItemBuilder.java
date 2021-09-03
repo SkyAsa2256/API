@@ -238,6 +238,14 @@ public class ItemBuilder implements Cloneable {
             itemStack.setStackDisplayName(this.name);
         }
 
+        NBTTagCompound compound = itemStack.hasTagCompound() ? itemStack.getTagCompound() : new NBTTagCompound();
+
+        for (Map.Entry<String, NBTBase> entry : nbtData.entrySet()) {
+            compound.setTag(entry.getKey(), entry.getValue());
+        }
+
+        itemStack.setTagCompound(compound);
+
         if (this.lore != null && !this.lore.isEmpty()) {
             NBTTagCompound display = itemStack.getOrCreateSubCompound("display");
             NBTTagList lore = new NBTTagList();
@@ -247,14 +255,6 @@ public class ItemBuilder implements Cloneable {
             display.setTag("Lore", lore);
             itemStack.setTagInfo("display", display);
         }
-
-        NBTTagCompound compound = itemStack.hasTagCompound() ? itemStack.getTagCompound() : new NBTTagCompound();
-
-        for (Map.Entry<String, NBTBase> entry : nbtData.entrySet()) {
-            compound.setTag(entry.getKey(), entry.getValue());
-        }
-
-        itemStack.setTagCompound(compound);
 
         if (this.unbreakable) {
             itemStack.getTagCompound().setInteger("Unbreakable", 1);

@@ -64,6 +64,44 @@ public class PokemonSpec {
 
     /**
      *
+     * Gets the description of the {@link PokemonSpec}
+     *
+     * @return The description
+     */
+    public List<String> getDescription(String colour, String offColour) {
+        List<String> desc = Lists.newArrayList(
+                colour + "Species: " + offColour + this.species
+        );
+
+        if (this.gender != null) {
+            desc.add(colour + "Gender: "+ offColour + this.gender.getLocalizedName());
+        }
+
+        if (this.ivRequirement != null) {
+            desc.add(colour + "IVs: "+ offColour + this.ivRequirement.get() + "%");
+        }
+
+        if (this.growths != null && !this.growths.isEmpty()) {
+            desc.add(colour + "Growths: ");
+
+            for (EnumGrowth growth : this.growths) {
+                desc.add(colour + " • " + offColour + growth.getLocalizedName());
+            }
+        }
+
+        if (this.natures != null && !this.natures.isEmpty()) {
+            desc.add(colour + "Natures: ");
+
+            for (EnumNature nature : this.natures) {
+                desc.add(colour + " • " + offColour + nature.getLocalizedName());
+            }
+        }
+
+        return desc;
+    }
+
+    /**
+     *
      * Method used to determine if the entity passed matches this pokemon specification
      *
      * @param pixelmon The entity being checked

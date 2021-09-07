@@ -23,7 +23,7 @@ public class UtilSprite {
     public static ItemStack getPokemonSprite(final Pokemon pokemon, final Function<Pokemon, List<String>> loreFunction) {
         ItemStack itemStack = getPixelmonSprite(pokemon);
         String nickname = pokemon.getNickname();
-        itemStack.setStackDisplayName("§b" + pokemon.getSpecies().name + ((nickname != null && !nickname.isEmpty()) ? " (" + nickname + ")" : "") + "");
+        itemStack.setStackDisplayName("§b" + pokemon.getSpecies().getLocalizedName() + ((nickname != null && !nickname.isEmpty()) ? " (" + nickname + ")" : "") + "");
         NBTTagCompound compound = itemStack.getOrCreateSubCompound("display");
         NBTTagList lore = new NBTTagList();
 
@@ -39,7 +39,7 @@ public class UtilSprite {
 
     public static ItemStack getStarterPixelmonSprite(EnumSpecies pokemon, String nameColour) {
         ItemStack itemStack = new ItemBuilder().type(PixelmonItems.itemPixelmonSprite)
-                .name(nameColour + pokemon.getPokemonName())
+                .name(nameColour + pokemon.getLocalizedName())
                 .lore(
                         "§fGeneration: " + nameColour + pokemon.getGeneration(),
                         "§fType: " + nameColour + pokemon.getBaseStats().getType1().getLocalizedName(),
@@ -79,14 +79,14 @@ public class UtilSprite {
 
     public static ItemStack getPixelmonSprite(EnumSpecies pokemon) {
         ItemStack itemStack = new ItemStack(PixelmonItems.itemPixelmonSprite);
-        itemStack.setStackDisplayName("§b" + pokemon.getPokemonName());
+        itemStack.setStackDisplayName("§b" + pokemon.getLocalizedName());
         itemStack.setTagInfo("ndex", new NBTTagShort((short) pokemon.getNationalPokedexInteger()));
         return itemStack;
     }
 
     public static ItemStack getPokemonElement(Pokemon pokemon) {
         ItemStack itemStack = getPixelmonSprite(pokemon);
-        itemStack.setStackDisplayName("§b" + pokemon.getSpecies().name + (!pokemon.getDisplayName().isEmpty() ? "(" + pokemon.getDisplayName() + ")" : "") + "");
+        itemStack.setStackDisplayName("§b" + pokemon.getSpecies().getLocalizedName() + (!pokemon.getDisplayName().isEmpty() ? "(" + pokemon.getDisplayName() + ")" : "") + "");
         NBTTagCompound compound = itemStack.getOrCreateSubCompound("display");
         NBTTagList lore = new NBTTagList();
 

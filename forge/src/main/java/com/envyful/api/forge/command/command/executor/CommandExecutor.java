@@ -6,6 +6,7 @@ import com.envyful.api.forge.player.util.UtilPlayer;
 import ibxm.Player;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -200,7 +201,9 @@ public class CommandExecutor {
         try {
             this.executor.invoke(this.commandClass, args);
             return true;
-        } catch (IllegalAccessException | InvocationTargetException e) {}
+        } catch (Exception e) {
+            FMLCommonHandler.instance().getFMLLogger().error(e);
+        }
 
         return false;
     }

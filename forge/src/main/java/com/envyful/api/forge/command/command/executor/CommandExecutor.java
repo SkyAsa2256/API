@@ -207,13 +207,11 @@ public class CommandExecutor {
         } catch (Exception e) {
             Throwable cause = e.getCause();
 
-            while (cause != null) {
-                Throwable finalCause = cause;
+            if (cause != null) {
                 FMLCommonHandler.instance().getFMLLogger().error(() -> new SimpleMessage(
-                        Arrays.stream(finalCause.getStackTrace()).map(StackTraceElement::toString)
+                        Arrays.stream(cause.getStackTrace()).map(StackTraceElement::toString)
                                 .collect(Collectors.joining(System.lineSeparator()))
                 ));
-                cause = e.getCause();
             }
 
             FMLCommonHandler.instance().getFMLLogger().error(() -> new SimpleMessage(

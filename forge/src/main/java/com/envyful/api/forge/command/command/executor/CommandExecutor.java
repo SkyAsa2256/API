@@ -190,7 +190,11 @@ public class CommandExecutor {
         if (this.sender.getType().equals(sender.getClass())) {
             args[this.senderPosition] = sender;
         } else {
-            args[this.senderPosition] = this.sender.getType().cast(sender);
+            try {
+                args[this.senderPosition] = this.sender.getType().cast(sender);
+            } catch (ClassCastException e) {
+                FMLCommonHandler.instance().getFMLLogger().info("You cannot use this command from this source (player only).");
+            }
         }
 
         if (this.justArgsPos != -1) {

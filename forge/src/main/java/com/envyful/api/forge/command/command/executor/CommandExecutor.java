@@ -7,6 +7,9 @@ import ibxm.Player;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.util.MessageSupplier;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -202,7 +205,10 @@ public class CommandExecutor {
             this.executor.invoke(this.commandClass, args);
             return true;
         } catch (Exception e) {
-            FMLCommonHandler.instance().getFMLLogger().error(e);
+            FMLCommonHandler.instance().getFMLLogger().error(() -> new SimpleMessage(
+                    Arrays.stream(e.getStackTrace()).map(StackTraceElement::toString)
+                            .collect(Collectors.joining(System.lineSeparator()))
+            ));
         }
 
         return false;

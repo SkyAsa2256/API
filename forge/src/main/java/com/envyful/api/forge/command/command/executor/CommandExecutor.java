@@ -3,18 +3,14 @@ package com.envyful.api.forge.command.command.executor;
 import com.envyful.api.command.injector.ArgumentInjector;
 import com.envyful.api.forge.command.command.ForgeSenderType;
 import com.envyful.api.forge.player.util.UtilPlayer;
-import ibxm.Player;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.message.SimpleMessage;
-import org.apache.logging.log4j.util.MessageSupplier;
 
-import java.lang.reflect.InvocationTargetException;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.stream.Collectors;
 
 /**
  *
@@ -211,18 +207,18 @@ public class CommandExecutor {
             return true;
         } catch (Exception e) {
             Throwable cause = e.getCause();
+            cause.printStackTrace(new PrintWriter(new Writer() {
+                @Override
+                public void write(char[] cbuf, int off, int len) {
+                    FMLCommonHandler.instance().getFMLLogger().error(new String(cbuf));
+                }
 
-            if (cause != null) {
-                FMLCommonHandler.instance().getFMLLogger().error(() -> new SimpleMessage(
-                        Arrays.stream(cause.getStackTrace()).map(StackTraceElement::toString)
-                                .collect(Collectors.joining(System.lineSeparator()))
-                ));
-            }
+                @Override
+                public void flush() {}
 
-            FMLCommonHandler.instance().getFMLLogger().error(() -> new SimpleMessage(
-                    Arrays.stream(e.getStackTrace()).map(StackTraceElement::toString)
-                            .collect(Collectors.joining(System.lineSeparator()))
-            ));
+                @Override
+                public void close() {}
+            }));
         }
 
         return false;

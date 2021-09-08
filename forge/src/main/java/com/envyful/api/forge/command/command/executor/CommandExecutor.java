@@ -205,6 +205,17 @@ public class CommandExecutor {
             this.executor.invoke(this.commandClass, args);
             return true;
         } catch (Exception e) {
+            Throwable cause = e.getCause();
+
+            while (cause != null) {
+                Throwable finalCause = cause;
+                FMLCommonHandler.instance().getFMLLogger().error(() -> new SimpleMessage(
+                        Arrays.stream(finalCause.getStackTrace()).map(StackTraceElement::toString)
+                                .collect(Collectors.joining(System.lineSeparator()))
+                ));
+                cause = e.getCause();
+            }
+
             FMLCommonHandler.instance().getFMLLogger().error(() -> new SimpleMessage(
                     Arrays.stream(e.getStackTrace()).map(StackTraceElement::toString)
                             .collect(Collectors.joining(System.lineSeparator()))

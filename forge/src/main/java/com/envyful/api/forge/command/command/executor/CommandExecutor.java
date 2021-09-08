@@ -194,6 +194,7 @@ public class CommandExecutor {
                 args[this.senderPosition] = this.sender.getType().cast(sender);
             } catch (ClassCastException e) {
                 FMLCommonHandler.instance().getFMLLogger().info("You cannot use this command from this source (player only).");
+                return false;
             }
         }
 

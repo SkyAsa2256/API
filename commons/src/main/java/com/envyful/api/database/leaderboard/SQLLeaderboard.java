@@ -1,7 +1,9 @@
 package com.envyful.api.database.leaderboard;
 
 import com.envyful.api.database.Database;
+import com.envyful.api.type.Pair;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 public class SQLLeaderboard {
@@ -18,18 +21,28 @@ public class SQLLeaderboard {
     private final Order order;
     private final String orderColumn;
     private final int perPage;
+    private final long cacheDuration;
     private final Function<ResultSet, String> formatter;
 
-    private SQLLeaderboard(Database database, String table, Order order, String orderColumn, int perPage, Function<ResultSet, String> formatter) {
+    private final Map<Integer, Pair<Long, List<String>>> cachedEntries = Maps.newHashMap();
+
+    private SQLLeaderboard(Database database, String table, Order order, String orderColumn, int perPage, long cacheDuration, Function<ResultSet, String> formatter) {
         this.database = database;
         this.table = table;
         this.order = order;
         this.orderColumn = orderColumn;
         this.perPage = perPage;
+        this.cacheDuration = cacheDuration;
         this.formatter = formatter;
     }
 
     public List<String> getPage(int page) {
+        Pair<Long, List<String>> longListPair = this.cachedEntries.get(page);
+
+        if (longListPair != null && (System.currentTimeMillis() - longListPair.getX()) <= this.cacheDuration) {
+            return longListPair.getY();
+        }
+
         try (Connection connection = this.database.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(this.getSQL())) {
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -44,6 +57,7 @@ public class SQLLeaderboard {
                 ++counter;
             }
 
+            this.cachedEntries.put(counter, Pair.of(System.currentTimeMillis(), data));
             return data;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -67,6 +81,7 @@ public class SQLLeaderboard {
         private Order order;
         private String orderColumn;
         private int perPage;
+        private long cacheDuration;
         private Function<ResultSet, String> formatter;
 
         Builder() {}
@@ -101,8 +116,14 @@ public class SQLLeaderboard {
             return this;
         }
 
+        public Builder cacheDuration(long cacheDuration) {
+            this.cacheDuration = cacheDuration;
+            return this;
+        }
+
         public SQLLeaderboard build() {
-            return new SQLLeaderboard(this.database, this.table, this.order, this.orderColumn, this.perPage, this.formatter);
+            return new SQLLeaderboard(this.database, this.table, this.order, this.orderColumn, this.perPage,
+                    this.cacheDuration, this.formatter);
         }
     }
 }

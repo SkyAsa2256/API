@@ -32,6 +32,11 @@ public class ForgeEnvyPlayer implements EnvyPlayer<EntityPlayerMP> {
     }
 
     @Override
+    public String getName() {
+        return this.player.getName();
+    }
+
+    @Override
     public EntityPlayerMP getParent() {
         return this.player;
     }

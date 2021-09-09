@@ -21,6 +21,8 @@ public interface EnvyPlayer<T> {
 
     UUID getUuid();
 
+    String getName();
+
     T getParent();
 
     void message(String message);

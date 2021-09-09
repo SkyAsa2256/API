@@ -234,10 +234,6 @@ public class ItemBuilder implements Cloneable {
     public ItemStack build() {
         ItemStack itemStack = new ItemStack(this.type, this.amount, this.damage);
 
-        if (this.name != null && !this.name.isEmpty()) {
-            itemStack.setStackDisplayName(this.name);
-        }
-
         NBTTagCompound compound = itemStack.hasTagCompound() ? itemStack.getTagCompound() : new NBTTagCompound();
 
         for (Map.Entry<String, NBTBase> entry : nbtData.entrySet()) {
@@ -245,6 +241,10 @@ public class ItemBuilder implements Cloneable {
         }
 
         itemStack.setTagCompound(compound);
+
+        if (this.name != null && !this.name.isEmpty()) {
+            itemStack.setStackDisplayName(this.name);
+        }
 
         if (this.lore != null && !this.lore.isEmpty()) {
             NBTTagCompound display = itemStack.getOrCreateSubCompound("display");

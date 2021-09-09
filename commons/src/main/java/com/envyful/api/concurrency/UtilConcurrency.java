@@ -32,4 +32,23 @@ public class UtilConcurrency {
         EXECUTOR_SERVICE.execute(runnable);
     }
 
+    /**
+     *
+     * Takes the runnable and passes it to the {@link UtilConcurrency#EXECUTOR_SERVICE} to be executed later using one of the
+     * cached threads
+     *
+     * @param runnable the runnable to execute asynchronously
+     * @param delay The delay before running it
+     */
+    public static void runLater(Runnable runnable, long delay) {
+        runAsync(() -> {
+            try {
+                Thread.sleep(delay);
+                runnable.run();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
 }

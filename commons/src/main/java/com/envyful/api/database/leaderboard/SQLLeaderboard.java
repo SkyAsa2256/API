@@ -22,17 +22,20 @@ public class SQLLeaderboard {
     private final String orderColumn;
     private final int perPage;
     private final long cacheDuration;
+    private final String extraClauses;
     private final Function<ResultSet, String> formatter;
 
     private final Map<Integer, Pair<Long, List<String>>> cachedEntries = Maps.newHashMap();
 
-    private SQLLeaderboard(Database database, String table, Order order, String orderColumn, int perPage, long cacheDuration, Function<ResultSet, String> formatter) {
+    private SQLLeaderboard(Database database, String table, Order order, String orderColumn, int perPage,
+                           long cacheDuration, String extraClauses, Function<ResultSet, String> formatter) {
         this.database = database;
         this.table = table;
         this.order = order;
         this.orderColumn = orderColumn;
         this.perPage = perPage;
         this.cacheDuration = cacheDuration;
+        this.extraClauses = extraClauses;
         this.formatter = formatter;
     }
 
@@ -67,7 +70,7 @@ public class SQLLeaderboard {
     }
 
     private String getSQL() {
-        return "SELECT * FROM `" + this.table + "`" + this.order.getSqlText(this.orderColumn) + ";";
+        return "SELECT * FROM `" + this.table + "` WHERE " + this.extraClauses + this.order.getSqlText(this.orderColumn) + ";";
     }
 
     public static Builder builder() {
@@ -82,6 +85,7 @@ public class SQLLeaderboard {
         private String orderColumn;
         private int perPage;
         private long cacheDuration;
+        private String extraClauses;
         private Function<ResultSet, String> formatter;
 
         Builder() {}
@@ -121,9 +125,14 @@ public class SQLLeaderboard {
             return this;
         }
 
+        public Builder extraClauses(String extraClauses) {
+            this.extraClauses = extraClauses;
+            return this;
+        }
+
         public SQLLeaderboard build() {
             return new SQLLeaderboard(this.database, this.table, this.order, this.orderColumn, this.perPage,
-                    this.cacheDuration, this.formatter);
+                    this.cacheDuration, extraClauses, this.formatter);
         }
     }
 }

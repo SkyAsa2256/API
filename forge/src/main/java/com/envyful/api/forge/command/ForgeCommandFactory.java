@@ -210,7 +210,7 @@ public class ForgeCommandFactory implements CommandFactory<MinecraftServer, ICom
 
     @Override
     public boolean unregisterCommand(MinecraftServer server, Object o) {
-        return false; //Not possible with forge AFAIK. Also why would you want to unregister a command? No hot reloading so?
+        return false;
     }
 
     @Override

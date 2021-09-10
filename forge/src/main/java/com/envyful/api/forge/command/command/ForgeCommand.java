@@ -189,6 +189,12 @@ public class ForgeCommand extends CommandBase {
             return this.getMatching(args[0], this.getAccessibleSubCommands(sender));
         }
 
+        for (ForgeCommand subCommand : this.subCommands) {
+            if (args[0].equalsIgnoreCase(subCommand.getName()) || subCommand.getAliases().contains(args[0])) {
+                return subCommand.getTabCompletions(server, sender, args, pos);
+            }
+        }
+
         return Collections.emptyList();
     }
 
@@ -212,6 +218,7 @@ public class ForgeCommand extends CommandBase {
             if (!(sender instanceof EntityPlayerMP)
                     || subCommand.checkPermission(FMLCommonHandler.instance().getMinecraftServerInstance(), sender)) {
                 subCommands.add(subCommand.name);
+                subCommands.addAll(subCommand.aliases);
             }
         }
 

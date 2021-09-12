@@ -34,11 +34,12 @@ public class PokemonGenerator {
     private final boolean randomIVGeneration;
     private final int minIVPercentage;
     private final int maxIVPercentage;
+    private final boolean onlyLegends;
 
     private PokemonGenerator(Set<EnumSpecies> blockedTypes, boolean speciesRequirement, boolean allowLegends, boolean allowUltraBeasts, boolean genderRequirement,
                              boolean growthRequirement, boolean natureRequirement, int potentialGrowthRequirements, int potentialNatureRequirements,
                              boolean allowEvolutions, boolean ivRequirement, boolean randomIVGeneration,
-                             int minIVPercentage, int maxIVPercentage) {
+                             int minIVPercentage, int maxIVPercentage, boolean onlyLegends) {
         this.blockedTypes = blockedTypes;
         this.speciesRequirement = speciesRequirement;
         this.allowLegends = allowLegends;
@@ -53,6 +54,7 @@ public class PokemonGenerator {
         this.randomIVGeneration = randomIVGeneration;
         this.minIVPercentage = minIVPercentage;
         this.maxIVPercentage = maxIVPercentage;
+        this.onlyLegends = onlyLegends;
     }
 
     public PokemonSpec generate() {
@@ -97,6 +99,16 @@ public class PokemonGenerator {
     }
 
     private EnumSpecies getRandomSpecies() {
+        if (this.onlyLegends) {
+            EnumSpecies species = EnumSpecies.getFromNameAnyCase(UtilRandom.getRandomElement(EnumSpecies.legendaries));
+
+            while (!this.isAllowedSpecies(species)) {
+                species = EnumSpecies.getFromNameAnyCase(UtilRandom.getRandomElement(EnumSpecies.legendaries));
+            }
+
+            return species;
+        }
+
         EnumSpecies species = EnumSpecies.randomPoke(this.allowLegends);
 
         while (!this.isAllowedSpecies(species)) {
@@ -138,6 +150,7 @@ public class PokemonGenerator {
         private boolean ivRequirement = false;
         private int minIVPercentage = 0;
         private int maxIVPercentage = 100;
+        private boolean legendsOnly = false;
 
         protected Builder() {}
 
@@ -211,6 +224,11 @@ public class PokemonGenerator {
             return this;
         }
 
+        public Builder setOnlyLegends(boolean legendsOnly) {
+            this.legendsOnly = legendsOnly;
+            return this;
+        }
+
         public PokemonGenerator build() {
             return new PokemonGenerator(this.blockedTypes,
                     this.speciesRequirement,
@@ -225,7 +243,7 @@ public class PokemonGenerator {
                     this.ivRequirement,
                     this.randomIVGeneration,
                     this.minIVPercentage,
-                    this.maxIVPercentage);
+                    this.maxIVPercentage, this.legendsOnly);
         }
     }
 }

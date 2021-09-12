@@ -1,5 +1,9 @@
 package com.envyful.api.forge.chat;
 
+import com.google.common.collect.Lists;
+
+import java.util.List;
+
 /**
  *
  * Static utility methods relating to colour codes
@@ -30,5 +34,24 @@ public class UtilChatColour {
         }
 
         return new String(b);
+    }
+
+    /**
+     *
+     * Translates each line in the list to coloured text.
+     * Using {@link UtilChatColour#translateColourCodes(char, String)}
+     *
+     * @param altColorChar The character
+     * @param lines The lines of text
+     * @return The coloured text
+     */
+    public static List<String> translateColourCodes(char altColorChar, List<String> lines) {
+        List<String> newLines = Lists.newArrayList();
+
+        for (String line : lines) {
+            newLines.add(translateColourCodes('&', line));
+        }
+
+        return newLines;
     }
 }

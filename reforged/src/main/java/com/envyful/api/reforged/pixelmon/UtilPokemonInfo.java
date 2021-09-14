@@ -26,7 +26,7 @@ public class UtilPokemonInfo {
         }
     }
 
-    public List<String> getSpawnBiomes(BaseStats pokemon) {
+    public static List<String> getSpawnBiomes(BaseStats pokemon) {
         List<String> names = Lists.newArrayList();
 
         for (SpawnSet next : SetLoader.<SpawnSet>getAllSets()) {
@@ -54,7 +54,7 @@ public class UtilPokemonInfo {
         return names;
     }
 
-    public List<String> getSpawnTimes(BaseStats pokemon) {
+    public static List<String> getSpawnTimes(BaseStats pokemon) {
         List<String> names = Lists.newArrayList();
 
         for (SpawnSet next : SetLoader.<SpawnSet>getAllSets()) {
@@ -79,7 +79,7 @@ public class UtilPokemonInfo {
     }
 
 
-    public List<String> getCatchRate(BaseStats pokemon) {
+    public static List<String> getCatchRate(BaseStats pokemon) {
         double males = pokemon.getMalePercent();
         if (males == (double) -1) {
             return Collections.singletonList("§7Base rate: " + String.format("%.2f", pokemon.getCatchRate() / 255.0D * 100.0D) + "%");

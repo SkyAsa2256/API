@@ -43,7 +43,13 @@ public class UtilPokemonInfo {
 
                 for (Biome biome : spawnInfoPokemon.condition.biomes) {
                     try {
-                        names.add((String) nameField.get(biome));
+                        String name = (String) nameField.get(biome);
+
+                        if (names.contains(name)) {
+                            continue;
+                        }
+
+                        names.add(name);
                     } catch (IllegalAccessException e) {
                         e.printStackTrace();
                     }
@@ -70,6 +76,10 @@ public class UtilPokemonInfo {
                 }
 
                 for (WorldTime time : spawnInfoPokemon.condition.times) {
+                    if (names.contains(time.getLocalizedName())) {
+                        continue;
+                    }
+
                     names.add(time.getLocalizedName());
                 }
             }

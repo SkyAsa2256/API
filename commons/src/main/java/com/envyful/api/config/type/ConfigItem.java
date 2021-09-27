@@ -21,6 +21,14 @@ public class ConfigItem {
 
     public ConfigItem() {}
 
+    public ConfigItem(String type, int amount, byte damage, String name, List<String> lore) {
+        this.type = type;
+        this.amount = amount;
+        this.damage = damage;
+        this.name = name;
+        this.lore = lore;
+    }
+
     public String getType() {
         return this.type;
     }

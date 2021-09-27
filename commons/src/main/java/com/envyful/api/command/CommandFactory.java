@@ -1,6 +1,7 @@
 package com.envyful.api.command;
 
 import com.envyful.api.command.exception.CommandLoadException;
+import com.envyful.api.command.injector.TabCompleter;
 
 import java.util.function.BiFunction;
 
@@ -65,5 +66,13 @@ public interface CommandFactory<A, B> {
      * @param parentClass The class for all injectors to be removed
      */
     void unregisterInjector(Class<?> parentClass);
+
+    /**
+     *
+     * Registers a tab completion method
+     *
+     * @param tabCompleter The tab completer
+     */
+    void registerCompleter(TabCompleter<?, ?> tabCompleter);
 
 }

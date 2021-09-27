@@ -1,5 +1,6 @@
 package com.envyful.api.command.injector;
 
+import java.lang.annotation.Annotation;
 import java.util.List;
 
 /**
@@ -25,8 +26,9 @@ public interface TabCompleter<A, B> {
      *
      * @param sender The sender
      * @param currentData The data already provided by the sender
+     * @param completionData The annotation provided on the tab complete
      * @return The tab completions generated
      */
-    List<String> getCompletions(B sender, String currentData);
+    List<String> getCompletions(B sender, String currentData, Annotation... completionData);
 
 }

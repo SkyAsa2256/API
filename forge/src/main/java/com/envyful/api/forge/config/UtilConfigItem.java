@@ -24,7 +24,7 @@ public class UtilConfigItem {
 
         for (Map.Entry<String, ConfigItem.NBTValue> nbtData : configItem.getNbt().entrySet()) {
             NBTBase base = null;
-            switch (nbtData.getValue().getType()) {
+            switch (nbtData.getValue().getType().toLowerCase()) {
                 case "int" : case "integer" :
                     base = new NBTTagInt(Integer.parseInt(nbtData.getValue().getData()));
                     break;
@@ -39,6 +39,9 @@ public class UtilConfigItem {
                     break;
                 case "float" :
                     base = new NBTTagFloat(Float.parseFloat(nbtData.getValue().getData()));
+                    break;
+                case "short" :
+                    base = new NBTTagShort(Short.parseShort(nbtData.getValue().getData()));
                     break;
                 default : case "string" :
                     base = new NBTTagString(nbtData.getValue().getData());

@@ -4,6 +4,7 @@ import com.envyful.api.command.CommandFactory;
 import com.envyful.api.command.annotate.Command;
 import com.envyful.api.command.annotate.Permissible;
 import com.envyful.api.command.annotate.SubCommands;
+import com.envyful.api.command.annotate.TabCompletions;
 import com.envyful.api.command.annotate.executor.CommandProcessor;
 import com.envyful.api.command.annotate.executor.Completable;
 import com.envyful.api.command.annotate.executor.Sender;
@@ -72,7 +73,7 @@ public class ForgeCommandFactory implements CommandFactory<MinecraftServer, ICom
 
         String defaultPermission = this.getDefaultPermission(clazz);
 
-        if (instance  == null) {
+        if (instance == null) {
             instance = this.createInstance(clazz);
 
             if (instance == null) {
@@ -81,11 +82,31 @@ public class ForgeCommandFactory implements CommandFactory<MinecraftServer, ICom
         }
 
         List<CommandExecutor> subExecutors = Lists.newArrayList();
+        BiFunction<ICommandSender, String[], List<String>> tabCompleter = null;
 
         for (Method declaredMethod : clazz.getDeclaredMethods()) {
             CommandProcessor processorData = declaredMethod.getAnnotation(CommandProcessor.class);
 
             if (processorData == null) {
+                TabCompletions tabCompletions = declaredMethod.getAnnotation(TabCompletions.class);
+
+                if (tabCompletions != null) {
+                    if (declaredMethod.getReturnType().equals(List.class) && declaredMethod.getParameterCount() == 3) {
+                        Object finalInstance = instance;
+                        tabCompleter = (sender, args) -> {
+                            try {
+                                return (List<String>) declaredMethod.invoke(finalInstance, sender, args);
+                            } catch (IllegalAccessException | InvocationTargetException e) {
+                                e.printStackTrace();
+                            }
+
+                            return Collections.emptyList();
+                        };
+                    }
+
+                    continue;
+                }
+
                 continue;
             }
 
@@ -140,7 +161,8 @@ public class ForgeCommandFactory implements CommandFactory<MinecraftServer, ICom
         }
 
         return new ForgeCommand(this, commandData.value(), commandData.description(), defaultPermission,
-                Arrays.asList(commandData.aliases()), subExecutors, subCommands);
+                                Arrays.asList(commandData.aliases()), subExecutors, subCommands, tabCompleter
+        );
     }
 
     private String getPermission(Method method) {

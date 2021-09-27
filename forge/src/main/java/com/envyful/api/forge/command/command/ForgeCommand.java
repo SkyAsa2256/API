@@ -22,6 +22,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 /**
@@ -42,9 +43,11 @@ public class ForgeCommand extends CommandBase {
     private final List<String> aliases;
     private final List<CommandExecutor> executors;
     private final List<ForgeCommand> subCommands;
+    private final BiFunction<ICommandSender, String[], List<String>> tabCompleter;
 
     public ForgeCommand(ForgeCommandFactory commandFactory, String name, String description, String basePermission,
-                        List<String> aliases, List<CommandExecutor> executors, List<ForgeCommand> subCommands) {
+                        List<String> aliases, List<CommandExecutor> executors, List<ForgeCommand> subCommands,
+                        BiFunction<ICommandSender, String[], List<String>> tabCompleter) {
         this.commandFactory = commandFactory;
         this.name = name;
         this.description = description;
@@ -52,6 +55,7 @@ public class ForgeCommand extends CommandBase {
         this.aliases = aliases;
         this.executors = executors;
         this.subCommands = subCommands;
+        this.tabCompleter = tabCompleter;
     }
 
     @Override
@@ -173,6 +177,10 @@ public class ForgeCommand extends CommandBase {
 
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos) {
+        if (this.tabCompleter != null) {
+            return this.tabCompleter.apply(sender, args);
+        }
+
         if (!this.executors.isEmpty()) {
             for (CommandExecutor executor : this.executors) {
                 if (executor.getIdentifier().isEmpty()) {

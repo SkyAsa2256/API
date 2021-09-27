@@ -30,6 +30,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -136,7 +137,8 @@ public class ForgeCommandFactory implements CommandFactory<MinecraftServer, ICom
                     senderPosition = i;
                     arguments.add(null);
                 } else {
-                    if (annotations[i].length > 0 && annotations[i][0] instanceof Completable) {
+                    System.out.println("HELLO : "+ this.getClass().getSimpleName() + " " + Arrays.stream(annotations).collect(Collectors.toList()));
+                    if (annotations[i][0] instanceof Completable) {
                         tabCompleters.add(this.registeredCompleters.get(((Completable) annotations[i][0]).value()));
                         List<Annotation> data = Lists.newArrayList();
 

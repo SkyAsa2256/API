@@ -81,6 +81,26 @@ public class ConfigInterface {
 
                 return configItems;
             }
+        },
+        CHECKERED() {
+            @Override
+            public List<ConfigItem> convert(List<ConfigItem> conversion, int height) {
+                List<ConfigItem> configItems = Lists.newArrayList();
+                ConfigItem primary = conversion.get(0);
+                ConfigItem secondary = conversion.get(1);
+
+                for(int y = 0; y < height; y++) {
+                    for (int x = 0; x < 9; x++) {
+                        if ((x + (y  % 2)) % 2 == 0) {
+                            configItems.add(primary);
+                        } else {
+                            configItems.add(secondary);
+                        }
+                    }
+                }
+
+                return configItems;
+            }
         }
 
         ;

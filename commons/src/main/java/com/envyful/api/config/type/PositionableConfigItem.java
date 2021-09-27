@@ -3,6 +3,7 @@ package com.envyful.api.config.type;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 import java.util.List;
+import java.util.Map;
 
 @ConfigSerializable
 public class PositionableConfigItem extends ConfigItem {
@@ -15,8 +16,8 @@ public class PositionableConfigItem extends ConfigItem {
     }
 
     public PositionableConfigItem(String type, int amount, byte damage, String name, List<String> lore, int xPos,
-                                  int yPos) {
-        super(type, amount, damage, name, lore);
+                                  int yPos, Map<String, NBTValue> nbt) {
+        super(type, amount, damage, name, lore, nbt);
 
         this.xPos = xPos;
         this.yPos = yPos;

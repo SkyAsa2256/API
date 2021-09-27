@@ -1,9 +1,11 @@
 package com.envyful.api.config.type;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -18,15 +20,17 @@ public class ConfigItem {
     private byte damage = 14;
     private String name = " ";
     private List<String> lore = Lists.newArrayList();
+    private Map<String, NBTValue> nbt = Maps.newHashMap();
 
     public ConfigItem() {}
 
-    public ConfigItem(String type, int amount, byte damage, String name, List<String> lore) {
+    public ConfigItem(String type, int amount, byte damage, String name, List<String> lore, Map<String, NBTValue> nbt) {
         this.type = type;
         this.amount = amount;
         this.damage = damage;
         this.name = name;
         this.lore = lore;
+        this.nbt = nbt;
     }
 
     public String getType() {
@@ -47,5 +51,28 @@ public class ConfigItem {
 
     public List<String> getLore() {
         return this.lore;
+    }
+
+    public Map<String, NBTValue> getNbt() {
+        return this.nbt;
+    }
+
+    public static final class NBTValue {
+
+        private String type;
+        private String data;
+
+        public NBTValue(String type, String data) {
+            this.type = type;
+            this.data = data;
+        }
+
+        public String getType() {
+            return this.type;
+        }
+
+        public String getData() {
+            return this.data;
+        }
     }
 }

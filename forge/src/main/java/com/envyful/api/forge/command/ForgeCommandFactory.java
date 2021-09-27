@@ -6,13 +6,17 @@ import com.envyful.api.command.annotate.Permissible;
 import com.envyful.api.command.annotate.SubCommands;
 import com.envyful.api.command.annotate.executor.CommandProcessor;
 import com.envyful.api.command.annotate.executor.Sender;
+import com.envyful.api.command.completion.number.IntegerTabCompleter;
 import com.envyful.api.command.exception.CommandLoadException;
 import com.envyful.api.command.injector.ArgumentInjector;
+import com.envyful.api.command.injector.TabCompleter;
 import com.envyful.api.forge.command.command.ForgeCommand;
 import com.envyful.api.forge.command.command.ForgeSenderType;
 import com.envyful.api.forge.command.command.executor.CommandExecutor;
+import com.envyful.api.forge.command.completion.player.PlayerTabCompleter;
 import com.envyful.api.forge.command.injector.ForgeFunctionInjector;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -22,10 +26,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.BiFunction;
 
 /**
@@ -36,6 +37,7 @@ import java.util.function.BiFunction;
 public class ForgeCommandFactory implements CommandFactory<MinecraftServer, ICommandSender> {
 
     private final List<ArgumentInjector<?, ICommandSender>> registeredInjectors = Lists.newArrayList();
+    private final Map<Class<?>, TabCompleter<?, ?>> registeredCompleters = Maps.newConcurrentMap();
 
     public ForgeCommandFactory() {
         this.registerInjector(EntityPlayerMP.class, (sender, args) -> sender.getServer().getPlayerList().getPlayerByUsername(args[0]));
@@ -43,6 +45,8 @@ public class ForgeCommandFactory implements CommandFactory<MinecraftServer, ICom
         this.registerInjector(String.class, (iCommandSender, args) -> args[0]);
         this.registerInjector(double.class, ((iCommandSender, args) -> Double.parseDouble(args[0])));
         this.registerInjector(long.class, ((iCommandSender, args) -> Long.parseLong(args[0])));
+        this.registerCompleter(new IntegerTabCompleter());
+        this.registerCompleter(new PlayerTabCompleter());
     }
 
     @Override
@@ -221,5 +225,10 @@ public class ForgeCommandFactory implements CommandFactory<MinecraftServer, ICom
     @Override
     public void unregisterInjector(Class<?> parentClass) {
         this.registeredInjectors.removeIf(next -> Objects.equals(parentClass, next.getConvertedClass()));
+    }
+
+    @Override
+    public void registerCompleter(TabCompleter<?, ?> tabCompleter) {
+        this.registeredCompleters.put(tabCompleter.getClass(), tabCompleter);
     }
 }

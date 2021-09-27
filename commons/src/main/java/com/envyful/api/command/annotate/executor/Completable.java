@@ -11,6 +11,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Completable {
 
-    Class<TabCompleter> value();
+    Class<? extends TabCompleter<?, ?>> value();
 
 }

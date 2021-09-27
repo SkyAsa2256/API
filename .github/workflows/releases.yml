@@ -11,9 +11,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-        if: ${{ endsWith(github.event.commits[0].message, 'skip-ci') }}
       - name: Create Release
         id: create_release
+        if: ${{ endsWith(github.event.commits[0].message, 'skip-ci') }}
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

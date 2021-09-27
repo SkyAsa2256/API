@@ -173,6 +173,24 @@ public class ForgeCommand extends CommandBase {
 
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos) {
+        if (!this.executors.isEmpty()) {
+            for (CommandExecutor executor : this.executors) {
+                if (executor.getIdentifier().isEmpty()) {
+                    return executor.tabComplete(sender, args);
+                }
+
+                if (args.length == 0) {
+                    continue;
+                }
+
+                if (!executor.getIdentifier().equalsIgnoreCase(args[0]) || (executor.getIdentifier().isEmpty() && !args[0].isEmpty())) {
+                    continue;
+                }
+
+                return executor.tabComplete(sender, args);
+            }
+        }
+
         if (this.subCommands.size() == 0) {
             if (args.length == 0) {
                 return this.getAllPlayers();

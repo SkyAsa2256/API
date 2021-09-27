@@ -1,4 +1,4 @@
-package com.envyful.api.command.completion.number;
+package com.envyful.api.forge.command.completion.number;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

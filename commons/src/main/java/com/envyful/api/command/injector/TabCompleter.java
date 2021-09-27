@@ -14,6 +14,14 @@ public interface TabCompleter<A, B> {
 
     /**
      *
+     * Gets the class of the sender type
+     *
+     * @return The sender type's class
+     */
+    Class<B> getSenderClass();
+
+    /**
+     *
      * Gets the class that will have tab completions
      *
      * @return The class
@@ -29,6 +37,6 @@ public interface TabCompleter<A, B> {
      * @param completionData The annotation provided on the tab complete
      * @return The tab completions generated
      */
-    List<String> getCompletions(B sender, String currentData, Annotation... completionData);
+    List<String> getCompletions(B sender, String[] currentData, Annotation... completionData);
 
 }

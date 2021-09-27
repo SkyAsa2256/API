@@ -1,13 +1,19 @@
-package com.envyful.api.command.completion.number;
+package com.envyful.api.forge.command.completion.number;
 
 import com.envyful.api.command.injector.TabCompleter;
 import com.envyful.api.player.EnvyPlayer;
 import com.google.common.collect.Lists;
+import net.minecraft.entity.player.EntityPlayerMP;
 
 import java.lang.annotation.Annotation;
 import java.util.List;
 
-public class IntegerTabCompleter implements TabCompleter<Integer, EnvyPlayer<?>> {
+public class IntegerTabCompleter implements TabCompleter<Integer, EntityPlayerMP> {
+
+    @Override
+    public Class<EntityPlayerMP> getSenderClass() {
+        return EntityPlayerMP.class;
+    }
 
     @Override
     public Class<Integer> getCompletedClass() {
@@ -15,7 +21,7 @@ public class IntegerTabCompleter implements TabCompleter<Integer, EnvyPlayer<?>>
     }
 
     @Override
-    public List<String> getCompletions(EnvyPlayer sender, String currentData, Annotation... completionData) {
+    public List<String> getCompletions(EntityPlayerMP sender, String[] currentData, Annotation... completionData) {
         if (completionData.length != 1 || !(completionData[0] instanceof IntCompletionData)) {
             List<String> completions = Lists.newArrayList();
 

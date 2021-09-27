@@ -5,8 +5,9 @@ import com.envyful.api.command.annotate.Command;
 import com.envyful.api.command.annotate.Permissible;
 import com.envyful.api.command.annotate.SubCommands;
 import com.envyful.api.command.annotate.executor.CommandProcessor;
+import com.envyful.api.command.annotate.executor.Completable;
 import com.envyful.api.command.annotate.executor.Sender;
-import com.envyful.api.command.completion.number.IntegerTabCompleter;
+import com.envyful.api.forge.command.completion.number.IntegerTabCompleter;
 import com.envyful.api.command.exception.CommandLoadException;
 import com.envyful.api.command.injector.ArgumentInjector;
 import com.envyful.api.command.injector.TabCompleter;
@@ -95,6 +96,8 @@ public class ForgeCommandFactory implements CommandFactory<MinecraftServer, ICom
             ForgeSenderType senderType = null;
             int senderPosition = -1;
             int justArgsPos = -1;
+            List<TabCompleter<?, ?>> tabCompleters = Lists.newArrayList();
+            List<Annotation[]> extraTabData = Lists.newArrayList();
 
             for (int i = 0; i < parameterTypes.length; i++) {
                 if (parameterTypes[i] == String[].class) {
@@ -112,6 +115,17 @@ public class ForgeCommandFactory implements CommandFactory<MinecraftServer, ICom
                     senderPosition = i;
                     arguments.add(null);
                 } else {
+                    if (annotations[i].length > 0 && annotations[i][0] instanceof Completable) {
+                        tabCompleters.add(this.registeredCompleters.get(((Completable) annotations[i][0]).value()));
+                        List<Annotation> data = Lists.newArrayList();
+
+                        for (int x = 1; x < annotations[x].length; x++) {
+                            data.add(annotations[i][x]);
+                        }
+
+                        extraTabData.add(data.toArray(new Annotation[0]));
+                    }
+
                     arguments.add(this.getInjectorFor(parameterTypes[i]));
                 }
             }
@@ -122,7 +136,7 @@ public class ForgeCommandFactory implements CommandFactory<MinecraftServer, ICom
 
             subExecutors.add(new CommandExecutor(processorData.value(), senderType, senderPosition, instance, declaredMethod,
                     processorData.executeAsync(), justArgsPos, requiredPermission,
-                    arguments.toArray(new ForgeFunctionInjector<?>[0])));
+                    arguments.toArray(new ForgeFunctionInjector<?>[0]), tabCompleters, extraTabData));
         }
 
         return new ForgeCommand(this, commandData.value(), commandData.description(), defaultPermission,

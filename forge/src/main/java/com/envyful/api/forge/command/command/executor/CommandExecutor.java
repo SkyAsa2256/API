@@ -1,6 +1,7 @@
 package com.envyful.api.forge.command.command.executor;
 
 import com.envyful.api.command.injector.ArgumentInjector;
+import com.envyful.api.command.injector.TabCompleter;
 import com.envyful.api.forge.command.command.ForgeSenderType;
 import com.envyful.api.forge.player.util.UtilPlayer;
 import net.minecraft.command.ICommandSender;
@@ -9,8 +10,10 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  *
@@ -31,6 +34,8 @@ public class CommandExecutor {
     private final int requiredArgs;
     private final String requiredPermission;
     private final ArgumentInjector<?, ICommandSender>[] arguments;
+    private final List<TabCompleter<?, ?>> tabCompleters;
+    private final List<Annotation[]> extraTabData;
 
     /**
      *
@@ -46,7 +51,9 @@ public class CommandExecutor {
      * @param arguments The injected argument types
      */
     public CommandExecutor(String identifier, ForgeSenderType sender, int senderPosition, Object commandClass, Method executor,
-                           boolean executeAsync, int justArgsPos, String requiredPermission, ArgumentInjector<?, ICommandSender>[] arguments) {
+                           boolean executeAsync, int justArgsPos, String requiredPermission,
+                           ArgumentInjector<?, ICommandSender>[] arguments, List<TabCompleter<?, ?>> tabCompleters,
+                           List<Annotation[]> extraTabData) {
         this.identifier = identifier;
         this.senderPosition = senderPosition;
         this.sender = sender;
@@ -57,6 +64,8 @@ public class CommandExecutor {
         this.requiredPermission = requiredPermission;
         this.arguments = arguments;
         this.requiredArgs = this.calculateRequiredArgs();
+        this.tabCompleters = tabCompleters;
+        this.extraTabData = extraTabData;
     }
 
     /**
@@ -222,5 +231,10 @@ public class CommandExecutor {
         }
 
         return false;
+    }
+
+    public <A> List<String> tabComplete(ICommandSender sender, String[] args) {
+        TabCompleter<?, A> completer = (TabCompleter<?, A>) this.tabCompleters.get(args.length - 1);
+        return completer.getCompletions(completer.getSenderClass().cast(sender), args, this.extraTabData.get(args.length - 1));
     }
 }

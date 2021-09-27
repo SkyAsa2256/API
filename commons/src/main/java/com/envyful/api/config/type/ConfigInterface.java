@@ -72,9 +72,9 @@ public class ConfigInterface {
                 for(int y = 0; y < height; y++) {
                     for (int x = 0; x < 9; x++) {
                         if (x % 2 == 0) {
-                            conversion.add(primary);
+                            configItems.add(primary);
                         } else {
-                            conversion.add(secondary);
+                            configItems.add(secondary);
                         }
                     }
                 }

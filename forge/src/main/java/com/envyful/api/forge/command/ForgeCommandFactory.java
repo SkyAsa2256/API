@@ -154,6 +154,9 @@ public class ForgeCommandFactory implements CommandFactory<MinecraftServer, ICom
                         }
 
                         extraTabData.add(data.toArray(new Annotation[0]));
+                    } else {
+                        tabCompleters.add(null);
+                        extraTabData.add(null);
                     }
 
                     arguments.add(this.getInjectorFor(parameterTypes[i]));

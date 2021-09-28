@@ -13,6 +13,7 @@ import java.io.Writer;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -235,6 +236,11 @@ public class CommandExecutor {
 
     public <A> List<String> tabComplete(ICommandSender sender, String[] args) {
         TabCompleter<?, A> completer = (TabCompleter<?, A>) this.tabCompleters.get(args.length - 1);
+
+        if (completer == null) {
+            return Collections.emptyList();
+        }
+
         return completer.getCompletions(completer.getSenderClass().cast(sender), args, this.extraTabData.get(args.length - 1));
     }
 }

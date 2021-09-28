@@ -11,8 +11,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: output test
-        run: echo "${{ endsWith(github.event.commits[0].message, 'skip-ci') }}"
       - name: Create Release
         id: create_release
         if: ${{ endsWith(github.event.commits[0].message, 'skip-ci') == 0 }}

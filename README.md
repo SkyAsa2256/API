@@ -2,4 +2,4 @@
 
 This repository will contain a multi-project Gradle setup for Minecraft APIs. (Spigot, Forge, Sponge, Velocity, Bungee etc.)
 
-Wiki for development assistance.
+Join the discord for further assitance.

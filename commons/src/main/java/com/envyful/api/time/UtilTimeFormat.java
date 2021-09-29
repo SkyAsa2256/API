@@ -43,7 +43,7 @@ public class UtilTimeFormat {
 
         long hoursPart = (seconds / SECONDS_PER_HOUR) % 24;
         long minutesPart = (seconds / SECONDS_PER_MINUTE) % MINUTES_PER_HOUR;
-        long secondsPart = seconds % SECONDS_PER_MINUTE;
+        long secondsPart = (seconds) % SECONDS_PER_MINUTE;
 
         StringBuilder builder = new StringBuilder();
 
@@ -56,7 +56,7 @@ public class UtilTimeFormat {
         }
 
         if (secondsPart > 0) {
-            builder.append(seconds).append("s");
+            builder.append(secondsPart).append("s");
         }
 
         return builder.toString();

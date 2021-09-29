@@ -68,6 +68,8 @@ public class CommandExecutor {
         this.requiredArgs = this.calculateRequiredArgs();
         this.tabCompleters = tabCompleters;
         this.extraTabData = extraTabData;
+        System.out.println("TAB COMPLETERS (" + identifier + "): " + tabCompleters.toString());
+        System.out.println("EXTRA TAB DATA (" + identifier + "): " + extraTabData.toString());
     }
 
     /**

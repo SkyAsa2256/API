@@ -141,7 +141,7 @@ public class ForgeCommandFactory implements CommandFactory<MinecraftServer, ICom
                     senderPosition = i;
                     arguments.add(null);
                 } else {
-                    System.out.println("HELLO : "+ clazz.getSimpleName() + " " +
+                    System.out.println("HELLO : " + clazz.getSimpleName() + " " + declaredMethod.getName() + " " +
                                                Arrays.stream(annotations).map(annotations1 ->
                                                                                           Arrays.stream(annotations1)
                                                                                                   .map(annotation ->

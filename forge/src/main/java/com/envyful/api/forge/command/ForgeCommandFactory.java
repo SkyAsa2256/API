@@ -141,17 +141,7 @@ public class ForgeCommandFactory implements CommandFactory<MinecraftServer, ICom
                     senderPosition = i;
                     arguments.add(null);
                 } else {
-                    System.out.println("HELLO : " + clazz.getSimpleName() + " " + declaredMethod.getName() + " " +
-                                               Arrays.stream(annotations).map(annotations1 ->
-                                                                                          Arrays.stream(annotations1)
-                                                                                                  .map(annotation ->
-                                                                                                               annotation.annotationType()
-                                                                                                                       + ": " + annotation.toString())
-                                                                                                  .collect(Collectors.joining(", ")))
-                                       .collect(Collectors.toList()));
                     if (annotations[i][0] instanceof Completable) {
-                        System.out.println("HELLO 2 " + ((Completable) annotations[i][0]).value());
-                        System.out.println("HELLO 3 " + this.registeredCompleters.get(((Completable) annotations[i][0]).value()));
                         tabCompleters.add(this.registeredCompleters.get(((Completable) annotations[i][0]).value()));
                         List<Annotation> data = Lists.newArrayList();
 

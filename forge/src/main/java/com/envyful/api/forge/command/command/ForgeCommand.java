@@ -187,7 +187,11 @@ public class ForgeCommand extends CommandBase {
         if (!this.executors.isEmpty()) {
             for (CommandExecutor executor : this.executors) {
                 if (executor.getIdentifier().isEmpty()) {
-                    return executor.tabComplete(sender, args);
+                    List<String> values = executor.tabComplete(sender, args);
+
+                    if (!values.isEmpty()) {
+                        return values;
+                    }
                 }
 
                 if (args.length == 0) {

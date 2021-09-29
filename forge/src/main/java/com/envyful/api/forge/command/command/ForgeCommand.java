@@ -177,6 +177,9 @@ public class ForgeCommand extends CommandBase {
 
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos) {
+        System.out.println("TAB COMPLETING: " + this.name);
+        System.out.println("ARGS: " + String.join(" ", args));
+
         if (this.tabCompleter != null) {
             return this.tabCompleter.apply(sender, args);
         }
@@ -195,7 +198,11 @@ public class ForgeCommand extends CommandBase {
                     continue;
                 }
 
-                return executor.tabComplete(sender, Arrays.copyOfRange(args, 1, args.length));
+                List<String> values = executor.tabComplete(sender, Arrays.copyOfRange(args, 1, args.length));
+
+                if (!values.isEmpty()) {
+                    return values;
+                }
             }
         }
 
@@ -208,16 +215,28 @@ public class ForgeCommand extends CommandBase {
         }
 
         if (args.length == 0) {
-            return this.getAccessibleSubCommands(sender);
+            List<String> values = this.getAccessibleSubCommands(sender);
+
+            if (!values.isEmpty()) {
+                return values;
+            }
         }
 
         if (args.length == 1) {
-            return this.getMatching(args[0], this.getAccessibleSubCommands(sender));
+            List<String> values = this.getMatching(args[0], this.getAccessibleSubCommands(sender));
+
+            if (!values.isEmpty()) {
+                return values;
+            }
         }
 
         for (ForgeCommand subCommand : this.subCommands) {
             if (args[0].equalsIgnoreCase(subCommand.getName()) || subCommand.getAliases().contains(args[0])) {
-                return subCommand.getTabCompletions(server, sender, Arrays.copyOfRange(args, 1, args.length), pos);
+                List<String> values = subCommand.getTabCompletions(server, sender, Arrays.copyOfRange(args, 1, args.length), pos);
+
+                if (!values.isEmpty()) {
+                    return values;
+                }
             }
         }
 

@@ -3,6 +3,7 @@ package com.envyful.api.forge.command.command.executor;
 import com.envyful.api.command.injector.ArgumentInjector;
 import com.envyful.api.command.injector.TabCompleter;
 import com.envyful.api.forge.command.command.ForgeSenderType;
+import com.envyful.api.forge.command.completion.FillerTabCompleter;
 import com.envyful.api.forge.player.util.UtilPlayer;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -237,7 +238,7 @@ public class CommandExecutor {
     public <A> List<String> tabComplete(ICommandSender sender, String[] args) {
         TabCompleter<?, A> completer = (TabCompleter<?, A>) this.tabCompleters.get(args.length - 1);
 
-        if (completer == null) {
+        if (completer instanceof FillerTabCompleter) {
             return Collections.emptyList();
         }
 

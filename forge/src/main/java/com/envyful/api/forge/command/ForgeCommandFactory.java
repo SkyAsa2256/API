@@ -7,7 +7,9 @@ import com.envyful.api.command.annotate.SubCommands;
 import com.envyful.api.command.annotate.TabCompletions;
 import com.envyful.api.command.annotate.executor.CommandProcessor;
 import com.envyful.api.command.annotate.executor.Completable;
+import com.envyful.api.command.annotate.executor.Filler;
 import com.envyful.api.command.annotate.executor.Sender;
+import com.envyful.api.forge.command.completion.FillerTabCompleter;
 import com.envyful.api.forge.command.completion.number.IntegerTabCompleter;
 import com.envyful.api.command.exception.CommandLoadException;
 import com.envyful.api.command.injector.ArgumentInjector;
@@ -19,6 +21,8 @@ import com.envyful.api.forge.command.completion.player.PlayerTabCompleter;
 import com.envyful.api.forge.command.injector.ForgeFunctionInjector;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import io.leangen.geantyref.AnnotationFormatException;
+import io.leangen.geantyref.TypeFactory;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -155,8 +159,15 @@ public class ForgeCommandFactory implements CommandFactory<MinecraftServer, ICom
 
                         extraTabData.add(data.toArray(new Annotation[0]));
                     } else {
-                        tabCompleters.add(null);
-                        extraTabData.add(null);
+                        tabCompleters.add(new FillerTabCompleter());
+                        try {
+                            extraTabData.add(new Annotation[] { TypeFactory.annotation(
+                                    Filler.class,
+                                    Maps.newHashMap()
+                            ) });
+                        } catch (AnnotationFormatException e) {
+                            e.printStackTrace();
+                        }
                     }
 
                     arguments.add(this.getInjectorFor(parameterTypes[i]));

@@ -57,6 +57,7 @@ public class ConfigItem {
         return this.nbt;
     }
 
+    @ConfigSerializable
     public static final class NBTValue {
 
         private String type;

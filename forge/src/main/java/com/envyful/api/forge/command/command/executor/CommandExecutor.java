@@ -240,12 +240,13 @@ public class CommandExecutor {
             return Collections.emptyList();
         }
 
-        TabCompleter<?, A> completer = (TabCompleter<?, A>) this.tabCompleters.get(args.length - 1);
+        int pos = Math.max(args.length - 1, 0);
+        TabCompleter<?, A> completer = (TabCompleter<?, A>) this.tabCompleters.get(pos);
 
         if (completer instanceof FillerTabCompleter) {
             return Collections.emptyList();
         }
 
-        return completer.getCompletions(completer.getSenderClass().cast(sender), args, this.extraTabData.get(args.length - 1));
+        return completer.getCompletions(completer.getSenderClass().cast(sender), args, this.extraTabData.get(pos));
     }
 }

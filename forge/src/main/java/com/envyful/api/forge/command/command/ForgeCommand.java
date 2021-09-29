@@ -178,7 +178,7 @@ public class ForgeCommand extends CommandBase {
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos) {
         System.out.println("TAB COMPLETING: " + this.name);
-        System.out.println("ARGS: " + String.join(" ", args));
+        System.out.println("ARGS: " + String.join("' '", args));
 
         if (this.tabCompleter != null) {
             return this.tabCompleter.apply(sender, args);

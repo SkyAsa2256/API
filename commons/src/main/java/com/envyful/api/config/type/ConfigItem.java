@@ -63,6 +63,8 @@ public class ConfigItem {
         private String type;
         private String data;
 
+        public NBTValue() {}
+
         public NBTValue(String type, String data) {
             this.type = type;
             this.data = data;

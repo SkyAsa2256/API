@@ -195,7 +195,7 @@ public class ForgeCommand extends CommandBase {
                     continue;
                 }
 
-                return executor.tabComplete(sender, args);
+                return executor.tabComplete(sender, Arrays.copyOfRange(args, 1, args.length));
             }
         }
 
@@ -217,7 +217,7 @@ public class ForgeCommand extends CommandBase {
 
         for (ForgeCommand subCommand : this.subCommands) {
             if (args[0].equalsIgnoreCase(subCommand.getName()) || subCommand.getAliases().contains(args[0])) {
-                return subCommand.getTabCompletions(server, sender, args, pos);
+                return subCommand.getTabCompletions(server, sender, Arrays.copyOfRange(args, 1, args.length), pos);
             }
         }
 

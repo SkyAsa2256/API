@@ -236,11 +236,11 @@ public class CommandExecutor {
     }
 
     public <A> List<String> tabComplete(ICommandSender sender, String[] args) {
-        if (this.tabCompleters.isEmpty() || this.tabCompleters == null) {
+        if (this.tabCompleters.isEmpty() || this.tabCompleters == null || this.requiredArgs == -1) {
             return Collections.emptyList();
         }
 
-        int pos = Math.max(args.length - 1, 0);
+        int pos = Math.min(this.requiredArgs, Math.max(args.length - 1, 0));
         TabCompleter<?, A> completer = (TabCompleter<?, A>) this.tabCompleters.get(pos);
 
         if (completer instanceof FillerTabCompleter) {

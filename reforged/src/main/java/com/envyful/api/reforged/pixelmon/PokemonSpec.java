@@ -32,7 +32,8 @@ public class PokemonSpec {
     protected final List<EnumNature> natures;
     protected final List<EnumGrowth> growths;
 
-    private PokemonSpec(EnumSpecies species, boolean allowEvolutions, Gender gender, Requirement<Integer> ivRequirement,
+    protected PokemonSpec(EnumSpecies species, boolean allowEvolutions, Gender gender,
+                         Requirement<Integer> ivRequirement,
                         List<EnumNature> natures, List<EnumGrowth> growths) {
         this.species = species;
         this.allowEvolutions = allowEvolutions;

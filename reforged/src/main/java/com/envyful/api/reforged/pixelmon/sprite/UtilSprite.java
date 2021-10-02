@@ -86,7 +86,8 @@ public class UtilSprite {
 
     public static ItemStack getPokemonElement(Pokemon pokemon) {
         ItemStack itemStack = getPixelmonSprite(pokemon);
-        itemStack.setStackDisplayName("§b" + pokemon.getSpecies().getLocalizedName() + (!pokemon.getDisplayName().isEmpty() ? "(" + pokemon.getDisplayName() + ")" : "") + "");
+        itemStack.setStackDisplayName("§b" + pokemon.getSpecies().getLocalizedName() + (pokemon.getNickname() != null && !pokemon.getNickname().isEmpty() ?
+                " (" + pokemon.getNickname() + ")" : "") + "");
         NBTTagCompound compound = itemStack.getOrCreateSubCompound("display");
         NBTTagList lore = new NBTTagList();
 

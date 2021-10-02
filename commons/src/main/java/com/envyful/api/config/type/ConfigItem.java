@@ -15,6 +15,7 @@ import java.util.Map;
 @ConfigSerializable
 public class ConfigItem {
 
+    private boolean enabled = true;
     private String type = "minecraft:stained_glass_pane";
     private int amount = 1;
     private byte damage = 14;
@@ -31,6 +32,10 @@ public class ConfigItem {
         this.name = name;
         this.lore = lore;
         this.nbt = nbt;
+    }
+
+    public boolean isEnabled() {
+        return this.enabled;
     }
 
     public String getType() {

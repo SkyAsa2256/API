@@ -85,13 +85,17 @@ public class UtilSprite {
     }
 
     public static ItemStack getPokemonElement(Pokemon pokemon) {
+        return getPokemonElement(pokemon, "§b");
+    }
+
+    public static ItemStack getPokemonElement(Pokemon pokemon, String colour) {
         ItemStack itemStack = getPixelmonSprite(pokemon);
-        itemStack.setStackDisplayName("§b" + pokemon.getSpecies().getLocalizedName() + (pokemon.getNickname() != null && !pokemon.getNickname().isEmpty() ?
+        itemStack.setStackDisplayName(colour + pokemon.getSpecies().getLocalizedName() + (pokemon.getNickname() != null && !pokemon.getNickname().isEmpty() ?
                 " (" + pokemon.getNickname() + ")" : "") + "");
         NBTTagCompound compound = itemStack.getOrCreateSubCompound("display");
         NBTTagList lore = new NBTTagList();
 
-        for (String s : getPokemonDesc(pokemon)) {
+        for (String s : getPokemonDesc(pokemon, colour)) {
             lore.appendTag(new NBTTagString(s));
         }
 
@@ -119,12 +123,12 @@ public class UtilSprite {
         return itemStack;
     }
 
-    public static List<String> getPokemonDesc(Pokemon pokemon) {
+    public static List<String> getPokemonDesc(Pokemon pokemon, String colour) {
         List<String> lore = new ArrayList<>();
 
-        lore.add("§7Nature: §b" + pokemon.getNature().name());
-        lore.add("§7Ability: §b" + pokemon.getAbility().getName());
-        lore.add("§7Friendship: §b" + pokemon.getFriendship());
+        lore.add("§7Nature: " + colour + pokemon.getNature().name());
+        lore.add("§7Ability: " + colour + pokemon.getAbility().getName());
+        lore.add("§7Friendship: " + colour + pokemon.getFriendship());
 
         float ivHP = pokemon.getIVs().get(StatsType.HP);
         float ivAtk = pokemon.getIVs().get(StatsType.Attack);
@@ -134,9 +138,9 @@ public class UtilSprite {
         float ivSDef = pokemon.getIVs().get(StatsType.SpecialDefence);
         int percentage = Math.round(((ivHP + ivDef + ivAtk + ivSpeed + ivSAtk + ivSDef) / 186f) * 100);
 
-        lore.add("§7IVs " + "(§b" + percentage + "%§7):");
-        lore.add("    §7HP: §b" + (int) ivHP + " §d| §7Atk: §b" + (int) ivAtk + " §d| §7Def: §b" + (int) ivDef);
-        lore.add("    §7SAtk: §b" + (int) ivSAtk + " §d| §7SDef: §b" + (int) ivSDef + " §d| §7Spd: §b" + (int) ivSpeed);
+        lore.add("§7IVs " + "(" + colour + percentage + "%§7):");
+        lore.add("    §7HP: " + colour + (int) ivHP + " §d| §7Atk: " + colour + (int) ivAtk + " §d| §7Def: " + colour + (int) ivDef);
+        lore.add("    §7SAtk: " + colour + (int) ivSAtk + " §d| §7SDef: " + colour + (int) ivSDef + " §d| §7Spd: " + colour + (int) ivSpeed);
 
         float evHP = pokemon.getEVs().get(StatsType.HP);
         float evAtk = pokemon.getEVs().get(StatsType.Attack);
@@ -146,14 +150,14 @@ public class UtilSprite {
         float evSDef = pokemon.getEVs().get(StatsType.SpecialDefence);
 
         lore.add("§7EVs:");
-        lore.add("    §7HP: §b" + (int) evHP + " §d| §7Atk: §b" + ((int) evAtk) + " §d| §7Def: §b" + (int) evDef);
-        lore.add("    §7SAtk: §b" + (int) evSAtk + " §d| §7SDef: §b" + ((int) evSDef) + " §d| §7Spd: §b" + (int) evSpeed);
+        lore.add("    §7HP: " + colour + (int) evHP + " §d| §7Atk: " + colour + ((int) evAtk) + " §d| §7Def: " + colour + (int) evDef);
+        lore.add("    §7SAtk: " + colour + (int) evSAtk + " §d| §7SDef: " + colour + ((int) evSDef) + " §d| §7Spd: " + colour + (int) evSpeed);
         lore.add("§7Moves:");
 
         if (pokemon.getMoveset() != null) {
             for (Attack attack : pokemon.getMoveset().attacks) {
                 if (attack != null) {
-                    lore.add("    §b" + attack.getActualMove().getAttackName());
+                    lore.add("    " + colour + attack.getActualMove().getAttackName());
                 }
             }
         }

@@ -23,6 +23,13 @@ public class ConfigInterface {
 
     public ConfigInterface() {}
 
+    public ConfigInterface(String title, int height, String fillType, Map<String, ConfigItem> fillerItems) {
+        this.title = title;
+        this.height = height;
+        this.fillType = fillType;
+        this.fillerItems = fillerItems;
+    }
+
     public String getTitle() {
         return this.title;
     }

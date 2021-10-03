@@ -145,7 +145,7 @@ public class ForgeCommandFactory implements CommandFactory<MinecraftServer, ICom
                         tabCompleters.add(this.registeredCompleters.get(((Completable) annotations[i][0]).value()));
                         List<Annotation> data = Lists.newArrayList();
 
-                        for (int x = 1; x < annotations[x].length; x++) {
+                        for (int x = 1; x < annotations[i].length; x++) {
                             data.add(annotations[i][x]);
                         }
 

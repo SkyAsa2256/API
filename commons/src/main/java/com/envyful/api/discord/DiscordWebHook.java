@@ -96,6 +96,27 @@ public class DiscordWebHook {
 
     /**
      *
+     * Clones current web hook to a new object
+     *
+     * @return new webhook
+     */
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
+    @Override
+    public DiscordWebHook clone() {
+        DiscordWebHook webHook = new DiscordWebHook(this.url);
+        webHook.setUsername(this.username);
+        webHook.setAvatarUrl(this.avatarUrl);
+        webHook.setTts(this.tts);
+
+        for (EmbedObject embed : this.embeds) {
+            webHook.addEmbed(embed);
+        }
+
+        return webHook;
+    }
+
+    /**
+     *
      * Executes the message and sends it to the web hook URL
      *
      * @throws IOException Exception when something is incorrect or goes wrong

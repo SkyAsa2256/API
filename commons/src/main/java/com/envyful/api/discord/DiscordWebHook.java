@@ -1,10 +1,13 @@
 package com.envyful.api.discord;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import javax.net.ssl.HttpsURLConnection;
 import java.awt.*;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.lang.reflect.Array;
 import java.net.URL;
 import java.util.*;
 import java.util.List;
@@ -126,86 +129,7 @@ public class DiscordWebHook {
             throw new IllegalArgumentException("Set content or add at least one EmbedObject");
         }
 
-        JSONObject json = new JSONObject();
-
-        json.put("content", this.content);
-        json.put("username", this.username);
-        json.put("avatar_url", this.avatarUrl);
-        json.put("tts", this.tts);
-
-        if (!this.embeds.isEmpty()) {
-            List<JSONObject> embedObjects = new ArrayList<>();
-
-            for (EmbedObject embed : this.embeds) {
-                JSONObject jsonEmbed = new JSONObject();
-
-                jsonEmbed.put("title", embed.getTitle());
-                jsonEmbed.put("description", embed.getDescription());
-                jsonEmbed.put("url", embed.getUrl());
-
-                if (embed.getColor() != null) {
-                    Color color = embed.getColor();
-                    int rgb = color.getRed();
-                    rgb = (rgb << 8) + color.getGreen();
-                    rgb = (rgb << 8) + color.getBlue();
-
-                    jsonEmbed.put("color", rgb);
-                }
-
-                EmbedObject.Footer footer = embed.getFooter();
-                EmbedObject.Image image = embed.getImage();
-                EmbedObject.Thumbnail thumbnail = embed.getThumbnail();
-                EmbedObject.Author author = embed.getAuthor();
-                List<EmbedObject.Field> fields = embed.getFields();
-
-                if (footer != null) {
-                    JSONObject jsonFooter = new JSONObject();
-
-                    jsonFooter.put("text", footer.getText());
-                    jsonFooter.put("icon_url", footer.getIconUrl());
-                    jsonEmbed.put("footer", jsonFooter);
-                }
-
-                if (image != null) {
-                    JSONObject jsonImage = new JSONObject();
-
-                    jsonImage.put("url", image.getUrl());
-                    jsonEmbed.put("image", jsonImage);
-                }
-
-                if (thumbnail != null) {
-                    JSONObject jsonThumbnail = new JSONObject();
-
-                    jsonThumbnail.put("url", thumbnail.getUrl());
-                    jsonEmbed.put("thumbnail", jsonThumbnail);
-                }
-
-                if (author != null) {
-                    JSONObject jsonAuthor = new JSONObject();
-
-                    jsonAuthor.put("name", author.getName());
-                    jsonAuthor.put("url", author.getUrl());
-                    jsonAuthor.put("icon_url", author.getIconUrl());
-                    jsonEmbed.put("author", jsonAuthor);
-                }
-
-                List<JSONObject> jsonFields = new ArrayList<>();
-                for (EmbedObject.Field field : fields) {
-                    JSONObject jsonField = new JSONObject();
-
-                    jsonField.put("name", field.getName());
-                    jsonField.put("value", field.getValue());
-                    jsonField.put("inline", field.isInline());
-
-                    jsonFields.add(jsonField);
-                }
-
-                jsonEmbed.put("fields", jsonFields.toArray());
-                embedObjects.add(jsonEmbed);
-            }
-
-            json.put("embeds", embedObjects.toArray());
-        }
+        JSONObject json = this.toJson();
 
         URL url = new URL(this.url);
         HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
@@ -221,6 +145,53 @@ public class DiscordWebHook {
 
         connection.getInputStream().close(); //I'm not sure why but it doesn't work without getting the InputStream
         connection.disconnect();
+    }
+
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+
+        json.put("content", this.content);
+        json.put("username", this.username);
+        json.put("avatar_url", this.avatarUrl);
+        json.put("tts", this.tts);
+
+        if (!this.embeds.isEmpty()) {
+            List<JSONObject> embedObjects = new ArrayList<>();
+
+            for (EmbedObject embed : this.embeds) {
+                embedObjects.add(embed.toJson());
+            }
+
+            json.put("embeds", embedObjects.toArray());
+        }
+
+        return json;
+    }
+
+    /**
+     *
+     * Builds a webhook from a JSON string
+     *
+     * @param json The json string
+     * @return The new webhook
+     */
+    public static DiscordWebHook fromJson(String json) {
+        JsonObject jsonElement = JsonParser.parseString(json).getAsJsonObject();
+        Builder builder = DiscordWebHook.builder();
+
+        builder.content(jsonElement.get("content").getAsString());
+        builder.username(jsonElement.get("username").getAsString());
+        builder.avatarUrl(jsonElement.get("avatar_url").getAsString());
+        builder.tts(jsonElement.get("tts").getAsBoolean());
+
+        if (jsonElement.has("embeds")) {
+            for (JsonElement embeds : jsonElement.get("embeds").getAsJsonArray()) {
+                JsonObject asJsonObject = embeds.getAsJsonObject();
+                builder.embeds(EmbedObject.fromJson(asJsonObject.toString()));
+            }
+        }
+
+        return builder.build();
     }
 
     /**
@@ -284,52 +255,4 @@ public class DiscordWebHook {
         }
     }
 
-    private class JSONObject {
-
-        private final HashMap<String, Object> map = new HashMap<>();
-
-        void put(String key, Object value) {
-            if (value != null) {
-                map.put(key, value);
-            }
-        }
-
-        @Override
-        public String toString() {
-            StringBuilder builder = new StringBuilder();
-            Set<Map.Entry<String, Object>> entrySet = map.entrySet();
-            builder.append("{");
-
-            int i = 0;
-            for (Map.Entry<String, Object> entry : entrySet) {
-                Object val = entry.getValue();
-                builder.append(quote(entry.getKey())).append(":");
-
-                if (val instanceof String) {
-                    builder.append(quote(String.valueOf(val)));
-                } else if (val instanceof Integer) {
-                    builder.append(Integer.valueOf(String.valueOf(val)));
-                } else if (val instanceof Boolean) {
-                    builder.append(val);
-                } else if (val instanceof JSONObject) {
-                    builder.append(val.toString());
-                } else if (val.getClass().isArray()) {
-                    builder.append("[");
-                    int len = Array.getLength(val);
-                    for (int j = 0; j < len; j++) {
-                        builder.append(Array.get(val, j).toString()).append(j != len - 1 ? "," : "");
-                    }
-                    builder.append("]");
-                }
-
-                builder.append(++i == entrySet.size() ? "}" : ",");
-            }
-
-            return builder.toString();
-        }
-
-        private String quote(String string) {
-            return "\"" + string + "\"";
-        }
-    }
 }

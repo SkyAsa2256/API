@@ -1,5 +1,11 @@
 package com.envyful.api.discord;
 
+import com.envyful.api.json.UtilGson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -95,6 +101,137 @@ public class EmbedObject {
     public EmbedObject addField(String name, String value, boolean inline) {
         this.fields.add(new Field(name, value, inline));
         return this;
+    }
+
+    /**
+     *
+     * Converts the {@link EmbedObject} to a {@link JSONObject}
+     *
+     * @return the JSONified version of the embed
+     */
+    public JSONObject toJson() {
+        JSONObject jsonEmbed = new JSONObject();
+
+        jsonEmbed.put("title", this.getTitle());
+        jsonEmbed.put("description", this.getDescription());
+        jsonEmbed.put("url", this.getUrl());
+
+        if (this.getColor() != null) {
+            Color color = this.getColor();
+            int rgb = color.getRed();
+            rgb = (rgb << 8) + color.getGreen();
+            rgb = (rgb << 8) + color.getBlue();
+
+            jsonEmbed.put("color", rgb);
+        }
+
+        EmbedObject.Footer footer = this.getFooter();
+        EmbedObject.Image image = this.getImage();
+        EmbedObject.Thumbnail thumbnail = this.getThumbnail();
+        EmbedObject.Author author = this.getAuthor();
+        List<EmbedObject.Field> fields = this.getFields();
+
+        if (footer != null) {
+            JSONObject jsonFooter = new JSONObject();
+
+            jsonFooter.put("text", footer.getText());
+            jsonFooter.put("icon_url", footer.getIconUrl());
+            jsonEmbed.put("footer", jsonFooter);
+        }
+
+        if (image != null) {
+            JSONObject jsonImage = new JSONObject();
+
+            jsonImage.put("url", image.getUrl());
+            jsonEmbed.put("image", jsonImage);
+        }
+
+        if (thumbnail != null) {
+            JSONObject jsonThumbnail = new JSONObject();
+
+            jsonThumbnail.put("url", thumbnail.getUrl());
+            jsonEmbed.put("thumbnail", jsonThumbnail);
+        }
+
+        if (author != null) {
+            JSONObject jsonAuthor = new JSONObject();
+
+            jsonAuthor.put("name", author.getName());
+            jsonAuthor.put("url", author.getUrl());
+            jsonAuthor.put("icon_url", author.getIconUrl());
+            jsonEmbed.put("author", jsonAuthor);
+        }
+
+        List<JSONObject> jsonFields = new ArrayList<>();
+        for (EmbedObject.Field field : fields) {
+            JSONObject jsonField = new JSONObject();
+
+            jsonField.put("name", field.getName());
+            jsonField.put("value", field.getValue());
+            jsonField.put("inline", field.isInline());
+
+            jsonFields.add(jsonField);
+        }
+
+        jsonEmbed.put("fields", jsonFields.toArray());
+        return jsonEmbed;
+    }
+
+    /**
+     *
+     * Converts a JSON string to an Embed
+     *
+     * @param json The json being converted
+     * @return The new embed
+     */
+    public static EmbedObject fromJson(String json) {
+        JsonObject jsonElement = JsonParser.parseString(json).getAsJsonObject();
+        EmbedObject embedObject = new EmbedObject();
+
+        embedObject.setTitle(jsonElement.get("title").getAsString());
+        embedObject.setDescription(jsonElement.get("description").getAsString());
+        embedObject.setUrl(jsonElement.get("url").getAsString());
+
+        if (jsonElement.has("color")) {
+            int rgb = jsonElement.get("color").getAsInt();
+            int red = (rgb >> 16) & 0xFF;
+            int green = (rgb >> 8) & 0xFF;
+            int blue = rgb & 0xFF;
+            embedObject.setColor(new Color(red, green, blue));
+        }
+
+        if (jsonElement.has("footer")) {
+            JsonObject footer = jsonElement.get("footer").getAsJsonObject();
+            embedObject.setFooter(footer.get("text").getAsString(), footer.get("icon_url").getAsString());
+        }
+
+        if (jsonElement.has("image")) {
+            JsonObject image = jsonElement.get("image").getAsJsonObject();
+            embedObject.setImage(image.get("url").getAsString());
+        }
+
+        if (jsonElement.has("thumbnail")) {
+            JsonObject thumbnail = jsonElement.get("thumbnail").getAsJsonObject();
+            embedObject.setThumbnail(thumbnail.get("url").getAsString());
+        }
+
+        if (jsonElement.has("author")) {
+            JsonObject author = jsonElement.get("author").getAsJsonObject();
+            embedObject.setAuthor(author.get("name").getAsString(), author.get("url").getAsString(), author.get(
+                    "icon_url").getAsString());
+        }
+
+        if (jsonElement.has("fields")) {
+            JsonArray fields = jsonElement.get("fields").getAsJsonArray();
+
+            for (JsonElement field : fields) {
+                JsonObject fieldObject = field.getAsJsonObject();
+                embedObject.addField(fieldObject.get("name").getAsString(), fieldObject.get("value").getAsString(),
+                                     fieldObject.get("inline").getAsBoolean());
+            }
+        }
+
+        return embedObject;
     }
 
     public static class Footer {

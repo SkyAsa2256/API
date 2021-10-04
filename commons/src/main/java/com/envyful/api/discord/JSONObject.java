@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-class JSONObject {
+public class JSONObject {
 
     private final Map<String, Object> map = Maps.newHashMap();
 

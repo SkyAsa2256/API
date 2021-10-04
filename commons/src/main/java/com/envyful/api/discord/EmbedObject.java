@@ -275,6 +275,10 @@ public class EmbedObject {
         public String getIconUrl() {
             return iconUrl;
         }
+
+        public void setText(String text) {
+            this.text = text;
+        }
     }
 
     public static class Thumbnail {
@@ -323,6 +327,10 @@ public class EmbedObject {
         public String getIconUrl() {
             return iconUrl;
         }
+
+        public void setName(String name) {
+            this.name = name;
+        }
     }
 
     public static class Field {
@@ -346,6 +354,14 @@ public class EmbedObject {
 
         public boolean isInline() {
             return inline;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
         }
     }
 

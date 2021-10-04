@@ -8,6 +8,7 @@ import com.google.gson.JsonParser;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class EmbedObject {
@@ -83,9 +84,17 @@ public class EmbedObject {
         return this;
     }
 
+    public void setFooter(Footer footer) {
+        this.footer = footer;
+    }
+
     public EmbedObject setThumbnail(String url) {
         this.thumbnail = new Thumbnail(url);
         return this;
+    }
+
+    public void setThumbnail(Thumbnail thumbnail) {
+        this.thumbnail = thumbnail;
     }
 
     public EmbedObject setImage(String url) {
@@ -93,14 +102,30 @@ public class EmbedObject {
         return this;
     }
 
+    public void setImage(Image image) {
+        this.image = image;
+    }
+
     public EmbedObject setAuthor(String name, String url, String icon) {
         this.author = new Author(name, url, icon);
         return this;
     }
 
+    public void setAuthor(Author author) {
+        this.author = author;
+    }
+
     public EmbedObject addField(String name, String value, boolean inline) {
         this.fields.add(new Field(name, value, inline));
         return this;
+    }
+
+    public void addField(Field field) {
+        this.fields.add(field);
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 
     /**
@@ -321,6 +346,103 @@ public class EmbedObject {
 
         public boolean isInline() {
             return inline;
+        }
+    }
+
+    public static class Builder {
+
+        private String title;
+        private String description;
+        private String url;
+        private Color color;
+
+        private Footer footer;
+        private Thumbnail thumbnail;
+        private Image image;
+        private Author author;
+        private List<Field> fields = new ArrayList<>();
+
+        public Builder() {}
+
+        public Builder title(String title) {
+            this.title = title;
+            return this;
+        }
+
+        public Builder description(String description) {
+            this.description = description;
+            return this;
+        }
+
+        public Builder url(String url) {
+            this.url = url;
+            return this;
+        }
+
+        public Builder color(Color color) {
+            this.color = color;
+            return this;
+        }
+
+        public Builder footer(Footer footer) {
+            this.footer = footer;
+            return this;
+        }
+
+        public Builder thumbnail(Thumbnail thumbnail) {
+            this.thumbnail = thumbnail;
+            return this;
+        }
+
+        public Builder image(Image image) {
+            this.image = image;
+            return this;
+        }
+
+        public Builder author(Author author) {
+            this.author = author;
+            return this;
+        }
+
+        public Builder fields(Field... fields) {
+            this.fields.addAll(Arrays.asList(fields));
+            return this;
+        }
+
+        public EmbedObject build() {
+            EmbedObject embedObject = new EmbedObject();
+
+            embedObject.setTitle(this.title);
+            embedObject.setDescription(this.description);
+            embedObject.setUrl(this.url);
+
+            if (this.color != null) {
+                embedObject.setColor(this.color);
+            }
+
+            if (this.footer != null) {
+                embedObject.setFooter(this.footer);
+            }
+
+            if (this.thumbnail != null) {
+                embedObject.setThumbnail(this.thumbnail);
+            }
+
+            if (this.image != null) {
+                embedObject.setImage(this.image);
+            }
+
+            if (this.author != null) {
+                embedObject.setAuthor(this.author);
+            }
+
+            if (!this.fields.isEmpty()) {
+                for (Field field : this.fields) {
+                    embedObject.addField(field);
+                }
+            }
+
+            return embedObject;
         }
     }
 }

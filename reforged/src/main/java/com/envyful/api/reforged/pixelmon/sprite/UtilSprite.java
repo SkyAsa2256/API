@@ -193,6 +193,10 @@ public class UtilSprite {
             return "";
         }
 
+        if (pokemon.getMoveset().attacks[pos] == null) {
+            return "";
+        }
+
         return pokemon.getMoveset().attacks[pos].getActualMove().getLocalizedName();
     }
 }

@@ -6,9 +6,11 @@ import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import java.util.List;
 
 @ConfigSerializable
-public class LoreConfig {
+public class SpriteConfig {
 
-    public static final transient LoreConfig DEFAULT = new LoreConfig();
+    public static final transient SpriteConfig DEFAULT = new SpriteConfig();
+
+    private String name = "&b%species_name% %nickname%";
 
     private List<String> lore = Lists.newArrayList(
             "&7Nature: &b%nature%",
@@ -33,8 +35,22 @@ public class LoreConfig {
 
     private String untrdeableTrueFormat = "&aTRUE";
     private String untradeableFalseFormat = "&cFALSE";
+    private String abilityFormat = "%ability_name% %ability_ha%";
+    private String haFormat = "&7(&c&lHA&7)";
 
-    public LoreConfig() {}
+    public SpriteConfig() {}
+
+    public String getHaFormat() {
+        return this.haFormat;
+    }
+
+    public String getAbilityFormat() {
+        return this.abilityFormat;
+    }
+
+    public String getName() {
+        return this.name;
+    }
 
     public List<String> getLore() {
         return this.lore;

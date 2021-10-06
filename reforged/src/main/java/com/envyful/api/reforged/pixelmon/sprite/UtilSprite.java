@@ -1,6 +1,8 @@
 package com.envyful.api.reforged.pixelmon.sprite;
 
+import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.forge.items.ItemBuilder;
+import com.envyful.api.reforged.pixelmon.config.SpriteConfig;
 import com.google.common.collect.Maps;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.battles.attacks.Attack;
@@ -85,17 +87,24 @@ public class UtilSprite {
     }
 
     public static ItemStack getPokemonElement(Pokemon pokemon) {
-        return getPokemonElement(pokemon, "§b");
+        return getPokemonElement(pokemon, SpriteConfig.DEFAULT);
     }
 
-    public static ItemStack getPokemonElement(Pokemon pokemon, String colour) {
+    public static ItemStack getPokemonElement(Pokemon pokemon, SpriteConfig config) {
         ItemStack itemStack = getPixelmonSprite(pokemon);
-        itemStack.setStackDisplayName(colour + pokemon.getSpecies().getLocalizedName() + (pokemon.getNickname() != null && !pokemon.getNickname().isEmpty() ?
-                " (" + pokemon.getNickname() + ")" : "") + "");
+
+        itemStack.setStackDisplayName(UtilChatColour.translateColourCodes(
+                '&',
+                config.getName()
+                        .replace("%species_name%", pokemon.getSpecies().getLocalizedName())
+                        .replace("%nickname%", (pokemon.getNickname() != null && !pokemon.getNickname().isEmpty() ?
+                                " (" + pokemon.getNickname() + ")" : ""))
+        ));
+
         NBTTagCompound compound = itemStack.getOrCreateSubCompound("display");
         NBTTagList lore = new NBTTagList();
 
-        for (String s : getPokemonDesc(pokemon, colour)) {
+        for (String s : getPokemonDesc(pokemon, SpriteConfig.DEFAULT)) {
             lore.appendTag(new NBTTagString(s));
         }
 
@@ -123,12 +132,8 @@ public class UtilSprite {
         return itemStack;
     }
 
-    public static List<String> getPokemonDesc(Pokemon pokemon, String colour) {
+    public static List<String> getPokemonDesc(Pokemon pokemon, SpriteConfig config) {
         List<String> lore = new ArrayList<>();
-
-        lore.add("§7Nature: " + colour + pokemon.getNature().name());
-        lore.add("§7Ability: " + colour + pokemon.getAbility().getName());
-        lore.add("§7Friendship: " + colour + pokemon.getFriendship());
 
         float ivHP = pokemon.getIVs().get(StatsType.HP);
         float ivAtk = pokemon.getIVs().get(StatsType.Attack);
@@ -137,11 +142,6 @@ public class UtilSprite {
         float ivSAtk = pokemon.getIVs().get(StatsType.SpecialAttack);
         float ivSDef = pokemon.getIVs().get(StatsType.SpecialDefence);
         int percentage = Math.round(((ivHP + ivDef + ivAtk + ivSpeed + ivSAtk + ivSDef) / 186f) * 100);
-
-        lore.add("§7IVs " + "(" + colour + percentage + "%§7):");
-        lore.add("    §7HP: " + colour + (int) ivHP + " §d| §7Atk: " + colour + (int) ivAtk + " §d| §7Def: " + colour + (int) ivDef);
-        lore.add("    §7SAtk: " + colour + (int) ivSAtk + " §d| §7SDef: " + colour + (int) ivSDef + " §d| §7Spd: " + colour + (int) ivSpeed);
-
         float evHP = pokemon.getEVs().get(StatsType.HP);
         float evAtk = pokemon.getEVs().get(StatsType.Attack);
         float evDef = pokemon.getEVs().get(StatsType.Defence);
@@ -149,19 +149,50 @@ public class UtilSprite {
         float evSAtk = pokemon.getEVs().get(StatsType.SpecialAttack);
         float evSDef = pokemon.getEVs().get(StatsType.SpecialDefence);
 
-        lore.add("§7EVs:");
-        lore.add("    §7HP: " + colour + (int) evHP + " §d| §7Atk: " + colour + ((int) evAtk) + " §d| §7Def: " + colour + (int) evDef);
-        lore.add("    §7SAtk: " + colour + (int) evSAtk + " §d| §7SDef: " + colour + ((int) evSDef) + " §d| §7Spd: " + colour + (int) evSpeed);
-        lore.add("§7Moves:");
-
-        if (pokemon.getMoveset() != null) {
-            for (Attack attack : pokemon.getMoveset().attacks) {
-                if (attack != null) {
-                    lore.add("    " + colour + attack.getActualMove().getAttackName());
-                }
-            }
+        for (String line : config.getLore()) {
+            lore.add(UtilChatColour.translateColourCodes(
+                    '&',
+                    line
+                            .replace("%nature%", pokemon.getNature().getLocalizedName())
+                            .replace("%ability%", pokemon.getAbility().getLocalizedName())
+                            .replace("%ability%", config.getAbilityFormat()
+                                    .replace("%ability_name%", pokemon.getAbility().getLocalizedName())
+                                    .replace("%abiliy_ha%", pokemon.getAbilitySlot() == 2 ? config.getHaFormat() : ""))
+                            .replace("%friendship%", pokemon.getFriendship() + "")
+                            .replace("%untradeable%", pokemon.hasSpecFlag("untradeable") ?
+                                    config.getUntrdeableTrueFormat() : config.getUntradeableFalseFormat())
+                            .replace("%iv_percentage%", percentage + "")
+                            .replace("%iv_hp%", ivHP + "")
+                            .replace("%iv_attack%", ivAtk + "")
+                            .replace("%iv_defence%", ivDef + "")
+                            .replace("%iv_spattack%", ivSAtk + "")
+                            .replace("%iv_spdefence%", ivSDef + "")
+                            .replace("%iv_speed%", ivSpeed + "")
+                            .replace("%ev_hp%", evHP + "")
+                            .replace("%ev_attack%", evAtk + "")
+                            .replace("%ev_defence%", evDef + "")
+                            .replace("%ev_spattack%", evSAtk + "")
+                            .replace("%ev_spdefence%", evSDef + "")
+                            .replace("%ev_speed%", evSpeed + "")
+                            .replace("%move_1%", getMove(pokemon, 1))
+                            .replace("%move_2%", getMove(pokemon, 2))
+                            .replace("%move_3%", getMove(pokemon, 3))
+                            .replace("%move_4%", getMove(pokemon, 4))
+            ));
         }
 
         return lore;
+    }
+
+    private static String getMove(Pokemon pokemon, int pos) {
+        if (pokemon.getMoveset() == null) {
+            return "";
+        }
+
+        if (pokemon.getMoveset().attacks.length <= pos) {
+            return "";
+        }
+
+        return pokemon.getMoveset().attacks[pos].getActualMove().getLocalizedName();
     }
 }

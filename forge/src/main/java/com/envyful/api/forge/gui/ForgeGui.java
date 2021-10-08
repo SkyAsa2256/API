@@ -1,6 +1,7 @@
 package com.envyful.api.forge.gui;
 
 import com.envyful.api.discord.EmbedObject;
+import com.envyful.api.forge.concurrency.UtilForgeConcurrency;
 import com.envyful.api.forge.gui.item.EmptySlot;
 import com.envyful.api.forge.gui.pane.ForgeSimplePane;
 import com.envyful.api.forge.player.ForgeEnvyPlayer;
@@ -85,17 +86,33 @@ public class ForgeGui implements Gui {
         }
 
         EntityPlayerMP parent = ((ForgeEnvyPlayer) player).getParent();
-        ForgeGuiContainer container = new ForgeGuiContainer(this, parent);
 
-        parent.closeContainer();
-        parent.openContainer = container;
-        parent.currentWindowId = 1;
-        parent.connection.sendPacket(new SPacketOpenWindow(parent.currentWindowId, "minecraft:container", this.title, 9 * this.height));
-        container.detectAndSendChanges();
-        parent.sendAllContents(container, container.inventoryItemStacks);
+        int windowId = parent.openContainer.windowId;
 
-        this.containers.add(container);
-        ForgeGuiTracker.addGui(player, this);
+        CPacketCloseWindow closeWindowClient = new CPacketCloseWindow();
+        try {
+            FIELD.set(closeWindowClient, windowId);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        SPacketCloseWindow closeWindowServer = new SPacketCloseWindow(windowId);
+
+        parent.connection.processCloseWindow(closeWindowClient);
+        parent.connection.sendPacket(closeWindowServer);
+
+        UtilForgeConcurrency.runSync(() -> {
+            ForgeGuiContainer container = new ForgeGuiContainer(this, parent);
+
+            parent.closeContainer();
+            parent.openContainer = container;
+            parent.currentWindowId = 1;
+            parent.connection.sendPacket(new SPacketOpenWindow(parent.currentWindowId, "minecraft:container", this.title, 9 * this.height));
+            container.detectAndSendChanges();
+            parent.sendAllContents(container, container.inventoryItemStacks);
+
+            this.containers.add(container);
+            ForgeGuiTracker.addGui(player, this);
+        });
     }
 
     public void update() {

@@ -1,8 +1,5 @@
 package com.envyful.api.forge.gui;
 
-import com.envyful.api.concurrency.AsyncTaskBuilder;
-import com.envyful.api.concurrency.UtilConcurrency;
-import com.envyful.api.discord.EmbedObject;
 import com.envyful.api.forge.concurrency.UtilForgeConcurrency;
 import com.envyful.api.forge.gui.item.EmptySlot;
 import com.envyful.api.forge.gui.pane.ForgeSimplePane;
@@ -14,7 +11,6 @@ import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.type.Pair;
 import com.google.common.collect.Lists;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ClickType;
@@ -28,10 +24,11 @@ import net.minecraft.network.play.server.SPacketSetSlot;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
-import scala.xml.dtd.REQUIRED;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.lang.reflect.Field;
-import java.rmi.activation.ActivationSystem;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -94,19 +91,42 @@ public class ForgeGui implements Gui {
     }
 
     private void open(EnvyPlayer<?> player, EntityPlayerMP parent) {
-        UtilForgeConcurrency.runSync(() -> {
+        new TestClass(() -> {
             ForgeGuiContainer container = new ForgeGuiContainer(this, parent);
 
             parent.closeContainer();
             parent.openContainer = container;
             parent.currentWindowId = 1;
             parent.connection.sendPacket(new SPacketOpenWindow(parent.currentWindowId, "minecraft:container", this.title, 9 * this.height));
-            container.detectAndSendChanges();
             parent.sendAllContents(container, container.inventoryItemStacks);
+            container.detectAndSendChanges();
+            parent.sendAllContents(parent.openContainer, container.inventoryItemStacks);
+            parent.inventoryContainer.detectAndSendChanges();
+            parent.sendAllContents(parent.inventoryContainer, parent.inventoryContainer.inventoryItemStacks);
 
             this.containers.add(container);
             ForgeGuiTracker.addGui(player, this);
         });
+    }
+
+    public static class TestClass {
+
+        private final Runnable runnable;
+
+        public TestClass(Runnable runnable) {this.runnable = runnable;
+            MinecraftForge.EVENT_BUS.register(this);
+        }
+
+        @SubscribeEvent
+        public void onTick(TickEvent.ServerTickEvent event) {
+            if (event.phase != TickEvent.Phase.START) {
+                return;
+            }
+
+            this.runnable.run();
+            MinecraftForge.EVENT_BUS.unregister(this);
+        }
+
     }
 
     public void update() {

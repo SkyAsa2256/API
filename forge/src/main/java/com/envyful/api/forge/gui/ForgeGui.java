@@ -1,5 +1,6 @@
 package com.envyful.api.forge.gui;
 
+import com.envyful.api.concurrency.UtilConcurrency;
 import com.envyful.api.discord.EmbedObject;
 import com.envyful.api.forge.concurrency.UtilForgeConcurrency;
 import com.envyful.api.forge.gui.item.EmptySlot;
@@ -100,7 +101,7 @@ public class ForgeGui implements Gui {
         parent.connection.processCloseWindow(closeWindowClient);
         parent.connection.sendPacket(closeWindowServer);
 
-        UtilForgeConcurrency.runSync(() -> {
+        UtilConcurrency.runLater(() -> {
             ForgeGuiContainer container = new ForgeGuiContainer(this, parent);
 
             parent.closeContainer();
@@ -112,7 +113,7 @@ public class ForgeGui implements Gui {
 
             this.containers.add(container);
             ForgeGuiTracker.addGui(player, this);
-        });
+        }, 1L);
     }
 
     public void update() {

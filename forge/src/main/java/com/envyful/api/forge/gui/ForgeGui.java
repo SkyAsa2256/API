@@ -121,6 +121,8 @@ public class ForgeGui implements Gui {
         private final EntityPlayerMP player;
         private final List<EmptySlot> emptySlots = Lists.newArrayList();
 
+        private boolean closed = false;
+
         public ForgeGuiContainer(ForgeGui gui, EntityPlayerMP player) {
             this.windowId = 1;
             this.gui = gui;
@@ -281,6 +283,12 @@ public class ForgeGui implements Gui {
 
         @Override
         public void onContainerClosed(EntityPlayer playerIn) {
+            if (this.closed) {
+                return;
+            }
+
+            this.closed = true;
+
             super.onContainerClosed(playerIn);
 
             EntityPlayerMP sender = (EntityPlayerMP) playerIn;

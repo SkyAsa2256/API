@@ -93,9 +93,8 @@ public class ForgeGui implements Gui {
         new AsyncTaskBuilder()
                 .delay(50L)
                 .task(() -> {
-                    System.out.println(parent.openContainer + " " + parent.inventoryContainer + " DEBUG");
-
                     if (parent.openContainer != parent.inventoryContainer) {
+                        System.out.println(parent.openContainer + " " + parent.inventoryContainer + " DEBUG");
                         return;
                     }
 

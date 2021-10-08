@@ -42,7 +42,7 @@ public class ForgeGui implements Gui {
 
     static {
         try {
-            FIELD = CPacketCloseWindow.class.getDeclaredField("a");
+            FIELD = CPacketCloseWindow.class.getDeclaredField("field_149556_a");
             FIELD.setAccessible(true);
         } catch (NoSuchFieldException e) {
             e.printStackTrace();

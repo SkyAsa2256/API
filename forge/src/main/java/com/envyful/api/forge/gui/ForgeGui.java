@@ -106,12 +106,15 @@ public class ForgeGui implements Gui {
 
             this.containers.add(container);
             ForgeGuiTracker.addGui(player, this);
+            System.out.println(parent.inventory + " " + parent.inventoryContainer + " " + parent.openContainer + " " +
+                                       "DEBUG3");
         });
     }
 
     public static class TestClass {
 
         private final Runnable runnable;
+        private int counter = 1;
 
         public TestClass(Runnable runnable) {this.runnable = runnable;
             MinecraftForge.EVENT_BUS.register(this);
@@ -119,6 +122,12 @@ public class ForgeGui implements Gui {
 
         @SubscribeEvent
         public void onTick(TickEvent.ServerTickEvent event) {
+            --counter;
+
+            if (counter > 0) {
+                return;
+            }
+
             if (event.phase != TickEvent.Phase.START) {
                 return;
             }

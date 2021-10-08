@@ -71,13 +71,18 @@ public class ForgeGui implements Gui {
         EntityPlayerMP parent = ((ForgeEnvyPlayer) player).getParent();
         ForgeGuiContainer container = new ForgeGuiContainer(this, parent);
 
-        parent.closeScreen();
         parent.closeContainer();
+        System.out.println(parent.currentWindowId + " " + parent.openContainer);
         parent.openContainer = container;
+        System.out.println(parent.currentWindowId + " " + parent.openContainer);
         parent.currentWindowId = 1;
+        System.out.println(parent.currentWindowId + " " + parent.openContainer);
         parent.connection.sendPacket(new SPacketOpenWindow(parent.currentWindowId, "minecraft:container", this.title, 9 * this.height));
+        System.out.println(parent.currentWindowId + " " + parent.openContainer);
         container.detectAndSendChanges();
+        System.out.println(parent.currentWindowId + " " + parent.openContainer);
         parent.sendAllContents(container, container.inventoryItemStacks);
+        System.out.println(parent.currentWindowId + " " + parent.openContainer);
 
         this.containers.add(container);
         ForgeGuiTracker.addGui(player, this);

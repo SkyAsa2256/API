@@ -309,8 +309,6 @@ public class ForgeGui implements Gui {
 
             this.closed = true;
 
-            super.onContainerClosed(playerIn);
-
             EntityPlayerMP sender = (EntityPlayerMP) playerIn;
             EnvyPlayer<?> player = this.gui.playerManager.getPlayer(playerIn.getUniqueID());
 

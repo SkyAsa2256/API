@@ -98,13 +98,13 @@ public class ForgeGui implements Gui {
                     }
 
                     UtilForgeConcurrency.runSync(() -> {
-                        open(parent);
+                        open(player, parent);
                     });
                 })
                 .start();
     }
 
-    private void open(EntityPlayerMP parent) {
+    private void open(EnvyPlayer<?> player, EntityPlayerMP parent) {
         UtilForgeConcurrency.runSync(() -> {
 
             int windowId = parent.openContainer.windowId;

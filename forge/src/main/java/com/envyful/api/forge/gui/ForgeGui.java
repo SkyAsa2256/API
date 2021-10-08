@@ -86,34 +86,36 @@ public class ForgeGui implements Gui {
             return;
         }
 
-        EntityPlayerMP parent = ((ForgeEnvyPlayer) player).getParent();
+        UtilForgeConcurrency.runSync(() -> {
+            EntityPlayerMP parent = ((ForgeEnvyPlayer) player).getParent();
 
-        int windowId = parent.openContainer.windowId;
+            int windowId = parent.openContainer.windowId;
 
-        CPacketCloseWindow closeWindowClient = new CPacketCloseWindow();
-        try {
-            FIELD.set(closeWindowClient, windowId);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        SPacketCloseWindow closeWindowServer = new SPacketCloseWindow(windowId);
+            CPacketCloseWindow closeWindowClient = new CPacketCloseWindow();
+            try {
+                FIELD.set(closeWindowClient, windowId);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+            SPacketCloseWindow closeWindowServer = new SPacketCloseWindow(windowId);
 
-        parent.connection.processCloseWindow(closeWindowClient);
-        parent.connection.sendPacket(closeWindowServer);
+            parent.connection.processCloseWindow(closeWindowClient);
+            parent.connection.sendPacket(closeWindowServer);
 
-        UtilConcurrency.runLater(() -> {
-            ForgeGuiContainer container = new ForgeGuiContainer(this, parent);
+            UtilForgeConcurrency.runSync(() -> {
+                ForgeGuiContainer container = new ForgeGuiContainer(this, parent);
 
-            parent.closeContainer();
-            parent.openContainer = container;
-            parent.currentWindowId = 1;
-            parent.connection.sendPacket(new SPacketOpenWindow(parent.currentWindowId, "minecraft:container", this.title, 9 * this.height));
-            container.detectAndSendChanges();
-            parent.sendAllContents(container, container.inventoryItemStacks);
+                parent.closeContainer();
+                parent.openContainer = container;
+                parent.currentWindowId = 1;
+                parent.connection.sendPacket(new SPacketOpenWindow(parent.currentWindowId, "minecraft:container", this.title, 9 * this.height));
+                container.detectAndSendChanges();
+                parent.sendAllContents(container, container.inventoryItemStacks);
 
-            this.containers.add(container);
-            ForgeGuiTracker.addGui(player, this);
-        }, 1L);
+                this.containers.add(container);
+                ForgeGuiTracker.addGui(player, this);
+            });
+        });
     }
 
     public void update() {

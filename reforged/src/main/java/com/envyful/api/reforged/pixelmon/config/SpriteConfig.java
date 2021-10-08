@@ -18,7 +18,7 @@ public class SpriteConfig {
             "&7Friendship: &b%friendship%",
             "&7Untradeable: &b%untradeable%",
             " ",
-            "&7IVs (&b%iv_percentage%&7):",
+            "&7IVs (&b%iv_percentage%%&7):",
             "    §7HP: &b%iv_hp% §d| §7Atk: &b%iv_attack% §d| §7Def: &b%iv_defence%",
             "    §7SAtk: &b%iv_spattack% §d| §7SDef: &b%iv_spdefence% §d| §7Spd: &b%iv_speed%",
             " ",

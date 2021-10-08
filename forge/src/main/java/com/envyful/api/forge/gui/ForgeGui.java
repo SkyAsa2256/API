@@ -316,6 +316,8 @@ public class ForgeGui implements Gui {
 
             sender.connection.processCloseWindow(closeWindowClient);
             sender.connection.sendPacket(closeWindowServer);
+            sender.inventory.markDirty();
+
 
             ForgeGuiTracker.removePlayer(player);
         }

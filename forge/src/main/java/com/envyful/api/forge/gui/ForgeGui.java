@@ -10,6 +10,7 @@ import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.type.Pair;
 import com.google.common.collect.Lists;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ClickType;
@@ -273,6 +274,12 @@ public class ForgeGui implements Gui {
                 this.gui.closeConsumer.accept((ForgeEnvyPlayer) player);
             }
 
+            playerIn.inventoryContainer.detectAndSendChanges();
+            ((EntityPlayerMP) playerIn).sendAllContents(
+                    playerIn.inventoryContainer,
+                    playerIn.inventoryContainer.inventoryItemStacks
+            );
+            ((EntityPlayerMP) playerIn).currentWindowId = 0;
             ForgeGuiTracker.removePlayer(player);
         }
     }

@@ -93,7 +93,7 @@ public class ForgeGui implements Gui {
     }
 
     private void open(EnvyPlayer<?> player, EntityPlayerMP parent) {
-        new TestClass(i -> parent.openContainer != parent.inventoryContainer, () -> {
+        new TestClass(i -> parent.openContainer == parent.inventoryContainer, () -> {
             ForgeGuiContainer container = new ForgeGuiContainer(this, parent);
 
             parent.closeContainer();

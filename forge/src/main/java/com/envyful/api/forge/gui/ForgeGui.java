@@ -25,6 +25,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
@@ -106,8 +107,12 @@ public class ForgeGui implements Gui {
 
             this.containers.add(container);
             ForgeGuiTracker.addGui(player, this);
-            System.out.println(parent.inventory + " " + parent.inventoryContainer + " " + parent.openContainer + " " +
+            System.out.println(parent.inventoryContainer + " " + parent.openContainer + " " +
                                        "DEBUG3");
+            new TestClass(() -> {
+                System.out.println(parent.inventoryContainer + " " + parent.openContainer + " " +
+                                           "DEBUG4");
+            });
         });
     }
 
@@ -337,11 +342,7 @@ public class ForgeGui implements Gui {
             int windowId = sender.openContainer.windowId;
 
             CPacketCloseWindow closeWindowClient = new CPacketCloseWindow();
-            try {
-                FIELD.set(closeWindowClient, windowId);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
+            ObfuscationReflectionHelper.setPrivateValue(CPacketCloseWindow.class, closeWindowClient, windowId, 0);
             SPacketCloseWindow closeWindowServer = new SPacketCloseWindow(windowId);
 
             sender.connection.processCloseWindow(closeWindowClient);

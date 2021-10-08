@@ -71,6 +71,7 @@ public class ForgeGui implements Gui {
         EntityPlayerMP parent = ((ForgeEnvyPlayer) player).getParent();
         ForgeGuiContainer container = new ForgeGuiContainer(this, parent);
 
+        parent.closeScreen();
         parent.closeContainer();
         parent.openContainer = container;
         parent.currentWindowId = 1;

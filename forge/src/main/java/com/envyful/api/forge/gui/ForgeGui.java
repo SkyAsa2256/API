@@ -1,5 +1,6 @@
 package com.envyful.api.forge.gui;
 
+import com.envyful.api.discord.EmbedObject;
 import com.envyful.api.forge.gui.item.EmptySlot;
 import com.envyful.api.forge.gui.pane.ForgeSimplePane;
 import com.envyful.api.forge.player.ForgeEnvyPlayer;
@@ -17,6 +18,8 @@ import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.play.client.CPacketCloseWindow;
+import net.minecraft.network.play.server.SPacketCloseWindow;
 import net.minecraft.network.play.server.SPacketOpenWindow;
 import net.minecraft.network.play.server.SPacketSetSlot;
 import net.minecraft.util.NonNullList;
@@ -24,6 +27,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import scala.xml.dtd.REQUIRED;
 
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -33,6 +37,17 @@ import java.util.function.Consumer;
  *
  */
 public class ForgeGui implements Gui {
+
+    private static Field FIELD;
+
+    static {
+        try {
+            FIELD = CPacketCloseWindow.class.getDeclaredField("a");
+            FIELD.setAccessible(true);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+    }
 
     private final ITextComponent title;
     private final int height;
@@ -268,6 +283,7 @@ public class ForgeGui implements Gui {
         public void onContainerClosed(EntityPlayer playerIn) {
             super.onContainerClosed(playerIn);
 
+            EntityPlayerMP sender = (EntityPlayerMP) playerIn;
             EnvyPlayer<?> player = this.gui.playerManager.getPlayer(playerIn.getUniqueID());
 
             if (this.gui.closeConsumer != null) {
@@ -275,11 +291,24 @@ public class ForgeGui implements Gui {
             }
 
             playerIn.inventoryContainer.detectAndSendChanges();
-            ((EntityPlayerMP) playerIn).sendAllContents(
+            sender.sendAllContents(
                     playerIn.inventoryContainer,
                     playerIn.inventoryContainer.inventoryItemStacks
             );
-            ((EntityPlayerMP) playerIn).currentWindowId = 0;
+            sender.currentWindowId = 0;
+            int windowId = sender.openContainer.windowId;
+
+            CPacketCloseWindow closeWindowClient = new CPacketCloseWindow();
+            try {
+                FIELD.set(closeWindowClient, windowId);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+            SPacketCloseWindow closeWindowServer = new SPacketCloseWindow(windowId);
+
+            sender.connection.processCloseWindow(closeWindowClient);
+            sender.connection.sendPacket(closeWindowServer);
+
             ForgeGuiTracker.removePlayer(player);
         }
     }

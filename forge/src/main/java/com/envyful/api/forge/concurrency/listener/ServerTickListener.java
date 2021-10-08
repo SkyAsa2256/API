@@ -18,6 +18,10 @@ public class ServerTickListener {
 
     @SubscribeEvent
     public void onServerTick(TickEvent.ServerTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) {
+            return;
+        }
+
         Iterator<Runnable> iterator = tasks.iterator();
 
         while (iterator.hasNext()) {

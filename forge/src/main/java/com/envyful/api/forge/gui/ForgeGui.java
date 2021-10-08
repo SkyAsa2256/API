@@ -95,32 +95,17 @@ public class ForgeGui implements Gui {
 
     private void open(EnvyPlayer<?> player, EntityPlayerMP parent) {
         UtilForgeConcurrency.runSync(() -> {
-            int windowId = parent.openContainer.windowId;
+            ForgeGuiContainer container = new ForgeGuiContainer(this, parent);
 
-            CPacketCloseWindow closeWindowClient = new CPacketCloseWindow();
-            try {
-                FIELD.set(closeWindowClient, windowId);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-            SPacketCloseWindow closeWindowServer = new SPacketCloseWindow(windowId);
+            parent.closeContainer();
+            parent.openContainer = container;
+            parent.currentWindowId = 1;
+            parent.connection.sendPacket(new SPacketOpenWindow(parent.currentWindowId, "minecraft:container", this.title, 9 * this.height));
+            container.detectAndSendChanges();
+            parent.sendAllContents(container, container.inventoryItemStacks);
 
-            parent.connection.processCloseWindow(closeWindowClient);
-            parent.connection.sendPacket(closeWindowServer);
-
-            UtilForgeConcurrency.runSync(() -> {
-                ForgeGuiContainer container = new ForgeGuiContainer(this, parent);
-
-                parent.closeContainer();
-                parent.openContainer = container;
-                parent.currentWindowId = 1;
-                parent.connection.sendPacket(new SPacketOpenWindow(parent.currentWindowId, "minecraft:container", this.title, 9 * this.height));
-                container.detectAndSendChanges();
-                parent.sendAllContents(container, container.inventoryItemStacks);
-
-                this.containers.add(container);
-                ForgeGuiTracker.addGui(player, this);
-            });
+            this.containers.add(container);
+            ForgeGuiTracker.addGui(player, this);
         });
     }
 

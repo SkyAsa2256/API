@@ -90,24 +90,11 @@ public class ForgeGui implements Gui {
 
         EntityPlayerMP parent = ((ForgeEnvyPlayer) player).getParent();
 
-        new AsyncTaskBuilder()
-                .delay(50L)
-                .task(() -> {
-                    if (parent.openContainer != parent.inventoryContainer) {
-                        System.out.println(parent.openContainer + " " + parent.inventoryContainer + " DEBUG");
-                        return;
-                    }
-
-                    UtilForgeConcurrency.runSync(() -> {
-                        open(player, parent);
-                    });
-                })
-                .start();
+        open(player, parent);
     }
 
     private void open(EnvyPlayer<?> player, EntityPlayerMP parent) {
         UtilForgeConcurrency.runSync(() -> {
-
             int windowId = parent.openContainer.windowId;
 
             CPacketCloseWindow closeWindowClient = new CPacketCloseWindow();
@@ -332,8 +319,7 @@ public class ForgeGui implements Gui {
             }
 
             sender.closeContainer();
-            sender.sendAllWindowProperties(sender.inventoryContainer, sender.inventory);
-            sender.sendContainerToPlayer(sender.inventoryContainer);
+
 
             sender.currentWindowId = 0;
             int windowId = sender.openContainer.windowId;
@@ -348,7 +334,8 @@ public class ForgeGui implements Gui {
 
             sender.connection.processCloseWindow(closeWindowClient);
             sender.connection.sendPacket(closeWindowServer);
-
+            sender.sendAllWindowProperties(sender.inventoryContainer, sender.inventory);
+            sender.sendContainerToPlayer(sender.inventoryContainer);
             playerIn.inventoryContainer.detectAndSendChanges();
             sender.sendAllContents(
                     playerIn.inventoryContainer,

@@ -32,6 +32,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
  *
@@ -92,7 +93,7 @@ public class ForgeGui implements Gui {
     }
 
     private void open(EnvyPlayer<?> player, EntityPlayerMP parent) {
-        new TestClass(() -> {
+        new TestClass(i -> parent.openContainer != parent.inventoryContainer, () -> {
             ForgeGuiContainer container = new ForgeGuiContainer(this, parent);
 
             parent.closeContainer();
@@ -109,9 +110,17 @@ public class ForgeGui implements Gui {
             ForgeGuiTracker.addGui(player, this);
             System.out.println(parent.inventoryContainer + " " + parent.openContainer + " " +
                                        "DEBUG3");
-            new TestClass(() -> {
+            new TestClass(i -> true, () -> {
                 System.out.println(parent.inventoryContainer + " " + parent.openContainer + " " +
                                            "DEBUG4");
+                new TestClass(i -> true, () -> {
+                    System.out.println(parent.inventoryContainer + " " + parent.openContainer + " " +
+                                               "DEBUG5");
+                    new TestClass(i -> true, () -> {
+                        System.out.println(parent.inventoryContainer + " " + parent.openContainer + " " +
+                                                   "DEBUG6");
+                    });
+                });
             });
         });
     }
@@ -119,14 +128,21 @@ public class ForgeGui implements Gui {
     public static class TestClass {
 
         private final Runnable runnable;
+        private final Predicate<Integer> predicate;
         private int counter = 1;
 
-        public TestClass(Runnable runnable) {this.runnable = runnable;
+        public TestClass(Predicate<Integer> predicate, Runnable runnable) {
+            this.predicate = predicate;
+            this.runnable = runnable;
             MinecraftForge.EVENT_BUS.register(this);
         }
 
         @SubscribeEvent
         public void onTick(TickEvent.ServerTickEvent event) {
+            if (!this.predicate.test(0)) {
+                return;
+            }
+
             --counter;
 
             if (counter > 0) {

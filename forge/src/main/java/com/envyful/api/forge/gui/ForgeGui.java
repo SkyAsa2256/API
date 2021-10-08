@@ -193,9 +193,13 @@ public class ForgeGui implements Gui {
 
         @Override
         public ItemStack slotClick(int slot, int dragType, ClickType clickTypeIn, EntityPlayer player) {
+            System.out.println("TEST DEBUG");
+
             if (slot <= -1) {
                 return ItemStack.EMPTY;
             }
+
+            System.out.println("TEST DEBUG 2");
 
             this.refreshPlayerContents();
 

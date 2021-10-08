@@ -1,8 +1,10 @@
 package com.envyful.api.reforged.pixelmon.storage;
 
 import com.pixelmonmod.pixelmon.Pixelmon;
+import com.pixelmonmod.pixelmon.api.economy.IPixelmonBankAccount;
 import com.pixelmonmod.pixelmon.api.storage.PCStorage;
 import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 /**
@@ -11,6 +13,17 @@ import net.minecraft.entity.player.EntityPlayerMP;
  *
  */
 public class UtilPixelmonPlayer {
+
+    /**
+     *
+     * Gets the player's bank account
+     *
+     * @param player The player
+     * @return The bank account
+     */
+    public static IPixelmonBankAccount getBank(EntityPlayerMP player) {
+        return Pixelmon.moneyManager.getBankAccount(player.getUniqueID()).orElse(null);
+    }
 
     /**
      *

@@ -86,8 +86,14 @@ public class ForgeGui implements Gui {
             return;
         }
 
+        EntityPlayerMP parent = ((ForgeEnvyPlayer) player).getParent();
+
+        if (parent.openContainer != parent.inventoryContainer) {
+            System.out.println("ERROR!");
+            return;
+        }
+
         UtilForgeConcurrency.runSync(() -> {
-            EntityPlayerMP parent = ((ForgeEnvyPlayer) player).getParent();
 
             int windowId = parent.openContainer.windowId;
 

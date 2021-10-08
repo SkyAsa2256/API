@@ -1,5 +1,6 @@
 package com.envyful.api.forge.gui;
 
+import com.envyful.api.concurrency.AsyncTaskBuilder;
 import com.envyful.api.concurrency.UtilConcurrency;
 import com.envyful.api.discord.EmbedObject;
 import com.envyful.api.forge.concurrency.UtilForgeConcurrency;
@@ -30,6 +31,7 @@ import net.minecraft.util.text.TextComponentString;
 import scala.xml.dtd.REQUIRED;
 
 import java.lang.reflect.Field;
+import java.rmi.activation.ActivationSystem;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -88,11 +90,21 @@ public class ForgeGui implements Gui {
 
         EntityPlayerMP parent = ((ForgeEnvyPlayer) player).getParent();
 
-        if (parent.openContainer != parent.inventoryContainer) {
-            System.out.println("ERROR!");
-            return;
-        }
+        new AsyncTaskBuilder()
+                .delay(50L)
+                .task(() -> {
+                    if (parent.openContainer != parent.inventoryContainer) {
+                        return;
+                    }
 
+                    UtilForgeConcurrency.runSync(() -> {
+                        open(parent);
+                    });
+                })
+                .start();
+    }
+
+    private void open(EntityPlayerMP parent) {
         UtilForgeConcurrency.runSync(() -> {
 
             int windowId = parent.openContainer.windowId;

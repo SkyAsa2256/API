@@ -298,11 +298,6 @@ public class ForgeGui implements Gui {
                 this.gui.closeConsumer.accept((ForgeEnvyPlayer) player);
             }
 
-            playerIn.inventoryContainer.detectAndSendChanges();
-            sender.sendAllContents(
-                    playerIn.inventoryContainer,
-                    playerIn.inventoryContainer.inventoryItemStacks
-            );
             sender.currentWindowId = 0;
             int windowId = sender.openContainer.windowId;
 
@@ -316,8 +311,13 @@ public class ForgeGui implements Gui {
 
             sender.connection.processCloseWindow(closeWindowClient);
             sender.connection.sendPacket(closeWindowServer);
-            sender.inventory.markDirty();
 
+            playerIn.inventoryContainer.detectAndSendChanges();
+            sender.sendAllContents(
+                    playerIn.inventoryContainer,
+                    playerIn.inventoryContainer.inventoryItemStacks
+            );
+            sender.inventory.markDirty();
 
             ForgeGuiTracker.removePlayer(player);
         }

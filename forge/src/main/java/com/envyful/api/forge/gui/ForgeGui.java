@@ -249,6 +249,7 @@ public class ForgeGui implements Gui {
 
         @Override
         public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
+            this.gui.open(this.gui.playerManager.getPlayer(this.player), this.player);
             return ItemStack.EMPTY;
         }
 
@@ -338,6 +339,8 @@ public class ForgeGui implements Gui {
 
         @Override
         public void onContainerClosed(EntityPlayer playerIn) {
+            System.out.println("HELLO!");
+
             if (this.closed) {
                 return;
             }

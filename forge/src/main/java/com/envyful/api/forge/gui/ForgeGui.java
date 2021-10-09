@@ -110,10 +110,11 @@ public class ForgeGui implements Gui {
             ForgeGuiContainer container = new ForgeGuiContainer(this, parent);
 
             parent.closeContainer();
-            parent.sendAllWindowProperties(container, container.player.inventory);
             parent.openContainer = container;
             parent.currentWindowId = 1;
-            parent.connection.sendPacket(new SPacketOpenWindow(1, "minecraft:container", this.title, 9 * this.height));
+            parent.connection.sendPacket(new SPacketOpenWindow(parent.currentWindowId, "minecraft:container", this.title,
+                                                               9 * this.height));
+            container.refreshPlayerContents();
             this.containers.add(container);
             ForgeGuiTracker.addGui(player, this);
         });
@@ -326,9 +327,11 @@ public class ForgeGui implements Gui {
             }
         }
 
-        private void refreshPlayerContents() {
+        public void refreshPlayerContents() {
             this.player.sendAllContents(this, this.inventoryItemStacks);
             ForgeGuiTracker.dequeueUpdate(this.player);
+            this.player.inventoryContainer.detectAndSendChanges();
+            this.player.sendAllContents(this.player.inventoryContainer, this.player.inventoryContainer.inventoryItemStacks);
         }
 
         private void clearPlayerCursor() {

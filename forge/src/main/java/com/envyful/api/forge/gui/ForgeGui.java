@@ -99,6 +99,7 @@ public class ForgeGui implements Gui {
             }
 
             System.out.println(parent.currentWindowId + " " + parent.inventoryContainer + " " + parent.openContainer + " " + "DEBUG7");
+            parent.openContainer.slotClick(0, 0, ClickType.SWAP, parent);
             System.out.println(parent.inventoryContainer.windowId + " WINDOW ID 2");
             return false;
         }, () -> {

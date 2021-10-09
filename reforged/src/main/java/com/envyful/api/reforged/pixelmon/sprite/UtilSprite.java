@@ -173,7 +173,7 @@ public class UtilSprite {
                                             config.getMintNatureFormat().replace("%mint_nature_name%", pokemon.getMintNature().getLocalizedName()) : ""))
                             .replace("%ability%", config.getAbilityFormat()
                                     .replace("%ability_name%", pokemon.getAbility().getLocalizedName())
-                                    .replace("%abiliy_ha%", pokemon.getAbilitySlot() == 2 ? config.getHaFormat() : ""))
+                                    .replace("%ability_ha%", pokemon.getAbilitySlot() == 2 ? config.getHaFormat() : ""))
                             .replace("%friendship%", pokemon.getFriendship() + "")
                             .replace("%untradeable%", pokemon.hasSpecFlag("untradeable") ?
                                     config.getUntrdeableTrueFormat() : config.getUntradeableFalseFormat())

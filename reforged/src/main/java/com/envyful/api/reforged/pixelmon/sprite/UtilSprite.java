@@ -109,7 +109,7 @@ public class UtilSprite {
         NBTTagCompound compound = itemStack.getOrCreateSubCompound("display");
         NBTTagList lore = new NBTTagList();
 
-        for (String s : getPokemonDesc(pokemon, SpriteConfig.DEFAULT)) {
+        for (String s : getPokemonDesc(pokemon, config)) {
             lore.appendTag(new NBTTagString(s));
         }
 

@@ -7,7 +7,12 @@ import com.google.common.collect.Maps;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.battles.attacks.Attack;
 import com.pixelmonmod.pixelmon.config.PixelmonItems;
+import com.pixelmonmod.pixelmon.entities.pixelmon.stats.ExtraStats;
+import com.pixelmonmod.pixelmon.entities.pixelmon.stats.Gender;
+import com.pixelmonmod.pixelmon.entities.pixelmon.stats.IVStore;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.StatsType;
+import com.pixelmonmod.pixelmon.entities.pixelmon.stats.extraStats.LakeTrioStats;
+import com.pixelmonmod.pixelmon.entities.pixelmon.stats.extraStats.MewStats;
 import com.pixelmonmod.pixelmon.enums.EnumSpecies;
 import com.pixelmonmod.pixelmon.enums.forms.EnumSpecial;
 import net.minecraft.item.ItemStack;
@@ -135,12 +140,13 @@ public class UtilSprite {
     public static List<String> getPokemonDesc(Pokemon pokemon, SpriteConfig config) {
         List<String> lore = new ArrayList<>();
 
-        float ivHP = pokemon.getIVs().get(StatsType.HP);
-        float ivAtk = pokemon.getIVs().get(StatsType.Attack);
-        float ivDef = pokemon.getIVs().get(StatsType.Defence);
-        float ivSpeed = pokemon.getIVs().get(StatsType.Speed);
-        float ivSAtk = pokemon.getIVs().get(StatsType.SpecialAttack);
-        float ivSDef = pokemon.getIVs().get(StatsType.SpecialDefence);
+        IVStore iVs = pokemon.getIVs();
+        float ivHP = iVs.get(StatsType.HP);
+        float ivAtk = iVs.get(StatsType.Attack);
+        float ivDef = iVs.get(StatsType.Defence);
+        float ivSpeed = iVs.get(StatsType.Speed);
+        float ivSAtk = iVs.get(StatsType.SpecialAttack);
+        float ivSDef = iVs.get(StatsType.SpecialDefence);
         int percentage = Math.round(((ivHP + ivDef + ivAtk + ivSpeed + ivSAtk + ivSDef) / 186f) * 100);
         float evHP = pokemon.getEVs().get(StatsType.HP);
         float evAtk = pokemon.getEVs().get(StatsType.Attack);
@@ -148,13 +154,23 @@ public class UtilSprite {
         float evSpeed = pokemon.getEVs().get(StatsType.Speed);
         float evSAtk = pokemon.getEVs().get(StatsType.SpecialAttack);
         float evSDef = pokemon.getEVs().get(StatsType.SpecialDefence);
+        ExtraStats extraStats = pokemon.getExtraStats();
+
 
         for (String line : config.getLore()) {
             lore.add(UtilChatColour.translateColourCodes(
                     '&',
                     line
-                            .replace("%nature%", pokemon.getNature().getLocalizedName())
-                            .replace("%ability%", pokemon.getAbility().getLocalizedName())
+                            .replace("%level%", pokemon.getLevel() + "")
+                            .replace("%gender%", pokemon.getGender() == Gender.Male ? config.getMaleFormat() :
+                                    pokemon.getGender() == Gender.None ? config.getNoneFormat() :
+                                            config.getFemaleFormat())
+                            .replace("%breedable%", pokemon.hasSpecFlag("unbreedable") ?
+                                    config.getUnbreedableTrueFormat() : config.getUnbreedableFalseFormat())
+                            .replace("%nature%", config.getNatureFormat()
+                                    .replace("%nature_name%", pokemon.getNature().getLocalizedName())
+                                    .replace("%mint_nature%", pokemon.getMintNature() != null ?
+                                            config.getMintNatureFormat().replace("%mint_nature_name%", pokemon.getMintNature().getLocalizedName()) : ""))
                             .replace("%ability%", config.getAbilityFormat()
                                     .replace("%ability_name%", pokemon.getAbility().getLocalizedName())
                                     .replace("%abiliy_ha%", pokemon.getAbilitySlot() == 2 ? config.getHaFormat() : ""))
@@ -162,26 +178,40 @@ public class UtilSprite {
                             .replace("%untradeable%", pokemon.hasSpecFlag("untradeable") ?
                                     config.getUntrdeableTrueFormat() : config.getUntradeableFalseFormat())
                             .replace("%iv_percentage%", percentage + "")
-                            .replace("%iv_hp%", ivHP + "")
-                            .replace("%iv_attack%", ivAtk + "")
-                            .replace("%iv_defence%", ivDef + "")
-                            .replace("%iv_spattack%", ivSAtk + "")
-                            .replace("%iv_spdefence%", ivSDef + "")
-                            .replace("%iv_speed%", ivSpeed + "")
-                            .replace("%ev_hp%", evHP + "")
-                            .replace("%ev_attack%", evAtk + "")
-                            .replace("%ev_defence%", evDef + "")
-                            .replace("%ev_spattack%", evSAtk + "")
-                            .replace("%ev_spdefence%", evSDef + "")
-                            .replace("%ev_speed%", evSpeed + "")
-                            .replace("%move_1%", getMove(pokemon, 1))
-                            .replace("%move_2%", getMove(pokemon, 2))
-                            .replace("%move_3%", getMove(pokemon, 3))
-                            .replace("%move_4%", getMove(pokemon, 4))
+                            .replace("%iv_hp%", getColour(config, iVs, StatsType.HP) + ((int) ivHP) + "")
+                            .replace("%iv_attack%", getColour(config, iVs, StatsType.HP) + ((int) ivAtk) + "")
+                            .replace("%iv_defence%", getColour(config, iVs, StatsType.HP) + ((int) ivDef) + "")
+                            .replace("%iv_spattack%", getColour(config, iVs, StatsType.HP) + ((int) ivSAtk) + "")
+                            .replace("%iv_spdefence%", getColour(config, iVs, StatsType.HP) + ((int) ivSDef) + "")
+                            .replace("%iv_speed%", getColour(config, iVs, StatsType.HP) + ((int) ivSpeed) + "")
+                            .replace("%ev_hp%", ((int) evHP) + "")
+                            .replace("%ev_attack%", ((int) evAtk) + "")
+                            .replace("%ev_defence%", ((int) evDef) + "")
+                            .replace("%ev_spattack%", ((int) evSAtk) + "")
+                            .replace("%ev_spdefence%", ((int) evSDef) + "")
+                            .replace("%ev_speed%", ((int) evSpeed) + "")
+                            .replace("%move_1%", getMove(pokemon, 0))
+                            .replace("%move_2%", getMove(pokemon, 1))
+                            .replace("%move_3%", getMove(pokemon, 2))
+                            .replace("%move_4%", getMove(pokemon, 3))
+                            .replace("%mew_cloned%", extraStats instanceof MewStats ?
+                                    config.getMewClonedFormat()
+                                            .replace("%cloned%", ((MewStats) extraStats).numCloned + "") : "")
+                            .replace("%trio_gemmed%", extraStats instanceof LakeTrioStats ?
+                                    config.getGemmedFormat()
+                                            .replace("%gemmed%", ((LakeTrioStats) extraStats).numEnchanted + "") : "")
             ));
         }
 
         return lore;
+    }
+
+    private static String getColour(SpriteConfig config, IVStore ivStore, StatsType statsType) {
+        if (ivStore.isHyperTrained(statsType)) {
+            return config.getHyperIvColour();
+        }
+
+        return config.getNormalIvColour();
     }
 
     private static String getMove(Pokemon pokemon, int pos) {

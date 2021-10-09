@@ -13,14 +13,17 @@ public class SpriteConfig {
     private String name = "&b%species_name% %nickname%";
 
     private List<String> lore = Lists.newArrayList(
+            "&7Level: &b%level%",
+            "&7Gender: %gender%",
+            "&7Breedable: %breedable%",
             "&7Nature: &b%nature%",
             "&7Ability: &b%ability%",
             "&7Friendship: &b%friendship%",
             "&7Untradeable: &b%untradeable%",
             " ",
             "&7IVs (&b%iv_percentage%%&7):",
-            "    §7HP: &b%iv_hp% §d| §7Atk: &b%iv_attack% §d| §7Def: &b%iv_defence%",
-            "    §7SAtk: &b%iv_spattack% §d| §7SDef: &b%iv_spdefence% §d| §7Spd: &b%iv_speed%",
+            "    §7HP: %iv_hp% §d| §7Atk: %iv_attack% §d| §7Def: %iv_defence%",
+            "    §7SAtk: %iv_spattack% §d| §7SDef: %iv_spdefence% §d| §7Spd: %iv_speed%",
             " ",
             "&7EVs:",
             "    §7HP: &b%ev_hp% §d| §7Atk: &b%ev_attack% §d| §7Def: &b%ev_defence%",
@@ -30,13 +33,27 @@ public class SpriteConfig {
             "    &b%move_1%",
             "    &b%move_2%",
             "    &b%move_3%",
-            "    &b%move_4%"
+            "    &b%move_4%",
+            " ",
+            "%mew_cloned%",
+            "%trio_gemmed%"
     );
 
     private String untrdeableTrueFormat = "&aTRUE";
     private String untradeableFalseFormat = "&cFALSE";
     private String abilityFormat = "%ability_name% %ability_ha%";
     private String haFormat = "&7(&c&lHA&7)";
+    private String maleFormat = "&bMale";
+    private String femaleFormat = "&dFemale";
+    private String noneFormat = "&fNONE";
+    private String unbreedableTrueFormat = "&aTRUE";
+    private String unbreedableFalseFormat = "&cFALSE";
+    private String mewClonedFormat = "&7Times Cloned: %cloned%";
+    private String gemmedFormat = "&7Gemmed: %gemmed%";
+    private String natureFormat = "%nature_name% %mint_nature%";
+    private String mintNatureFormat = "&7(%mint_nature_name%&7)";
+    private String normalIvColour = "&b";
+    private String hyperIvColour = "&e";
 
     public SpriteConfig() {}
 
@@ -62,5 +79,49 @@ public class SpriteConfig {
 
     public String getUntradeableFalseFormat() {
         return this.untradeableFalseFormat;
+    }
+
+    public String getMaleFormat() {
+        return this.maleFormat;
+    }
+
+    public String getFemaleFormat() {
+        return this.femaleFormat;
+    }
+
+    public String getUnbreedableTrueFormat() {
+        return this.unbreedableTrueFormat;
+    }
+
+    public String getUnbreedableFalseFormat() {
+        return this.unbreedableFalseFormat;
+    }
+
+    public String getNoneFormat() {
+        return this.noneFormat;
+    }
+
+    public String getMewClonedFormat() {
+        return this.mewClonedFormat;
+    }
+
+    public String getGemmedFormat() {
+        return this.gemmedFormat;
+    }
+
+    public String getNatureFormat() {
+        return this.natureFormat;
+    }
+
+    public String getMintNatureFormat() {
+        return this.mintNatureFormat;
+    }
+
+    public String getNormalIvColour() {
+        return this.normalIvColour;
+    }
+
+    public String getHyperIvColour() {
+        return this.hyperIvColour;
     }
 }

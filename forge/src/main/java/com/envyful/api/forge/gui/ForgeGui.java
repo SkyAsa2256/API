@@ -17,6 +17,7 @@ import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.play.client.CPacketClickWindow;
 import net.minecraft.network.play.client.CPacketCloseWindow;
 import net.minecraft.network.play.server.SPacketCloseWindow;
 import net.minecraft.network.play.server.SPacketOpenWindow;
@@ -101,6 +102,9 @@ public class ForgeGui implements Gui {
             System.out.println(parent.currentWindowId + " " + parent.inventoryContainer + " " + parent.openContainer + " " + "DEBUG7");
             parent.openContainer.slotClick(0, 0, ClickType.SWAP, parent);
             System.out.println(parent.inventoryContainer.windowId + " WINDOW ID 2");
+            System.out.println("FIRST TEST: " + (parent.openContainer.windowId == parent.currentWindowId));
+            System.out.println("SECOND TEST: " + (parent.openContainer.getCanCraft(parent)));
+            System.out.println("THIRD TEST: " + (parent.isSpectator()));
             return false;
         }, () -> {
             ForgeGuiContainer container = new ForgeGuiContainer(this, parent);
@@ -248,6 +252,11 @@ public class ForgeGui implements Gui {
             if (force || ForgeGuiTracker.requiresUpdate(this.player)) {
                 this.refreshPlayerContents();
             }
+        }
+
+        @Override
+        public boolean getCanCraft(EntityPlayer player) {
+            return true;
         }
 
         @Override

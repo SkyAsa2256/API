@@ -90,68 +90,17 @@ public class ForgeGui implements Gui {
 
         EntityPlayerMP parent = ((ForgeEnvyPlayer) player).getParent();
 
-        open(player, parent);
-    }
+        ForgeGuiContainer container = new ForgeGuiContainer(this, parent);
 
-    private void open(EnvyPlayer<?> player, EntityPlayerMP parent) {
-        new TestClass(i -> {
-            if (parent.openContainer == parent.inventoryContainer) {
-                return true;
-            }
-
-            System.out.println(parent.currentWindowId + " " + parent.inventoryContainer + " " + parent.openContainer + " " + "DEBUG7");
-            parent.openContainer.slotClick(0, 0, ClickType.SWAP, parent);
-            System.out.println(parent.inventoryContainer.windowId + " WINDOW ID 2");
-            System.out.println("FIRST TEST: " + (parent.openContainer.windowId == parent.currentWindowId));
-            System.out.println("SECOND TEST: " + (parent.openContainer.getCanCraft(parent)));
-            System.out.println("THIRD TEST: " + (parent.isSpectator()));
-            return false;
-        }, () -> {
-            ForgeGuiContainer container = new ForgeGuiContainer(this, parent);
-
-            parent.closeContainer();
-            parent.openContainer = container;
-            parent.currentWindowId = 1;
-            parent.connection.sendPacket(new SPacketOpenWindow(parent.currentWindowId, "minecraft:container", this.title,
-                                                               9 * this.height));
-            container.refreshPlayerContents();
-            this.containers.add(container);
-            ForgeGuiTracker.addGui(player, this);
-        });
-    }
-
-    public static class TestClass {
-
-        private final Runnable runnable;
-        private final Predicate<Integer> predicate;
-        private int counter = 1;
-
-        public TestClass(Predicate<Integer> predicate, Runnable runnable) {
-            this.predicate = predicate;
-            this.runnable = runnable;
-            MinecraftForge.EVENT_BUS.register(this);
-        }
-
-        @SubscribeEvent
-        public void onTick(TickEvent.ServerTickEvent event) {
-            if (!this.predicate.test(0)) {
-                return;
-            }
-
-            --counter;
-
-            if (counter > 0) {
-                return;
-            }
-
-            if (event.phase != TickEvent.Phase.START) {
-                return;
-            }
-
-            this.runnable.run();
-            MinecraftForge.EVENT_BUS.unregister(this);
-        }
-
+        parent.closeContainer();
+        parent.openContainer = container;
+        parent.currentWindowId = 1;
+        parent.connection.sendPacket(new SPacketOpenWindow(parent.currentWindowId, "minecraft:container", this.title,
+                                                           9 * this.height
+        ));
+        container.refreshPlayerContents();
+        this.containers.add(container);
+        ForgeGuiTracker.addGui(player, this);
     }
 
     public void update() {
@@ -249,7 +198,7 @@ public class ForgeGui implements Gui {
 
         @Override
         public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
-            this.gui.open(this.gui.playerManager.getPlayer(this.player), this.player);
+            this.gui.open(this.gui.playerManager.getPlayer(this.player));
             return ItemStack.EMPTY;
         }
 

@@ -38,7 +38,7 @@ public class ForgeEnvyPlayer implements EnvyPlayer<EntityPlayerMP> {
 
     @Override
     public EntityPlayerMP getParent() {
-        return this.player;
+        return FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(this.getUuid());
     }
 
     @Override

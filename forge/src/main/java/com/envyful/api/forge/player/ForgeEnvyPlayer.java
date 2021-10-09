@@ -18,9 +18,9 @@ import java.util.UUID;
  */
 public class ForgeEnvyPlayer implements EnvyPlayer<EntityPlayerMP> {
 
-    private final EntityPlayerMP player;
-
     protected final Map<Class<?>, PlayerAttribute<?>> attributes = Maps.newHashMap();
+
+    private EntityPlayerMP player;
 
     protected ForgeEnvyPlayer(EntityPlayerMP player) {
         this.player = player;
@@ -38,7 +38,11 @@ public class ForgeEnvyPlayer implements EnvyPlayer<EntityPlayerMP> {
 
     @Override
     public EntityPlayerMP getParent() {
-        return FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(this.getUuid());
+        return this.player;
+    }
+
+    public void setPlayer(EntityPlayerMP player) {
+        this.player = player;
     }
 
     @Override

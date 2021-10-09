@@ -1,6 +1,7 @@
 package com.envyful.api.forge.player;
 
 import com.envyful.api.concurrency.UtilConcurrency;
+import com.envyful.api.forge.concurrency.UtilForgeConcurrency;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.player.attribute.PlayerAttribute;
@@ -108,6 +109,15 @@ public class ForgePlayerManager implements PlayerManager<ForgeEnvyPlayer, Entity
                     }
                 }
             });
+        }
+
+        @SubscribeEvent(priority = EventPriority.LOWEST)
+        public void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
+            UtilConcurrency.runLater(() -> {
+                ForgeEnvyPlayer player = this.manager.cachedPlayers.get(event.player.getUniqueID());
+
+                player.setPlayer((EntityPlayerMP) event.player);
+            }, 5L);
         }
     }
 }

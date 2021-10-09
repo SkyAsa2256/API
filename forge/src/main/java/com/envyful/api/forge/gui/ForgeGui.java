@@ -113,27 +113,9 @@ public class ForgeGui implements Gui {
             parent.sendAllWindowProperties(container, container.player.inventory);
             parent.openContainer = container;
             parent.currentWindowId = 1;
-            parent.connection.sendPacket(new SPacketOpenWindow(parent.currentWindowId, "minecraft:container", this.title, 9 * this.height));
-
-            parent.inventoryContainer.detectAndSendChanges();
-            parent.sendAllContents(parent.inventoryContainer, parent.inventoryContainer.inventoryItemStacks);
-
+            parent.connection.sendPacket(new SPacketOpenWindow(1, "minecraft:container", this.title, 9 * this.height));
             this.containers.add(container);
             ForgeGuiTracker.addGui(player, this);
-            System.out.println(parent.inventoryContainer + " " + parent.openContainer + " " +
-                                       "DEBUG3");
-            new TestClass(i -> true, () -> {
-                System.out.println(parent.inventoryContainer + " " + parent.openContainer + " " +
-                                           "DEBUG4");
-                new TestClass(i -> true, () -> {
-                    System.out.println(parent.inventoryContainer + " " + parent.openContainer + " " +
-                                               "DEBUG5");
-                    new TestClass(i -> true, () -> {
-                        System.out.println(parent.inventoryContainer + " " + parent.openContainer + " " +
-                                                   "DEBUG6");
-                    });
-                });
-            });
         });
     }
 

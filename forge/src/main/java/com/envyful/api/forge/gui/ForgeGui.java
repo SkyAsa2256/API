@@ -93,16 +93,23 @@ public class ForgeGui implements Gui {
     }
 
     private void open(EnvyPlayer<?> player, EntityPlayerMP parent) {
-        new TestClass(i -> parent.openContainer == parent.inventoryContainer, () -> {
+        new TestClass(i -> {
+            if (parent.openContainer == parent.inventoryContainer) {
+                return true;
+            }
+
+            System.out.println(parent.currentWindowId + " " + parent.inventoryContainer + " " + parent.openContainer + " " + "DEBUG7");
+            System.out.println(parent.inventoryContainer.windowId + " WINDOW ID 2");
+            return false;
+        }, () -> {
             ForgeGuiContainer container = new ForgeGuiContainer(this, parent);
 
             parent.closeContainer();
+            parent.sendAllWindowProperties(container, container.player.inventory);
             parent.openContainer = container;
             parent.currentWindowId = 1;
             parent.connection.sendPacket(new SPacketOpenWindow(parent.currentWindowId, "minecraft:container", this.title, 9 * this.height));
-            parent.sendAllContents(container, container.inventoryItemStacks);
-            container.detectAndSendChanges();
-            parent.sendAllContents(parent.openContainer, container.inventoryItemStacks);
+
             parent.inventoryContainer.detectAndSendChanges();
             parent.sendAllContents(parent.inventoryContainer, parent.inventoryContainer.inventoryItemStacks);
 

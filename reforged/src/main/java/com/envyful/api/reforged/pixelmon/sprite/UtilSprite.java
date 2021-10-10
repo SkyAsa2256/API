@@ -200,6 +200,9 @@ public class UtilSprite {
                             .replace("%trio_gemmed%", extraStats instanceof LakeTrioStats ?
                                     config.getGemmedFormat()
                                             .replace("%gemmed%", ((LakeTrioStats) extraStats).numEnchanted + "") : "")
+                            .replace("%shiny%", pokemon.isShiny() ? config.getShinyTrueFormat() : config.getShinyFalseFormat())
+                            .replace("%form%", pokemon.getFormEnum().getLocalizedName())
+                            .replace("%size%", pokemon.getGrowth().getLocalizedName())
             ));
         }
 

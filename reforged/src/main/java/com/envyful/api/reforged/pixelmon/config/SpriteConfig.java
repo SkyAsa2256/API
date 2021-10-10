@@ -14,9 +14,12 @@ public class SpriteConfig {
 
     private List<String> lore = Lists.newArrayList(
             "&7Level: &b%level%",
+            "&7Shiny: &b%shiny%",
             "&7Gender: %gender%",
             "&7Breedable: %breedable%",
             "&7Nature: &b%nature%",
+            "&7Form: &b%form%",
+            "&7Growth: &b%size%",
             "&7Ability: &b%ability%",
             "&7Friendship: &b%friendship%",
             "&7Untradeable: &b%untradeable%",
@@ -46,6 +49,8 @@ public class SpriteConfig {
     private String maleFormat = "&bMale";
     private String femaleFormat = "&dFemale";
     private String noneFormat = "&fNONE";
+    private String shinyTrueFormat = "&aTRUE";
+    private String shinyFalseFormat = "&cFALSE";
     private String unbreedableTrueFormat = "&aTRUE";
     private String unbreedableFalseFormat = "&cFALSE";
     private String mewClonedFormat = "&7Times Cloned: %cloned%";
@@ -123,5 +128,13 @@ public class SpriteConfig {
 
     public String getHyperIvColour() {
         return this.hyperIvColour;
+    }
+
+    public String getShinyTrueFormat() {
+        return this.shinyTrueFormat;
+    }
+
+    public String getShinyFalseFormat() {
+        return this.shinyFalseFormat;
     }
 }

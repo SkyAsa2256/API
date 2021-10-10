@@ -5,11 +5,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import javax.net.ssl.HttpsURLConnection;
-import java.awt.*;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -179,10 +179,25 @@ public class DiscordWebHook {
         JsonObject jsonElement = JsonParser.parseString(json).getAsJsonObject();
         Builder builder = DiscordWebHook.builder();
 
-        builder.content(jsonElement.get("content").getAsString());
-        builder.username(jsonElement.get("username").getAsString());
-        builder.avatarUrl(jsonElement.get("avatar_url").getAsString());
-        builder.tts(jsonElement.get("tts").getAsBoolean());
+        if (jsonElement.has("url")) {
+            builder.url(jsonElement.get("url").getAsString());
+        }
+
+        if (jsonElement.has("content")) {
+            builder.content(jsonElement.get("content").getAsString());
+        }
+
+        if (jsonElement.has("username")) {
+            builder.username(jsonElement.get("username").getAsString());
+        }
+
+        if (jsonElement.has("avatar_url")) {
+            builder.avatarUrl(jsonElement.get("avatar_url").getAsString());
+        }
+
+        if (jsonElement.has("tts")) {
+            builder.tts(jsonElement.get("tts").getAsBoolean());
+        }
 
         if (jsonElement.has("embeds")) {
             for (JsonElement embeds : jsonElement.get("embeds").getAsJsonArray()) {

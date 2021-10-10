@@ -24,6 +24,7 @@ public class SpriteConfig {
             "&7Ability: &b%ability%",
             "&7Friendship: &b%friendship%",
             "&7Untradeable: &b%untradeable%",
+            "&7Custom Texture: &b%custom_texture%",
             " ",
             "&7IVs (&b%iv_percentage%%&7):",
             "    §7HP: %iv_hp% §d| §7Atk: %iv_attack% §d| §7Def: %iv_defence%",

@@ -17,6 +17,7 @@ public class SpriteConfig {
             "&7Shiny: &b%shiny%",
             "&7Gender: %gender%",
             "&7Breedable: %breedable%",
+            "&7Friendship: %friendship%",
             "&7Nature: &b%nature%",
             "&7Form: &b%form%",
             "&7Growth: &b%size%",

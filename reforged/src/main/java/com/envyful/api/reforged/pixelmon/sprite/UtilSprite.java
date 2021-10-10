@@ -203,6 +203,7 @@ public class UtilSprite {
                             .replace("%shiny%", pokemon.isShiny() ? config.getShinyTrueFormat() : config.getShinyFalseFormat())
                             .replace("%form%", pokemon.getFormEnum().getLocalizedName())
                             .replace("%size%", pokemon.getGrowth().getLocalizedName())
+                    .replace("%friendship%", pokemon.getFriendship() + "")
             ));
         }
 

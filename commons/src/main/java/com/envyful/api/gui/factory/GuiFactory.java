@@ -24,6 +24,38 @@ public class GuiFactory {
         GuiFactory.platformFactory = platformFactory;
     }
 
+    /**
+     *
+     * Gets a new instance of the playform's displayable with the given item
+     *
+     * @param t The item provided
+     * @param <T> The type for the displayable
+     * @return The displayable
+     */
+    public static <T> Displayable displayable(T t) {
+        if (platformFactory == null) {
+            throw new RuntimeException("Platform's factory hasn't been set yet!");
+        }
+
+        return ((Displayable.Builder<T>) platformFactory.displayableBuilder()).itemStack(t).build();
+    }
+
+
+    /**
+     *
+     * Gets a new instance of the playform's displayable builder with the given item
+     *
+     * @param t The item provided
+     * @param <T> The type for the displayable
+     * @return The builder
+     */
+    public static <T> Displayable.Builder<T> displayableBuilder(T t) {
+        if (platformFactory == null) {
+            throw new RuntimeException("Platform's factory hasn't been set yet!");
+        }
+
+        return ((Displayable.Builder<T>) platformFactory.displayableBuilder()).itemStack(t);
+    }
 
     /**
      *

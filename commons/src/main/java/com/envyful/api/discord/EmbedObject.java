@@ -213,9 +213,17 @@ public class EmbedObject {
         JsonObject jsonElement = JsonParser.parseString(json).getAsJsonObject();
         EmbedObject embedObject = new EmbedObject();
 
-        embedObject.setTitle(jsonElement.get("title").getAsString());
-        embedObject.setDescription(jsonElement.get("description").getAsString());
-        embedObject.setUrl(jsonElement.get("url").getAsString());
+        if (jsonElement.has("title")) {
+            embedObject.setTitle(jsonElement.get("title").getAsString());
+        }
+
+        if (jsonElement.has("description")) {
+            embedObject.setDescription(jsonElement.get("description").getAsString());
+        }
+
+        if (jsonElement.has("url")) {
+            embedObject.setUrl(jsonElement.get("url").getAsString());
+        }
 
         if (jsonElement.has("color")) {
             int rgb = jsonElement.get("color").getAsInt();

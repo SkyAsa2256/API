@@ -158,8 +158,7 @@ public class UtilSprite {
 
 
         for (String line : config.getLore()) {
-            lore.add(UtilChatColour.translateColourCodes(
-                    '&',
+            String newLine =
                     line
                             .replace("%level%", pokemon.getLevel() + "")
                             .replace("%gender%", pokemon.getGender() == Gender.Male ? config.getMaleFormat() :
@@ -194,17 +193,30 @@ public class UtilSprite {
                             .replace("%move_2%", getMove(pokemon, 1))
                             .replace("%move_3%", getMove(pokemon, 2))
                             .replace("%move_4%", getMove(pokemon, 3))
-                            .replace("%mew_cloned%", extraStats instanceof MewStats ?
-                                    config.getMewClonedFormat()
-                                            .replace("%cloned%", ((MewStats) extraStats).numCloned + "") : "")
-                            .replace("%trio_gemmed%", extraStats instanceof LakeTrioStats ?
-                                    config.getGemmedFormat()
-                                            .replace("%gemmed%", ((LakeTrioStats) extraStats).numEnchanted + "") : "")
                             .replace("%shiny%", pokemon.isShiny() ? config.getShinyTrueFormat() : config.getShinyFalseFormat())
                             .replace("%form%", pokemon.getFormEnum().getLocalizedName())
                             .replace("%size%", pokemon.getGrowth().getLocalizedName())
-                    .replace("%friendship%", pokemon.getFriendship() + "")
-            ));
+                    .replace("%friendship%", pokemon.getFriendship() + "");
+
+            if (extraStats instanceof MewStats) {
+                newLine = newLine.replace("%mew_cloned%", config.getMewClonedFormat()
+                                .replace("%cloned%", ((MewStats) extraStats).numCloned + ""));
+            } else {
+                if (newLine.contains("%mew_cloned%")) {
+                    continue;
+                }
+            }
+
+            if (extraStats instanceof LakeTrioStats) {
+                newLine = newLine.replace("%trio_gemmed%", config.getGemmedFormat()
+                                .replace("%gemmed%", ((LakeTrioStats) extraStats).numEnchanted + ""));
+            } else {
+                if (newLine.contains("%trio_gemmed%")) {
+                    continue;
+                }
+            }
+
+            lore.add(UtilChatColour.translateColourCodes('&', newLine));
         }
 
         return lore;

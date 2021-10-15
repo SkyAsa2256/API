@@ -16,6 +16,7 @@ public class UtilTimeFormat {
     private static final long SECONDS_PER_MINUTE = 60;
     private static final long MINUTES_PER_HOUR = 60;
     private static final long SECONDS_PER_HOUR = SECONDS_PER_MINUTE * MINUTES_PER_HOUR;
+    private static final long SECONDS_PER_DAY = SECONDS_PER_HOUR * 24;
 
     private static final Map<String, DateFormat> DATE_FORMATS = Maps.newHashMap();
 
@@ -41,11 +42,16 @@ public class UtilTimeFormat {
     public static String getFormattedDuration(long playTime) {
         long seconds = TimeUnit.SECONDS.convert(playTime, TimeUnit.MILLISECONDS);
 
+        long daysPart = (seconds / SECONDS_PER_DAY);
         long hoursPart = (seconds / SECONDS_PER_HOUR) % 24;
         long minutesPart = (seconds / SECONDS_PER_MINUTE) % MINUTES_PER_HOUR;
         long secondsPart = (seconds) % SECONDS_PER_MINUTE;
 
         StringBuilder builder = new StringBuilder();
+
+        if (daysPart > 0) {
+            builder.append(daysPart).append("d ");
+        }
 
         if (hoursPart > 0) {
             builder.append(hoursPart).append("h ");

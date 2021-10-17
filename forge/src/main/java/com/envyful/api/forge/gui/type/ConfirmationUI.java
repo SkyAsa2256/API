@@ -54,7 +54,7 @@ public class ConfirmationUI {
         }
 
         GuiFactory.guiBuilder()
-                .setPlayerManager(builder().playerManager)
+                .setPlayerManager(builder.playerManager)
                 .addPane(pane)
                 .setCloseConsumer(envyPlayer -> {})
                 .height(config.getGuiSettings().getHeight())

@@ -136,7 +136,7 @@ public class ConfirmationUI {
     public static class ConfirmConfig {
 
         private ConfigInterface guiSettings = new ConfigInterface(
-                "UltimatePokeBuilder", 4, "BLOCK",
+                "UltimatePokeBuilder", 3, "BLOCK",
                 ImmutableMap.of("one", new ConfigItem(
                         "minecraft:stained_glass_pane", 1, (byte) 15, " ", Lists.newArrayList(), Maps.newHashMap()
                 ))

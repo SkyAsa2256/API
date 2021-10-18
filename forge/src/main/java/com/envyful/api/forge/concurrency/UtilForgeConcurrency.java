@@ -31,6 +31,39 @@ public class UtilForgeConcurrency {
         TICK_LISTENER.addTask(runnable);
     }
 
+
+    /**
+     *
+     * Passes runnable task to be run on the main minecraft thread {@param delay} ticks later
+     *
+     * @param runnable The runnable to be run on the main thread
+     * @param delay the delay in ticks
+     */
+    public static void runLater(Runnable runnable, int delay) {
+        TICK_LISTENER.addTask(runnable);
+    }
+
+    private static void processRunLater(Runnable runnable, int delay) {
+        if (delay >= 0) {
+            int finalDelay = delay - 1;
+            TICK_LISTENER.addTask(() -> processRunLater(runnable, finalDelay));
+            return;
+        }
+
+        TICK_LISTENER.addTask(runnable);
+    }
+
+    /**
+     *
+     * Executes the runnable task the tick after the predicate returns true
+     *
+     * @param predicate The predicate to use
+     * @param runnable The runnable to execute
+     */
+    public static void runLaterWhenTrue(Predicate<Runnable> predicate, int delay, Runnable runnable) {
+        runLater(() -> attemptRun(predicate, runnable), delay);
+    }
+
     /**
      *
      * Executes the runnable task the tick after the predicate returns true

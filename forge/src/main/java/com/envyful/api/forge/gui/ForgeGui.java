@@ -94,7 +94,7 @@ public class ForgeGui implements Gui {
 
         parent.closeContainer();
 
-        UtilForgeConcurrency.runWhenTrue(__ -> parent.openContainer == parent.inventoryContainer, () -> {
+        UtilForgeConcurrency.runLaterWhenTrue(__ -> parent.openContainer == parent.inventoryContainer, 2, () -> {
             parent.openContainer = container;
             parent.currentWindowId = 1;
             parent.connection.sendPacket(new SPacketOpenWindow(parent.currentWindowId, "minecraft:container", this.title,

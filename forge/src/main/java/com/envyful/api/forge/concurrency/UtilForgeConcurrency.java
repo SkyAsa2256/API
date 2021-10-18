@@ -40,12 +40,13 @@ public class UtilForgeConcurrency {
      * @param delay the delay in ticks
      */
     public static void runLater(Runnable runnable, int delay) {
-        TICK_LISTENER.addTask(runnable);
+        TICK_LISTENER.addTask(() -> processRunLater(runnable, delay));
     }
 
     private static void processRunLater(Runnable runnable, int delay) {
         if (delay >= 0) {
             int finalDelay = delay - 1;
+            System.out.println("DELAY: " + finalDelay);
             TICK_LISTENER.addTask(() -> processRunLater(runnable, finalDelay));
             return;
         }
@@ -77,6 +78,7 @@ public class UtilForgeConcurrency {
 
     private static void attemptRun(Predicate<Runnable> predicate, Runnable runnable) {
         if (!predicate.test(runnable)) {
+            System.out.println("FAILURE !");
             TICK_LISTENER.addTask(() -> attemptRun(predicate, runnable));
             return;
         }

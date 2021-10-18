@@ -94,7 +94,7 @@ public class ForgeGui implements Gui {
 
         parent.closeScreen();
 
-        UtilForgeConcurrency.runLaterWhenTrue(__ -> parent.openContainer == parent.inventoryContainer, 3, () -> {
+        UtilForgeConcurrency.runLaterWhenTrue(__ -> parent.openContainer == parent.inventoryContainer, 2, () -> {
             parent.openContainer = container;
             parent.currentWindowId = 1;
             parent.connection.sendPacket(new SPacketOpenWindow(parent.currentWindowId, "minecraft:container", this.title,
@@ -302,6 +302,7 @@ public class ForgeGui implements Gui {
                 this.gui.closeConsumer.accept((ForgeEnvyPlayer) player);
             }
 
+            ForgeGui.this.containers.remove(this);
             sender.closeContainer();
 
             sender.currentWindowId = 0;

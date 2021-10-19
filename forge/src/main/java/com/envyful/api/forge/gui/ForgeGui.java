@@ -90,20 +90,9 @@ public class ForgeGui implements Gui {
 
         EntityPlayerMP parent = ((ForgeEnvyPlayer) player).getParent();
 
-        if (parent.openContainer instanceof ForgeGuiContainer) {
-            int windowId = parent.openContainer.windowId;
-
-            CPacketCloseWindow closeWindowClient = new CPacketCloseWindow();
-            ObfuscationReflectionHelper.setPrivateValue(CPacketCloseWindow.class, closeWindowClient, windowId, 0);
-            SPacketCloseWindow closeWindowServer = new SPacketCloseWindow(windowId);
-
-            parent.connection.processCloseWindow(closeWindowClient);
-            parent.connection.sendPacket(closeWindowServer);
-        }
+        parent.closeContainer();
 
         ForgeGuiContainer container = new ForgeGuiContainer(this, parent);
-
-        parent.closeScreen();
 
         UtilForgeConcurrency.runWhenTrue(__ -> parent.openContainer == parent.inventoryContainer, () -> {
             parent.openContainer = container;
@@ -309,6 +298,17 @@ public class ForgeGui implements Gui {
 
             EntityPlayerMP sender = (EntityPlayerMP) playerIn;
             EnvyPlayer<?> player = this.gui.playerManager.getPlayer(playerIn.getUniqueID());
+
+            if (sender.openContainer instanceof ForgeGuiContainer) {
+                int windowId = sender.openContainer.windowId;
+
+                CPacketCloseWindow closeWindowClient = new CPacketCloseWindow();
+                ObfuscationReflectionHelper.setPrivateValue(CPacketCloseWindow.class, closeWindowClient, windowId, 0);
+                SPacketCloseWindow closeWindowServer = new SPacketCloseWindow(windowId);
+
+                sender.connection.processCloseWindow(closeWindowClient);
+                sender.connection.sendPacket(closeWindowServer);
+            }
 
             if (this.gui.closeConsumer != null) {
                 this.gui.closeConsumer.accept((ForgeEnvyPlayer) player);

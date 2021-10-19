@@ -298,6 +298,15 @@ public class ForgeGui implements Gui {
             EntityPlayerMP sender = (EntityPlayerMP) playerIn;
             EnvyPlayer<?> player = this.gui.playerManager.getPlayer(playerIn.getUniqueID());
 
+            int windowId = sender.openContainer == null ? 0 : sender.openContainer.windowId;
+
+            CPacketCloseWindow closeWindowClient = new CPacketCloseWindow();
+            ObfuscationReflectionHelper.setPrivateValue(CPacketCloseWindow.class, closeWindowClient, windowId, 0);
+            SPacketCloseWindow closeWindowServer = new SPacketCloseWindow(windowId);
+
+            sender.connection.processCloseWindow(closeWindowClient);
+            sender.connection.sendPacket(closeWindowServer);
+
             if (this.gui.closeConsumer != null) {
                 this.gui.closeConsumer.accept((ForgeEnvyPlayer) player);
             }
@@ -306,22 +315,8 @@ public class ForgeGui implements Gui {
             sender.closeContainer();
 
             sender.currentWindowId = 0;
-            int windowId = sender.openContainer.windowId;
-
-            CPacketCloseWindow closeWindowClient = new CPacketCloseWindow();
-            ObfuscationReflectionHelper.setPrivateValue(CPacketCloseWindow.class, closeWindowClient, windowId, 0);
-            SPacketCloseWindow closeWindowServer = new SPacketCloseWindow(windowId);
-
-            sender.connection.processCloseWindow(closeWindowClient);
-            sender.connection.sendPacket(closeWindowServer);
-            sender.sendAllWindowProperties(sender.inventoryContainer, sender.inventory);
-            sender.sendContainerToPlayer(sender.inventoryContainer);
-            playerIn.inventoryContainer.detectAndSendChanges();
-            sender.sendAllContents(
-                    playerIn.inventoryContainer,
-                    playerIn.inventoryContainer.inventoryItemStacks
-            );
-            sender.inventory.markDirty();
+            sender.inventoryContainer.detectAndSendChanges();
+            sender.sendAllContents(sender.inventoryContainer, sender.inventoryContainer.inventoryItemStacks);
 
             ForgeGuiTracker.removePlayer(player);
         }

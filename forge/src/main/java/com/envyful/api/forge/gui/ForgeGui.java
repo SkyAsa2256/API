@@ -88,22 +88,24 @@ public class ForgeGui implements Gui {
             return;
         }
 
-        EntityPlayerMP parent = ((ForgeEnvyPlayer) player).getParent();
+        UtilForgeConcurrency.runLater(() -> {
+            EntityPlayerMP parent = ((ForgeEnvyPlayer) player).getParent();
 
-        parent.closeContainer();
+            parent.closeContainer();
 
-        ForgeGuiContainer container = new ForgeGuiContainer(this, parent);
+            ForgeGuiContainer container = new ForgeGuiContainer(this, parent);
 
-        UtilForgeConcurrency.runWhenTrue(__ -> parent.openContainer == parent.inventoryContainer, () -> {
-            parent.openContainer = container;
-            parent.currentWindowId = 1;
-            parent.connection.sendPacket(new SPacketOpenWindow(parent.currentWindowId, "minecraft:container", this.title,
-                                                               9 * this.height
-            ));
-            container.refreshPlayerContents();
-            this.containers.add(container);
-            ForgeGuiTracker.addGui(player, this);
-        });
+            UtilForgeConcurrency.runWhenTrue(__ -> parent.openContainer == parent.inventoryContainer, () -> {
+                parent.openContainer = container;
+                parent.currentWindowId = 1;
+                parent.connection.sendPacket(new SPacketOpenWindow(parent.currentWindowId, "minecraft:container", this.title,
+                                                                   9 * this.height
+                ));
+                container.refreshPlayerContents();
+                this.containers.add(container);
+                ForgeGuiTracker.addGui(player, this);
+            });
+        }, 1);
     }
 
     public void update() {
@@ -260,10 +262,8 @@ public class ForgeGui implements Gui {
 
                 ForgeSimplePane.SimpleDisplayableSlot simpleDisplayableSlot = pane.getItems()[panePosition.getY()][panePosition.getX()];
 
-                UtilForgeConcurrency.runLater(() -> {
-                    simpleDisplayableSlot.getDisplayable().onClick(envyPlayer, clickType);
-                    ForgeGuiTracker.enqueueUpdate(envyPlayer);
-                }, 1);
+                simpleDisplayableSlot.getDisplayable().onClick(envyPlayer, clickType);
+                ForgeGuiTracker.enqueueUpdate(envyPlayer);
             }
 
             return ItemStack.EMPTY;

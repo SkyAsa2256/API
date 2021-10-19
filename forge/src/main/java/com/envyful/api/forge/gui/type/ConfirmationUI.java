@@ -5,6 +5,7 @@ import com.envyful.api.config.type.ConfigItem;
 import com.envyful.api.config.type.PositionableConfigItem;
 import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.forge.config.UtilConfigItem;
+import com.envyful.api.forge.gui.item.PositionableItem;
 import com.envyful.api.gui.factory.GuiFactory;
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
@@ -16,6 +17,8 @@ import com.google.common.collect.Maps;
 import net.minecraft.item.ItemStack;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.BiConsumer;
 
 /**
@@ -53,6 +56,14 @@ public class ConfirmationUI {
             );
         }
 
+        for (PositionableConfigItem displayItem : builder.displayConfigItems) {
+            UtilConfigItem.addConfigItem(pane, displayItem);
+        }
+
+        for (PositionableItem displayItem : builder.displayItems) {
+            pane.set(displayItem.getPosX(), displayItem.getPosY(), GuiFactory.displayable(displayItem.getItemStack()));
+        }
+
         GuiFactory.guiBuilder()
                 .setPlayerManager(builder.playerManager)
                 .addPane(pane)
@@ -85,6 +96,8 @@ public class ConfirmationUI {
         private PlayerManager<?, ?> playerManager;
         private BiConsumer<EnvyPlayer<?>, Displayable.ClickType> returnHandler;
         private BiConsumer<EnvyPlayer<?>, Displayable.ClickType> confirmHandler;
+        private List<PositionableConfigItem> displayConfigItems = Lists.newArrayList();
+        private List<PositionableItem> displayItems = Lists.newArrayList();
 
         protected Builder() {}
 
@@ -115,6 +128,36 @@ public class ConfirmationUI {
 
         public Builder confirmHandler(BiConsumer<EnvyPlayer<?>, Displayable.ClickType> confirmHandler) {
             this.confirmHandler = confirmHandler;
+            return this;
+        }
+
+        public Builder displayConfigItems(List<PositionableConfigItem> displayConfigItems) {
+            this.displayConfigItems.addAll(displayConfigItems);
+            return this;
+        }
+
+        public Builder displayConfigItem(PositionableConfigItem displayConfigItem) {
+            this.displayConfigItems.add(displayConfigItem);
+            return this;
+        }
+
+        public Builder displayConfigItems(PositionableConfigItem... displayConfigItems) {
+            this.displayConfigItems.addAll(Arrays.asList(displayConfigItems));
+            return this;
+        }
+
+        public Builder displayItems(List<PositionableItem> displayItems) {
+            this.displayItems.addAll(displayItems);
+            return this;
+        }
+
+        public Builder displayItem(PositionableItem displayItem) {
+            this.displayItems.add(displayItem);
+            return this;
+        }
+
+        public Builder displayItems(PositionableItem... displayItems) {
+            this.displayItems.addAll(Arrays.asList(displayItems));
             return this;
         }
 

@@ -297,21 +297,19 @@ public class ForgeGui implements Gui {
             super.onContainerClosed(player);
 
             EntityPlayerMP sender = (EntityPlayerMP) playerIn;
-            EnvyPlayer<?> player = this.gui.playerManager.getPlayer(playerIn.getUniqueID());
+            ForgeEnvyPlayer player = this.gui.playerManager.getPlayer(playerIn.getUniqueID());
 
-            if (sender.openContainer instanceof ForgeGuiContainer) {
-                int windowId = sender.openContainer.windowId;
+            int windowId = sender.openContainer.windowId;
 
-                CPacketCloseWindow closeWindowClient = new CPacketCloseWindow();
-                ObfuscationReflectionHelper.setPrivateValue(CPacketCloseWindow.class, closeWindowClient, windowId, 0);
-                SPacketCloseWindow closeWindowServer = new SPacketCloseWindow(windowId);
+            CPacketCloseWindow closeWindowClient = new CPacketCloseWindow();
+            ObfuscationReflectionHelper.setPrivateValue(CPacketCloseWindow.class, closeWindowClient, windowId, 0);
+            SPacketCloseWindow closeWindowServer = new SPacketCloseWindow(windowId);
 
-                sender.connection.processCloseWindow(closeWindowClient);
-                sender.connection.sendPacket(closeWindowServer);
-            }
+            sender.connection.processCloseWindow(closeWindowClient);
+            sender.connection.sendPacket(closeWindowServer);
 
             if (this.gui.closeConsumer != null) {
-                this.gui.closeConsumer.accept((ForgeEnvyPlayer) player);
+                this.gui.closeConsumer.accept(player);
             }
 
             ForgeGui.this.containers.remove(this);

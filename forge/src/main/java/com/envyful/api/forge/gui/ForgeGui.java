@@ -262,10 +262,8 @@ public class ForgeGui implements Gui {
 
                 ForgeSimplePane.SimpleDisplayableSlot simpleDisplayableSlot = pane.getItems()[panePosition.getY()][panePosition.getX()];
 
-                UtilForgeConcurrency.runLater(() -> {
-                    simpleDisplayableSlot.getDisplayable().onClick(envyPlayer, clickType);
-                    ForgeGuiTracker.enqueueUpdate(envyPlayer);
-                }, 1);
+                simpleDisplayableSlot.getDisplayable().onClick(envyPlayer, clickType);
+                ForgeGuiTracker.enqueueUpdate(envyPlayer);
             }
 
             return ItemStack.EMPTY;

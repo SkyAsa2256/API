@@ -167,7 +167,10 @@ public class UtilSprite {
                             .replace("%breedable%", pokemon.hasSpecFlag("unbreedable") ?
                                     config.getUnbreedableTrueFormat() : config.getUnbreedableFalseFormat())
                             .replace("%nature%", config.getNatureFormat()
-                                    .replace("%nature_name%", pokemon.getNature().getLocalizedName())
+                                    .replace("%nature_name%",
+                                             pokemon.getMintNature() != null ?
+                                                     pokemon.getBaseNature().getLocalizedName() :
+                                                     pokemon.getNature().getLocalizedName())
                                     .replace("%mint_nature%", pokemon.getMintNature() != null ?
                                             config.getMintNatureFormat().replace("%mint_nature_name%", pokemon.getMintNature().getLocalizedName()) : ""))
                             .replace("%ability%", config.getAbilityFormat()

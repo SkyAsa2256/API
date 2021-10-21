@@ -100,10 +100,10 @@ public class PokemonGenerator {
 
     private EnumSpecies getRandomSpecies() {
         if (this.onlyLegends) {
-            EnumSpecies species = EnumSpecies.getFromNameAnyCase(UtilRandom.getRandomElement(EnumSpecies.legendaries));
+            EnumSpecies species = UtilRandom.getRandomElement(EnumSpecies.legendaries.toArray(new EnumSpecies[0]));
 
             while (!this.isAllowedSpecies(species)) {
-                species = EnumSpecies.getFromNameAnyCase(UtilRandom.getRandomElement(EnumSpecies.legendaries));
+                species = UtilRandom.getRandomElement(EnumSpecies.legendaries.toArray(new EnumSpecies[0]));
             }
 
             return species;

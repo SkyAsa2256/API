@@ -43,7 +43,7 @@ dependencies {
         exclude group: 'net.minecraftforge'
     }
 
-    compileOnly fg.deobf('com.pixelmonmod.pixelmon:Pixelmon-1.12.2-8.2.0-server:1.0')
+    compileOnly fg.deobf('com.pixelmonmod.pixelmon:Pixelmon-1.12.2-8.3.1-server:1.0')
 }
 
 shadowJar {

@@ -189,7 +189,7 @@ public class ConfirmationUI {
                                                                     Lists.newArrayList(), 2, 1, Maps.newHashMap());
 
 
-        private PositionableConfigItem acceptItem = new PositionableConfigItem("minecraft:wool", 1, (byte) 154,
+        private PositionableConfigItem acceptItem = new PositionableConfigItem("minecraft:wool", 1, (byte) 5,
                                                                                "&a&lACCEPT",
                                                                                 Lists.newArrayList(), 6, 1,
                                                                                Maps.newHashMap());

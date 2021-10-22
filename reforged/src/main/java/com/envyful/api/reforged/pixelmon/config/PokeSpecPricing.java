@@ -57,10 +57,10 @@ public class PokeSpecPricing implements Comparable<PokeSpecPricing> {
         }
 
         if (PRIORITY_OPERATORS.contains(this.minPrice.getType())) {
-            return 1;
+            return -1;
         }
 
-        return -1;
+        return 1;
     }
 
     @Override

@@ -63,6 +63,15 @@ public class PokeSpecPricing implements Comparable<PokeSpecPricing> {
         return -1;
     }
 
+    @Override
+    public String toString() {
+        return "PokeSpecPricing{" +
+                "spec='" + spec + '\'' +
+                ", minPrice=" + minPrice +
+                ", cachedSpec=" + cachedSpec +
+                '}';
+    }
+
     @ConfigSerializable
     public static class MathHandler {
 
@@ -83,6 +92,14 @@ public class PokeSpecPricing implements Comparable<PokeSpecPricing> {
 
         public double getValue() {
             return this.value;
+        }
+
+        @Override
+        public String toString() {
+            return "MathHandler{" +
+                    "type='" + type + '\'' +
+                    ", value=" + value +
+                    '}';
         }
     }
 }

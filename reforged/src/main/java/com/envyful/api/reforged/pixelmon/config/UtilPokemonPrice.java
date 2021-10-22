@@ -11,6 +11,8 @@ public class UtilPokemonPrice {
 
         modifiers.sort(PokeSpecPricing::compareTo);
 
+        System.out.println(modifiers.toString());
+
         for (PokeSpecPricing minPriceModifier : modifiers) {
             if (minPriceModifier.getSpec().matches(pokemon)) {
                 currentPrice = minPriceModifier.apply(currentPrice);

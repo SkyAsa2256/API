@@ -2,8 +2,8 @@ package com.envyful.api.database.leaderboard;
 
 public enum Order {
 
-    ASCENDING("ASC "),
-    DESCENDING("DESC "),
+    ASCENDING("ASC"),
+    DESCENDING("DESC"),
 
     ;
 

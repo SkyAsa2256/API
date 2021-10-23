@@ -52,7 +52,7 @@ public class SQLLeaderboard {
             List<String> data = Lists.newArrayList();
 
             while (resultSet.next()) {
-                if ((counter % perPage) == page) {
+                if ((counter / perPage) == page) {
                     data.add(this.formatter.apply(resultSet, counter));
                 }
 

@@ -12,7 +12,6 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 public class SQLLeaderboard {
 
@@ -23,12 +22,12 @@ public class SQLLeaderboard {
     private final int perPage;
     private final long cacheDuration;
     private final String extraClauses;
-    private final Function<ResultSet, String> formatter;
+    private final SQLBiFunction<ResultSet, Integer, String> formatter;
 
     private final Map<Integer, Pair<Long, List<String>>> cachedEntries = Maps.newHashMap();
 
     private SQLLeaderboard(Database database, String table, Order order, String orderColumn, int perPage,
-                           long cacheDuration, String extraClauses, Function<ResultSet, String> formatter) {
+                           long cacheDuration, String extraClauses, SQLBiFunction<ResultSet, Integer, String> formatter) {
         this.database = database;
         this.table = table;
         this.order = order;
@@ -54,7 +53,7 @@ public class SQLLeaderboard {
 
             while (resultSet.next()) {
                 if ((counter % perPage) == page) {
-                    data.add(this.formatter.apply(resultSet));
+                    data.add(this.formatter.apply(resultSet, counter));
                 }
 
                 ++counter;
@@ -86,7 +85,7 @@ public class SQLLeaderboard {
         private int perPage;
         private long cacheDuration;
         private String extraClauses;
-        private Function<ResultSet, String> formatter;
+        private SQLBiFunction<ResultSet, Integer, String> formatter;
 
         Builder() {}
 
@@ -115,7 +114,7 @@ public class SQLLeaderboard {
             return this;
         }
 
-        public Builder formatter(Function<ResultSet, String> formatter) {
+        public Builder formatter(SQLBiFunction<ResultSet, Integer, String> formatter) {
             this.formatter = formatter;
             return this;
         }

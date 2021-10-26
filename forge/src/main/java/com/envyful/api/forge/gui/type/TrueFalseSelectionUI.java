@@ -51,6 +51,7 @@ public class TrueFalseSelectionUI {
             config.confirm.player(envyPlayer);
             config.confirm.playerManager(config.playerManager);
             config.confirm.returnHandler((envyPlayer1, clickType1) -> open(config));
+            config.confirm.transformers(config.transformers);
 
             if (config.startsTrue) {
                 config.confirm.confirmHandler(config.trueAcceptHandler);

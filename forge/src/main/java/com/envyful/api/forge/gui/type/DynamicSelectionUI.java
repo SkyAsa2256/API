@@ -62,6 +62,7 @@ public class DynamicSelectionUI {
                                  config.confirm.confirmHandler((clicker, clickerType) -> config.acceptHandler.accept(clicker, clickerType, displayName));
                                  config.confirm.playerManager(config.playerManager);
                                  config.confirm.player(envyPlayer);
+                                 config.confirm.transformers(config.transformers);
                                  config.confirm.open();
                              })
                              .build()

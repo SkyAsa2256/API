@@ -63,6 +63,7 @@ public class MultiSelectionUI {
                                      config.confirm.confirmHandler((clicker, clickerType) -> config.acceptHandler.accept(clicker, clickerType, item.getKey()));
                                      config.confirm.playerManager(config.playerManager);
                                      config.confirm.player(envyPlayer);
+                                     config.confirm.transformers(config.transformers);
                                      config.confirm.open();
                                  } else {
                                      config.selectHandler.accept(envyPlayer, clickType, item.getKey());

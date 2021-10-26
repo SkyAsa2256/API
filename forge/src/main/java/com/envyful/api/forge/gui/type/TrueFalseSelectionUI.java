@@ -6,6 +6,7 @@ import com.envyful.api.config.type.PositionableConfigItem;
 import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.forge.config.UtilConfigItem;
 import com.envyful.api.forge.gui.item.PositionableItem;
+import com.envyful.api.gui.Transformer;
 import com.envyful.api.gui.factory.GuiFactory;
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
@@ -31,22 +32,22 @@ public class TrueFalseSelectionUI {
                 .build();
 
         for (ConfigItem fillerItem : config.config.guiSettings.getFillerItems()) {
-            pane.add(GuiFactory.displayable(UtilConfigItem.fromConfigItem(fillerItem)));
+            pane.add(GuiFactory.displayable(UtilConfigItem.fromConfigItem(fillerItem, config.transformers)));
         }
 
         if (config.startsTrue) {
-            UtilConfigItem.addConfigItem(pane, config.config.trueItem, (envyPlayer, clickType) -> {
+            UtilConfigItem.addConfigItem(pane, config.config.trueItem, config.transformers, (envyPlayer, clickType) -> {
                 config.startsTrue = false;
                 open(config);
             });
         } else {
-            UtilConfigItem.addConfigItem(pane, config.config.falseItem, (envyPlayer, clickType) -> {
+            UtilConfigItem.addConfigItem(pane, config.config.falseItem, config.transformers, (envyPlayer, clickType) -> {
                 config.startsTrue = true;
                 open(config);
             });
         }
 
-        UtilConfigItem.addConfigItem(pane, config.config.acceptItem, (envyPlayer, clickType) -> {
+        UtilConfigItem.addConfigItem(pane, config.config.acceptItem, config.transformers, (envyPlayer, clickType) -> {
             config.confirm.player(envyPlayer);
             config.confirm.playerManager(config.playerManager);
             config.confirm.returnHandler((envyPlayer1, clickType1) -> open(config));
@@ -63,10 +64,10 @@ public class TrueFalseSelectionUI {
             }
         });
 
-        UtilConfigItem.addConfigItem(pane, config.config.backButton, config.returnHandler);
+        UtilConfigItem.addConfigItem(pane, config.config.backButton, config.transformers, config.returnHandler);
 
         for (PositionableConfigItem displayItem : config.displayConfigItems) {
-            UtilConfigItem.addConfigItem(pane, displayItem);
+            UtilConfigItem.addConfigItem(pane, config.transformers, displayItem);
         }
 
         for (PositionableItem displayItem : config.displayItems) {
@@ -98,6 +99,7 @@ public class TrueFalseSelectionUI {
         private boolean startsTrue = true;
         private List<PositionableConfigItem> displayConfigItems = Lists.newArrayList();
         private List<PositionableItem> displayItems = Lists.newArrayList();
+        private List<Transformer> transformers = Lists.newArrayList();
 
         protected Builder() {}
 
@@ -168,6 +170,21 @@ public class TrueFalseSelectionUI {
 
         public Builder displayItems(PositionableItem... displayItems) {
             this.displayItems.addAll(Arrays.asList(displayItems));
+            return this;
+        }
+
+        public Builder transformers(List<Transformer> transformers) {
+            this.transformers.addAll(transformers);
+            return this;
+        }
+
+        public Builder transformer(Transformer transformer) {
+            this.transformers.add(transformer);
+            return this;
+        }
+
+        public Builder transformers(Transformer... transformers) {
+            this.transformers.addAll(Arrays.asList(transformers));
             return this;
         }
 

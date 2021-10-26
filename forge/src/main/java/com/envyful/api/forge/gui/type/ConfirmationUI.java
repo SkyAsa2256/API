@@ -6,6 +6,7 @@ import com.envyful.api.config.type.PositionableConfigItem;
 import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.forge.config.UtilConfigItem;
 import com.envyful.api.forge.gui.item.PositionableItem;
+import com.envyful.api.gui.Transformer;
 import com.envyful.api.gui.factory.GuiFactory;
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
@@ -44,11 +45,11 @@ public class ConfirmationUI {
                 .build();
 
         for (ConfigItem fillerItem : config.getGuiSettings().getFillerItems()) {
-            pane.add(GuiFactory.displayable(UtilConfigItem.fromConfigItem(fillerItem)));
+            pane.add(GuiFactory.displayable(UtilConfigItem.fromConfigItem(fillerItem, builder.transformers)));
         }
 
-        UtilConfigItem.addConfigItem(pane, config.getAcceptItem(), builder.confirmHandler);
-        UtilConfigItem.addConfigItem(pane, config.getDeclineItem(), builder.returnHandler);
+        UtilConfigItem.addConfigItem(pane, config.getAcceptItem(), builder.transformers, builder.confirmHandler);
+        UtilConfigItem.addConfigItem(pane, config.getDeclineItem(), builder.transformers, builder.returnHandler);
 
         if (builder.descriptionItem != null) {
             pane.set(config.getDescriptionPosition() % 9, config.getDescriptionPosition() / 9,
@@ -57,7 +58,7 @@ public class ConfirmationUI {
         }
 
         for (PositionableConfigItem displayItem : builder.displayConfigItems) {
-            UtilConfigItem.addConfigItem(pane, displayItem);
+            UtilConfigItem.addConfigItem(pane, builder.transformers, displayItem);
         }
 
         for (PositionableItem displayItem : builder.displayItems) {
@@ -98,6 +99,7 @@ public class ConfirmationUI {
         private BiConsumer<EnvyPlayer<?>, Displayable.ClickType> confirmHandler;
         private List<PositionableConfigItem> displayConfigItems = Lists.newArrayList();
         private List<PositionableItem> displayItems = Lists.newArrayList();
+        private List<Transformer> transformers = Lists.newArrayList();
 
         protected Builder() {}
 
@@ -158,6 +160,21 @@ public class ConfirmationUI {
 
         public Builder displayItems(PositionableItem... displayItems) {
             this.displayItems.addAll(Arrays.asList(displayItems));
+            return this;
+        }
+
+        public Builder transformers(List<Transformer> transformers) {
+            this.transformers.addAll(transformers);
+            return this;
+        }
+
+        public Builder transformer(Transformer transformer) {
+            this.transformers.add(transformer);
+            return this;
+        }
+
+        public Builder transformers(Transformer... transformers) {
+            this.transformers.addAll(Arrays.asList(transformers));
             return this;
         }
 

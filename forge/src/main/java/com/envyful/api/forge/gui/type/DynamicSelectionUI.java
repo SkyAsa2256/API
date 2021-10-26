@@ -7,6 +7,7 @@ import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.forge.config.UtilConfigItem;
 import com.envyful.api.forge.gui.item.PositionableItem;
 import com.envyful.api.forge.items.ItemBuilder;
+import com.envyful.api.gui.Transformer;
 import com.envyful.api.gui.factory.GuiFactory;
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
@@ -34,7 +35,7 @@ public class DynamicSelectionUI {
                 .build();
 
         for (ConfigItem fillerItem : config.config.guiSettings.getFillerItems()) {
-            pane.add(GuiFactory.displayable(UtilConfigItem.fromConfigItem(fillerItem)));
+            pane.add(GuiFactory.displayable(UtilConfigItem.fromConfigItem(fillerItem, config.transformers)));
         }
 
         for (int i = 0; i < config.config.optionPositions.size(); i++) {
@@ -47,7 +48,7 @@ public class DynamicSelectionUI {
             }
 
             String displayName = config.displayNames.get(i);
-            ItemStack itemStack = new ItemBuilder(UtilConfigItem.fromConfigItem(config.config.getDisplayItem()))
+            ItemStack itemStack = new ItemBuilder(UtilConfigItem.fromConfigItem(config.config.getDisplayItem(), config.transformers))
                             .name(UtilChatColour.translateColourCodes(
                                     '&',
                                     config.config.getNameColour() + displayName)
@@ -67,10 +68,10 @@ public class DynamicSelectionUI {
             );
         }
 
-        UtilConfigItem.addConfigItem(pane, config.config.backButton, config.returnHandler);
+        UtilConfigItem.addConfigItem(pane, config.config.backButton, config.transformers, config.returnHandler);
 
         for (PositionableConfigItem displayItem : config.displayConfigItems) {
-            UtilConfigItem.addConfigItem(pane, displayItem);
+            UtilConfigItem.addConfigItem(pane, config.transformers, displayItem);
         }
 
         for (PositionableItem displayItem : config.displayItems) {
@@ -101,6 +102,7 @@ public class DynamicSelectionUI {
         private List<PositionableConfigItem> displayConfigItems = Lists.newArrayList();
         private List<PositionableItem> displayItems = Lists.newArrayList();
         private List<String> displayNames = Lists.newArrayList();
+        private List<Transformer> transformers = Lists.newArrayList();
 
         protected Builder() {}
 
@@ -176,6 +178,21 @@ public class DynamicSelectionUI {
 
         public Builder displayNames(String... displayNames) {
             this.displayNames.addAll(Arrays.asList(displayNames));
+            return this;
+        }
+
+        public Builder transformers(List<Transformer> transformers) {
+            this.transformers.addAll(transformers);
+            return this;
+        }
+
+        public Builder transformer(Transformer transformer) {
+            this.transformers.add(transformer);
+            return this;
+        }
+
+        public Builder transformers(Transformer... transformers) {
+            this.transformers.addAll(Arrays.asList(transformers));
             return this;
         }
 

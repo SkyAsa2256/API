@@ -7,6 +7,7 @@ import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.forge.config.UtilConfigItem;
 import com.envyful.api.forge.gui.item.PositionableItem;
 import com.envyful.api.forge.items.ItemBuilder;
+import com.envyful.api.gui.Transformer;
 import com.envyful.api.gui.factory.GuiFactory;
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
@@ -34,11 +35,11 @@ public class NumberModificationUI {
                 .build();
 
         for (ConfigItem fillerItem : config.config.guiSettings.getFillerItems()) {
-            pane.add(GuiFactory.displayable(UtilConfigItem.fromConfigItem(fillerItem)));
+            pane.add(GuiFactory.displayable(UtilConfigItem.fromConfigItem(fillerItem, config.transformers)));
         }
 
         for (EditValueButton button : config.config.getButtons()) {
-            UtilConfigItem.addConfigItem(pane, button.getConfigItem(), (envyPlayer, clickType) -> {
+            UtilConfigItem.addConfigItem(pane, button.getConfigItem(), config.transformers, (envyPlayer, clickType) -> {
                  int newValue = config.currentValue + button.getAmountModifier();
 
                  if (newValue >= config.config.maxValue) {
@@ -53,8 +54,8 @@ public class NumberModificationUI {
             });
         }
 
-        UtilConfigItem.addConfigItem(pane, config.config.backButton, config.returnHandler);
-        UtilConfigItem.addConfigItem(pane, config.config.confirmItem, (envyPlayer, clickType) -> {
+        UtilConfigItem.addConfigItem(pane, config.config.backButton, config.transformers, config.returnHandler);
+        UtilConfigItem.addConfigItem(pane, config.config.confirmItem, config.transformers, (envyPlayer, clickType) -> {
             config.confirm.descriptionItem(config.displayItems.get(config.displayItems.size() - 1).getItemStack());
             config.confirm.returnHandler((envyPlayer1, clickType1) -> open(config));
             config.confirm.confirmHandler((clicker, clickerType) -> config.acceptHandler.accept(clicker, clickerType, config.currentValue));
@@ -65,7 +66,7 @@ public class NumberModificationUI {
 
         if (config.config.currentValue.isEnabled()) {
             pane.set(config.config.currentValue.getXPos(), config.config.currentValue.getYPos(),
-                     GuiFactory.displayable(new ItemBuilder(UtilConfigItem.fromConfigItem(config.config.currentValue))
+                     GuiFactory.displayable(new ItemBuilder(UtilConfigItem.fromConfigItem(config.config.currentValue, config.transformers))
                                                     .name(UtilChatColour.translateColourCodes(
                                                             '&',
                                                             config.config.currentValue.getName()
@@ -76,7 +77,7 @@ public class NumberModificationUI {
         }
 
         for (PositionableConfigItem displayItem : config.displayConfigItems) {
-            UtilConfigItem.addConfigItem(pane, displayItem);
+            UtilConfigItem.addConfigItem(pane, config.transformers, displayItem);
         }
 
         for (PositionableItem displayItem : config.displayItems) {
@@ -108,6 +109,7 @@ public class NumberModificationUI {
         private List<PositionableItem> displayItems = Lists.newArrayList();
         private int currentValue;
         private String key;
+        private List<Transformer> transformers = Lists.newArrayList();
 
         protected Builder() {}
 
@@ -178,6 +180,21 @@ public class NumberModificationUI {
 
         public Builder key(String key) {
             this.key = key;
+            return this;
+        }
+
+        public Builder transformers(List<Transformer> transformers) {
+            this.transformers.addAll(transformers);
+            return this;
+        }
+
+        public Builder transformer(Transformer transformer) {
+            this.transformers.add(transformer);
+            return this;
+        }
+
+        public Builder transformers(Transformer... transformers) {
+            this.transformers.addAll(Arrays.asList(transformers));
             return this;
         }
 

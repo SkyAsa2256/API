@@ -6,6 +6,7 @@ import com.envyful.api.config.type.PositionableConfigItem;
 import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.forge.config.UtilConfigItem;
 import com.envyful.api.forge.gui.item.PositionableItem;
+import com.envyful.api.gui.Transformer;
 import com.envyful.api.gui.factory.GuiFactory;
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
@@ -35,7 +36,7 @@ public class MultiSelectionUI {
                 .build();
 
         for (ConfigItem fillerItem : config.config.guiSettings.getFillerItems()) {
-            pane.add(GuiFactory.displayable(UtilConfigItem.fromConfigItem(fillerItem)));
+            pane.add(GuiFactory.displayable(UtilConfigItem.fromConfigItem(fillerItem, config.transformers)));
         }
 
         int optionPositionsSize = config.config.optionPositions.size();
@@ -51,7 +52,7 @@ public class MultiSelectionUI {
             }
 
             Map.Entry<String, ConfigItem> item = items.get(i);
-            ItemStack itemStack = UtilConfigItem.fromConfigItem(item.getValue());
+            ItemStack itemStack = UtilConfigItem.fromConfigItem(item.getValue(), config.transformers);
 
             pane.set(posX, posY,
                      GuiFactory.displayableBuilder(itemStack)
@@ -71,10 +72,10 @@ public class MultiSelectionUI {
             );
         }
 
-        UtilConfigItem.addConfigItem(pane, config.config.backButton, config.returnHandler);
+        UtilConfigItem.addConfigItem(pane, config.config.backButton, config.transformers, config.returnHandler);
 
         if (items.size() > optionPositionsSize) {
-            UtilConfigItem.addConfigItem(pane, config.config.previousPageButton, (envyPlayer, clickType) -> {
+            UtilConfigItem.addConfigItem(pane, config.config.previousPageButton, config.transformers, (envyPlayer, clickType) -> {
                 if (config.page == 0) {
                     config.page = (config.config.options.size() / config.config.optionPositions.size());
                 } else {
@@ -84,7 +85,7 @@ public class MultiSelectionUI {
                 open(config);
             });
 
-            UtilConfigItem.addConfigItem(pane, config.config.nextPageButton, (envyPlayer, clickType) -> {
+            UtilConfigItem.addConfigItem(pane, config.config.nextPageButton, config.transformers, (envyPlayer, clickType) -> {
                 if (config.page == (config.config.options.size() / config.config.optionPositions.size())) {
                     config.page = 0;
                 } else {
@@ -96,7 +97,7 @@ public class MultiSelectionUI {
         }
 
         for (PositionableConfigItem displayItem : config.displayConfigItems) {
-            UtilConfigItem.addConfigItem(pane, displayItem);
+            UtilConfigItem.addConfigItem(pane, config.transformers, displayItem);
         }
 
         for (PositionableItem displayItem : config.displayItems) {
@@ -128,6 +129,7 @@ public class MultiSelectionUI {
         private List<PositionableConfigItem> displayConfigItems = Lists.newArrayList();
         private List<PositionableItem> displayItems = Lists.newArrayList();
         private int page = 0;
+        private List<Transformer> transformers = Lists.newArrayList();
 
         protected Builder() {}
 
@@ -198,6 +200,21 @@ public class MultiSelectionUI {
 
         public Builder page(int page) {
             this.page = page;
+            return this;
+        }
+
+        public Builder transformers(List<Transformer> transformers) {
+            this.transformers.addAll(transformers);
+            return this;
+        }
+
+        public Builder transformer(Transformer transformer) {
+            this.transformers.add(transformer);
+            return this;
+        }
+
+        public Builder transformers(Transformer... transformers) {
+            this.transformers.addAll(Arrays.asList(transformers));
             return this;
         }
 

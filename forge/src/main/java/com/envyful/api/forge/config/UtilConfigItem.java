@@ -6,20 +6,26 @@ import com.envyful.api.config.type.PositionableConfigItem;
 import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.forge.items.ItemBuilder;
 import com.envyful.api.forge.player.util.UtilPlayer;
+import com.envyful.api.gui.Transformer;
 import com.envyful.api.gui.factory.GuiFactory;
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.player.EnvyPlayer;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.*;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
 public class UtilConfigItem {
+
+    public static void addPermissibleConfigItem(Pane pane, EntityPlayerMP player, List<Transformer> transformers, PermissibleConfigItem configItem) {
+        addPermissibleConfigItem(pane, player, configItem, transformers,null);
+    }
 
     public static void addPermissibleConfigItem(Pane pane, EntityPlayerMP player, PermissibleConfigItem configItem) {
         addPermissibleConfigItem(pane, player, configItem, null);
@@ -27,7 +33,13 @@ public class UtilConfigItem {
 
     public static void addPermissibleConfigItem(Pane pane, EntityPlayerMP player, PermissibleConfigItem configItem,
                                                 BiConsumer<EnvyPlayer<?>, Displayable.ClickType> clickHandler) {
-        ItemStack itemStack = fromPermissibleItem(player, configItem);
+        addPermissibleConfigItem(pane, player, configItem, Collections.emptyList(), clickHandler);
+    }
+
+    public static void addPermissibleConfigItem(Pane pane, EntityPlayerMP player, PermissibleConfigItem configItem,
+                                                List<Transformer> transformers,
+                                                BiConsumer<EnvyPlayer<?>, Displayable.ClickType> clickHandler) {
+        ItemStack itemStack = fromPermissibleItem(player, configItem, transformers);
 
         if (itemStack == null) {
             return;
@@ -45,17 +57,35 @@ public class UtilConfigItem {
         addConfigItem(pane, configItem, null);
     }
 
+    public static void addConfigItem(Pane pane, List<Transformer> transformers, PositionableConfigItem configItem) {
+        addConfigItem(pane, configItem, transformers,null);
+    }
+
     public static void addConfigItem(Pane pane, PositionableConfigItem configItem,
                                      BiConsumer<EnvyPlayer<?>, Displayable.ClickType> clickHandler) {
+        addConfigItem(pane, configItem, Collections.emptyList(), clickHandler);
+    }
+
+    public static void addConfigItem(Pane pane, PositionableConfigItem configItem, List<Transformer> transformers,
+                                     BiConsumer<EnvyPlayer<?>, Displayable.ClickType> clickHandler) {
         if (clickHandler == null) {
-            pane.set(configItem.getXPos(), configItem.getYPos(), GuiFactory.displayable(fromConfigItem(configItem)));
+            pane.set(configItem.getXPos(), configItem.getYPos(), GuiFactory.displayable(fromConfigItem(
+                    configItem,
+                    transformers
+            )));
         } else {
-            pane.set(configItem.getXPos(), configItem.getYPos(), GuiFactory.displayableBuilder(fromConfigItem(configItem))
-                    .clickHandler(clickHandler).build());
+            pane.set(configItem.getXPos(), configItem.getYPos(), GuiFactory.displayableBuilder(fromConfigItem(
+                    configItem,
+                    transformers
+            )).clickHandler(clickHandler).build());
         }
     }
 
     public static ItemStack fromPermissibleItem(EntityPlayerMP player, PermissibleConfigItem permissibleConfigItem) {
+        return fromPermissibleItem(player, permissibleConfigItem, Collections.emptyList());
+    }
+
+    public static ItemStack fromPermissibleItem(EntityPlayerMP player, PermissibleConfigItem permissibleConfigItem, List<Transformer> transformers) {
         if (!permissibleConfigItem.isEnabled()) {
             return null;
         }
@@ -73,19 +103,35 @@ public class UtilConfigItem {
     }
 
     public static ItemStack fromConfigItem(ConfigItem configItem) {
+        return fromConfigItem(configItem, Collections.emptyList());
+    }
+
+    public static ItemStack fromConfigItem(ConfigItem configItem, List<Transformer> transformers) {
         if (!configItem.isEnabled()) {
             return null;
         }
 
+        String name = configItem.getName();
+
         ItemBuilder itemBuilder = new ItemBuilder()
                 .type(Item.getByNameOrId(configItem.getType()))
                 .amount(configItem.getAmount())
-                .name(UtilChatColour.translateColourCodes('&', configItem.getName()))
                 .damage(configItem.getDamage());
 
-        for (String s : configItem.getLore()) {
+        List<String> lore = configItem.getLore();
+
+        if (!transformers.isEmpty()) {
+            for (Transformer transformer : transformers) {
+                lore = transformer.transformLore(lore);
+                name = transformer.transformName(name);
+            }
+        }
+
+        for (String s : lore) {
             itemBuilder.addLore(UtilChatColour.translateColourCodes('&', s));
         }
+
+        itemBuilder.name(UtilChatColour.translateColourCodes('&', configItem.getName()));
 
         for (Map.Entry<String, ConfigItem.NBTValue> nbtData : configItem.getNbt().entrySet()) {
             NBTBase base = null;

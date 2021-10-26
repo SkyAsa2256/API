@@ -6,7 +6,6 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 import java.sql.Connection;
-import java.sql.SQLData;
 import java.sql.SQLException;
 import java.util.concurrent.TimeUnit;
 
@@ -21,13 +20,18 @@ public class SimpleHikariDatabase implements Database {
 
     public SimpleHikariDatabase(SQLDatabaseDetails details) {
         this(details.getPoolName(), details.getIp(), details.getPort(), details.getUsername(),
-                details.getPassword(), details.getDatabase());
+                details.getPassword(), details.getDatabase(), details.getMaxPoolSize());
     }
 
     public SimpleHikariDatabase(String name, String ip, int port, String username, String password, String database) {
+        this(name, ip, port, username, password, database, 30);
+    }
+
+    public SimpleHikariDatabase(String name, String ip, int port, String username, String password, String database,
+                                int maxConnections) {
         HikariConfig config = new HikariConfig();
 
-        config.setMaximumPoolSize(30);
+        config.setMaximumPoolSize(maxConnections);
         config.setPoolName(name);
         config.setJdbcUrl("jdbc:mysql://" + ip + ":" + port + "/" + database);
         config.addDataSourceProperty("serverName", ip);

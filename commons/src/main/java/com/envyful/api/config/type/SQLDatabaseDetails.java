@@ -11,17 +11,23 @@ public  class SQLDatabaseDetails {
     private String username;
     private String password;
     private String database;
+    private int maxPoolSize;
 
     public SQLDatabaseDetails() {
     }
 
     public SQLDatabaseDetails(String poolName, String ip, int port, String username, String password, String database) {
+        this(poolName, ip, port, username, password, database, 30);
+    }
+
+    public SQLDatabaseDetails(String poolName, String ip, int port, String username, String password, String database, int maxPoolSize) {
         this.poolName = poolName;
         this.ip = ip;
         this.port = port;
         this.username = username;
         this.password = password;
         this.database = database;
+        this.maxPoolSize = maxPoolSize;
     }
 
     public String getPoolName() {
@@ -46,5 +52,9 @@ public  class SQLDatabaseDetails {
 
     public String getDatabase() {
         return this.database;
+    }
+
+    public int getMaxPoolSize() {
+        return this.maxPoolSize;
     }
 }

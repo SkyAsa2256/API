@@ -51,6 +51,18 @@ public interface PlayerManager<A extends EnvyPlayer<B>, B> {
       */
      A getOnlinePlayer(String username);
 
+
+     /**
+      *
+      * Gets the {@link EnvyPlayer} implementation from the player's username (if they are online) (case insensitive)
+      *
+      * Will return null if the player is not online
+      *
+      * @param username The username of the minecraft player
+      * @return The API's player implementation
+      */
+     A getOnlinePlayerCaseInsensitive(String username);
+
      /**
       *
       * Gets a {@link List} of all online players in the {@link EnvyPlayer} form

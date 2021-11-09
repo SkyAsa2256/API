@@ -1,8 +1,6 @@
 package com.envyful.api.forge.player;
 
 import com.envyful.api.concurrency.UtilConcurrency;
-import com.envyful.api.forge.concurrency.UtilForgeConcurrency;
-import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.player.attribute.PlayerAttribute;
 import com.envyful.api.player.attribute.data.PlayerAttributeData;
@@ -50,6 +48,17 @@ public class ForgePlayerManager implements PlayerManager<ForgeEnvyPlayer, Entity
     public ForgeEnvyPlayer getOnlinePlayer(String username) {
         for (ForgeEnvyPlayer online : this.cachedPlayers.values()) {
             if (online.getParent().getName().equals(username)) {
+                return online;
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public ForgeEnvyPlayer getOnlinePlayerCaseInsensitive(String username) {
+        for (ForgeEnvyPlayer online : this.cachedPlayers.values()) {
+            if (online.getParent().getName().equalsIgnoreCase(username)) {
                 return online;
             }
         }

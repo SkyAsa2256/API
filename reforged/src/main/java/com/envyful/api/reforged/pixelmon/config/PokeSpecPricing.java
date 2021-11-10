@@ -1,8 +1,9 @@
 package com.envyful.api.reforged.pixelmon.config;
 
+import com.envyful.api.forge.player.util.UtilPlayer;
 import com.google.common.collect.Sets;
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
-import com.pixelmonmod.pixelmon.entities.pixelmon.specs.IsLegendarySpec;
+import net.minecraft.entity.player.EntityPlayerMP;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 import java.util.Set;
@@ -14,6 +15,7 @@ public class PokeSpecPricing implements Comparable<PokeSpecPricing> {
 
     private String spec;
     private MathHandler minPrice;
+    private String requiredPermission = "";
 
     private transient PokemonSpec cachedSpec = null;
 
@@ -44,6 +46,14 @@ public class PokeSpecPricing implements Comparable<PokeSpecPricing> {
             case "/" :
                 return currentValue / Math.max(0.00001, this.minPrice.getValue());
         }
+    }
+
+    public boolean hasPermission(EntityPlayerMP player) {
+        if (this.requiredPermission == null || this.requiredPermission.isEmpty()) {
+            return true;
+        }
+
+        return UtilPlayer.hasPermission(player, this.requiredPermission);
     }
 
     @Override

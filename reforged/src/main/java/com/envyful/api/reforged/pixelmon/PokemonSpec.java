@@ -143,7 +143,7 @@ public class PokemonSpec {
         return this.ivRequirement.fits((int) pokemon.getIVs().getPercentage(1));
     }
 
-    private boolean doesSpeciesMatch(Pokemon pokemon) {
+    public boolean doesSpeciesMatch(Pokemon pokemon) {
         if (this.species == null) {
             return true;
         }

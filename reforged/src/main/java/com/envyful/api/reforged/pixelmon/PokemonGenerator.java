@@ -1,6 +1,7 @@
 package com.envyful.api.reforged.pixelmon;
 
 import com.envyful.api.math.UtilRandom;
+import com.envyful.api.reforged.pixelmon.config.PokemonGeneratorConfig;
 import com.envyful.api.type.requirement.impl.MinimumIntegerRequirement;
 import com.envyful.api.type.requirement.impl.RandomMinimumIntegerRequirement;
 import com.google.common.collect.Lists;
@@ -55,6 +56,15 @@ public class PokemonGenerator {
         this.minIVPercentage = minIVPercentage;
         this.maxIVPercentage = maxIVPercentage;
         this.onlyLegends = onlyLegends;
+    }
+
+    public PokemonGenerator(PokemonGeneratorConfig config) {
+        this(config.getBlockedTypes(), config.isSpeciesRequirement(), config.isAllowLegends(),
+             config.isAllowUltraBeasts(), config.isGenderRequirement(), config.isGrowthRequirement(),
+             config.isNatureRequirement(), config.getPotentialGrowthRequirements(),
+             config.getPotentialNatureRequirements(), config.isAllowEvolutions(), config.isIvRequirement(),
+             config.isRandomIVGeneration(), config.getMinIVPercentage(), config.getMaxIVPercentage(), config.isOnlyLegends()
+        );
     }
 
     public PokemonSpec generate() {

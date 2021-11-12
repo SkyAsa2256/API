@@ -80,7 +80,7 @@ public class PokemonGenerator {
         }
 
         if (this.growthRequirement) {
-            List<EnumGrowth> alreadyFound = Lists.newArrayList();
+            List<EnumGrowth> alreadyFound = Lists.newArrayList(EnumGrowth.Ginormous, EnumGrowth.Microscopic);
             for (int i = 0; i < this.potentialGrowthRequirements; i++) {
                 EnumGrowth growth = UtilRandom.getRandomElementExcluding(EnumGrowth.values(), alreadyFound.toArray(new EnumGrowth[0]));
                 builder.growth(growth);

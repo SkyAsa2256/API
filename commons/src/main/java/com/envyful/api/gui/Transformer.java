@@ -1,5 +1,7 @@
 package com.envyful.api.gui;
 
+import com.google.common.collect.Lists;
+
 import java.util.List;
 
 /**
@@ -25,6 +27,14 @@ public interface Transformer {
      * @param lore The original lore
      * @return The transformed lore
      */
-    List<String> transformLore(List<String> lore);
+    default List<String> transformLore(List<String> lore) {
+        List<String> newLore = Lists.newArrayList();
+
+        for (String s : lore) {
+            newLore.add(this.transformName(s));
+        }
+
+        return newLore;
+    }
 
 }

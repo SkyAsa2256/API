@@ -15,7 +15,8 @@ public class PokemonSpriteTransformer implements Transformer {
     }
 
     public static PokemonSpriteTransformer of(EnumSpecies species) {
-        return new PokemonSpriteTransformer(GuiResources.getSpritePath(species, -1, Gender.Male, "", false));
+        return new PokemonSpriteTransformer("pixelmon:textures/" + GuiResources.getSpritePath(species, -1, Gender.Male,
+                                                                                            "", false) + ".png");
     }
 
     private PokemonSpriteTransformer(String spritePath) {this.spritePath = spritePath;}

@@ -134,28 +134,36 @@ public class UtilConfigItem {
         itemBuilder.name(UtilChatColour.translateColourCodes('&', configItem.getName()));
 
         for (Map.Entry<String, ConfigItem.NBTValue> nbtData : configItem.getNbt().entrySet()) {
+            String data = nbtData.getValue().getData();
+
+            if (!transformers.isEmpty()) {
+                for (Transformer transformer : transformers) {
+                    data = transformer.transformName(data);
+                }
+            }
+
             NBTBase base = null;
             switch (nbtData.getValue().getType().toLowerCase()) {
                 case "int" : case "integer" :
-                    base = new NBTTagInt(Integer.parseInt(nbtData.getValue().getData()));
+                    base = new NBTTagInt(Integer.parseInt(data));
                     break;
                 case "long" :
-                    base = new NBTTagLong(Long.parseLong(nbtData.getValue().getData()));
+                    base = new NBTTagLong(Long.parseLong(data));
                     break;
                 case "byte" :
-                    base = new NBTTagByte(Byte.parseByte(nbtData.getValue().getData()));
+                    base = new NBTTagByte(Byte.parseByte(data));
                     break;
                 case "double" :
-                    base = new NBTTagDouble(Double.parseDouble(nbtData.getValue().getData()));
+                    base = new NBTTagDouble(Double.parseDouble(data));
                     break;
                 case "float" :
-                    base = new NBTTagFloat(Float.parseFloat(nbtData.getValue().getData()));
+                    base = new NBTTagFloat(Float.parseFloat(data));
                     break;
                 case "short" :
-                    base = new NBTTagShort(Short.parseShort(nbtData.getValue().getData()));
+                    base = new NBTTagShort(Short.parseShort(data));
                     break;
                 default : case "string" :
-                    base = new NBTTagString(nbtData.getValue().getData());
+                    base = new NBTTagString(data);
                     break;
             }
 

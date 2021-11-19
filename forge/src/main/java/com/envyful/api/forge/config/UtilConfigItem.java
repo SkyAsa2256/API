@@ -142,8 +142,6 @@ public class UtilConfigItem {
                 }
             }
 
-            System.out.println("DATA: " + data);
-
             NBTBase base = null;
             switch (nbtData.getValue().getType().toLowerCase()) {
                 case "int" : case "integer" :

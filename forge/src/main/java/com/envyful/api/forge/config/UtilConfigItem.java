@@ -131,7 +131,7 @@ public class UtilConfigItem {
             itemBuilder.addLore(UtilChatColour.translateColourCodes('&', s));
         }
 
-        itemBuilder.name(UtilChatColour.translateColourCodes('&', configItem.getName()));
+        itemBuilder.name(UtilChatColour.translateColourCodes('&', name));
 
         for (Map.Entry<String, ConfigItem.NBTValue> nbtData : configItem.getNbt().entrySet()) {
             String data = nbtData.getValue().getData();
@@ -141,6 +141,8 @@ public class UtilConfigItem {
                     data = transformer.transformName(data);
                 }
             }
+
+            System.out.println("DATA: " + data);
 
             NBTBase base = null;
             switch (nbtData.getValue().getType().toLowerCase()) {

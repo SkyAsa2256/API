@@ -76,7 +76,7 @@ public class UtilPokemonInfo {
                 }
 
                 for (WorldTime time : spawnInfoPokemon.condition.times) {
-                    if (names.contains(time.getLocalizedName())) {
+                    if (time == null || names.contains(time.getLocalizedName())) {
                         continue;
                     }
 

@@ -17,7 +17,6 @@ import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.play.client.CPacketClickWindow;
 import net.minecraft.network.play.client.CPacketCloseWindow;
 import net.minecraft.network.play.server.SPacketCloseWindow;
 import net.minecraft.network.play.server.SPacketOpenWindow;
@@ -25,15 +24,10 @@ import net.minecraft.network.play.server.SPacketSetSlot;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-import java.lang.reflect.Field;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 /**
  *
@@ -41,17 +35,6 @@ import java.util.function.Predicate;
  *
  */
 public class ForgeGui implements Gui {
-
-    private static Field FIELD;
-
-    static {
-        try {
-            FIELD = CPacketCloseWindow.class.getDeclaredField("field_149556_a");
-            FIELD.setAccessible(true);
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        }
-    }
 
     private final ITextComponent title;
     private final int height;
@@ -99,7 +82,7 @@ public class ForgeGui implements Gui {
                 parent.openContainer = container;
                 parent.currentWindowId = 1;
                 parent.connection.sendPacket(new SPacketOpenWindow(parent.currentWindowId, "minecraft:container", this.title,
-                                                                   9 * this.height
+                                                                   (9 * this.height) * 2
                 ));
                 container.refreshPlayerContents();
                 this.containers.add(container);
@@ -133,6 +116,17 @@ public class ForgeGui implements Gui {
             this.player = player;
 
             this.update(this.gui.panes, true);
+        }
+
+        @Override
+        public Slot getSlot(int slotId) {
+            if (slotId >= this.inventorySlots.size()) {
+                slotId = this.inventorySlots.size() - 1;
+            } else if (slotId < 0) {
+                slotId = 0;
+            }
+
+            return super.getSlot(slotId);
         }
 
         public void update(ForgeSimplePane[] panes, boolean force) {

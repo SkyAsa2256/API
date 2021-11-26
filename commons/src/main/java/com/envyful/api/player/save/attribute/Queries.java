@@ -7,13 +7,17 @@ import java.lang.annotation.Target;
 
 /**
  *
- * Used for specifying the SQL create table statements for this class
+ * Used for specifying the SQL statements for this class
  *
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Tables {
+public @interface Queries {
 
     String[] value();
+
+    String updateQuery();
+
+    String loadQuery();
 
 }

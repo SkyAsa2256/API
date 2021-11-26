@@ -13,16 +13,46 @@ public interface PlayerAttribute<A> {
 
     /**
      *
-     * Implementation for loading the data for the player attribute
+     * Implementation for loading the data for the player attribute if no
+     * {@link com.envyful.api.player.save.SaveManager} is set
      *
      */
     void load();
 
     /**
      *
-     * Implementation for saving the data from the player attribute
+     * Implementation for saving the data from the player attribute if no
+     * {@link com.envyful.api.player.save.SaveManager} is set
      *
      */
     void save();
+
+    /**
+     *
+     * Called before a {@link com.envyful.api.player.save.SaveManager} saves this class
+     *
+     */
+    default void preSave() {}
+
+    /**
+     *
+     * Called after a {@link com.envyful.api.player.save.SaveManager} saves this class
+     *
+     */
+    default void postSave() {}
+
+    /**
+     *
+     * Called before a {@link com.envyful.api.player.save.SaveManager} loads this class
+     *
+     */
+    default void preLoad() {}
+
+    /**
+     *
+     * Called after a {@link com.envyful.api.player.save.SaveManager} loads this class
+     *
+     */
+    default void postLoad() {}
 
 }

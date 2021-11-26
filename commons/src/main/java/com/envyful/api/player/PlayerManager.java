@@ -1,6 +1,7 @@
 package com.envyful.api.player;
 
 import com.envyful.api.player.attribute.PlayerAttribute;
+import com.envyful.api.player.save.SaveManager;
 
 import java.util.List;
 import java.util.UUID;
@@ -77,9 +78,20 @@ public interface PlayerManager<A extends EnvyPlayer<B>, B> {
       * Registers an {@link com.envyful.api.player.attribute.PlayerAttribute) class so that when the player object is
       * instantiated it can be created (using reflection) from the registry in the PlayerManager implementation.
       *
+      * If {@link PlayerManager#setSaveManager(SaveManager)} has been called then it will call {
+      * @link SaveManager#registerAttribute(Class)} on the given class
+      *
       * @param manager The manager object to be passed through the attribute constructor at instantiation
       * @param attribute The class of the attribute being registered
       */
      void registerAttribute(Object manager, Class<? extends PlayerAttribute<?>> attribute);
+
+     /**
+      *
+      * Sets the player manager's {@link SaveManager}
+      *
+      * @param saveManager The new save manager
+      */
+     void setSaveManager(SaveManager<B> saveManager);
 
 }

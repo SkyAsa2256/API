@@ -19,21 +19,29 @@ public class SimpleHikariDatabase implements Database {
     private HikariDataSource hikari;
 
     public SimpleHikariDatabase(SQLDatabaseDetails details) {
-        this(details.getPoolName(), details.getIp(), details.getPort(), details.getUsername(),
-                details.getPassword(), details.getDatabase(), details.getMaxPoolSize());
+        this(details.getConnectionUrl(), details.getPoolName(), details.getIp(), details.getPort(),
+             details.getUsername(), details.getPassword(), details.getDatabase(), details.getMaxPoolSize()
+        );
     }
 
     public SimpleHikariDatabase(String name, String ip, int port, String username, String password, String database) {
-        this(name, ip, port, username, password, database, 30);
+        this(null, name, ip, port, username, password, database, 30);
     }
 
-    public SimpleHikariDatabase(String name, String ip, int port, String username, String password, String database,
+    public SimpleHikariDatabase(String connectionUrl, String name, String ip, int port, String username,
+                                String password, String database,
                                 int maxConnections) {
         HikariConfig config = new HikariConfig();
 
         config.setMaximumPoolSize(maxConnections);
         config.setPoolName(name);
-        config.setJdbcUrl("jdbc:mysql://" + ip + ":" + port + "/" + database);
+
+        if (connectionUrl == null) {
+            config.setJdbcUrl("jdbc:mysql://" + ip + ":" + port + "/" + database);
+        } else {
+            config.setJdbcUrl(connectionUrl);
+        }
+
         config.addDataSourceProperty("serverName", ip);
         config.addDataSourceProperty("port", port);
         config.addDataSourceProperty("databaseName", database);

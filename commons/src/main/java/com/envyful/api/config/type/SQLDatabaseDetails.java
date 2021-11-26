@@ -11,7 +11,8 @@ public  class SQLDatabaseDetails {
     private String username;
     private String password;
     private String database;
-    private int maxPoolSize;
+    private int maxPoolSize = 30;
+    private String connectionUrl = null;
 
     public SQLDatabaseDetails() {
     }
@@ -56,5 +57,9 @@ public  class SQLDatabaseDetails {
 
     public int getMaxPoolSize() {
         return this.maxPoolSize;
+    }
+
+    public String getConnectionUrl() {
+        return this.connectionUrl;
     }
 }

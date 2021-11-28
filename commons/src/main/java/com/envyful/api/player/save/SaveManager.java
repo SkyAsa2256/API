@@ -1,5 +1,6 @@
 package com.envyful.api.player.save;
 
+import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.attribute.PlayerAttribute;
 
 import java.util.List;
@@ -16,15 +17,16 @@ public interface SaveManager<T> {
      *
      * Registers an attribute for how this class should handle saving & loading
      *
+     * @param manager The manager object
      * @param attribute The class of the attribute being registered
      */
-    void registerAttribute(Class<? extends PlayerAttribute<?>> attribute);
+    void registerAttribute(Object manager, Class<? extends PlayerAttribute<?>> attribute);
 
     /**
      *
      * Saves the player's data from the given attribute
      * This will call {@link PlayerAttribute#save()} if this class has not been registered using
-     * {@link SaveManager#registerAttribute(Class)}
+     * {@link SaveManager#registerAttribute(Object, Class)}
      *
      * This calls {@link PlayerAttribute#preSave()} before saving the data and {@link PlayerAttribute#postSave()}
      * after saving the data
@@ -37,7 +39,7 @@ public interface SaveManager<T> {
     /**
      *
      * Load the player's data for all registered {@link PlayerAttribute} using
-     *{@link SaveManager#registerAttribute(Class)}
+     *{@link SaveManager#registerAttribute(Object, Class)}
      *
      * This calls {@link PlayerAttribute#preLoad()} before loading the data and {@link PlayerAttribute#postLoad()}
      * after loading the data
@@ -45,6 +47,6 @@ public interface SaveManager<T> {
      * @param player The player who's data is being loaded
      * @return All successfully loaded attributes
      */
-    List<PlayerAttribute<?>> loadData(T player);
+    List<PlayerAttribute<?>> loadData(EnvyPlayer<T> player);
 
 }

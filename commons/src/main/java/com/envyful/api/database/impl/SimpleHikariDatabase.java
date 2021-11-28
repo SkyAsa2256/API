@@ -33,7 +33,7 @@ public class SimpleHikariDatabase implements Database {
                                 int maxConnections) {
         HikariConfig config = new HikariConfig();
 
-        config.setMaximumPoolSize(maxConnections);
+        config.setMaximumPoolSize(Math.max(1, maxConnections));
         config.setPoolName(name);
 
         if (connectionUrl == null) {

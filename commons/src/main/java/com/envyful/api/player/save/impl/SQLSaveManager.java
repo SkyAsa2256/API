@@ -31,7 +31,7 @@ public class SQLSaveManager<T> implements SaveManager<T> {
     private final Map<Class<? extends PlayerAttribute<?>>, AttributeData> loadedAttributes = Maps.newConcurrentMap();
     private final Database database;
 
-    protected SQLSaveManager(Database database) {this.database = database;}
+    public SQLSaveManager(Database database) {this.database = database;}
 
     @Override
     public List<PlayerAttribute<?>> loadData(EnvyPlayer<T> player) {
@@ -45,6 +45,8 @@ public class SQLSaveManager<T> implements SaveManager<T> {
             AttributeData value = entry.getValue();
             PlayerAttribute<?> attribute = value.getConstructor().apply(player, value.getManager());
 
+            attribute.preLoad();
+
             try (Connection connection = this.database.getConnection();
                  PreparedStatement preparedStatement = connection.prepareStatement(value.getQueries().loadQuery())) {
                 Field[] fields = value.getFieldsPositions().get(value.getQueries().loadQuery());
@@ -56,6 +58,8 @@ public class SQLSaveManager<T> implements SaveManager<T> {
                 ResultSet resultSet = preparedStatement.executeQuery();
 
                 if (!resultSet.next()) {
+                    attribute.postLoad();
+                    attributes.add(attribute);
                     continue;
                 }
 
@@ -69,22 +73,23 @@ public class SQLSaveManager<T> implements SaveManager<T> {
                     }
                 }
             } catch (SQLException | IllegalAccessException e) {
+                attribute.load();
                 e.printStackTrace();
             }
 
-            if (attribute != null) {
-                attributes.add(attribute);
-            }
+            attribute.postLoad();
+            attributes.add(attribute);
         }
 
         return attributes;
     }
 
     @Override
-    public void saveData(T player, PlayerAttribute<?> attribute) {
+    public void saveData(EnvyPlayer<T> player, PlayerAttribute<?> attribute) {
         AttributeData attributeData = this.loadedAttributes.get(attribute.getClass());
 
         if (attributeData == null) {
+            attribute.save();
             return;
         }
 

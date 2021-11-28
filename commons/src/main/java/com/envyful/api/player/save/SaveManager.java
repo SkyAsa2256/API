@@ -34,7 +34,7 @@ public interface SaveManager<T> {
      * @param player The player who's data is being saved
      * @param attribute The attribute being saved
      */
-    void saveData(T player, PlayerAttribute<?> attribute);
+    void saveData(EnvyPlayer<T> player, PlayerAttribute<?> attribute);
 
     /**
      *

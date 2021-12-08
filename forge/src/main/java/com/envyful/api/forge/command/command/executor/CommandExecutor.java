@@ -259,6 +259,7 @@ public class CommandExecutor {
         try {
             ((ICommandSender) args[0]).sendMessage(new TextComponentString("A G"));
             this.executor.invoke(this.commandClass, args);
+            ((ICommandSender) args[0]).sendMessage(new TextComponentString("A I"));
             return true;
         } catch (Exception e) {
             Throwable cause = e.getCause();

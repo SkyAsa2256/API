@@ -5,20 +5,18 @@ import com.envyful.api.command.annotate.Command;
 import com.envyful.api.command.annotate.Permissible;
 import com.envyful.api.command.annotate.SubCommands;
 import com.envyful.api.command.annotate.TabCompletions;
-import com.envyful.api.command.annotate.executor.CommandProcessor;
-import com.envyful.api.command.annotate.executor.Completable;
-import com.envyful.api.command.annotate.executor.Filler;
-import com.envyful.api.command.annotate.executor.Sender;
-import com.envyful.api.forge.command.completion.FillerTabCompleter;
-import com.envyful.api.forge.command.completion.number.IntegerTabCompleter;
+import com.envyful.api.command.annotate.executor.*;
 import com.envyful.api.command.exception.CommandLoadException;
 import com.envyful.api.command.injector.ArgumentInjector;
 import com.envyful.api.command.injector.TabCompleter;
 import com.envyful.api.forge.command.command.ForgeCommand;
 import com.envyful.api.forge.command.command.ForgeSenderType;
 import com.envyful.api.forge.command.command.executor.CommandExecutor;
+import com.envyful.api.forge.command.completion.FillerTabCompleter;
+import com.envyful.api.forge.command.completion.number.IntegerTabCompleter;
 import com.envyful.api.forge.command.completion.player.PlayerTabCompleter;
 import com.envyful.api.forge.command.injector.ForgeFunctionInjector;
+import com.envyful.api.type.Pair;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import io.leangen.geantyref.AnnotationFormatException;
@@ -34,7 +32,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.function.BiFunction;
-import java.util.stream.Collectors;
 
 /**
  *
@@ -116,7 +113,7 @@ public class ForgeCommandFactory implements CommandFactory<MinecraftServer, ICom
             }
 
             String requiredPermission = this.getPermission(declaredMethod);
-            List<ArgumentInjector<?, ICommandSender>> arguments = Lists.newArrayList();
+            List<Pair<ArgumentInjector<?, ICommandSender>, String>> arguments = Lists.newArrayList();
             Class<?>[] parameterTypes = declaredMethod.getParameterTypes();
             Annotation[][] annotations = declaredMethod.getParameterAnnotations();
             ForgeSenderType senderType = null;
@@ -162,7 +159,15 @@ public class ForgeCommandFactory implements CommandFactory<MinecraftServer, ICom
                         }
                     }
 
-                    arguments.add(this.getInjectorFor(parameterTypes[i]));
+                    Annotation argument = annotations[i][annotations[i].length - 1];
+                    String defaultValue = null;
+
+                    if (argument instanceof Argument) {
+                        defaultValue = ((Argument) argument).defaultValue();
+                    }
+
+
+                    arguments.add(Pair.of(this.getInjectorFor(parameterTypes[i]), defaultValue));
                 }
             }
 
@@ -172,7 +177,7 @@ public class ForgeCommandFactory implements CommandFactory<MinecraftServer, ICom
 
             subExecutors.add(new CommandExecutor(processorData.value(), senderType, senderPosition, instance, declaredMethod,
                     processorData.executeAsync(), justArgsPos, requiredPermission,
-                    arguments.toArray(new ForgeFunctionInjector<?>[0]), tabCompleters, extraTabData));
+                    arguments.toArray(new Pair[0]), tabCompleters, extraTabData));
         }
 
         return new ForgeCommand(this, commandData.value(), commandData.description(), defaultPermission,

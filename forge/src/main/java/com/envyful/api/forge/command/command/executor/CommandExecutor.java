@@ -5,6 +5,7 @@ import com.envyful.api.command.injector.TabCompleter;
 import com.envyful.api.forge.command.command.ForgeSenderType;
 import com.envyful.api.forge.command.completion.FillerTabCompleter;
 import com.envyful.api.forge.player.util.UtilPlayer;
+import com.envyful.api.type.Pair;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -35,7 +36,7 @@ public class CommandExecutor {
     private final int justArgsPos;
     private final int requiredArgs;
     private final String requiredPermission;
-    private final ArgumentInjector<?, ICommandSender>[] arguments;
+    private final Pair<ArgumentInjector<?, ICommandSender>, String>[] arguments;
     private final List<TabCompleter<?, ?>> tabCompleters;
     private final List<Annotation[]> extraTabData;
 
@@ -54,7 +55,8 @@ public class CommandExecutor {
      */
     public CommandExecutor(String identifier, ForgeSenderType sender, int senderPosition, Object commandClass, Method executor,
                            boolean executeAsync, int justArgsPos, String requiredPermission,
-                           ArgumentInjector<?, ICommandSender>[] arguments, List<TabCompleter<?, ?>> tabCompleters,
+                           Pair<ArgumentInjector<?, ICommandSender>, String>[] arguments,
+                           List<TabCompleter<?, ?>> tabCompleters,
                            List<Annotation[]> extraTabData) {
         this.identifier = identifier;
         this.senderPosition = senderPosition;
@@ -82,13 +84,19 @@ public class CommandExecutor {
             return -1;
         }
 
-        for (ArgumentInjector<?, ICommandSender> argument : this.arguments) {
-            if (argument != null && argument.doesRequireMultipleArgs()) {
+        int defaults = 0;
+
+        for (Pair<ArgumentInjector<?, ICommandSender>, String> argument : this.arguments) {
+            if (argument != null && argument.getX().doesRequireMultipleArgs()) {
                 return -1;
+            }
+
+            if (argument != null && argument.getY() != null) {
+                ++defaults;
             }
         }
 
-        return this.arguments.length;
+        return this.arguments.length - defaults;
     }
 
     /**
@@ -169,7 +177,7 @@ public class CommandExecutor {
                 break;
             }
 
-            ArgumentInjector<?, ICommandSender> argument = this.arguments[i];
+            Pair<ArgumentInjector<?, ICommandSender>, String> argument = this.arguments[i];
 
             if (argument == null) {
                 args[i] = null;
@@ -177,19 +185,33 @@ public class CommandExecutor {
                 continue;
             }
 
-            if (argument.doesRequireMultipleArgs()) {
+            if (argument.getX().doesRequireMultipleArgs()) {
                 String[] remainingArgs = Arrays.copyOfRange(arguments, i, arguments.length);
 
-                args[i] = argument.instantiateClass(sender, remainingArgs);
+                if ((remainingArgs == null || remainingArgs.length == 0) && argument.getY() != null) {
+                    remainingArgs = new String[] { argument.getY() };
+                }
+
+                args[i] = argument.getX().instantiateClass(sender, remainingArgs);
 
                 if (args[i] == null) {
                     return false;
                 }
             } else {
-                args[i] = argument.instantiateClass(sender, arguments[i - subtract]);
+                args[i] = argument.getX().instantiateClass(sender, arguments[i - subtract]);
 
                 if (args[i] == null) {
-                    return false;
+                    if (argument.getY() != null) {
+                        args[i] =argument.getX().instantiateClass(sender, argument.getY());
+
+                        if (args[i] == null) {
+                            return false;
+                        } else {
+                            ++subtract;
+                        }
+                    } else {
+                        return false;
+                    }
                 }
             }
         }

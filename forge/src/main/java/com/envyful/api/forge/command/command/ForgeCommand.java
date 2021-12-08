@@ -125,7 +125,7 @@ public class ForgeCommand extends CommandBase {
             }
         }
 
-        System.out.println("FAILING AT BOTTOM");
+        FMLCommonHandler.instance().getFMLLogger().info("FAILING AT BUTTOM");
         sender.sendMessage(new TextComponentString(this.getUsage(sender)));
     }
 
@@ -151,6 +151,7 @@ public class ForgeCommand extends CommandBase {
                         return;
                     }
 
+                    FMLCommonHandler.instance().getFMLLogger().info("FAILING ON EXECUTOR");
                     sender.sendMessage(new TextComponentString(this.getUsage(sender)));
                 });
                 return true;

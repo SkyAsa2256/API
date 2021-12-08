@@ -173,10 +173,6 @@ public class CommandExecutor {
         int subtract = 0;
 
         for (int i = 0; i < this.arguments.length; i++) {
-            if ((i - subtract) >= arguments.length) {
-                break;
-            }
-
             Pair<ArgumentInjector<?, ICommandSender>, String> argument = this.arguments[i];
 
             if (argument == null) {
@@ -186,7 +182,7 @@ public class CommandExecutor {
             }
 
             if (argument.getX().doesRequireMultipleArgs()) {
-                String[] remainingArgs = Arrays.copyOfRange(arguments, i, arguments.length);
+                String[] remainingArgs = Arrays.copyOfRange(arguments, i - subtract, arguments.length);
 
                 if ((remainingArgs == null || remainingArgs.length == 0) && argument.getY() != null) {
                     remainingArgs = new String[] { argument.getY() };
@@ -202,7 +198,7 @@ public class CommandExecutor {
 
                 if (args[i] == null) {
                     if (argument.getY() != null) {
-                        args[i] =argument.getX().instantiateClass(sender, argument.getY());
+                        args[i] = argument.getX().instantiateClass(sender, argument.getY());
 
                         if (args[i] == null) {
                             return false;

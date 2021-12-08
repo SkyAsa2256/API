@@ -254,6 +254,7 @@ public class CommandExecutor {
 
     private boolean execute(Object... args) {
         try {
+            ((ICommandSender) args[0]).sendMessage(new TextComponentString("A G"));
             this.executor.invoke(this.commandClass, args);
             return true;
         } catch (Exception e) {
@@ -272,6 +273,7 @@ public class CommandExecutor {
             }));
         }
 
+        ((ICommandSender) args[0]).sendMessage(new TextComponentString("A H"));
         return false;
     }
 

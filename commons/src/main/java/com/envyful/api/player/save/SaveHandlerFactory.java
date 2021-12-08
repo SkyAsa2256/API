@@ -11,7 +11,7 @@ import java.util.Map;
  */
 public class SaveHandlerFactory {
 
-    private static final Map<Class<? extends VariableSaveHandler<?, ?>>, VariableSaveHandler<?, ?>> SAVE_HANDLERS = Maps.newHashMap();
+    private static final Map<Class<? extends VariableSaveHandler<?>>, VariableSaveHandler<?>> SAVE_HANDLERS = Maps.newHashMap();
 
     /**
      *
@@ -19,8 +19,8 @@ public class SaveHandlerFactory {
      *
      * @param saveHandler The registered handler
      */
-    public static void register(VariableSaveHandler<?, ?> saveHandler) {
-        SAVE_HANDLERS.put((Class<? extends VariableSaveHandler<?, ?>>) saveHandler.getClass(), saveHandler);
+    public static void register(VariableSaveHandler<?> saveHandler) {
+        SAVE_HANDLERS.put((Class<? extends VariableSaveHandler<?>>) saveHandler.getClass(), saveHandler);
     }
 
     /**
@@ -31,7 +31,7 @@ public class SaveHandlerFactory {
      * @param clazz The class searching for
      * @return The registered save handler
      */
-    public static VariableSaveHandler<?,?> getSaveHandler(Class<? extends VariableSaveHandler<?, ?>> clazz) {
+    public static VariableSaveHandler<?> getSaveHandler(Class<? extends VariableSaveHandler<?>> clazz) {
         return SAVE_HANDLERS.get(clazz);
     }
 }

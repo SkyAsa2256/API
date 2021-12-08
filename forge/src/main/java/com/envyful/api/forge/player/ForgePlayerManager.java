@@ -4,6 +4,7 @@ import com.envyful.api.concurrency.UtilConcurrency;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.player.attribute.PlayerAttribute;
 import com.envyful.api.player.attribute.data.PlayerAttributeData;
+import com.envyful.api.player.save.SaveManager;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -29,6 +30,8 @@ public class ForgePlayerManager implements PlayerManager<ForgeEnvyPlayer, Entity
 
     private final Map<UUID, ForgeEnvyPlayer> cachedPlayers = Maps.newHashMap();
     private final List<PlayerAttributeData> attributeData = Lists.newArrayList();
+
+    private SaveManager<EntityPlayerMP> saveManager = null;
 
     public ForgePlayerManager() {
         MinecraftForge.EVENT_BUS.register(new PlayerListener(this));
@@ -74,6 +77,15 @@ public class ForgePlayerManager implements PlayerManager<ForgeEnvyPlayer, Entity
     @Override
     public void registerAttribute(Object manager, Class<? extends PlayerAttribute<?>> attribute) {
         this.attributeData.add(new PlayerAttributeData(manager, attribute));
+
+        if (this.saveManager != null) {
+            this.saveManager.registerAttribute(manager, attribute);
+        }
+    }
+
+    @Override
+    public void setSaveManager(SaveManager<EntityPlayerMP> saveManager) {
+        this.saveManager = saveManager;
     }
 
     private final class PlayerListener {

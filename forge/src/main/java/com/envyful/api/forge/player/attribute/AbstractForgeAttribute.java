@@ -3,6 +3,8 @@ package com.envyful.api.forge.player.attribute;
 import com.envyful.api.forge.player.ForgeEnvyPlayer;
 import com.envyful.api.player.attribute.PlayerAttribute;
 
+import java.util.UUID;
+
 /**
  *
  * Abstract implementation of the {@link PlayerAttribute} for the forge platform. This handles storing the manager
@@ -12,11 +14,13 @@ import com.envyful.api.player.attribute.PlayerAttribute;
  */
 public abstract class AbstractForgeAttribute<A> implements PlayerAttribute<A> {
 
-    protected final A manager;
-    protected final ForgeEnvyPlayer parent;
+    protected final transient A manager;
+    protected final transient ForgeEnvyPlayer parent;
+    protected final UUID uuid;
 
     protected AbstractForgeAttribute(A manager, ForgeEnvyPlayer parent) {
         this.manager = manager;
         this.parent = parent;
+        this.uuid = parent.getUuid();
     }
 }

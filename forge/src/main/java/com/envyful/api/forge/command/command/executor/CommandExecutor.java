@@ -171,6 +171,7 @@ public class CommandExecutor {
     public boolean execute(ICommandSender sender, String[] arguments) {
         Object[] args = new Object[this.arguments.length];
         int subtract = 0;
+        int skipped = 0;
 
         for (int i = 0; i < this.arguments.length; i++) {
             Pair<ArgumentInjector<?, ICommandSender>, String> argument = this.arguments[i];
@@ -201,6 +202,7 @@ public class CommandExecutor {
                         return false;
                     } else {
                         ++subtract;
+                        ++skipped;
                         continue;
                     }
                 }
@@ -215,6 +217,7 @@ public class CommandExecutor {
                             return false;
                         } else {
                             ++subtract;
+                            ++skipped;
                         }
                     } else {
                         return false;
@@ -239,7 +242,7 @@ public class CommandExecutor {
                 arguments = new String[0];
             }
 
-            args[this.justArgsPos] = Arrays.copyOfRange(arguments, this.arguments.length - 2 - subtract, arguments.length);
+            args[this.justArgsPos] = Arrays.copyOfRange(arguments, this.arguments.length - 2 - skipped, arguments.length);
         }
 
         return this.execute(args);

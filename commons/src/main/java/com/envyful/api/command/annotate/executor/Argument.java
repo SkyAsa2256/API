@@ -14,10 +14,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.PARAMETER)
 public @interface Argument {
 
-    static final Object O = new Object();
-
     boolean tabComplete() default false;
 
-    String defaultValue();
+    String defaultValue() default "";
 
 }

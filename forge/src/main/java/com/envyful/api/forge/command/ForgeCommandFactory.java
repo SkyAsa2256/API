@@ -164,8 +164,11 @@ public class ForgeCommandFactory implements CommandFactory<MinecraftServer, ICom
 
                     if (argument instanceof Argument) {
                         defaultValue = ((Argument) argument).defaultValue();
-                    }
 
+                        if (defaultValue.isEmpty()) {
+                            defaultValue = null;
+                        }
+                    }
 
                     arguments.add(Pair.of(this.getInjectorFor(parameterTypes[i]), defaultValue));
                 }

@@ -245,7 +245,10 @@ public class CommandExecutor {
         }
 
         if (this.justArgsPos != -1) {
-            sender.sendMessage(new TextComponentString("A F"));
+            if (arguments == null) {
+                arguments = new String[0];
+            }
+
             args[this.justArgsPos] = arguments;
         }
 

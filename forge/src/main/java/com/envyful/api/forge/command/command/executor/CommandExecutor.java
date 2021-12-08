@@ -193,6 +193,7 @@ public class CommandExecutor {
                 args[i] = argument.getX().instantiateClass(sender, remainingArgs);
 
                 if (args[i] == null) {
+                    sender.sendMessage(new TextComponentString("A " + i + "E " + remainingArgs));
                     FMLCommonHandler.instance().getFMLLogger().info("RETURNING FALSE HERE d");
                     return false;
                 }
@@ -244,6 +245,7 @@ public class CommandExecutor {
         }
 
         if (this.justArgsPos != -1) {
+            sender.sendMessage(new TextComponentString("A F"));
             args[this.justArgsPos] = arguments;
         }
 

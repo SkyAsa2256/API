@@ -191,6 +191,7 @@ public class CommandExecutor {
                 args[i] = argument.getX().instantiateClass(sender, remainingArgs);
 
                 if (args[i] == null) {
+                    System.out.println("RETURNING FALSE HERE d");
                     return false;
                 }
             } else {
@@ -198,6 +199,7 @@ public class CommandExecutor {
                     args[i] = argument.getX().instantiateClass(sender, argument.getY());
 
                     if (args[i] == null) {
+                        System.out.println("RETURNING FALSE HERE c");
                         return false;
                     } else {
                         ++subtract;
@@ -212,11 +214,13 @@ public class CommandExecutor {
                         args[i] = argument.getX().instantiateClass(sender, argument.getY());
 
                         if (args[i] == null) {
+                            System.out.println("RETURNING FALSE HERE b");
                             return false;
                         } else {
                             ++subtract;
                         }
                     } else {
+                        System.out.println("RETURNING FALSE HERE a");
                         return false;
                     }
                 }

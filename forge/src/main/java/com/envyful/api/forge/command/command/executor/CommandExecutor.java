@@ -194,6 +194,16 @@ public class CommandExecutor {
                     return false;
                 }
             } else {
+                if (arguments.length <= (i - subtract)) {
+                    args[i] = argument.getX().instantiateClass(sender, argument.getY());
+
+                    if (args[i] == null) {
+                        return false;
+                    } else {
+                        ++subtract;
+                    }
+                }
+
                 args[i] = argument.getX().instantiateClass(sender, arguments[i - subtract]);
 
                 if (args[i] == null) {

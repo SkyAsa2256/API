@@ -125,6 +125,7 @@ public class ForgeCommand extends CommandBase {
             }
         }
 
+        System.out.println("FAILING AT BOTTOM");
         sender.sendMessage(new TextComponentString(this.getUsage(sender)));
     }
 

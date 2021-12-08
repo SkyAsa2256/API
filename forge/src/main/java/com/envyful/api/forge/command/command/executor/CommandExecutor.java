@@ -8,6 +8,7 @@ import com.envyful.api.forge.player.util.UtilPlayer;
 import com.envyful.api.type.Pair;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import java.io.PrintWriter;
@@ -173,6 +174,7 @@ public class CommandExecutor {
         int subtract = 0;
 
         for (int i = 0; i < this.arguments.length; i++) {
+            sender.sendMessage(new TextComponentString("A " + i));
             Pair<ArgumentInjector<?, ICommandSender>, String> argument = this.arguments[i];
 
             if (argument == null) {
@@ -199,14 +201,17 @@ public class CommandExecutor {
                     args[i] = argument.getX().instantiateClass(sender, argument.getY());
 
                     if (args[i] == null) {
+                        sender.sendMessage(new TextComponentString("A " + i + " B"));
                         FMLCommonHandler.instance().getFMLLogger().info("RETURNING FALSE HERE c");
                         return false;
                     } else {
+                        sender.sendMessage(new TextComponentString("A " + i + " D"));
                         ++subtract;
                         continue;
                     }
                 }
 
+                sender.sendMessage(new TextComponentString("A " + i + " C"));
                 args[i] = argument.getX().instantiateClass(sender, arguments[i - subtract]);
 
                 if (args[i] == null) {

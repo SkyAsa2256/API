@@ -126,6 +126,7 @@ public class ForgeCommand extends CommandBase {
         }
 
         FMLCommonHandler.instance().getFMLLogger().info("FAILING AT BUTTOM");
+        sender.sendMessage(new TextComponentString("HEllo"));
         sender.sendMessage(new TextComponentString(this.getUsage(sender)));
     }
 
@@ -151,6 +152,7 @@ public class ForgeCommand extends CommandBase {
                         return;
                     }
 
+                    sender.sendMessage(new TextComponentString("HEllo 2"));
                     FMLCommonHandler.instance().getFMLLogger().info("FAILING ON EXECUTOR");
                     sender.sendMessage(new TextComponentString(this.getUsage(sender)));
                 });

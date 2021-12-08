@@ -201,6 +201,7 @@ public class CommandExecutor {
                         return false;
                     } else {
                         ++subtract;
+                        continue;
                     }
                 }
 

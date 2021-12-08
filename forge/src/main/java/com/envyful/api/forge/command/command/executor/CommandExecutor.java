@@ -239,7 +239,7 @@ public class CommandExecutor {
                 arguments = new String[0];
             }
 
-            args[this.justArgsPos] = Arrays.copyOfRange(arguments, this.arguments.length - 2, arguments.length);
+            args[this.justArgsPos] = Arrays.copyOfRange(arguments, this.arguments.length - 2 - subtract, arguments.length);
         }
 
         return this.execute(args);

@@ -82,7 +82,7 @@ public class ForgeGui implements Gui {
                 parent.openContainer = container;
                 parent.currentWindowId = 1;
                 parent.connection.sendPacket(new SPacketOpenWindow(parent.currentWindowId, "minecraft:container", this.title,
-                                                                   (9 * this.height) * 2
+                                                                   (9 * this.height)
                 ));
                 container.refreshPlayerContents();
                 this.containers.add(container);

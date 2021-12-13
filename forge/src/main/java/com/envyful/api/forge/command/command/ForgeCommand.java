@@ -125,6 +125,7 @@ public class ForgeCommand extends CommandBase {
             }
         }
 
+        sender.sendMessage(new TextComponentString("2"));
         sender.sendMessage(new TextComponentString(this.getUsage(sender)));
     }
 
@@ -150,6 +151,7 @@ public class ForgeCommand extends CommandBase {
                         return;
                     }
 
+                    sender.sendMessage(new TextComponentString("1"));
                     sender.sendMessage(new TextComponentString(this.getUsage(sender)));
                 });
                 return true;

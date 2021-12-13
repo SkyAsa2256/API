@@ -144,7 +144,7 @@ public class ForgeCommand extends CommandBase {
             return executor.execute(sender, args);
         }
 
-        if (executor.getRequiredArgs() == (args.length + 1)) {
+        if (executor.getRequiredArgs() <= (args.length + 1)) {
             if (!executor.isExecutedAsync()) {
                 UtilForgeConcurrency.runSync(() -> {
                     if (executor.execute(sender, args)) {

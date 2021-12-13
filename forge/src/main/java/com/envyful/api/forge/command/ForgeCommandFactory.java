@@ -45,10 +45,28 @@ public class ForgeCommandFactory implements CommandFactory<MinecraftServer, ICom
 
     public ForgeCommandFactory() {
         this.registerInjector(EntityPlayerMP.class, (sender, args) -> sender.getServer().getPlayerList().getPlayerByUsername(args[0]));
-        this.registerInjector(int.class, (iCommandSender, args) -> Integer.parseInt(args[0]));
+        this.registerInjector(int.class, (iCommandSender, args) -> {
+            try {
+                return Integer.parseInt(args[0]);
+            } catch (NumberFormatException e) {
+                return null;
+            }
+        });
         this.registerInjector(String.class, (iCommandSender, args) -> args[0]);
-        this.registerInjector(double.class, ((iCommandSender, args) -> Double.parseDouble(args[0])));
-        this.registerInjector(long.class, ((iCommandSender, args) -> Long.parseLong(args[0])));
+        this.registerInjector(double.class, ((iCommandSender, args) -> {
+            try {
+                return Double.parseDouble(args[0]);
+            } catch (NumberFormatException e) {
+                return null;
+            }
+        }));
+        this.registerInjector(long.class, ((iCommandSender, args) -> {
+            try {
+                return Long.parseLong(args[0]);
+            } catch (NumberFormatException e) {
+                return null;
+            }
+        }));
         this.registerCompleter(new IntegerTabCompleter());
         this.registerCompleter(new PlayerTabCompleter());
     }

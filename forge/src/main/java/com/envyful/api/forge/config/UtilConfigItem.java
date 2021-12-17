@@ -68,6 +68,10 @@ public class UtilConfigItem {
 
     public static void addConfigItem(Pane pane, PositionableConfigItem configItem, List<Transformer> transformers,
                                      BiConsumer<EnvyPlayer<?>, Displayable.ClickType> clickHandler) {
+        if (!configItem.isEnabled()) {
+            return;
+        }
+
         if (clickHandler == null) {
             pane.set(configItem.getXPos(), configItem.getYPos(), GuiFactory.displayable(fromConfigItem(
                     configItem,

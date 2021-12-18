@@ -58,7 +58,7 @@ public class SimpleHikariDatabase implements Database {
         config.addDataSourceProperty("useLocalSessionState", true);
         config.addDataSourceProperty("characterEncoding","utf8");
         config.addDataSourceProperty("useUnicode","true");
-        config.addDataSourceProperty("maxLifetime", TimeUnit.MINUTES.toMillis(5));
+        config.addDataSourceProperty("maxLifetime", TimeUnit.SECONDS.toMillis(30));
         config.setConnectionTimeout(TimeUnit.SECONDS.toMillis(30));
         config.setLeakDetectionThreshold(TimeUnit.SECONDS.toMillis(60));
         config.setConnectionTestQuery("/* Ping */ SELECT 1");

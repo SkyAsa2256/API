@@ -137,6 +137,7 @@ public class ForgeSimplePane implements Pane {
 
         private final Displayable displayable;
         private int clicks = 30;
+        private long lastClick = -1;
 
         public SimpleDisplayableSlot(ForgeSimplePane pane, Displayable displayable, int xPosition, int yPosition) {
             super(pane.inventoryBasic, xPosition + yPosition * 9, pane.topLeftX + xPosition,
@@ -155,6 +156,18 @@ public class ForgeSimplePane implements Pane {
 
         public void setClicks(int clicks) {
             this.clicks = clicks;
+        }
+
+        public boolean shouldClick() {
+            if (this.lastClick == -1) {
+                return true;
+            }
+
+            return (System.currentTimeMillis() - this.lastClick) > 500;
+        }
+
+        public void updateClick() {
+            this.lastClick = System.currentTimeMillis();
         }
 
         @Override

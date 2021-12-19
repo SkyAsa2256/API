@@ -267,6 +267,13 @@ public class ForgeGui implements Gui {
                     return ItemStack.EMPTY;
                 }
 
+                if (!simpleDisplayableSlot.shouldClick()) {
+                    simpleDisplayableSlot.updateClick();
+                    return ItemStack.EMPTY;
+                }
+
+                simpleDisplayableSlot.updateClick();
+
                 simpleDisplayableSlot.setClicks(simpleDisplayableSlot.getClicks() - 1);
                 simpleDisplayableSlot.getDisplayable().onClick(envyPlayer, clickType);
                 ForgeGuiTracker.enqueueUpdate(envyPlayer);

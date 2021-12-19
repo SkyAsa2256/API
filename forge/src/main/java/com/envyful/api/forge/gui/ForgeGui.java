@@ -109,6 +109,7 @@ public class ForgeGui implements Gui {
         private final List<EmptySlot> emptySlots = Lists.newArrayList();
 
         private boolean closed = false;
+        private boolean locked = false;
 
         public ForgeGuiContainer(ForgeGui gui, EntityPlayerMP player) {
             this.windowId = 1;
@@ -221,7 +222,7 @@ public class ForgeGui implements Gui {
 
         @Override
         public ItemStack slotClick(int slot, int dragType, ClickType clickTypeIn, EntityPlayer player) {
-            if (slot <= -1) {
+            if (slot <= -1 || locked) {
                 return ItemStack.EMPTY;
             }
 
@@ -256,6 +257,17 @@ public class ForgeGui implements Gui {
 
                 ForgeSimplePane.SimpleDisplayableSlot simpleDisplayableSlot = pane.getItems()[panePosition.getY()][panePosition.getX()];
 
+                if (simpleDisplayableSlot.getClicks() < 0) {
+                    simpleDisplayableSlot.setClicks(simpleDisplayableSlot.getClicks() - 1);
+
+                    if (simpleDisplayableSlot.getClicks() < -100) {
+                        locked = true;
+                    }
+
+                    return ItemStack.EMPTY;
+                }
+
+                simpleDisplayableSlot.setClicks(simpleDisplayableSlot.getClicks() - 1);
                 simpleDisplayableSlot.getDisplayable().onClick(envyPlayer, clickType);
                 ForgeGuiTracker.enqueueUpdate(envyPlayer);
             }

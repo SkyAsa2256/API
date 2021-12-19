@@ -5,14 +5,9 @@ import com.envyful.api.forge.gui.item.ForgeSimpleDisplayable;
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.type.Pair;
-import com.google.common.collect.Lists;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.TextComponentString;
-
-import java.util.List;
 
 /**
  *
@@ -141,6 +136,7 @@ public class ForgeSimplePane implements Pane {
     public static class SimpleDisplayableSlot extends Slot {
 
         private final Displayable displayable;
+        private int clicks = 30;
 
         public SimpleDisplayableSlot(ForgeSimplePane pane, Displayable displayable, int xPosition, int yPosition) {
             super(pane.inventoryBasic, xPosition + yPosition * 9, pane.topLeftX + xPosition,
@@ -151,6 +147,14 @@ public class ForgeSimplePane implements Pane {
 
         public Displayable getDisplayable() {
             return this.displayable;
+        }
+
+        public int getClicks() {
+            return this.clicks;
+        }
+
+        public void setClicks(int clicks) {
+            this.clicks = clicks;
         }
 
         @Override

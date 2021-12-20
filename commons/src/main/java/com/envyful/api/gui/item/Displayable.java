@@ -37,7 +37,9 @@ public interface Displayable {
     enum ClickType {
 
         LEFT,
+        SHIFT_LEFT,
         MIDDLE,
+        SHIFT_RIGHT,
         RIGHT,
 
         ;

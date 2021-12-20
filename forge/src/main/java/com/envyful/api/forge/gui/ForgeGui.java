@@ -222,7 +222,6 @@ public class ForgeGui implements Gui {
 
         @Override
         public ItemStack slotClick(int slot, int dragType, ClickType clickTypeIn, EntityPlayer player) {
-            System.out.println("BUTTON: " + dragType + " CLICK TYPE: " + clickTypeIn);
             if (slot <= -1 || locked) {
                 return ItemStack.EMPTY;
             }
@@ -234,7 +233,7 @@ public class ForgeGui implements Gui {
                 return ItemStack.EMPTY;
             }
 
-            Displayable.ClickType clickType = this.convertClickType(dragType);
+            Displayable.ClickType clickType = this.convertClickType(dragType, clickTypeIn);
 
             if (clickType == null) {
                 return ItemStack.EMPTY;
@@ -283,10 +282,10 @@ public class ForgeGui implements Gui {
             return ItemStack.EMPTY;
         }
 
-        private Displayable.ClickType convertClickType(int id) {
+        private Displayable.ClickType convertClickType(int id, ClickType clickType) {
             switch(id) {
-                case 0 : return Displayable.ClickType.LEFT;
-                case 1 : return Displayable.ClickType.RIGHT;
+                case 0 : return clickType == ClickType.QUICK_MOVE ? Displayable.ClickType.SHIFT_LEFT : Displayable.ClickType.LEFT;
+                case 1 : return clickType == ClickType.QUICK_MOVE ? Displayable.ClickType.SHIFT_RIGHT : Displayable.ClickType.RIGHT;
                 case 2 : return Displayable.ClickType.MIDDLE;
                 default : return null;
             }

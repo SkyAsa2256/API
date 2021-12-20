@@ -228,7 +228,7 @@ public class ForgeGui implements Gui {
 
             this.refreshPlayerContents();
 
-            if (clickTypeIn == ClickType.CLONE || clickTypeIn == ClickType.QUICK_CRAFT) {
+            if ((clickTypeIn == ClickType.CLONE && player.capabilities.isCreativeMode) || clickTypeIn == ClickType.QUICK_CRAFT) {
                 this.clearPlayerCursor();
                 return ItemStack.EMPTY;
             }

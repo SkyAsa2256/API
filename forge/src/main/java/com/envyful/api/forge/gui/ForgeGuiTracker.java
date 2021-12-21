@@ -60,20 +60,12 @@ public class ForgeGuiTracker {
 
     private static final class ForgeGuiTickListener extends LazyListener {
 
-        private int tick = 0;
-
         private ForgeGuiTickListener() {
             super();
         }
 
         @SubscribeEvent
         public void onServerTick(TickEvent.ServerTickEvent event) {
-            ++tick;
-
-            if (tick % 10 != 0) {
-                return;
-            }
-
             for (ForgeGui value : OPEN_GUIS.values()) {
                 value.update();
             }

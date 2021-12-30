@@ -125,7 +125,7 @@ public class ForgeCommandFactory implements CommandFactory<MinecraftServer, ICom
         if (args.length > 0) {
             builder = builder.createOffset(context.getInput().length() - args[args.length - 1].length());
         } else {
-            builder = builder.createOffset(context.getInput().length());
+            builder = builder.createOffset(context.getInput().length() - 1);
         }
 
         for (String tabCompletion : tabCompletions) {

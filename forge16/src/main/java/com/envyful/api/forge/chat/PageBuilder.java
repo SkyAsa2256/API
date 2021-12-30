@@ -1,7 +1,8 @@
 package com.envyful.api.forge.chat;
 
 import com.google.common.collect.Lists;
-import net.minecraft.command.CommandSource;
+import net.minecraft.command.ICommandSource;
+import net.minecraft.util.Util;
 import net.minecraft.util.text.StringTextComponent;
 
 import java.util.List;
@@ -100,13 +101,13 @@ public class PageBuilder<T> {
      * @param sender The person to send the page to
      * @param page The page to send
      */
-    public void send(CommandSource sender, int page) {
+    public void send(ICommandSource sender, int page) {
         for (int i = (page * this.pageSize); i < ((page + 1) * this.pageSize); ++i) {
             if (i >= this.values.size()) {
                 break;
             }
 
-            sender.sendFeedback(new StringTextComponent(this.mainColor + (i + 1) + ". " + this.offColor + this.converter.apply(this.values.get(i))), false);
+            sender.sendMessage(new StringTextComponent(this.mainColor + (i + 1) + ". " + this.offColor + this.converter.apply(this.values.get(i))), Util.DUMMY_UUID);
         }
     }
 }

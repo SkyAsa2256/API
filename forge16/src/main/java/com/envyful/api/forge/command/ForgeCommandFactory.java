@@ -86,8 +86,6 @@ public class ForgeCommandFactory implements CommandFactory<MinecraftServer, ICom
         ForgeCommand command = this.createCommand(o.getClass(), o);
         CommandDispatcher<CommandSource> dispatcher = server.getCommandManager().getDispatcher();
 
-        System.out.println("CREATING COMMAND: " + command.getName());
-
         LiteralCommandNode<CommandSource> args = dispatcher.register(Commands.literal(command.getName())
                 .then(Commands.argument("", StringArgumentType.greedyString())
                         .requires(commandSource -> command.checkPermission(commandSource.getServer(), commandSource.getEntity()))

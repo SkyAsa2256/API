@@ -122,10 +122,10 @@ public class ForgeCommandFactory implements CommandFactory<MinecraftServer, ICom
                 new BlockPos(context.getSource().getPos())
         );
 
-        if (args.length > 0) {
+        if (args.length > 0 && !args[0].trim().isEmpty()) {
             builder = builder.createOffset(context.getInput().length() - args[args.length - 1].length());
         } else {
-            builder = builder.createOffset(context.getInput().length() - 1);
+            builder = builder.createOffset(context.getInput().length());
         }
 
         for (String tabCompletion : tabCompletions) {

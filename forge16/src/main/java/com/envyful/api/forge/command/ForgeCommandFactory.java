@@ -21,9 +21,11 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.leangen.geantyref.AnnotationFormatException;
 import io.leangen.geantyref.TypeFactory;
@@ -93,12 +95,35 @@ public class ForgeCommandFactory implements CommandFactory<CommandDispatcher<Com
                 .executes(context -> this.handleExecution(command, context)));
 
         for (String alias : command.getAliases()) {
-            dispatcher.register(Commands.literal(alias)
-                    .requires(commandSource -> command.checkPermission(commandSource.getServer(), commandSource.getEntity()))
-                    .redirect(args));
+            dispatcher.getRoot().addChild(buildRedirect(alias, args));
         }
 
         return true;
+    }
+
+    /**
+     * Returns a literal node that redirects its execution to
+     * the given destination node.
+     *
+     * @param alias the command alias
+     * @param destination the destination node
+     * @return the built node
+     */
+    public static LiteralCommandNode<CommandSource> buildRedirect(
+            final String alias, final LiteralCommandNode<CommandSource> destination) {
+        // Redirects only work for nodes with children, but break the top argument-less command.
+        // Manually adding the root command after setting the redirect doesn't fix it.
+        // See https://github.com/Mojang/brigadier/issues/46). Manually clone the node instead.
+        LiteralArgumentBuilder<CommandSource> builder = LiteralArgumentBuilder
+                .<CommandSource>literal(alias.toLowerCase(Locale.ENGLISH))
+                .requires(destination.getRequirement())
+                .forward(
+                        destination.getRedirect(), destination.getRedirectModifier(), destination.isFork())
+                .executes(destination.getCommand());
+        for (CommandNode<CommandSource> child : destination.getChildren()) {
+            builder.then(child);
+        }
+        return builder.build();
     }
 
     private int handleExecution(ForgeCommand command, CommandContext<CommandSource> context) {

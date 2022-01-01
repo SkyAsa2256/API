@@ -331,7 +331,7 @@ public class ForgeGui implements Gui {
         }
 
         public void refreshPlayerContents() {
-            this.player.sendAllContents(this, this.getInventory());
+            this.player.sendAllContents(this, this.inventoryItemStacks);
             ForgeGuiTracker.dequeueUpdate(this.player);
             this.player.container.detectAndSendChanges();
             this.player.sendAllContents(this.player.container, this.player.container.getInventory());

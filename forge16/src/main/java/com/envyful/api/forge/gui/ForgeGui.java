@@ -319,7 +319,7 @@ public class ForgeGui implements Gui {
             int windowId = sender.openContainer.windowId;
 
             CCloseWindowPacket closeWindowClient = new CCloseWindowPacket();
-            ObfuscationReflectionHelper.setPrivateValue(CCloseWindowPacket.class, closeWindowClient, 0,"windowId");
+            ObfuscationReflectionHelper.setPrivateValue(CCloseWindowPacket.class, closeWindowClient, 0,"field_149556_a");
             SCloseWindowPacket closeWindowServer = new SCloseWindowPacket(windowId);
 
             sender.connection.processCloseWindow(closeWindowClient);

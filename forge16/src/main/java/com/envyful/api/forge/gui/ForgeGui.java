@@ -43,6 +43,7 @@ public class ForgeGui implements Gui {
     private final Consumer<ForgeEnvyPlayer> closeConsumer;
     private final ForgeSimplePane parentPane;
     private final ForgeSimplePane[] panes;
+    private final ContainerType<?> containerType;
 
     private final List<ForgeGuiContainer> containers = Lists.newArrayList();
 
@@ -64,6 +65,15 @@ public class ForgeGui implements Gui {
             this.panes[i] = (ForgeSimplePane) pane;
             ++i;
         }
+
+        switch(height) {
+            default: case 0: case 1: this.containerType = ContainerType.GENERIC_9X1; break;
+            case 2: this.containerType = ContainerType.GENERIC_9X2; break;
+            case 3: this.containerType = ContainerType.GENERIC_9X3; break;
+            case 4: this.containerType = ContainerType.GENERIC_9X4; break;
+            case 5: this.containerType = ContainerType.GENERIC_9X5; break;
+            case 6: this.containerType = ContainerType.GENERIC_9X6; break;
+        }
     }
 
     @Override
@@ -82,7 +92,7 @@ public class ForgeGui implements Gui {
             UtilForgeConcurrency.runWhenTrue(__ -> parent.openContainer == parent.container, () -> {
                 parent.openContainer = container;
                 parent.currentWindowId = 1;
-                parent.connection.sendPacket(new SOpenWindowPacket(parent.currentWindowId, ContainerType.GENERIC_9X6, title));
+                parent.connection.sendPacket(new SOpenWindowPacket(parent.currentWindowId, this.getContainerType(), title));
                 container.refreshPlayerContents();
                 this.containers.add(container);
                 ForgeGuiTracker.addGui(player, this);
@@ -94,6 +104,10 @@ public class ForgeGui implements Gui {
         for (ForgeGuiContainer value : this.containers) {
             value.update(this.panes, false);
         }
+    }
+
+    public ContainerType<?> getContainerType() {
+        return this.containerType;
     }
 
     /**
@@ -112,7 +126,7 @@ public class ForgeGui implements Gui {
         private boolean locked = false;
 
         public ForgeGuiContainer(ForgeGui gui, ServerPlayerEntity player) {
-            super(ContainerType.GENERIC_9X6, -1);
+            super(gui.getContainerType(), -1);
 
             this.gui = gui;
             this.player = player;
@@ -131,6 +145,17 @@ public class ForgeGui implements Gui {
             return super.getSlot(slotId);
         }
 
+        @Override
+        public NonNullList<ItemStack> getInventory() {
+            NonNullList<ItemStack> nonnulllist = NonNullList.create();
+
+            for(int i = 0; i < this.inventorySlots.size(); ++i) {
+                nonnulllist.add(this.inventorySlots.get(i).getStack());
+            }
+
+            return nonnulllist;
+        }
+
         public void update(ForgeSimplePane[] panes, boolean force) {
             this.inventorySlots.clear();
             this.inventoryItemStacks.clear();
@@ -143,6 +168,8 @@ public class ForgeGui implements Gui {
             for (int i = 0; i < (9 * this.gui.height); i++) {
                 if (createEmptySlots) {
                     EmptySlot emptySlot = new EmptySlot(this.gui.parentPane, i);
+
+                    this.addSlot(emptySlot);
 
                     this.emptySlots.add(emptySlot);
                     this.inventorySlots.add(emptySlot);

@@ -188,6 +188,14 @@ public class ForgeGui implements Gui {
         }
 
         @Override
+        protected Slot addSlot(Slot slotIn) {
+            slotIn.slotNumber = this.inventorySlots.size();
+            this.inventorySlots.add(slotIn);
+            this.inventoryItemStacks.add(ItemStack.EMPTY);
+            return slotIn;
+        }
+
+        @Override
         public boolean getCanCraft(PlayerEntity player) {
             return true;
         }
@@ -220,6 +228,9 @@ public class ForgeGui implements Gui {
         public boolean canDragIntoSlot(Slot slotIn) {
             return false;
         }
+
+        @Override
+        public void detectAndSendChanges() {}
 
         @Override
         public ItemStack slotClick(int slot, int dragType, ClickType clickTypeIn, PlayerEntity player) {

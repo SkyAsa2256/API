@@ -261,6 +261,7 @@ public class ForgeGui implements Gui {
 
         @Override
         public ItemStack slotClick(int slot, int dragType, ClickType clickTypeIn, PlayerEntity player) {
+            System.out.println("HELLO WORLD " + slot + " " + dragType + " " + clickTypeIn.name());
             if (slot <= -1 || locked) {
                 return ItemStack.EMPTY;
             }

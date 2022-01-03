@@ -333,8 +333,8 @@ public class ForgeGui implements Gui {
         public void refreshPlayerContents() {
             this.player.sendAllContents(this, this.getInventory());
             ForgeGuiTracker.dequeueUpdate(this.player);
-            this.player.container.detectAndSendChanges();
-            this.player.sendAllContents(this.player.container, this.player.container.getInventory());
+/*            this.player.container.detectAndSendChanges();
+            this.player.sendAllContents(this.player.container, this.player.container.getInventory());*/
         }
 
         private void clearPlayerCursor() {

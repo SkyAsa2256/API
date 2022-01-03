@@ -261,7 +261,6 @@ public class ForgeGui implements Gui {
 
         @Override
         public ItemStack slotClick(int slot, int dragType, ClickType clickTypeIn, PlayerEntity player) {
-            System.out.println("HELLO WORLD " + slot + " " + dragType + " " + clickTypeIn.name());
             if (slot <= -1 || locked) {
                 return ItemStack.EMPTY;
             }
@@ -334,8 +333,8 @@ public class ForgeGui implements Gui {
         public void refreshPlayerContents() {
             this.player.sendAllContents(this, this.getInventory());
             ForgeGuiTracker.dequeueUpdate(this.player);
-/*            this.player.container.detectAndSendChanges();
-            this.player.sendAllContents(this.player.container, this.player.container.getInventory());*/
+            this.player.container.detectAndSendChanges();
+            this.player.sendAllContents(this.player.container, this.player.container.getInventory());
         }
 
         private void clearPlayerCursor() {

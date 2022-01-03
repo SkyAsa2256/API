@@ -126,7 +126,7 @@ public class ForgeGui implements Gui {
         private boolean locked = false;
 
         public ForgeGuiContainer(ForgeGui gui, ServerPlayerEntity player) {
-            super(gui.getContainerType(), -1);
+            super(gui.getContainerType(), 1);
 
             this.gui = gui;
             this.player = player;

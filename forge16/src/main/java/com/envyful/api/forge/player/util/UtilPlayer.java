@@ -1,5 +1,6 @@
 package com.envyful.api.forge.player.util;
 
+import net.minecraft.command.ICommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.management.OpEntry;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
@@ -13,6 +14,14 @@ import java.util.UUID;
  *
  */
 public class UtilPlayer {
+
+    public static String getName(ICommandSource source) {
+        if (source instanceof ServerPlayerEntity) {
+            return ((ServerPlayerEntity) source).getName().getString();
+        }
+
+        return "CONSOLE";
+    }
 
     public static boolean hasPermission(ServerPlayerEntity player, String permission) {
         return (PermissionAPI.hasPermission(player, permission) || player.hasPermissionLevel(4) || isOP(player));

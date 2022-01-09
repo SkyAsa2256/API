@@ -137,6 +137,10 @@ public class PokemonGenerator {
             return false;
         }
 
+        if (this.genderRequirement && species.getBaseStats().isGenderless()) {
+            return false;
+        }
+
         return !this.blockedTypes.contains(species);
     }
 

@@ -33,7 +33,6 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.ICommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
@@ -50,7 +49,7 @@ import java.util.function.BiFunction;
  * Forge implementation of the {@link CommandFactory} interface
  *
  */
-public class ForgeCommandFactory implements CommandFactory<MinecraftServer, ICommandSource> {
+public class ForgeCommandFactory implements CommandFactory<CommandDispatcher<CommandSource>, ICommandSource> {
 
     private final List<ArgumentInjector<?, ICommandSource>> registeredInjectors = Lists.newArrayList();
     private final Map<Class<?>, TabCompleter<?, ?>> registeredCompleters = Maps.newConcurrentMap();
@@ -84,9 +83,8 @@ public class ForgeCommandFactory implements CommandFactory<MinecraftServer, ICom
     }
 
     @Override
-    public boolean registerCommand(MinecraftServer server, Object o) throws CommandLoadException {
+    public boolean registerCommand(CommandDispatcher<CommandSource> dispatcher, Object o) throws CommandLoadException {
         ForgeCommand command = this.createCommand(o.getClass(), o);
-        CommandDispatcher<CommandSource> dispatcher = server.getCommandManager().getDispatcher();
 
         LiteralCommandNode<CommandSource> args = dispatcher.register(Commands.literal(command.getName())
                 .then(Commands.argument("", StringArgumentType.greedyString())
@@ -376,7 +374,7 @@ public class ForgeCommandFactory implements CommandFactory<MinecraftServer, ICom
     }
 
     @Override
-    public boolean unregisterCommand(MinecraftServer server, Object o) {
+    public boolean unregisterCommand(CommandDispatcher<CommandSource> server, Object o) {
         return false;
     }
 

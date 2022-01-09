@@ -60,7 +60,7 @@ public class PokemonSpec {
      * @return The name
      */
     public String getDisplayName() {
-        return this.species.getPokemonName();
+        return this.species.getLocalizedName();
     }
 
     /**

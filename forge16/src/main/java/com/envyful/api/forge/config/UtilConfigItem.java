@@ -127,7 +127,7 @@ public class UtilConfigItem {
 
         ItemBuilder itemBuilder = new ItemBuilder()
                 .type(fromNameOrId(configItem.getType()))
-                .amount(configItem.getAmount());
+                .amount(configItem.getAmount(transformers));
 
         List<String> lore = configItem.getLore();
 

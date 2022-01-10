@@ -77,6 +77,12 @@ public class JsonSaveManager<T> implements SaveManager<T> {
             try (FileReader fileWriter = new FileReader(file)) {
                 PlayerAttribute<?> loaded = getGson().fromJson(new JsonReader(fileWriter), entry.getKey());
 
+                if (loaded == null) {
+                    attribute.postLoad();
+                    attributes.add(attribute);
+                    continue;
+                }
+
                 for (Field declaredField : entry.getKey().getDeclaredFields()) {
                     if (Modifier.isTransient(declaredField.getModifiers()) || Modifier.isFinal(declaredField.getModifiers())) {
                         continue;

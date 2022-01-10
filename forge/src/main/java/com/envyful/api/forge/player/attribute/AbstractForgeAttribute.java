@@ -21,6 +21,11 @@ public abstract class AbstractForgeAttribute<A> implements PlayerAttribute<A> {
     protected AbstractForgeAttribute(A manager, ForgeEnvyPlayer parent) {
         this.manager = manager;
         this.parent = parent;
-        this.uuid = parent.getUuid();
+
+        if (parent != null) {
+            this.uuid = parent.getUuid();
+        } else {
+            this.uuid = null;
+        }
     }
 }

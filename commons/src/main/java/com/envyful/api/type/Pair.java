@@ -16,13 +16,15 @@ import java.util.Objects;
 @ConfigSerializable
 public class Pair<X, Y> {
 
-    private final X x;
-    private final Y y;
+    private X x;
+    private Y y;
 
     protected Pair(X x, Y y) {
         this.x = x;
         this.y = y;
     }
+
+    public Pair() {}
 
     public X getX() {
         return this.x;

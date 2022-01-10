@@ -64,6 +64,7 @@ public class JsonSaveManager<T> implements SaveManager<T> {
 
             if (!file.exists()) {
                 try {
+                    file.getParentFile().mkdirs();
                     Files.createFile(file.toPath());
                 } catch (IOException e) {
                     e.printStackTrace();

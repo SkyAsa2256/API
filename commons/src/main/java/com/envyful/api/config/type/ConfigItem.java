@@ -1,5 +1,7 @@
 package com.envyful.api.config.type;
 
+import com.envyful.api.gui.Transformer;
+import com.envyful.api.type.UtilParse;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
@@ -17,8 +19,8 @@ public class ConfigItem {
 
     private boolean enabled = true;
     private String type = "minecraft:stained_glass_pane";
-    private int amount = 1;
-    private byte damage = 14;
+    private String amount = "1";
+    private String damage = "14";
     private String name = " ";
     private List<String> lore = Lists.newArrayList();
     private Map<String, NBTValue> nbt = Maps.newHashMap();
@@ -27,8 +29,8 @@ public class ConfigItem {
 
     public ConfigItem(String type, int amount, byte damage, String name, List<String> lore, Map<String, NBTValue> nbt) {
         this.type = type;
-        this.amount = amount;
-        this.damage = damage;
+        this.amount = amount + "";
+        this.damage = damage + "";
         this.name = name;
         this.lore = lore;
         this.nbt = nbt;
@@ -43,11 +45,29 @@ public class ConfigItem {
     }
 
     public int getAmount() {
-        return this.amount;
+        return UtilParse.parseInteger(this.amount).orElse(0);
+    }
+
+    public int getAmount(List<Transformer> transformers) {
+        String amount = this.amount;
+        for (Transformer transformer : transformers) {
+            amount = transformer.transformName(amount);
+        }
+
+        return UtilParse.parseInteger(amount).orElse(0);
     }
 
     public byte getDamage() {
-        return this.damage;
+        return (byte) (int) UtilParse.parseInteger(this.damage).orElse(0);
+    }
+
+    public byte getDamage(List<Transformer> transformers) {
+        String damage = this.damage;
+        for (Transformer transformer : transformers) {
+            damage = transformer.transformName(damage);
+        }
+
+        return (byte) (int) UtilParse.parseInteger(damage).orElse(0);
     }
 
     public String getName() {

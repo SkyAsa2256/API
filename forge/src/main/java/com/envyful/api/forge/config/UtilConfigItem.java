@@ -124,8 +124,8 @@ public class UtilConfigItem {
 
         ItemBuilder itemBuilder = new ItemBuilder()
                 .type(Item.getByNameOrId(configItem.getType()))
-                .amount(configItem.getAmount())
-                .damage(configItem.getDamage());
+                .amount(configItem.getAmount(transformers))
+                .damage(configItem.getDamage(transformers));
 
         List<String> lore = configItem.getLore();
 

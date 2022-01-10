@@ -37,6 +37,10 @@ public class PlayerAttributeData {
         this.constructor = this.getConstructor();
     }
 
+    public Class<? extends PlayerAttribute<?>> getAttributeClass() {
+        return this.attributeClass;
+    }
+
     private Constructor<? extends PlayerAttribute<?>> getConstructor() {
         try {
             return attributeClass.getConstructor(this.managerClass, EnvyPlayer.class);

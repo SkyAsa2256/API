@@ -13,10 +13,7 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  *
@@ -102,17 +99,28 @@ public class ForgePlayerManager implements PlayerManager<ForgeEnvyPlayer, Entity
             this.manager.cachedPlayers.put(event.player.getUniqueID(), player);
 
             UtilConcurrency.runAsync(() -> {
+                List<PlayerAttribute<?>> playerAttributes = this.manager.saveManager.loadData(player);
                 for (PlayerAttributeData attributeDatum : this.manager.attributeData) {
-                    PlayerAttribute<?> instance = attributeDatum.getInstance(player);
+                    PlayerAttribute<?> attribute = this.findAttribute(attributeDatum, playerAttributes);
 
-                    if (instance == null) {
+                    if (attribute == null) {
                         continue;
                     }
 
-                    instance.load();
-                    attributeDatum.addToMap(player.attributes, instance);
+                    attributeDatum.addToMap(player.attributes, attribute);
                 }
             });
+        }
+
+        private PlayerAttribute<?> findAttribute(PlayerAttributeData attributeDatum,
+                                                 List<PlayerAttribute<?>> playerAttributes) {
+            for (PlayerAttribute<?> playerAttribute : playerAttributes) {
+                if (Objects.equals(attributeDatum.getAttributeClass(), playerAttribute.getClass())) {
+                    return playerAttribute;
+                }
+             }
+
+            return null;
         }
 
         @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -126,7 +134,7 @@ public class ForgePlayerManager implements PlayerManager<ForgeEnvyPlayer, Entity
             UtilConcurrency.runAsync(() -> {
                 for (PlayerAttribute<?> value : player.attributes.values()) {
                     if (value != null) {
-                        value.save();
+                        this.manager.saveManager.saveData(player, value);
                     }
                 }
             });

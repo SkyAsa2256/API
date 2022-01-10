@@ -1,5 +1,7 @@
 package com.envyful.api.type;
 
+import org.spongepowered.configurate.objectmapping.ConfigSerializable;
+
 import java.util.Objects;
 
 /**
@@ -11,6 +13,7 @@ import java.util.Objects;
  * @param <X> The type of the first parameter
  * @param <Y> The type of the second parameter
  */
+@ConfigSerializable
 public class Pair<X, Y> {
 
     private final X x;

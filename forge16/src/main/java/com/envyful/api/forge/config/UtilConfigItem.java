@@ -11,6 +11,7 @@ import com.envyful.api.gui.factory.GuiFactory;
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.player.EnvyPlayer;
+import com.envyful.api.type.Pair;
 import com.envyful.api.type.UtilParse;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
@@ -48,11 +49,13 @@ public class UtilConfigItem {
             return;
         }
 
-        if (clickHandler == null) {
-            pane.set(configItem.getXPos(), configItem.getYPos(), GuiFactory.displayable(itemStack));
-        } else {
-            pane.set(configItem.getXPos(), configItem.getYPos(), GuiFactory.displayableBuilder(itemStack)
-                    .clickHandler(clickHandler).build());
+        for (Pair<Integer, Integer> position : configItem.getPositions()) {
+            if (clickHandler == null) {
+                pane.set(position.getX(), position.getY(), GuiFactory.displayable(itemStack));
+            } else {
+                pane.set(position.getX(), position.getY(), GuiFactory.displayableBuilder(itemStack)
+                        .clickHandler(clickHandler).build());
+            }
         }
     }
 
@@ -75,16 +78,18 @@ public class UtilConfigItem {
             return;
         }
 
-        if (clickHandler == null) {
-            pane.set(configItem.getXPos(), configItem.getYPos(), GuiFactory.displayable(fromConfigItem(
-                    configItem,
-                    transformers
-            )));
-        } else {
-            pane.set(configItem.getXPos(), configItem.getYPos(), GuiFactory.displayableBuilder(fromConfigItem(
-                    configItem,
-                    transformers
-            )).clickHandler(clickHandler).build());
+        for (Pair<Integer, Integer> position : configItem.getPositions()) {
+            if (clickHandler == null) {
+                pane.set(position.getX(), position.getY(), GuiFactory.displayable(fromConfigItem(
+                        configItem,
+                        transformers
+                )));
+            } else {
+                pane.set(position.getX(), position.getY(), GuiFactory.displayableBuilder(fromConfigItem(
+                        configItem,
+                        transformers
+                )).clickHandler(clickHandler).build());
+            }
         }
     }
 

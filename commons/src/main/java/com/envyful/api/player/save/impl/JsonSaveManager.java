@@ -70,6 +70,7 @@ public class JsonSaveManager<T> implements SaveManager<T> {
                     e.printStackTrace();
                 }
                 attribute.postLoad();
+                attributes.add(attribute);
                 continue;
             }
 
@@ -77,7 +78,7 @@ public class JsonSaveManager<T> implements SaveManager<T> {
                 PlayerAttribute<?> loaded = getGson().fromJson(new JsonReader(fileWriter), entry.getKey());
 
                 for (Field declaredField : entry.getKey().getDeclaredFields()) {
-                    if (Modifier.isTransient(declaredField.getModifiers())) {
+                    if (Modifier.isTransient(declaredField.getModifiers()) || Modifier.isFinal(declaredField.getModifiers())) {
                         continue;
                     }
 
@@ -110,6 +111,7 @@ public class JsonSaveManager<T> implements SaveManager<T> {
 
         if (!file.exists()) {
             try {
+                file.getParentFile().mkdirs();
                 Files.createFile(file.toPath());
             } catch (IOException e) {
                 e.printStackTrace();

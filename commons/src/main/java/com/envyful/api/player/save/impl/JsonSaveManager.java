@@ -160,7 +160,7 @@ public class JsonSaveManager<T> implements SaveManager<T> {
 
             return (envyPlayer, o) -> {
                 try {
-                    return constructor.newInstance(envyPlayer, o);
+                    return constructor.newInstance(o, envyPlayer);
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
                     e.printStackTrace();
                 }

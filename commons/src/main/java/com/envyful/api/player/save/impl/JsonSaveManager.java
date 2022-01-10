@@ -154,8 +154,8 @@ public class JsonSaveManager<T> implements SaveManager<T> {
     private BiFunction<EnvyPlayer<?>, Object, PlayerAttribute<?>> getConstructor(Object manager, Class<? extends PlayerAttribute<?>> clazz) {
         try {
             Constructor<? extends PlayerAttribute<?>> constructor = clazz.getConstructor(
-                    EnvyPlayer.class,
-                    manager.getClass()
+                    manager.getClass(),
+                    EnvyPlayer.class
             );
 
             return (envyPlayer, o) -> {

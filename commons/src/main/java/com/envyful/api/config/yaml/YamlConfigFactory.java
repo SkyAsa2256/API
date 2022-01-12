@@ -4,6 +4,8 @@ import com.envyful.api.config.data.ConfigPath;
 import com.envyful.api.config.yaml.data.YamlConfigStyle;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.ConfigurationOptions;
+import org.spongepowered.configurate.loader.HeaderMode;
 import org.spongepowered.configurate.reference.ConfigurationReference;
 import org.spongepowered.configurate.reference.ValueReference;
 import org.spongepowered.configurate.reference.WatchServiceListener;
@@ -80,7 +82,12 @@ public class YamlConfigFactory {
                                                                                      NodeStyle style) {
         try {
             return listener.listenToConfiguration(file -> YamlConfigurationLoader.builder()
+                    .headerMode(HeaderMode.PRESERVE)
                     .nodeStyle(style)
+                    .defaultOptions(ConfigurationOptions.defaults().header(
+                            "© EnvyWare Software 2022" + System.lineSeparator() +
+                            "For assistance visit https://discord.envyware.co.uk"
+                    ))
                     .defaultOptions(opts -> opts.shouldCopyDefaults(true))
                     .path(file).build(), configFile);
         } catch (ConfigurateException e) {

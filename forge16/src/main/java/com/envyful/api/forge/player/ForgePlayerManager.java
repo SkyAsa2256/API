@@ -75,6 +75,11 @@ public class ForgePlayerManager implements PlayerManager<ForgeEnvyPlayer, Server
     }
 
     @Override
+    public List<PlayerAttribute<?>> getOfflineAttributes(UUID uuid) {
+        return this.saveManager.loadData(uuid);
+    }
+
+    @Override
     public void registerAttribute(Object manager, Class<? extends PlayerAttribute<?>> attribute) {
         this.attributeData.add(new PlayerAttributeData(manager, attribute));
 

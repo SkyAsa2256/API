@@ -81,6 +81,11 @@ public class ForgePlayerManager implements PlayerManager<ForgeEnvyPlayer, Entity
     }
 
     @Override
+    public List<PlayerAttribute<?>> getOfflineAttributes(UUID uuid) {
+        return this.saveManager.loadData(uuid);
+    }
+
+    @Override
     public void setSaveManager(SaveManager<EntityPlayerMP> saveManager) {
         this.saveManager = saveManager;
     }

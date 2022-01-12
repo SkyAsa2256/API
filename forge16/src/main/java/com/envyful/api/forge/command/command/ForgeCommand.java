@@ -71,7 +71,7 @@ public class ForgeCommand {
 
         if (!this.child) {
             newDescription.add(new StringTextComponent(""));
-            StringTextComponent textComponent = new StringTextComponent("§eFor further support visit the §nEnvyWare§e discord: ");
+            StringTextComponent textComponent = new StringTextComponent("§eFor further support visit the §nEnvyWare Ltd§e discord: ");
             textComponent.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.envyware.co.uk"));
             StringTextComponent textComponent2 = new StringTextComponent("§enhttps://discord.envyware.co.uk§e");
             textComponent2.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.envyware.co.uk"));

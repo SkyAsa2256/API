@@ -85,7 +85,7 @@ public class YamlConfigFactory {
                     .headerMode(HeaderMode.PRESERVE)
                     .nodeStyle(style)
                     .defaultOptions(ConfigurationOptions.defaults().header(
-                            "© EnvyWare Software 2022" + System.lineSeparator() +
+                            "© EnvyWare Ltd Software 2022" + System.lineSeparator() +
                             "For assistance visit https://discord.envyware.co.uk"
                     ))
                     .defaultOptions(opts -> opts.shouldCopyDefaults(true))

@@ -25,6 +25,7 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.BiFunction;
 
 public class JsonSaveManager<T> implements SaveManager<T> {
@@ -97,6 +98,38 @@ public class JsonSaveManager<T> implements SaveManager<T> {
 
             attribute.postLoad();
             attributes.add(attribute);
+        }
+
+        return attributes;
+    }
+
+    @Override
+    public List<PlayerAttribute<?>> loadData(UUID uuid) {
+        if (this.loadedAttributes.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<PlayerAttribute<?>> attributes = Lists.newArrayList();
+
+        for (Map.Entry<Class<? extends PlayerAttribute<?>>, AttributeData> entry : this.loadedAttributes.entrySet()) {
+            AttributeData data = entry.getValue();
+            File file = Paths.get(data.getDataDirectory(), uuid.toString() + ".json").toFile();
+
+            if (!file.exists()) {
+                try {
+                    file.getParentFile().mkdirs();
+                    Files.createFile(file.toPath());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                continue;
+            }
+
+            try (FileReader fileWriter = new FileReader(file)) {
+                attributes.add(getGson().fromJson(new JsonReader(fileWriter), entry.getKey()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         return attributes;

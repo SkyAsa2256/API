@@ -1,10 +1,7 @@
 package com.envyful.api.forge.command;
 
 import com.envyful.api.command.CommandFactory;
-import com.envyful.api.command.annotate.Command;
-import com.envyful.api.command.annotate.Permissible;
-import com.envyful.api.command.annotate.SubCommands;
-import com.envyful.api.command.annotate.TabCompletions;
+import com.envyful.api.command.annotate.*;
 import com.envyful.api.command.annotate.executor.*;
 import com.envyful.api.command.exception.CommandLoadException;
 import com.envyful.api.command.injector.ArgumentInjector;
@@ -201,7 +198,9 @@ public class ForgeCommandFactory implements CommandFactory<MinecraftServer, ICom
                     arguments.toArray(new Pair[0]), tabCompleters, extraTabData));
         }
 
-        return new ForgeCommand(this, commandData.value(), commandData.description(), defaultPermission,
+        Child child = clazz.getAnnotation(Child.class);
+
+        return new ForgeCommand(this, commandData.value(), child != null, commandData.description(), defaultPermission,
                                 Arrays.asList(commandData.aliases()), subExecutors, subCommands, tabCompleter
         );
     }

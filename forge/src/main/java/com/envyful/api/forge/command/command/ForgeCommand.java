@@ -39,6 +39,7 @@ public class ForgeCommand extends CommandBase {
 
     private final ForgeCommandFactory commandFactory;
     private final String name;
+    private final boolean child;
     private final List<ITextComponent> description;
     private final String basePermission;
     private final List<String> aliases;
@@ -46,11 +47,13 @@ public class ForgeCommand extends CommandBase {
     private final List<ForgeCommand> subCommands;
     private final BiFunction<ICommandSender, String[], List<String>> tabCompleter;
 
-    public ForgeCommand(ForgeCommandFactory commandFactory, String name, String[] description, String basePermission,
+    public ForgeCommand(ForgeCommandFactory commandFactory, String name, boolean child, String[] description,
+                        String basePermission,
                         List<String> aliases, List<CommandExecutor> executors, List<ForgeCommand> subCommands,
                         BiFunction<ICommandSender, String[], List<String>> tabCompleter) {
         this.commandFactory = commandFactory;
         this.name = name;
+        this.child = child;
         this.description = this.initializeDescription(description);
         this.basePermission = basePermission;
         this.aliases = aliases;
@@ -66,13 +69,16 @@ public class ForgeCommand extends CommandBase {
             newDescription.add(new TextComponentString(s));
         }
 
-        newDescription.add(new TextComponentString(""));
-        TextComponentString textComponent = new TextComponentString("§eFor further support visit the §nEnvyWare§e discord: ");
-        textComponent.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.envyware.co.uk"));
-        TextComponentString textComponent2 = new TextComponentString("§enhttps://discord.envyware.co.uk§e");
-        textComponent2.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.envyware.co.uk"));
-        newDescription.add(textComponent);
-        newDescription.add(textComponent2);
+        if (!this.child) {
+            newDescription.add(new TextComponentString(""));
+            TextComponentString textComponent = new TextComponentString("§eFor further support visit the §nEnvyWare§e discord: ");
+            textComponent.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.envyware.co.uk"));
+            TextComponentString textComponent2 = new TextComponentString("§enhttps://discord.envyware.co.uk§e");
+            textComponent2.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.envyware.co.uk"));
+            newDescription.add(textComponent);
+            newDescription.add(textComponent2);
+        }
+        
         return newDescription;
     }
 

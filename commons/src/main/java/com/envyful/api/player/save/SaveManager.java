@@ -4,6 +4,7 @@ import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.attribute.PlayerAttribute;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  *
@@ -48,5 +49,17 @@ public interface SaveManager<T> {
      * @return All successfully loaded attributes
      */
     List<PlayerAttribute<?>> loadData(EnvyPlayer<T> player);
+
+    /**
+     *
+     * Load the offline player's data for all registerd {@link PlayerAttribute} using {@link SaveManager#registerAttribute(Object, Class)}
+     *
+     * This calls {@link PlayerAttribute#preLoad()} before loading the data and {@link PlayerAttribute#postLoad()}
+     * after loading the data
+     *
+     * @param uuid The offline player's UUID
+     * @return All successfully loaded attributes
+     */
+    List<PlayerAttribute<?>> loadData(UUID uuid);
 
 }

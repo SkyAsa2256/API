@@ -15,6 +15,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.event.ClickEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import javax.annotation.Nullable;
@@ -38,19 +39,19 @@ public class ForgeCommand extends CommandBase {
 
     private final ForgeCommandFactory commandFactory;
     private final String name;
-    private final String description;
+    private final List<ITextComponent> description;
     private final String basePermission;
     private final List<String> aliases;
     private final List<CommandExecutor> executors;
     private final List<ForgeCommand> subCommands;
     private final BiFunction<ICommandSender, String[], List<String>> tabCompleter;
 
-    public ForgeCommand(ForgeCommandFactory commandFactory, String name, String description, String basePermission,
+    public ForgeCommand(ForgeCommandFactory commandFactory, String name, String[] description, String basePermission,
                         List<String> aliases, List<CommandExecutor> executors, List<ForgeCommand> subCommands,
                         BiFunction<ICommandSender, String[], List<String>> tabCompleter) {
         this.commandFactory = commandFactory;
         this.name = name;
-        this.description = description;
+        this.description = this.initializeDescription(description);
         this.basePermission = basePermission;
         this.aliases = aliases;
         this.executors = executors;
@@ -58,9 +59,31 @@ public class ForgeCommand extends CommandBase {
         this.tabCompleter = tabCompleter;
     }
 
+    private List<ITextComponent> initializeDescription(String[] description) {
+        List<ITextComponent> newDescription = Lists.newArrayList();
+
+        for (String s : description) {
+            newDescription.add(new TextComponentString(s));
+        }
+
+        newDescription.add(new TextComponentString(""));
+        TextComponentString textComponent = new TextComponentString("§eFor further support visit the §nEnvyWare§e discord: ");
+        textComponent.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.envyware.co.uk"));
+        TextComponentString textComponent2 = new TextComponentString("§enhttps://discord.envyware.co.uk§e");
+        textComponent2.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.envyware.co.uk"));
+        newDescription.add(textComponent);
+        newDescription.add(textComponent2);
+        return newDescription;
+    }
+
     @Override
     public String getName() {
         return this.name;
+    }
+
+    @Override
+    public String getUsage(ICommandSender sender) {
+        return "";
     }
 
     @Override
@@ -76,12 +99,6 @@ public class ForgeCommand extends CommandBase {
         }
 
         return UtilPlayer.hasPermission((EntityPlayerMP) sender, this.basePermission);
-    }
-
-    @Override
-    @ParametersAreNonnullByDefault
-    public String getUsage(ICommandSender sender) {
-        return this.description;
     }
 
     @Override
@@ -125,7 +142,9 @@ public class ForgeCommand extends CommandBase {
             }
         }
 
-        sender.sendMessage(new TextComponentString(this.getUsage(sender)));
+        for (ITextComponent iTextComponent : this.description) {
+            sender.sendMessage(iTextComponent);
+        }
     }
 
     private boolean attemptRun(CommandExecutor executor, ICommandSender sender, String[] args) {
@@ -150,7 +169,9 @@ public class ForgeCommand extends CommandBase {
                         return;
                     }
 
-                    sender.sendMessage(new TextComponentString(this.getUsage(sender)));
+                    for (ITextComponent iTextComponent : this.description) {
+                        sender.sendMessage(iTextComponent);
+                    }
                 });
                 return true;
             }

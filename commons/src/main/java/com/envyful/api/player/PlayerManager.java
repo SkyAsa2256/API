@@ -75,6 +75,16 @@ public interface PlayerManager<A extends EnvyPlayer<B>, B> {
 
      /**
       *
+      * Gets the registered attributes for an offline player
+      * Will return an empty list if the player is not found
+      *
+      * @param uuid The uuid of the target player
+      * @return The attributes of said offline player
+      */
+     List<PlayerAttribute<?>> getOfflineAttributes(UUID uuid);
+
+     /**
+      *
       * Registers an {@link com.envyful.api.player.attribute.PlayerAttribute) class so that when the player object is
       * instantiated it can be created (using reflection) from the registry in the PlayerManager implementation.
       *

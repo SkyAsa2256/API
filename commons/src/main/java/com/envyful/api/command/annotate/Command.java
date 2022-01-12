@@ -22,8 +22,20 @@ public @interface Command {
      */
     String value();
 
+    /**
+     *
+     * All other ways to access the command
+     *
+     * @return The command's alias
+     */
     String[] aliases() default {};
 
-    String description() default "A server command!";
+    /**
+     *
+     * Default error description for the command
+     *
+     * @return Command's description
+     */
+    String[] description() default "A server command!";
 
 }

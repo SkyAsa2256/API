@@ -1,7 +1,9 @@
 package com.envyful.api.config.yaml;
 
 import com.envyful.api.config.data.ConfigPath;
+import com.envyful.api.config.data.Serializers;
 import com.envyful.api.config.yaml.data.YamlConfigStyle;
+import com.google.common.collect.Lists;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationOptions;
@@ -9,12 +11,15 @@ import org.spongepowered.configurate.loader.HeaderMode;
 import org.spongepowered.configurate.reference.ConfigurationReference;
 import org.spongepowered.configurate.reference.ValueReference;
 import org.spongepowered.configurate.reference.WatchServiceListener;
+import org.spongepowered.configurate.serialize.ScalarSerializer;
 import org.spongepowered.configurate.yaml.NodeStyle;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  *
@@ -47,8 +52,15 @@ public class YamlConfigFactory {
             configFile.toFile().createNewFile();
         }
 
+        List<Class<? extends ScalarSerializer<?>>> serializers = Lists.newArrayList();
+        Serializers serializedData = clazz.getAnnotation(Serializers.class);
+
+        if (serializedData != null) {
+            serializers.addAll(Arrays.asList(serializedData.value()));
+        }
+
         WatchServiceListener listener = WatchServiceListener.builder().build();
-        ConfigurationReference<CommentedConfigurationNode> base = listenToConfig(listener, configFile, style);
+        ConfigurationReference<CommentedConfigurationNode> base = listenToConfig(listener, configFile, serializers, style);
 
         if (base == null) {
             throw new IOException("Error config loaded as null");
@@ -78,7 +90,9 @@ public class YamlConfigFactory {
         return annotation.value();
     }
 
-    private static ConfigurationReference<CommentedConfigurationNode> listenToConfig(WatchServiceListener listener, Path configFile,
+    private static ConfigurationReference<CommentedConfigurationNode> listenToConfig(WatchServiceListener listener,
+                                                                                     Path configFile,
+                                                                                     List<Class<? extends ScalarSerializer<?>>> serializers,
                                                                                      NodeStyle style) {
         try {
             return listener.listenToConfiguration(file -> YamlConfigurationLoader.builder()
@@ -87,7 +101,15 @@ public class YamlConfigFactory {
                     .defaultOptions(ConfigurationOptions.defaults().header(
                             "© EnvyWare Ltd Software 2022" + System.lineSeparator() +
                             "For assistance visit https://discord.envyware.co.uk"
-                    ))
+                    ).serializers(builder -> {
+                        try {
+                            for (Class<? extends ScalarSerializer<?>> serializer : serializers) {
+                                builder.register(serializer.newInstance());
+                            }
+                        } catch (InstantiationException | IllegalAccessException e) {
+                            e.printStackTrace();
+                        }
+                    }))
                     .defaultOptions(opts -> opts.shouldCopyDefaults(true))
                     .path(file).build(), configFile);
         } catch (ConfigurateException e) {

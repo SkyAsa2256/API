@@ -20,7 +20,7 @@ public class GuiFactory {
      *
      * @param platformFactory The platform factory instance
      */
-    public static void setPlatformFactory(PlatformGuiFactory platformFactory) {
+    public static void setPlatformFactory(PlatformGuiFactory<?> platformFactory) {
         GuiFactory.platformFactory = platformFactory;
     }
 

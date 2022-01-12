@@ -24,6 +24,7 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.BiFunction;
 
 public class SQLSaveManager<T> implements SaveManager<T> {
@@ -82,6 +83,11 @@ public class SQLSaveManager<T> implements SaveManager<T> {
         }
 
         return attributes;
+    }
+
+    @Override
+    public List<PlayerAttribute<?>> loadData(UUID uuid) {
+        return null;
     }
 
     @Override

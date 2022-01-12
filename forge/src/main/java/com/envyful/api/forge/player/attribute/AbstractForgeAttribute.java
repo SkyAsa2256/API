@@ -28,4 +28,15 @@ public abstract class AbstractForgeAttribute<A> implements PlayerAttribute<A> {
             this.uuid = null;
         }
     }
+
+    protected AbstractForgeAttribute(UUID uuid) {
+        this.manager = null;
+        this.parent = null;
+        this.uuid = uuid;
+    }
+
+    @Override
+    public UUID getUuid() {
+        return this.uuid;
+    }
 }

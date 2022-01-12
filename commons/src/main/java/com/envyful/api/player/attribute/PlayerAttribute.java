@@ -1,5 +1,7 @@
 package com.envyful.api.player.attribute;
 
+import java.util.UUID;
+
 /**
  *
  * An interface designed for storing specific data for each mod / plugin about a player.
@@ -10,6 +12,14 @@ package com.envyful.api.player.attribute;
  * @param <A> The manager class
  */
 public interface PlayerAttribute<A> {
+
+    /**
+     *
+     * Gets the attribute owner's UUID
+     *
+     * @return The owner's UUID
+     */
+    UUID getUuid();
 
     /**
      *

@@ -39,6 +39,15 @@ public interface SaveManager<T> {
 
     /**
      *
+     * Saves the player's data from the given attribute
+     *
+     * @param uuid The offline UUID
+     * @param attribute The attribute being saved
+     */
+    void saveData(UUID uuid, PlayerAttribute<?> attribute);
+
+    /**
+     *
      * Load the player's data for all registered {@link PlayerAttribute} using
      *{@link SaveManager#registerAttribute(Object, Class)}
      *

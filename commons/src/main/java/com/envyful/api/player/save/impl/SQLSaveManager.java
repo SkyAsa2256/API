@@ -126,6 +126,11 @@ public class SQLSaveManager<T> implements SaveManager<T> {
     }
 
     @Override
+    public void saveData(UUID uuid, PlayerAttribute<?> attribute) {
+
+    }
+
+    @Override
     public void registerAttribute(Object manager, Class<? extends PlayerAttribute<?>> attribute) {
         Map<Field, FieldData> fieldData = this.getFieldData(attribute);
         Queries queries = attribute.getAnnotation(Queries.class);

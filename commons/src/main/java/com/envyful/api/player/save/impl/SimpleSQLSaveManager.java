@@ -80,6 +80,20 @@ public class SimpleSQLSaveManager<T> implements SaveManager<T> {
     }
 
     @Override
+    public void saveData(UUID uuid, PlayerAttribute<?> attribute) {
+        AttributeData attributeData = this.loadedAttributes.get(attribute.getClass());
+
+        if (attributeData == null) {
+            attribute.save();
+            return;
+        }
+
+        attribute.preSave();
+        attribute.save();
+        attribute.postSave();
+    }
+
+    @Override
     public void registerAttribute(Object manager, Class<? extends PlayerAttribute<?>> attribute) {
         BiFunction<EnvyPlayer<?>, Object, PlayerAttribute<?>> constructor = this.getConstructor(manager, attribute);
         Function<UUID, PlayerAttribute<?>> offlineConstructor = this.getOfflineConstructor(attribute);

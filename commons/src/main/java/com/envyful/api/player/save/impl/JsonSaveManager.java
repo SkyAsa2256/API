@@ -167,6 +167,37 @@ public class JsonSaveManager<T> implements SaveManager<T> {
     }
 
     @Override
+    public void saveData(UUID uuid, PlayerAttribute<?> attribute) {
+        AttributeData attributeData = this.loadedAttributes.get(attribute.getClass());
+
+        if (attributeData == null) {
+            attribute.save();
+            return;
+        }
+
+        attribute.preSave();
+
+        File file = Paths.get(attributeData.getDataDirectory(), uuid.toString() + ".json").toFile();
+
+        if (!file.exists()) {
+            try {
+                file.getParentFile().mkdirs();
+                Files.createFile(file.toPath());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        try (FileWriter fileWriter = new FileWriter(file)) {
+            getGson().toJson(attribute, attribute.getClass(), new JsonWriter(fileWriter));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        attribute.postSave();
+    }
+
+    @Override
     public void registerAttribute(Object manager, Class<? extends PlayerAttribute<?>> attribute) {
         DataDirectory dataDirectory = attribute.getAnnotation(DataDirectory.class);
 

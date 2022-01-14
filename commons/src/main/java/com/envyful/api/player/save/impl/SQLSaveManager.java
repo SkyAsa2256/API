@@ -198,13 +198,13 @@ public class SQLSaveManager<T> implements SaveManager<T> {
     private BiFunction<EnvyPlayer<?>, Object, PlayerAttribute<?>> getConstructor(Object manager, Class<? extends PlayerAttribute<?>> clazz) {
         try {
             Constructor<? extends PlayerAttribute<?>> constructor = clazz.getConstructor(
-                    EnvyPlayer.class,
-                    manager.getClass()
+                    manager.getClass(),
+                    EnvyPlayer.class
             );
 
             return (envyPlayer, o) -> {
                 try {
-                    return constructor.newInstance(envyPlayer, o);
+                    return constructor.newInstance(o, envyPlayer);
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
                     e.printStackTrace();
                 }

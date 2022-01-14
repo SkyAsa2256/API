@@ -5,6 +5,7 @@ import com.envyful.api.player.PlayerManager;
 import com.envyful.api.player.attribute.PlayerAttribute;
 import com.envyful.api.player.attribute.data.PlayerAttributeData;
 import com.envyful.api.player.save.SaveManager;
+import com.envyful.api.player.save.impl.EmptySaveManager;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -31,7 +32,7 @@ public class ForgePlayerManager implements PlayerManager<ForgeEnvyPlayer, Server
     private final Map<UUID, ForgeEnvyPlayer> cachedPlayers = Maps.newHashMap();
     private final List<PlayerAttributeData> attributeData = Lists.newArrayList();
 
-    private SaveManager<ServerPlayerEntity> saveManager = null;
+    private SaveManager<ServerPlayerEntity> saveManager = new EmptySaveManager<>();
 
     public ForgePlayerManager() {
         MinecraftForge.EVENT_BUS.register(new PlayerListener(this));

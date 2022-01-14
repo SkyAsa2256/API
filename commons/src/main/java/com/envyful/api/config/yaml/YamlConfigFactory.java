@@ -3,6 +3,7 @@ package com.envyful.api.config.yaml;
 import com.envyful.api.config.data.ConfigPath;
 import com.envyful.api.config.data.Serializers;
 import com.envyful.api.config.yaml.data.YamlConfigStyle;
+import com.envyful.api.player.SaveModeTypeAdapter;
 import com.google.common.collect.Lists;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
@@ -106,6 +107,8 @@ public class YamlConfigFactory {
                             for (Class<? extends ScalarSerializer<?>> serializer : serializers) {
                                 builder.register(serializer.newInstance());
                             }
+
+                            builder.register(new SaveModeTypeAdapter());
                         } catch (InstantiationException | IllegalAccessException e) {
                             e.printStackTrace();
                         }

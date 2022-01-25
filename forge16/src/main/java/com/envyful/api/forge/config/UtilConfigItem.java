@@ -191,7 +191,13 @@ public class UtilConfigItem {
             return item;
         }
 
-        return Item.getItemById(UtilParse.parseInteger(data).orElse(1));
+        Integer integer = UtilParse.parseInteger(data).orElse(-1);
+
+        if (integer == -1) {
+            return null;
+        }
+
+        return Item.getItemById(integer);
     }
 
 }

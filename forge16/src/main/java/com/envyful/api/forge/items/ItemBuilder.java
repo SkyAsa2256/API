@@ -10,6 +10,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
 import java.util.Arrays;
@@ -237,7 +238,7 @@ public class ItemBuilder implements Cloneable {
             CompoundNBT display = itemStack.getOrCreateChildTag("display");
             ListNBT lore = new ListNBT();
 
-            this.lore.forEach(s -> lore.add(StringNBT.valueOf(s)));
+            this.lore.forEach(s -> lore.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(new StringTextComponent(s)))));
 
             display.put("Lore", lore);
             itemStack.setTagInfo("display", display);

@@ -1,4 +1,4 @@
-package com.envyful.api.config.config.yaml;
+package com.envyful.api.config.yaml;
 
 import com.envyful.api.config.Config;
 import org.spongepowered.configurate.CommentedConfigurationNode;

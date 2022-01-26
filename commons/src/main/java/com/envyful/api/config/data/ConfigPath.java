@@ -1,6 +1,4 @@
-package com.envyful.api.config.config.data;
-
-import com.envyful.api.config.config.Config;
+package com.envyful.api.config.data;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -9,7 +7,7 @@ import java.lang.annotation.Target;
 
 /**
  *
- * Annotation for passing the config path to the {@link Config} interface so it can load the
+ * Annotation for passing the config path to the {@link com.envyful.api.config.Config} interface so it can load the
  * values to the object
  *
  */

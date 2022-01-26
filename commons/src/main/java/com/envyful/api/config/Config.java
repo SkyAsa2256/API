@@ -1,4 +1,4 @@
-package com.envyful.api.config.config;
+package com.envyful.api.config;
 
 import org.spongepowered.configurate.ConfigurationNode;
 

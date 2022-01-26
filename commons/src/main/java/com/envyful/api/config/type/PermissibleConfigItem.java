@@ -1,4 +1,4 @@
-package com.envyful.api.config.config.type;
+package com.envyful.api.config.type;
 
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 

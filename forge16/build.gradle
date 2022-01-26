@@ -35,7 +35,6 @@ dependencies {
     shadow group: 'org.spongepowered', name: 'configurate-yaml', version: '4.0.0'
 
     shadow project(':commons')
-    shadow project(':config')
 }
 
 shadowJar {

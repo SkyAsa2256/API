@@ -1,4 +1,4 @@
-package com.envyful.api.config.config.type;
+package com.envyful.api.config.type;
 
 import com.envyful.api.gui.Transformer;
 import com.envyful.api.type.UtilParse;

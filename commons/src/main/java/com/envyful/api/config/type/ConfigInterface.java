@@ -1,4 +1,4 @@
-package com.envyful.api.config.config.type;
+package com.envyful.api.config.type;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;

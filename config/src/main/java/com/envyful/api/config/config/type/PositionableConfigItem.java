@@ -1,4 +1,4 @@
-package com.envyful.api.config.type;
+package com.envyful.api.config.config.type;
 
 import com.envyful.api.type.Pair;
 import com.google.common.collect.Lists;

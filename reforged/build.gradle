@@ -42,6 +42,7 @@ dependencies {
     shadow(project(':forge')) {
         exclude group: 'net.minecraftforge'
     }
+    shadow project(':config')
 
     compileOnly fg.deobf('com.pixelmonmod.pixelmon:Pixelmon-1.12.2-8.3.1-server:1.0')
 }

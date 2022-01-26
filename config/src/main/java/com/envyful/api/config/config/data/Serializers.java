@@ -1,4 +1,4 @@
-package com.envyful.api.config.data;
+package com.envyful.api.config.config.data;
 
 import org.spongepowered.configurate.serialize.ScalarSerializer;
 

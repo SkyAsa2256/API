@@ -1,4 +1,4 @@
-package com.envyful.api.config.util;
+package com.envyful.api.config.config.util;
 
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;

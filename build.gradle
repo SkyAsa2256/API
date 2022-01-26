@@ -9,6 +9,7 @@ buildscript {
 }
 
 subprojects {
+    apply plugin: 'maven'
     apply plugin: 'com.github.johnrengelman.shadow'
     apply plugin: 'java'
 

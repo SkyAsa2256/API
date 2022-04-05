@@ -12,6 +12,8 @@ import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.type.Pair;
+import com.envyful.api.type.UtilParse;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -141,6 +143,27 @@ public class UtilConfigItem {
         }
 
         itemBuilder.name(UtilChatColour.translateColourCodes('&', name));
+
+        for (ConfigItem.EnchantData value : configItem.getEnchants().values()) {
+            String enchantName = value.getEnchant();
+            String level = value.getLevel();
+
+            if (!transformers.isEmpty()) {
+                for (Transformer transformer : transformers) {
+                    enchantName = transformer.transformName(enchantName);
+                    level = transformer.transformName(level);
+                }
+            }
+
+            Enchantment enchantment = Enchantment.getEnchantmentByLocation(enchantName);
+            int parsedLevel = UtilParse.parseInteger(level).orElse(1);
+
+            if (enchantment == null) {
+                continue;
+            }
+
+            itemBuilder.enchant(enchantment, parsedLevel);
+        }
 
         for (Map.Entry<String, ConfigItem.NBTValue> nbtData : configItem.getNbt().entrySet()) {
             String data = nbtData.getValue().getData();

@@ -23,17 +23,23 @@ public class ConfigItem {
     private String damage = "14";
     private String name = " ";
     private List<String> lore = Lists.newArrayList();
+    private Map<String, EnchantData> enchants = Maps.newHashMap();
     private Map<String, NBTValue> nbt = Maps.newHashMap();
 
     public ConfigItem() {}
 
-    public ConfigItem(String type, int amount, byte damage, String name, List<String> lore, Map<String, NBTValue> nbt) {
+    public ConfigItem(String type, int amount, byte damage, String name, List<String> lore, Map<String, EnchantData> enchants, Map<String, NBTValue> nbt) {
         this.type = type;
         this.amount = amount + "";
         this.damage = damage + "";
         this.name = name;
         this.lore = lore;
+        this.enchants = enchants;
         this.nbt = nbt;
+    }
+
+    public ConfigItem(String type, int amount, byte damage, String name, List<String> lore, Map<String, NBTValue> nbt) {
+        this(type, amount, damage, name, lore, Maps.newHashMap(), nbt);
     }
 
     public boolean isEnabled() {
@@ -78,6 +84,10 @@ public class ConfigItem {
         return this.lore;
     }
 
+    public Map<String, EnchantData> getEnchants() {
+        return enchants;
+    }
+
     public Map<String, NBTValue> getNbt() {
         return this.nbt;
     }
@@ -101,6 +111,28 @@ public class ConfigItem {
 
         public String getData() {
             return this.data;
+        }
+    }
+
+    @ConfigSerializable
+    public static final class EnchantData {
+
+        private String enchant;
+        private String level;
+
+        public EnchantData() {}
+
+        public EnchantData(String enchant, String level) {
+            this.enchant = enchant;
+            this.level = level;
+        }
+
+        public String getEnchant() {
+            return this.enchant;
+        }
+
+        public String getLevel() {
+            return this.level;
         }
     }
 }

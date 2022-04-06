@@ -16,10 +16,28 @@ public @interface Permissible {
 
     /**
      *
-     * The long ID of the required Discord @{@link net.dv8tion.jda.api.entities.Role}
+     * The long ID of the Discord {@link net.dv8tion.jda.api.entities.Guild} id's
+     * Keep the index the same as the {@link Permissible#role()} indexes as it's treated as a map
      *
-     * @return The discord role
+     * @return The discord guild ids
      */
-    long value() default -1L;
+    long[] guild() default {};
+
+    /**
+     *
+     * The long ID of the Discord {@link net.dv8tion.jda.api.entities.Role} id's
+     * Keep the index the same as the {@link Permissible#guild()} indexes as it's treated as a map
+     *
+     * @return The discord role ids
+     */
+    long[] role() default {};
+
+    /**
+     *
+     * The message sent to the user when they're denied access to the command
+     *
+     * @return The message denying access
+     */
+    String denyMessage() default "";
 
 }

@@ -3,4 +3,5 @@ include 'commons'
 include 'forge'
 include 'reforged'
 include 'forge16'
+include 'discord'
 

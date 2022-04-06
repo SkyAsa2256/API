@@ -20,8 +20,9 @@ import java.util.Map;
 public abstract class AbstractCommand implements Command {
 
     private final CommandData commandData;
-    private final Permissible permissible;
     private final Map<Long, Role> guildToRole = Maps.newConcurrentMap();
+
+    protected final Permissible permissible;
 
     protected AbstractCommand(CommandData commandData) {
         this.commandData = commandData;

@@ -5,6 +5,7 @@ import com.envyful.api.config.type.PermissibleConfigItem;
 import com.envyful.api.config.type.PositionableConfigItem;
 import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.forge.items.ItemBuilder;
+import com.envyful.api.forge.items.ItemFlag;
 import com.envyful.api.forge.player.util.UtilPlayer;
 import com.envyful.api.gui.Transformer;
 import com.envyful.api.gui.factory.GuiFactory;
@@ -130,12 +131,19 @@ public class UtilConfigItem {
                 .damage(configItem.getDamage(transformers));
 
         List<String> lore = configItem.getLore();
+        List<String> flags = configItem.getFlags();
 
         if (!transformers.isEmpty()) {
             for (Transformer transformer : transformers) {
                 lore = transformer.transformLore(lore);
                 name = transformer.transformName(name);
+                flags = transformer.transformLore(flags);
             }
+        }
+
+        for (String flag : flags) {
+            ItemFlag foundFlag = ItemFlag.valueOf(flag.toUpperCase());
+            itemBuilder.itemFlag(foundFlag);
         }
 
         for (String s : lore) {

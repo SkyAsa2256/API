@@ -22,6 +22,7 @@ public class ConfigItem {
     private String amount = "1";
     private String damage = "14";
     private String name = " ";
+    private List<String> flags = Lists.newArrayList();
     private List<String> lore = Lists.newArrayList();
     private Map<String, EnchantData> enchants = Maps.newHashMap();
     private Map<String, NBTValue> nbt = Maps.newHashMap();
@@ -86,6 +87,10 @@ public class ConfigItem {
 
     public Map<String, EnchantData> getEnchants() {
         return enchants;
+    }
+
+    public List<String> getFlags() {
+        return flags;
     }
 
     public Map<String, NBTValue> getNbt() {

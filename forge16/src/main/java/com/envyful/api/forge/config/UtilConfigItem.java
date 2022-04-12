@@ -203,8 +203,14 @@ public class UtilConfigItem {
         if (nbtEntry.getValue().getType().equalsIgnoreCase("list")) {
             ListNBT list = new ListNBT();
 
-            for (ConfigItem.NBTValue nbtValue : nbtEntry.getValue().getList()) {
-                list.add(parseBasic(nbtEntry.getValue(), transformers));
+            for (Map.Entry<String, ConfigItem.NBTValue> nbtValue : nbtEntry.getValue().getSubData().entrySet()) {
+                Pair<String, INBT> parsed = parseNBT(nbtValue, transformers);
+
+                if (parsed != null) {
+                    CompoundNBT compound = new CompoundNBT();
+                    compound.put(parsed.getX(), parsed.getY());
+                    list.add(compound);
+                }
             }
 
             return Pair.of(nbtEntry.getKey(), list);

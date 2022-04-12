@@ -199,7 +199,21 @@ public class UtilConfigItem {
             return Pair.of(nbtEntry.getKey(), compound);
         }
 
-        String data = nbtEntry.getValue().getData();
+        if (nbtEntry.getValue().getType().equalsIgnoreCase("list")) {
+            NBTTagList list = new NBTTagList();
+
+            for (ConfigItem.NBTValue nbtValue : nbtEntry.getValue().getList()) {
+                list.appendTag(parseBasic(nbtEntry.getValue(), transformers));
+            }
+
+            return Pair.of(nbtEntry.getKey(), list);
+        }
+
+        return Pair.of(nbtEntry.getKey(), parseBasic(nbtEntry.getValue(), transformers));
+    }
+
+    public static NBTBase parseBasic(ConfigItem.NBTValue value, List<Transformer> transformers) {
+        String data = value.getData();
 
         if (!transformers.isEmpty()) {
             for (Transformer transformer : transformers) {
@@ -208,7 +222,8 @@ public class UtilConfigItem {
         }
 
         NBTBase base;
-        switch (nbtEntry.getValue().getType().toLowerCase()) {
+
+        switch (value.getType().toLowerCase()) {
             case "int":
             case "integer":
                 base = new NBTTagInt(Integer.parseInt(data));
@@ -234,7 +249,6 @@ public class UtilConfigItem {
                 break;
         }
 
-        return Pair.of(nbtEntry.getKey(), base);
+        return base;
     }
-
 }

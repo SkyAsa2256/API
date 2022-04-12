@@ -174,43 +174,67 @@ public class UtilConfigItem {
         }
 
         for (Map.Entry<String, ConfigItem.NBTValue> nbtData : configItem.getNbt().entrySet()) {
-            String data = nbtData.getValue().getData();
+            Pair<String, NBTBase> parsed = parseNBT(nbtData, transformers);
 
-            if (!transformers.isEmpty()) {
-                for (Transformer transformer : transformers) {
-                    data = transformer.transformName(data);
-                }
+            if (parsed != null) {
+                itemBuilder.nbt(parsed.getX(), parsed.getY());
             }
-
-            NBTBase base = null;
-            switch (nbtData.getValue().getType().toLowerCase()) {
-                case "int" : case "integer" :
-                    base = new NBTTagInt(Integer.parseInt(data));
-                    break;
-                case "long" :
-                    base = new NBTTagLong(Long.parseLong(data));
-                    break;
-                case "byte" :
-                    base = new NBTTagByte(Byte.parseByte(data));
-                    break;
-                case "double" :
-                    base = new NBTTagDouble(Double.parseDouble(data));
-                    break;
-                case "float" :
-                    base = new NBTTagFloat(Float.parseFloat(data));
-                    break;
-                case "short" :
-                    base = new NBTTagShort(Short.parseShort(data));
-                    break;
-                default : case "string" :
-                    base = new NBTTagString(data);
-                    break;
-            }
-
-            itemBuilder.nbt(nbtData.getKey(), base);
         }
 
         return itemBuilder.build();
+    }
+
+    public static Pair<String, NBTBase> parseNBT(Map.Entry<String, ConfigItem.NBTValue> nbtEntry, List<Transformer> transformers) {
+        if (nbtEntry.getValue().getType().equalsIgnoreCase("nbt")) {
+            NBTTagCompound compound = new NBTTagCompound();
+
+            for (Map.Entry<String, ConfigItem.NBTValue> entry : nbtEntry.getValue().getSubData().entrySet()) {
+                Pair<String, NBTBase> parsed = parseNBT(entry, transformers);
+
+                if (parsed != null) {
+                    compound.setTag(parsed.getX(), parsed.getY());
+                }
+            }
+
+            return Pair.of(nbtEntry.getKey(), compound);
+        }
+
+        String data = nbtEntry.getValue().getData();
+
+        if (!transformers.isEmpty()) {
+            for (Transformer transformer : transformers) {
+                data = transformer.transformName(data);
+            }
+        }
+
+        NBTBase base;
+        switch (nbtEntry.getValue().getType().toLowerCase()) {
+            case "int":
+            case "integer":
+                base = new NBTTagInt(Integer.parseInt(data));
+                break;
+            case "long":
+                base = new NBTTagLong(Long.parseLong(data));
+                break;
+            case "byte":
+                base = new NBTTagByte(Byte.parseByte(data));
+                break;
+            case "double":
+                base = new NBTTagDouble(Double.parseDouble(data));
+                break;
+            case "float":
+                base = new NBTTagFloat(Float.parseFloat(data));
+                break;
+            case "short":
+                base = new NBTTagShort(Short.parseShort(data));
+                break;
+            default:
+            case "string":
+                base = new NBTTagString(data);
+                break;
+        }
+
+        return Pair.of(nbtEntry.getKey(), base);
     }
 
 }

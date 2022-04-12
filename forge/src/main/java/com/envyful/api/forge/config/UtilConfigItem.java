@@ -202,8 +202,14 @@ public class UtilConfigItem {
         if (nbtEntry.getValue().getType().equalsIgnoreCase("list")) {
             NBTTagList list = new NBTTagList();
 
-            for (ConfigItem.NBTValue nbtValue : nbtEntry.getValue().getList()) {
-                list.appendTag(parseBasic(nbtEntry.getValue(), transformers));
+            for (Map.Entry<String, ConfigItem.NBTValue> nbtValue : nbtEntry.getValue().getSubData().entrySet()) {
+                Pair<String, NBTBase> parsed = parseNBT(nbtValue, transformers);
+
+                if (parsed != null) {
+                    NBTTagCompound compound = new NBTTagCompound();
+                    compound.setTag(parsed.getX(), parsed.getY());
+                    list.appendTag(compound);
+                }
             }
 
             return Pair.of(nbtEntry.getKey(), list);

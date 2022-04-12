@@ -103,7 +103,6 @@ public class ConfigItem {
         private String type;
         private String data;
         private Map<String, NBTValue> subData;
-        private List<NBTValue> list;
 
         public NBTValue() {}
 
@@ -117,21 +116,12 @@ public class ConfigItem {
             this.subData = subData;
         }
 
-        public NBTValue(String type, List<NBTValue> list) {
-            this.type = type;
-            this.list = list;
-        }
-
         public String getType() {
             return this.type;
         }
 
         public String getData() {
             return this.data;
-        }
-
-        public List<NBTValue> getList() {
-            return list;
         }
 
         public Map<String, NBTValue> getSubData() {

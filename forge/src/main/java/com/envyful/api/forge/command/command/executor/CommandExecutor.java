@@ -171,11 +171,15 @@ public class CommandExecutor {
     public boolean execute(ICommandSender sender, String[] arguments) {
         Object[] args = new Object[this.arguments.length + 1];
 
-        for (int i = 1; i < this.arguments.length; i++) {
+        for (int i = 0; i < this.arguments.length; i++) {
             Pair<ArgumentInjector<?, ICommandSender>, String> argument = this.arguments[i];
 
+            if (i == this.justArgsPos) {
+                break; // This should ALWAYS be the last argument
+            }
+
             if (argument.getX().doesRequireMultipleArgs()) {
-                String[] remainingArgs = Arrays.copyOfRange(arguments, i - 1, arguments.length);
+                String[] remainingArgs = Arrays.copyOfRange(arguments, i, arguments.length);
 
                 if (remainingArgs.length == 0 && argument.getY() != null) {
                     remainingArgs = new String[] { argument.getY() };
@@ -187,7 +191,7 @@ public class CommandExecutor {
                     return false;
                 }
             } else {
-                if (arguments.length <= 0 || arguments.length <= (i - 1)) {
+                if (arguments.length <= 0 || arguments.length <= i) {
                     args[i] = argument.getX().instantiateClass(sender, argument.getY());
 
                     if (args[i] == null) {
@@ -197,7 +201,7 @@ public class CommandExecutor {
                     }
                 }
 
-                args[i] = argument.getX().instantiateClass(sender, arguments[i - 1]);
+                args[i] = argument.getX().instantiateClass(sender, arguments[i]);
 
                 if (args[i] == null) {
                     if (argument.getY() != null) {

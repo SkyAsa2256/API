@@ -291,7 +291,7 @@ public class CommandExecutor {
                 TabCompleter<?, ?> tabCompleter = this.tabCompleters.get(pos + 1);
 
                 if (!(completer instanceof FillerTabCompleter)) {
-                    completions.addAll(completer.getCompletions(castSender, args, this.extraTabData.get(pos + 1)));
+                    completions.addAll(tabCompleter.getCompletions(castSender, args, this.extraTabData.get(pos + 1)));
                 }
             }
         }

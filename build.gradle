@@ -14,7 +14,7 @@ subprojects {
     apply plugin: 'java'
 
     group = 'com.envyful.api'
-    version = '2.2.3'
+    version = '2.2.4'
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8

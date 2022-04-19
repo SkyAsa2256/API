@@ -170,26 +170,14 @@ public class CommandExecutor {
      */
     public boolean execute(ICommandSender sender, String[] arguments) {
         Object[] args = new Object[this.arguments.length + 1];
-        int subtract = 0;
-        int skipped = 0;
 
-        for (int i = 0; i < this.arguments.length; i++) {
+        for (int i = 1; i < this.arguments.length; i++) {
             Pair<ArgumentInjector<?, ICommandSender>, String> argument = this.arguments[i];
 
-            if (argument == null) {
-                args[i] = null;
-                ++subtract;
-                continue;
-            }
-
-            if ((i - subtract) == this.senderPosition) {
-                ++skipped;
-            }
-
             if (argument.getX().doesRequireMultipleArgs()) {
-                String[] remainingArgs = Arrays.copyOfRange(arguments, i - subtract, arguments.length);
+                String[] remainingArgs = Arrays.copyOfRange(arguments, i - 1, arguments.length);
 
-                if ((remainingArgs == null || remainingArgs.length == 0) && argument.getY() != null) {
+                if (remainingArgs.length == 0 && argument.getY() != null) {
                     remainingArgs = new String[] { argument.getY() };
                 }
 
@@ -199,27 +187,24 @@ public class CommandExecutor {
                     return false;
                 }
             } else {
-                if (arguments.length <= 0 || arguments.length <= (i - subtract) || (i - subtract) < 0) {
+                if (arguments.length <= 0 || arguments.length <= (i - 1)) {
                     args[i] = argument.getX().instantiateClass(sender, argument.getY());
 
                     if (args[i] == null) {
                         return false;
                     } else {
-                        ++subtract;
                         continue;
                     }
                 }
 
-                args[i + skipped] = argument.getX().instantiateClass(sender, arguments[i - subtract]);
+                args[i] = argument.getX().instantiateClass(sender, arguments[i - 1]);
 
-                if (args[i + skipped] == null) {
+                if (args[i] == null) {
                     if (argument.getY() != null) {
-                        args[i + skipped] = argument.getX().instantiateClass(sender, argument.getY());
+                        args[i] = argument.getX().instantiateClass(sender, argument.getY());
 
-                        if (args[i + skipped] == null) {
+                        if (args[i] == null) {
                             return false;
-                        } else {
-                            ++subtract;
                         }
                     } else {
                         return false;
@@ -244,7 +229,7 @@ public class CommandExecutor {
                 arguments = new String[0];
             }
 
-            args[this.justArgsPos] = Arrays.copyOfRange(arguments, this.arguments.length - 1 - skipped, arguments.length);
+            args[this.justArgsPos] = arguments;
         }
 
         return this.execute(args);

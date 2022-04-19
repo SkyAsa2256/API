@@ -283,6 +283,19 @@ public class CommandExecutor {
             return Collections.emptyList();
         }
 
-        return completer.getCompletions(completer.getSenderClass().cast(sender), args, this.extraTabData.get(pos));
+        A castSender = completer.getSenderClass().cast(sender);
+        List<String> completions = completer.getCompletions(castSender, args, this.extraTabData.get(pos));
+
+        if (this.arguments[pos] != null && this.arguments[pos].getY() != null) {
+            if (this.tabCompleters.size() < (pos + 1)) {
+                TabCompleter<?, ?> tabCompleter = this.tabCompleters.get(pos + 1);
+
+                if (!(completer instanceof FillerTabCompleter)) {
+                    completions.addAll(completer.getCompletions(castSender, args, this.extraTabData.get(pos + 1)));
+                }
+            }
+        }
+
+        return completions;
     }
 }

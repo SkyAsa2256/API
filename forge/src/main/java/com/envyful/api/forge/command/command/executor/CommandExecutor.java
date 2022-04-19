@@ -183,8 +183,7 @@ public class CommandExecutor {
             }
 
             if ((i - subtract) == this.senderPosition) {
-                ++subtract;
-                continue;
+                ++skipped;
             }
 
             if (argument.getX().doesRequireMultipleArgs()) {
@@ -212,13 +211,13 @@ public class CommandExecutor {
                     }
                 }
 
-                args[i] = argument.getX().instantiateClass(sender, arguments[i - subtract]);
+                args[i + skipped] = argument.getX().instantiateClass(sender, arguments[i - subtract]);
 
-                if (args[i] == null) {
+                if (args[i + skipped] == null) {
                     if (argument.getY() != null) {
-                        args[i] = argument.getX().instantiateClass(sender, argument.getY());
+                        args[i + skipped] = argument.getX().instantiateClass(sender, argument.getY());
 
-                        if (args[i] == null) {
+                        if (args[i + skipped] == null) {
                             return false;
                         } else {
                             ++subtract;

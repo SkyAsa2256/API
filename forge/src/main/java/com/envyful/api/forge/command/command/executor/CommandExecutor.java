@@ -206,7 +206,6 @@ public class CommandExecutor {
                         return false;
                     } else {
                         ++subtract;
-                        ++skipped;
                         continue;
                     }
                 }
@@ -221,7 +220,6 @@ public class CommandExecutor {
                             return false;
                         } else {
                             ++subtract;
-                            ++skipped;
                         }
                     } else {
                         return false;

@@ -169,7 +169,7 @@ public class CommandExecutor {
      * @return If the command failed to run
      */
     public boolean execute(ICommandSender sender, String[] arguments) {
-        Object[] args = new Object[this.arguments.length];
+        Object[] args = new Object[this.arguments.length + 1];
         int subtract = 0;
         int skipped = 0;
 
@@ -286,14 +286,10 @@ public class CommandExecutor {
         A castSender = completer.getSenderClass().cast(sender);
         List<String> completions = completer.getCompletions(castSender, args, this.extraTabData.get(pos));
 
-        System.out.println(this.arguments[pos] + " " + this.arguments[pos + 1].getY());
-        System.out.println(this.arguments[pos] + " " + this.arguments[pos].getY());
         if (this.arguments[pos] != null && this.arguments[pos].getY() != null) {
-            System.out.println(this.tabCompleters.size() + " " + (pos + 1));
             if (this.tabCompleters.size() > (pos + 1)) {
                 TabCompleter<?, A> tabCompleter = (TabCompleter<?, A>) this.tabCompleters.get(pos + 1);
 
-                System.out.println(tabCompleter + " HELLO");
                 if (!(completer instanceof FillerTabCompleter)) {
                     completions.addAll(tabCompleter.getCompletions(castSender, args, this.extraTabData.get(pos + 1)));
                 }

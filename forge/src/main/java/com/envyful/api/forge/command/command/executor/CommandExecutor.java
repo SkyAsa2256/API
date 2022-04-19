@@ -286,14 +286,14 @@ public class CommandExecutor {
         A castSender = completer.getSenderClass().cast(sender);
         List<String> completions = completer.getCompletions(castSender, args, this.extraTabData.get(pos));
 
-        System.out.println(this.arguments[pos] + " " + this.arguments[pos].getY());
-        if (this.arguments[pos] != null && this.arguments[pos].getY() != null) {
-            System.out.println(this.tabCompleters.size() + " " + pos);
-            if (this.tabCompleters.size() > (pos + 1)) {
-                TabCompleter<?, A> tabCompleter = (TabCompleter<?, A>) this.tabCompleters.get(pos + 1);
+        System.out.println(this.arguments[pos + 1] + " " + this.arguments[pos + 1].getY());
+        if (this.arguments[pos + 1] != null && this.arguments[pos + 1].getY() != null) {
+            System.out.println(this.tabCompleters.size() + " " + pos + 1);
+            if (this.tabCompleters.size() > (pos + 2)) {
+                TabCompleter<?, A> tabCompleter = (TabCompleter<?, A>) this.tabCompleters.get(pos + 2);
 
                 if (!(completer instanceof FillerTabCompleter)) {
-                    completions.addAll(tabCompleter.getCompletions(castSender, args, this.extraTabData.get(pos + 1)));
+                    completions.addAll(tabCompleter.getCompletions(castSender, args, this.extraTabData.get(pos + 2)));
                 }
             }
         }

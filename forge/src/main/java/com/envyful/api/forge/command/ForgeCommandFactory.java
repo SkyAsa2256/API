@@ -139,7 +139,6 @@ public class ForgeCommandFactory implements CommandFactory<MinecraftServer, ICom
 
             for (int i = 0; i < parameterTypes.length; i++) {
                 if (parameterTypes[i] == String[].class) {
-                    arguments.add(null);
                     justArgsPos = i;
                     continue;
                 }

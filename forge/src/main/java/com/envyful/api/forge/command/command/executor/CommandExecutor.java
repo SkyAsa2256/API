@@ -169,14 +169,10 @@ public class CommandExecutor {
      * @return If the command failed to run
      */
     public boolean execute(ICommandSender sender, String[] arguments) {
-        Object[] args = new Object[this.arguments.length + 1];
+        Object[] args = new Object[this.arguments.length + 1 + (justArgsPos != -1 ? 1 : 0)];
 
         for (int i = 0; i < this.arguments.length; i++) {
             Pair<ArgumentInjector<?, ICommandSender>, String> argument = this.arguments[i];
-
-            if (i == this.justArgsPos) {
-                break; // This should ALWAYS be the last argument
-            }
 
             if (argument.getX().doesRequireMultipleArgs()) {
                 String[] remainingArgs = Arrays.copyOfRange(arguments, i, arguments.length);
@@ -233,7 +229,7 @@ public class CommandExecutor {
                 arguments = new String[0];
             }
 
-            args[this.justArgsPos] = arguments;
+            args[args.length - 1] = arguments;
         }
 
         return this.execute(args);

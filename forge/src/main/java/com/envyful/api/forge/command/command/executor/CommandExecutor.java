@@ -182,6 +182,11 @@ public class CommandExecutor {
                 continue;
             }
 
+            if ((i - subtract) == this.senderPosition) {
+                ++subtract;
+                continue;
+            }
+
             if (argument.getX().doesRequireMultipleArgs()) {
                 String[] remainingArgs = Arrays.copyOfRange(arguments, i - subtract, arguments.length);
 

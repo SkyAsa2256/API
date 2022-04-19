@@ -151,7 +151,6 @@ public class ForgeCommandFactory implements CommandFactory<MinecraftServer, ICom
                 if (annotations[i][0] instanceof Sender) {
                     senderType = ForgeSenderType.get(parameterTypes[i]);
                     senderPosition = i;
-                    arguments.add(null);
                 } else {
                     if (annotations[i][0] instanceof Completable) {
                         tabCompleters.add(this.registeredCompleters.get(((Completable) annotations[i][0]).value()));

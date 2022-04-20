@@ -175,6 +175,7 @@ public class CommandExecutor {
         for (int i = 0; i < this.arguments.length; i++) {
             Pair<ArgumentInjector<?, ICommandSender>, String> argument = this.arguments[i];
             int commandArgsPos = i - skipped;
+            int executorPos = i + 1;
 
             if (argument.getX().doesRequireMultipleArgs()) {
                 String[] remainingArgs = Arrays.copyOfRange(arguments, commandArgsPos, arguments.length);
@@ -183,29 +184,29 @@ public class CommandExecutor {
                     remainingArgs = new String[] { argument.getY() };
                 }
 
-                args[i] = argument.getX().instantiateClass(sender, remainingArgs);
+                args[executorPos] = argument.getX().instantiateClass(sender, remainingArgs);
 
-                if (args[i] == null) {
+                if (args[executorPos] == null) {
                     return false;
                 }
             } else {
                 if (arguments.length <= 0 || arguments.length <= commandArgsPos) {
-                    args[i] = argument.getX().instantiateClass(sender, argument.getY());
+                    args[executorPos] = argument.getX().instantiateClass(sender, argument.getY());
 
-                    if (args[i] == null) {
+                    if (args[executorPos] == null) {
                         return false;
                     } else {
                         continue;
                     }
                 }
 
-                args[i] = argument.getX().instantiateClass(sender, arguments[commandArgsPos]);
+                args[executorPos] = argument.getX().instantiateClass(sender, arguments[commandArgsPos]);
 
-                if (args[i] == null) {
+                if (args[executorPos] == null) {
                     if (argument.getY() != null) {
-                        args[i] = argument.getX().instantiateClass(sender, argument.getY());
+                        args[executorPos] = argument.getX().instantiateClass(sender, argument.getY());
 
-                        if (args[i] == null) {
+                        if (args[executorPos] == null) {
                             return false;
                         } else {
                             ++skipped;

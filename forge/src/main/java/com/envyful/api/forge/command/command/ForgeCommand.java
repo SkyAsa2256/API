@@ -214,7 +214,11 @@ public class ForgeCommand extends CommandBase {
                     List<String> values = executor.tabComplete(sender, args);
 
                     if (!values.isEmpty()) {
-                        return values;
+                        if (args.length == 0) {
+                            return values;
+                        }
+
+                        return this.getMatching(args[0], values);
                     }
                 }
 
@@ -260,10 +264,11 @@ public class ForgeCommand extends CommandBase {
 
         for (ForgeCommand subCommand : this.subCommands) {
             if (args[0].equalsIgnoreCase(subCommand.getName()) || subCommand.getAliases().contains(args[0])) {
-                List<String> values = subCommand.getTabCompletions(server, sender, Arrays.copyOfRange(args, 1, args.length), pos);
+                String[] argCopy = Arrays.copyOfRange(args, 1, args.length);
+                List<String> values = subCommand.getTabCompletions(server, sender, argCopy, pos);
 
                 if (!values.isEmpty()) {
-                    return values;
+                    return this.getMatching(argCopy[0], values);
                 }
             }
         }

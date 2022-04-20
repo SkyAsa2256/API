@@ -170,12 +170,14 @@ public class CommandExecutor {
      */
     public boolean execute(ICommandSender sender, String[] arguments) {
         Object[] args = new Object[this.arguments.length + 1 + (justArgsPos != -1 ? 1 : 0)];
+        int skipped = 0;
 
         for (int i = 0; i < this.arguments.length; i++) {
             Pair<ArgumentInjector<?, ICommandSender>, String> argument = this.arguments[i];
+            int commandArgsPos = i - skipped;
 
             if (argument.getX().doesRequireMultipleArgs()) {
-                String[] remainingArgs = Arrays.copyOfRange(arguments, i, arguments.length);
+                String[] remainingArgs = Arrays.copyOfRange(arguments, commandArgsPos, arguments.length);
 
                 if (remainingArgs.length == 0 && argument.getY() != null) {
                     remainingArgs = new String[] { argument.getY() };
@@ -187,7 +189,7 @@ public class CommandExecutor {
                     return false;
                 }
             } else {
-                if (arguments.length <= 0 || arguments.length <= i) {
+                if (arguments.length <= 0 || arguments.length <= commandArgsPos) {
                     args[i] = argument.getX().instantiateClass(sender, argument.getY());
 
                     if (args[i] == null) {
@@ -197,7 +199,7 @@ public class CommandExecutor {
                     }
                 }
 
-                args[i] = argument.getX().instantiateClass(sender, arguments[i]);
+                args[i] = argument.getX().instantiateClass(sender, arguments[commandArgsPos]);
 
                 if (args[i] == null) {
                     if (argument.getY() != null) {
@@ -205,6 +207,8 @@ public class CommandExecutor {
 
                         if (args[i] == null) {
                             return false;
+                        } else {
+                            ++skipped;
                         }
                     } else {
                         return false;
@@ -214,10 +218,10 @@ public class CommandExecutor {
         }
 
         if (this.sender.getType().equals(sender.getClass())) {
-            args[this.senderPosition] = sender;
+            args[0] = sender;
         } else {
             try {
-                args[this.senderPosition] = this.sender.getType().cast(sender);
+                args[0] = this.sender.getType().cast(sender);
             } catch (ClassCastException e) {
                 FMLCommonHandler.instance().getFMLLogger().info("You cannot use this command from this source (player only).");
                 return false;

@@ -55,12 +55,12 @@ public class TrueFalseSelectionUI {
 
             if (config.startsTrue) {
                 config.confirm.confirmHandler(config.trueAcceptHandler);
-                config.confirm.descriptionItem(UtilConfigItem.fromConfigItem(config.config.trueItem));
+                config.confirm.descriptionItem(UtilConfigItem.fromConfigItem(config.config.trueItem, config.transformers));
 
                 config.confirm.open();
             } else {
                 config.confirm.confirmHandler(config.falseAcceptHandler);
-                config.confirm.descriptionItem(UtilConfigItem.fromConfigItem(config.config.falseItem));
+                config.confirm.descriptionItem(UtilConfigItem.fromConfigItem(config.config.falseItem, config.transformers));
                 config.confirm.open();
             }
         });

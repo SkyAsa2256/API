@@ -45,9 +45,7 @@ dependencies {
     shadow group: 'org.spongepowered', name: 'configurate-yaml', version: '4.0.0'
 
     shadow project(':commons')
-    shadow(project(':forge16')) {
-        exclude group: 'net.minecraftforge'
-    }
+    shadow(project(':forge16'))
 
     implementation fg.deobf('pixelmon:Pixelmon-1.16.5-9.0.0-server:9.0.0')
 }

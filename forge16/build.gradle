@@ -30,7 +30,7 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.5-36.2.22'
+    minecraft 'net.minecraftforge:forge:1.16.5-36.2.34'
 
     shadow group: 'org.spongepowered', name: 'configurate-yaml', version: '4.0.0'
 

@@ -17,7 +17,7 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle'
 
 minecraft {
-    mappings channel: 'snapshot', version: '20180814-1.12'
+    mappings channel: 'official', version: '1.16.5'
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
@@ -27,24 +27,40 @@ repositories {
         name = 'spongepowered-repo'
         url = 'https://repo.spongepowered.org/maven'
     }
+
+    ivy {
+        setUrl('https://download.nodecdn.net/containers/reforged/server/release')
+        metadataSources {
+            artifact()
+        }
+        patternLayout {
+            artifact('[revision]/[artifact].[ext]')
+        }
+    }
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2854'
+    minecraft 'net.minecraftforge:forge:1.16.5-36.2.34'
 
     shadow group: 'org.spongepowered', name: 'configurate-yaml', version: '4.0.0'
 
     shadow project(':commons')
+    shadow(project(':forge16')) {
+        exclude group: 'net.minecraftforge'
+    }
+
+    implementation fg.deobf('pixelmon:Pixelmon-1.16.5-9.0.0-server:9.0.0')
 }
 
 shadowJar {
     configurations = [project.configurations.shadow]
-    archiveName = rootProject.name + '-Forge.jar'
+    archiveName = rootProject.name + '-Pixelmon-Reforged.jar'
 
     relocate('org.spongepowered.configurate', 'com.envyful.api.commons.shade.configurate')
     relocate('org.yaml.snakeyaml', 'com.envyful.api.commons.shade.snakeyaml')
     relocate('io.leangen.geantyref', 'com.envyful.api.commons.shade.geantyref')
 
+    exclude 'net.minecraft'
     exclude "**/module-info.class"
 }
 

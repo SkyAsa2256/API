@@ -10,7 +10,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.+', changing: true
     }
 }
 
@@ -59,9 +59,7 @@ shadowJar {
 }
 
 reobf {
-    shadowJar {
-        classpath = sourceSets.main.compileClasspath
-    }
+    shadowJar {}
 }
 
 jar.finalizedBy('reobfJar')

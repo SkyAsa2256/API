@@ -52,7 +52,7 @@ dependencies {
 
 shadowJar {
     configurations = [project.configurations.shadow]
-    archiveName = rootProject.name + '-Pixelmon-Reforged.jar'
+    dependsOn('reobfJar')
 
     relocate('org.spongepowered.configurate', 'com.envyful.api.commons.shade.configurate')
     relocate('org.yaml.snakeyaml', 'com.envyful.api.commons.shade.snakeyaml')

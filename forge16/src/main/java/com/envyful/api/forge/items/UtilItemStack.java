@@ -33,11 +33,11 @@ public class UtilItemStack {
 
         List<String> lore = Lists.newArrayList();
 
-        ListNBT currentLore = itemStack.getOrCreateChildTag("display").getList("Lore", 8);
+        ListNBT currentLore = itemStack.getOrCreateTagElement("display").getList("Lore", 8);
 
         for (INBT nbtBase : currentLore) {
             if (nbtBase instanceof StringNBT) {
-                lore.add(nbtBase.getString());
+                lore.add(nbtBase.getAsString());
             }
         }
 
@@ -52,12 +52,12 @@ public class UtilItemStack {
      * @param lore The new lore
      */
     public static void setLore(ItemStack itemStack, List<String> lore) {
-        CompoundNBT display = itemStack.getOrCreateChildTag("display");
+        CompoundNBT display = itemStack.getOrCreateTagElement("display");
         ListNBT newLore = new ListNBT();
 
         lore.forEach(s -> newLore.add(StringNBT.valueOf(s)));
 
         display.put("Lore", newLore);
-        itemStack.setTagInfo("display", display);
+        itemStack.addTagElement("display", display);
     }
 }

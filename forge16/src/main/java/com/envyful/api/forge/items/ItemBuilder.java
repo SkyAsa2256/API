@@ -53,7 +53,7 @@ public class ItemBuilder implements Cloneable {
         this.lore = UtilItemStack.getLore(itemStack);
 
         if (itemStack.getTag() != null) {
-            for (String s : itemStack.getTag().keySet()) {
+            for (String s : itemStack.getTag().getAllKeys()) {
                 this.nbtData.put(s, itemStack.getTag().get(s));
             }
         }
@@ -231,17 +231,19 @@ public class ItemBuilder implements Cloneable {
         itemStack.setTag(compound);
 
         if (this.name != null && !this.name.isEmpty()) {
-            itemStack.setDisplayName(new StringTextComponent(this.name));
+            CompoundNBT display = itemStack.getOrCreateTagElement("display");
+            display.put("Name", StringNBT.valueOf(ITextComponent.Serializer.toJson(new StringTextComponent(this.name))));
+            itemStack.addTagElement("display", display);
         }
 
         if (this.lore != null && !this.lore.isEmpty()) {
-            CompoundNBT display = itemStack.getOrCreateChildTag("display");
+            CompoundNBT display = itemStack.getOrCreateTagElement("display");
             ListNBT lore = new ListNBT();
 
             this.lore.forEach(s -> lore.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(new StringTextComponent(s)))));
 
             display.put("Lore", lore);
-            itemStack.setTagInfo("display", display);
+            itemStack.addTagElement("display", display);
         }
 
         if (this.unbreakable) {
@@ -249,7 +251,7 @@ public class ItemBuilder implements Cloneable {
         }
 
         for (Enchantment enchantment : enchants.keySet()) {
-            itemStack.addEnchantment(enchantment, enchants.get(enchantment));
+            itemStack.enchant(enchantment, enchants.get(enchantment));
         }
 
         int hideFlags = 0;

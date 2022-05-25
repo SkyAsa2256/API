@@ -164,7 +164,7 @@ public class UtilConfigItem {
                 }
             }
 
-            Enchantment enchantment = Registry.ENCHANTMENT.getOrDefault(new ResourceLocation(enchantName.toLowerCase()));
+            Enchantment enchantment = Registry.ENCHANTMENT.getOptional(new ResourceLocation(enchantName.toLowerCase())).orElse(null);
             int parsedLevel = UtilParse.parseInteger(level).orElse(1);
 
             if (enchantment == null) {
@@ -266,13 +266,13 @@ public class UtilConfigItem {
             return item;
         }
 
-        Integer integer = UtilParse.parseInteger(data).orElse(-1);
+        int integer = UtilParse.parseInteger(data).orElse(-1);
 
         if (integer == -1) {
             return null;
         }
 
-        return Item.getItemById(integer);
+        return Item.byId(integer);
     }
 
 }

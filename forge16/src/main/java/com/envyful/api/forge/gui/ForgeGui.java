@@ -67,12 +67,12 @@ public class ForgeGui implements Gui {
         }
 
         switch(height) {
-            default: case 0: case 1: this.containerType = ContainerType.GENERIC_9X1; break;
-            case 2: this.containerType = ContainerType.GENERIC_9X2; break;
-            case 3: this.containerType = ContainerType.GENERIC_9X3; break;
-            case 4: this.containerType = ContainerType.GENERIC_9X4; break;
-            case 5: this.containerType = ContainerType.GENERIC_9X5; break;
-            case 6: this.containerType = ContainerType.GENERIC_9X6; break;
+            default: case 0: case 1: this.containerType = ContainerType.GENERIC_9x1; break;
+            case 2: this.containerType = ContainerType.GENERIC_9x2; break;
+            case 3: this.containerType = ContainerType.GENERIC_9x3; break;
+            case 4: this.containerType = ContainerType.GENERIC_9x4; break;
+            case 5: this.containerType = ContainerType.GENERIC_9x5; break;
+            case 6: this.containerType = ContainerType.GENERIC_9x6; break;
         }
     }
 
@@ -89,10 +89,10 @@ public class ForgeGui implements Gui {
 
             ForgeGuiContainer container = new ForgeGuiContainer(this, parent);
 
-            UtilForgeConcurrency.runWhenTrue(__ -> parent.openContainer == parent.container, () -> {
-                parent.openContainer = container;
-                parent.currentWindowId = 1;
-                parent.connection.sendPacket(new SOpenWindowPacket(parent.currentWindowId, this.getContainerType(), title));
+            UtilForgeConcurrency.runWhenTrue(__ -> parent.containerMenu == parent.containerMenu, () -> {
+                parent.containerMenu = container;
+                parent.containerCounter = 1;
+                parent.connection.send(new SOpenWindowPacket(parent.containerCounter, this.getContainerType(), title));
                 container.refreshPlayerContents();
                 this.containers.add(container);
                 ForgeGuiTracker.addGui(player, this);
@@ -136,8 +136,8 @@ public class ForgeGui implements Gui {
 
         @Override
         public Slot getSlot(int slotId) {
-            if (slotId >= this.inventorySlots.size()) {
-                slotId = this.inventorySlots.size() - 1;
+            if (slotId >= this.slots.size()) {
+                slotId = this.slots.size() - 1;
             } else if (slotId < 0) {
                 slotId = 0;
             }
@@ -146,23 +146,23 @@ public class ForgeGui implements Gui {
         }
 
         @Override
-        public NonNullList<ItemStack> getInventory() {
+        public NonNullList<ItemStack> getItems() {
             NonNullList<ItemStack> nonnulllist = NonNullList.create();
 
-            for(int i = 0; i < this.inventorySlots.size(); ++i) {
-                nonnulllist.add(this.inventorySlots.get(i).getStack());
+            for(int i = 0; i < this.slots.size(); ++i) {
+                nonnulllist.add(this.slots.get(i).getItem());
             }
 
             return nonnulllist;
         }
 
         public void update(ForgeSimplePane[] panes, boolean force) {
-            this.inventorySlots.clear();
+            this.slots.clear();
             this.inventoryItemStacks.clear();
             boolean createEmptySlots = this.emptySlots.isEmpty();
 
             if (!createEmptySlots) {
-                this.inventorySlots.addAll(this.emptySlots);
+                this.slots.addAll(this.emptySlots);
             }
 
             for (int i = 0; i < (9 * this.gui.height); i++) {
@@ -172,7 +172,7 @@ public class ForgeGui implements Gui {
                     this.addSlot(emptySlot);
 
                     this.emptySlots.add(emptySlot);
-                    this.inventorySlots.add(emptySlot);
+                    this.slots.add(emptySlot);
                 }
 
                 this.inventoryItemStacks.add(ItemStack.EMPTY);
@@ -191,21 +191,21 @@ public class ForgeGui implements Gui {
 
                         int index = pane.updateIndex((9 * y) + x);
 
-                        this.inventorySlots.set(index, item);
-                        this.inventoryItemStacks.set(index, item.getStack());
+                        this.slots.set(index, item);
+                        this.inventoryItemStacks.set(index, item.getItem());
                     }
                 }
             }
 
             for (int i = 9; i < 36; i++) {
-                ItemStack itemStack = player.inventory.mainInventory.get(i);
-                inventorySlots.add(new Slot(player.inventory, i, 0, 0));
+                ItemStack itemStack = player.inventory.items.get(i);
+                slots.add(new Slot(player.inventory, i, 0, 0));
                 inventoryItemStacks.add(itemStack);
             }
             // Sets the slots for the hotbar.
             for (int i = 0; i < 9; i++) {
-                ItemStack itemStack = player.inventory.mainInventory.get(i);
-                inventorySlots.add(new Slot(player.inventory, i, 0, 0));
+                ItemStack itemStack = player.inventory.items.get(i);
+                slots.add(new Slot(player.inventory, i, 0, 0));
                 inventoryItemStacks.add(itemStack);
             }
 
@@ -216,51 +216,48 @@ public class ForgeGui implements Gui {
 
         @Override
         protected Slot addSlot(Slot slotIn) {
-            slotIn.slotNumber = this.inventorySlots.size();
-            this.inventorySlots.add(slotIn);
+            slotIn.index = this.slots.size();
+            this.slots.add(slotIn);
             this.inventoryItemStacks.add(ItemStack.EMPTY);
             return slotIn;
         }
 
         @Override
-        public boolean getCanCraft(PlayerEntity player) {
+        public boolean canTakeItemForPickAll(ItemStack p_94530_1_, Slot p_94530_2_) {
+            return false;
+        }
+
+        @Override
+        public boolean stillValid(PlayerEntity p_75145_1_) {
             return true;
         }
 
         @Override
-        public boolean canInteractWith(PlayerEntity playerIn) {
-            return true;
-        }
-
-        @Override
-        public ItemStack transferStackInSlot(PlayerEntity playerIn, int index) {
+        public ItemStack quickMoveStack(PlayerEntity p_82846_1_, int p_82846_2_) {
             this.gui.open(this.gui.playerManager.getPlayer(this.player));
             return ItemStack.EMPTY;
         }
 
         @Override
-        public boolean canMergeSlot(ItemStack stack, Slot slotIn) {
+        protected boolean moveItemStackTo(ItemStack p_75135_1_, int p_75135_2_, int p_75135_3_, boolean p_75135_4_) {
             return false;
         }
 
         @Override
-        protected boolean mergeItemStack(ItemStack stack, int startIndex, int endIndex, boolean reverseDirection) {
+        public void setItem(int p_75141_1_, ItemStack p_75141_2_) {
+
+        }
+
+        @Override
+        public boolean canDragTo(Slot p_94531_1_) {
             return false;
         }
 
         @Override
-        public void putStackInSlot(int slotID, ItemStack stack) {}
+        public void broadcastChanges() {}
 
         @Override
-        public boolean canDragIntoSlot(Slot slotIn) {
-            return false;
-        }
-
-        @Override
-        public void detectAndSendChanges() {}
-
-        @Override
-        public ItemStack slotClick(int slot, int dragType, ClickType clickTypeIn, PlayerEntity player) {
+        public ItemStack clicked(int slot, int dragType, ClickType clickTypeIn, PlayerEntity player) {
             if (slot <= -1 || locked) {
                 return ItemStack.EMPTY;
             }
@@ -331,37 +328,37 @@ public class ForgeGui implements Gui {
         }
 
         public void refreshPlayerContents() {
-            this.player.sendAllContents(this, this.getInventory());
+            this.player.refreshContainer(this, this.getItems());
             ForgeGuiTracker.dequeueUpdate(this.player);
-            this.player.container.detectAndSendChanges();
-            this.player.sendAllContents(this.player.container, this.player.container.getInventory());
+            this.player.containerMenu.broadcastChanges();
+            this.player.refreshContainer(this.player.containerMenu, this.player.containerMenu.getItems());
         }
 
         private void clearPlayerCursor() {
             SSetSlotPacket setCursorSlot = new SSetSlotPacket(-1, 0, ItemStack.EMPTY);
-            player.connection.sendPacket(setCursorSlot);
+            player.connection.send(setCursorSlot);
         }
 
         @Override
-        public void onContainerClosed(PlayerEntity playerIn) {
+        public void removed(PlayerEntity playerIn) {
             if (this.closed) {
                 return;
             }
 
             this.closed = true;
-            super.onContainerClosed(player);
+            super.removed(player);
 
             ServerPlayerEntity sender = (ServerPlayerEntity) playerIn;
-            ForgeEnvyPlayer player = this.gui.playerManager.getPlayer(playerIn.getUniqueID());
+            ForgeEnvyPlayer player = this.gui.playerManager.getPlayer(playerIn.getUUID());
 
-            int windowId = sender.openContainer.windowId;
+            int windowId = sender.containerMenu.containerId;
 
             CCloseWindowPacket closeWindowClient = new CCloseWindowPacket();
             ObfuscationReflectionHelper.setPrivateValue(CCloseWindowPacket.class, closeWindowClient, 0,"field_149556_a");
             SCloseWindowPacket closeWindowServer = new SCloseWindowPacket(windowId);
 
-            sender.connection.processCloseWindow(closeWindowClient);
-            sender.connection.sendPacket(closeWindowServer);
+            sender.connection.handleContainerClose(closeWindowClient);
+            sender.connection.send(closeWindowServer);
 
             if (this.gui.closeConsumer != null) {
                 this.gui.closeConsumer.accept(player);
@@ -369,9 +366,9 @@ public class ForgeGui implements Gui {
 
             ForgeGui.this.containers.remove(this);
 
-            sender.currentWindowId = 0;
-            sender.container.detectAndSendChanges();
-            sender.sendAllContents(sender.container, sender.container.getInventory());
+            sender.containerCounter = 0;
+            sender.containerMenu.broadcastChanges();
+            sender.refreshContainer(sender.containerMenu, sender.containerMenu.getItems());
 
             ForgeGuiTracker.removePlayer(player);
         }

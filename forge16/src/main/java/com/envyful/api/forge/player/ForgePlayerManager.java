@@ -40,7 +40,7 @@ public class ForgePlayerManager implements PlayerManager<ForgeEnvyPlayer, Server
 
     @Override
     public ForgeEnvyPlayer getPlayer(ServerPlayerEntity player) {
-        return this.getPlayer(player.getUniqueID());
+        return this.getPlayer(player.getUUID());
     }
 
     @Override
@@ -105,7 +105,7 @@ public class ForgePlayerManager implements PlayerManager<ForgeEnvyPlayer, Server
         @SubscribeEvent(priority = EventPriority.LOWEST)
         public void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
             ForgeEnvyPlayer player = new ForgeEnvyPlayer((ServerPlayerEntity) event.getPlayer());
-            this.manager.cachedPlayers.put(event.getPlayer().getUniqueID(), player);
+            this.manager.cachedPlayers.put(event.getPlayer().getUUID(), player);
 
             UtilConcurrency.runAsync(() -> {
                 for (PlayerAttributeData attributeDatum : this.manager.attributeData) {
@@ -123,7 +123,7 @@ public class ForgePlayerManager implements PlayerManager<ForgeEnvyPlayer, Server
 
         @SubscribeEvent(priority = EventPriority.LOWEST)
         public void onPlayerQuit(PlayerEvent.PlayerLoggedOutEvent event) {
-            ForgeEnvyPlayer player = this.manager.cachedPlayers.remove(event.getPlayer().getUniqueID());
+            ForgeEnvyPlayer player = this.manager.cachedPlayers.remove(event.getPlayer().getUUID());
 
             if (player == null) {
                 return;
@@ -141,7 +141,7 @@ public class ForgePlayerManager implements PlayerManager<ForgeEnvyPlayer, Server
         @SubscribeEvent(priority = EventPriority.LOWEST)
         public void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
             UtilConcurrency.runLater(() -> {
-                ForgeEnvyPlayer player = this.manager.cachedPlayers.get(event.getPlayer().getUniqueID());
+                ForgeEnvyPlayer player = this.manager.cachedPlayers.get(event.getPlayer().getUUID());
 
                 player.setPlayer((ServerPlayerEntity) event.getPlayer());
             }, 5L);

@@ -171,7 +171,7 @@ public class ForgeSimplePane implements Pane {
         }
 
         @Override
-        public ItemStack getStack() {
+        public ItemStack getItem() {
             return ForgeSimpleDisplayable.Converter.toNative((ForgeSimpleDisplayable) this.displayable);
         }
     }

@@ -51,11 +51,11 @@ public class ForgeGuiTracker {
     }
 
     public static boolean requiresUpdate(ServerPlayerEntity player) {
-        return REQUIRED_UPDATE.contains(player.getUniqueID());
+        return REQUIRED_UPDATE.contains(player.getUUID());
     }
 
     public static void dequeueUpdate(ServerPlayerEntity player) {
-        REQUIRED_UPDATE.remove(player.getUniqueID());
+        REQUIRED_UPDATE.remove(player.getUUID());
     }
 
     private static final class ForgeGuiTickListener extends LazyListener {

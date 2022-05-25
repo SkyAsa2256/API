@@ -29,7 +29,7 @@ public class ForgeEnvyPlayer implements EnvyPlayer<ServerPlayerEntity> {
 
     @Override
     public UUID getUuid() {
-        return this.player.getUniqueID();
+        return this.player.getUUID();
     }
 
     @Override
@@ -48,7 +48,7 @@ public class ForgeEnvyPlayer implements EnvyPlayer<ServerPlayerEntity> {
 
     @Override
     public void message(String message) {
-        this.player.sendMessage(new StringTextComponent(message), Util.DUMMY_UUID);
+        this.player.sendMessage(new StringTextComponent(message), Util.NIL_UUID);
     }
 
     @Override
@@ -74,7 +74,7 @@ public class ForgeEnvyPlayer implements EnvyPlayer<ServerPlayerEntity> {
 
     @Override
     public void executeCommand(String command) {
-        ServerLifecycleHooks.getCurrentServer().getCommandManager().handleCommand(this.player.getCommandSource(), command);
+        ServerLifecycleHooks.getCurrentServer().getCommands().performCommand(this.player.createCommandSourceStack(), command);
     }
 
     @Override

@@ -24,11 +24,11 @@ public class UtilPlayer {
     }
 
     public static boolean hasPermission(ServerPlayerEntity player, String permission) {
-        return (PermissionAPI.hasPermission(player, permission) || player.hasPermissionLevel(4) || isOP(player));
+        return (PermissionAPI.hasPermission(player, permission) || player.hasPermissions(4) || isOP(player));
     }
 
     public static boolean isOP(ServerPlayerEntity player) {
-        OpEntry entry = ServerLifecycleHooks.getCurrentServer().getPlayerList().getOppedPlayers().getEntry(player.getGameProfile());
+        OpEntry entry = ServerLifecycleHooks.getCurrentServer().getPlayerList().getOps().get(player.getGameProfile());
         return entry != null;
     }
 
@@ -40,7 +40,7 @@ public class UtilPlayer {
      * @param command The command
      */
     public static void runCommand(ServerPlayerEntity player, String command) {
-        ServerLifecycleHooks.getCurrentServer().getCommandManager().handleCommand(player.getCommandSource(), command);
+        ServerLifecycleHooks.getCurrentServer().getCommands().performCommand(player.createCommandSourceStack(), command);
     }
 
     /**
@@ -52,7 +52,7 @@ public class UtilPlayer {
      * @return The online player
      */
     public static ServerPlayerEntity findByName(String name) {
-        return ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByUsername(name);
+        return ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByName(name);
     }
 
     /**
@@ -64,6 +64,6 @@ public class UtilPlayer {
      * @return The online player
      */
     public static ServerPlayerEntity getOnlinePlayer(UUID uuid) {
-        return ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByUUID(uuid);
+        return ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(uuid);
     }
 }

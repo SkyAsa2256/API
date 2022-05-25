@@ -107,7 +107,7 @@ public class PageBuilder<T> {
                 break;
             }
 
-            sender.sendMessage(new StringTextComponent(this.mainColor + (i + 1) + ". " + this.offColor + this.converter.apply(this.values.get(i))), Util.DUMMY_UUID);
+            sender.sendMessage(new StringTextComponent(this.mainColor + (i + 1) + ". " + this.offColor + this.converter.apply(this.values.get(i))), Util.NIL_UUID);
         }
     }
 }

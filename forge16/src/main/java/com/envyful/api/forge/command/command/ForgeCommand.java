@@ -72,9 +72,9 @@ public class ForgeCommand {
         if (!this.child) {
             newDescription.add(new StringTextComponent(""));
             StringTextComponent textComponent = new StringTextComponent("§eFor further support visit the §nEnvyWare Ltd§e discord: ");
-            textComponent.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.envyware.co.uk"));
+            textComponent.getStyle().withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.envyware.co.uk"));
             StringTextComponent textComponent2 = new StringTextComponent("§enhttps://discord.envyware.co.uk§e");
-            textComponent2.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.envyware.co.uk"));
+            textComponent2.getStyle().withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.envyware.co.uk"));
             newDescription.add(textComponent);
             newDescription.add(textComponent2);
         }
@@ -106,7 +106,7 @@ public class ForgeCommand {
 
     public void executeSync(MinecraftServer server, ICommandSource sender, String[] args) {
         if (!this.checkPermission(server, sender)) {
-            sender.sendMessage(NO_PERMISSION, Util.DUMMY_UUID);
+            sender.sendMessage(NO_PERMISSION, Util.NIL_UUID);
             return;
         }
 
@@ -140,13 +140,13 @@ public class ForgeCommand {
         }
 
         for (TextComponent textComponent : this.description) {
-            sender.sendMessage(textComponent, Util.DUMMY_UUID);
+            sender.sendMessage(textComponent, Util.NIL_UUID);
         }
     }
 
     private boolean attemptRun(CommandExecutor executor, ICommandSource sender, String[] args) {
         if (!executor.canExecute(sender)) {
-            sender.sendMessage(NO_PERMISSION, Util.DUMMY_UUID);
+            sender.sendMessage(NO_PERMISSION, Util.NIL_UUID);
             return true;
         }
 
@@ -167,7 +167,7 @@ public class ForgeCommand {
                     }
 
                     for (TextComponent textComponent : this.description) {
-                        sender.sendMessage(textComponent, Util.DUMMY_UUID);
+                        sender.sendMessage(textComponent, Util.NIL_UUID);
                     }
                 });
                 return true;

@@ -21,6 +21,6 @@ public class UtilForgeServer {
      * @param command The command to execyte
      */
     public static void executeCommand(String command) {
-        SERVER.getCommandManager().handleCommand(SERVER.getCommandSource(), command);
+        SERVER.getCommands().performCommand(SERVER.createCommandSourceStack(), command);
     }
 }

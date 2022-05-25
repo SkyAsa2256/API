@@ -16,7 +16,7 @@ public class EmptySlot extends ForgeSimplePane.SimpleDisplayableSlot {
     }
 
     @Override
-    public ItemStack getStack() {
+    public ItemStack getItem() {
         return ItemStack.EMPTY;
     }
 }

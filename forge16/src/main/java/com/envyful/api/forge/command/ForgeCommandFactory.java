@@ -52,7 +52,7 @@ public class ForgeCommandFactory implements CommandFactory<CommandDispatcher<Com
     private final Map<Class<?>, TabCompleter<?, ?>> registeredCompleters = Maps.newConcurrentMap();
 
     public ForgeCommandFactory() {
-        this.registerInjector(ServerPlayerEntity.class, (sender, args) -> ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByUsername(args[0]));
+        this.registerInjector(ServerPlayerEntity.class, (sender, args) -> ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByName(args[0]));
         this.registerInjector(int.class, (ICommandSource, args) -> {
             try {
                 return Integer.parseInt(args[0]);
@@ -143,7 +143,7 @@ public class ForgeCommandFactory implements CommandFactory<CommandDispatcher<Com
                 context.getSource().getServer(),
                 context.getSource().getEntity(),
                 args,
-                new BlockPos(context.getSource().getPos())
+                new BlockPos(context.getSource().getPosition())
         );
 
         if (args.length > 0 && !args[0].trim().isEmpty()) {

@@ -21,7 +21,7 @@ public class UtilWorld {
      * @return The world found
      */
     public static World findWorld(String name) {
-        for (ServerWorld world : ServerLifecycleHooks.getCurrentServer().getWorlds()) {
+        for (ServerWorld world : ServerLifecycleHooks.getCurrentServer().getAllLevels()) {
             if (getName(world).equalsIgnoreCase(name)) {
                 return world;
             }
@@ -38,10 +38,10 @@ public class UtilWorld {
      * @return The name of the world
      */
     public static String getName(World world) {
-        if (!(world instanceof ServerWorld) || !(world.getWorldInfo() instanceof ServerWorldInfo)) {
+        if (!(world instanceof ServerWorld) || !(world.getLevelData() instanceof ServerWorldInfo)) {
             return "NONE";
         }
 
-        return ((ServerWorldInfo) world.getWorldInfo()).getWorldName();
+        return ((ServerWorldInfo) world.getLevelData()).getLevelName();
     }
 }

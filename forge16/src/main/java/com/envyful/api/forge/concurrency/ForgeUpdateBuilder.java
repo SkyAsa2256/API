@@ -20,7 +20,7 @@ import java.util.function.BiPredicate;
 public class ForgeUpdateBuilder extends UpdateBuilder<ServerPlayerEntity> {
 
     private static final BiPredicate<ServerPlayerEntity, String> PERM_PREDICATE = (ServerPlayerEntity, s) -> UtilPlayer.hasPermission(ServerPlayerEntity, s);
-    private static final BiConsumer<ServerPlayerEntity, String> MESSAGE_CONSUMER = (ServerPlayerEntity, s) -> ServerPlayerEntity.sendMessage(new StringTextComponent(s), Util.DUMMY_UUID);
+    private static final BiConsumer<ServerPlayerEntity, String> MESSAGE_CONSUMER = (ServerPlayerEntity, s) -> ServerPlayerEntity.sendMessage(new StringTextComponent(s), Util.NIL_UUID);
 
     public static ForgeUpdateBuilder instance() {
         return new ForgeUpdateBuilder();

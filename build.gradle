@@ -13,10 +13,16 @@ subprojects {
     apply plugin: 'java'
 
     group = 'com.envyful.api'
-    version = '2.4.3'
+    version = '2.4.4'
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(11)
+        }
+    }
 
     tasks.withType(JavaCompile) {
         options.encoding = 'UTF-8'

@@ -40,6 +40,8 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -47,6 +49,8 @@ import java.util.function.BiFunction;
  *
  */
 public class ForgeCommandFactory implements CommandFactory<CommandDispatcher<CommandSource>, ICommandSource> {
+
+    private static final Pattern SPACE_PATTERN = Pattern.compile("\\s");
 
     private final List<ArgumentInjector<?, ICommandSource>> registeredInjectors = Lists.newArrayList();
     private final Map<Class<?>, TabCompleter<?, ?>> registeredCompleters = Maps.newConcurrentMap();
@@ -84,8 +88,8 @@ public class ForgeCommandFactory implements CommandFactory<CommandDispatcher<Com
         ForgeCommand command = this.createCommand(o.getClass(), o);
 
         LiteralCommandNode<CommandSource> args = dispatcher.register(Commands.literal(command.getName())
+                .requires(commandSource -> command.checkPermission(commandSource.getServer(), commandSource.getEntity()))
                 .then(Commands.argument("", StringArgumentType.greedyString())
-                        .requires(commandSource -> command.checkPermission(commandSource.getServer(), commandSource.getEntity()))
                         .suggests((context, builder) -> this.buildSuggestions(command, context, builder))
                         .executes(context -> this.handleExecution(command, context)))
                 .executes(context -> this.handleExecution(command, context)));
@@ -132,27 +136,44 @@ public class ForgeCommandFactory implements CommandFactory<CommandDispatcher<Com
     }
 
     private CompletableFuture<Suggestions> buildSuggestions(ForgeCommand command, CommandContext<CommandSource> context, SuggestionsBuilder builder) {
-        String[] args = context.getInput().split(" ");
-        args = Arrays.copyOfRange(args, 1, args.length);
+        String[] initialArgs = context.getInput().split(" ");
+        List<String> args = Lists.newArrayList(Arrays.copyOfRange(initialArgs, 1, initialArgs.length));
+        int spaces = 0;
+        Matcher matcher = SPACE_PATTERN.matcher(context.getInput());
 
-        if (context.getInput().endsWith(" ") && args.length > 0) {
-            args = new String[0];
+        while (matcher.find()) {
+            spaces++;
         }
 
-        List<String> tabCompletions = tabCompletions = command.getTabCompletions(
-                context.getSource().getServer(),
-                context.getSource().getEntity(),
-                args,
-                new BlockPos(context.getSource().getPosition())
-        );
+        while (spaces > args.size()) {
+            args.add(" ");
+            spaces--;
+        }
 
-        if (args.length > 0 && !args[0].trim().isEmpty()) {
-            builder = builder.createOffset(context.getInput().length() - args[args.length - 1].length());
+        if (args.size() > 0 && !args.get(args.size() - 1).trim().isEmpty()) {
+            builder = builder.createOffset(context.getInput().length() - args.get(args.size() - 1).length());
         } else {
             builder = builder.createOffset(context.getInput().length());
         }
 
-        for (String tabCompletion : tabCompletions) {
+        for (String tabCompletion : command.getTabCompletions(context.getSource().getServer(),
+                context.getSource().getEntity(), args.toArray(new String[0]), new BlockPos(context.getSource().getPosition()))) {
+            if (args.isEmpty()) {
+                builder.suggest(tabCompletion);
+                continue;
+            }
+
+            String currentWord = args.get(args.size() - 1);
+
+            if (currentWord.isEmpty() || currentWord.equals(" ")) {
+                builder.suggest(tabCompletion);
+                continue;
+            }
+
+            if (!tabCompletion.toLowerCase().startsWith(currentWord.toLowerCase())) {
+                continue;
+            }
+
             builder.suggest(tabCompletion);
         }
 

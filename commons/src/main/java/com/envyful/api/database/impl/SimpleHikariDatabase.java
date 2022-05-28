@@ -20,17 +20,16 @@ public class SimpleHikariDatabase implements Database {
 
     public SimpleHikariDatabase(SQLDatabaseDetails details) {
         this(details.getConnectionUrl(), details.getPoolName(), details.getIp(), details.getPort(),
-             details.getUsername(), details.getPassword(), details.getDatabase(), details.getMaxPoolSize()
+             details.getUsername(), details.getPassword(), details.getDatabase(), details.getMaxPoolSize(), details.getMaxLifeTimeSeconds()
         );
     }
 
     public SimpleHikariDatabase(String name, String ip, int port, String username, String password, String database) {
-        this(null, name, ip, port, username, password, database, 30);
+        this(null, name, ip, port, username, password, database, 30, 30);
     }
 
     public SimpleHikariDatabase(String connectionUrl, String name, String ip, int port, String username,
-                                String password, String database,
-                                int maxConnections) {
+                                String password, String database, int maxConnections, long maxLifeTime) {
         HikariConfig config = new HikariConfig();
 
         config.setMaximumPoolSize(Math.max(1, maxConnections));
@@ -58,7 +57,7 @@ public class SimpleHikariDatabase implements Database {
         config.addDataSourceProperty("useLocalSessionState", true);
         config.addDataSourceProperty("characterEncoding","utf8");
         config.addDataSourceProperty("useUnicode","true");
-        config.addDataSourceProperty("maxLifetime", TimeUnit.SECONDS.toMillis(30));
+        config.addDataSourceProperty("maxLifetime", TimeUnit.SECONDS.toMillis(maxLifeTime));
         config.setConnectionTimeout(TimeUnit.SECONDS.toMillis(30));
         config.setLeakDetectionThreshold(TimeUnit.SECONDS.toMillis(60));
         config.setConnectionTestQuery("/* Ping */ SELECT 1");

@@ -13,15 +13,16 @@ public  class SQLDatabaseDetails {
     private String database;
     private int maxPoolSize = 30;
     private String connectionUrl = null;
+    private long maxLifeTimeSeconds = 30;
 
     public SQLDatabaseDetails() {
     }
 
     public SQLDatabaseDetails(String poolName, String ip, int port, String username, String password, String database) {
-        this(poolName, ip, port, username, password, database, 30);
+        this(poolName, ip, port, username, password, database, 30, 30);
     }
 
-    public SQLDatabaseDetails(String poolName, String ip, int port, String username, String password, String database, int maxPoolSize) {
+    public SQLDatabaseDetails(String poolName, String ip, int port, String username, String password, String database, int maxPoolSize, long maxLifeTimeSeconds) {
         this.poolName = poolName;
         this.ip = ip;
         this.port = port;
@@ -29,6 +30,7 @@ public  class SQLDatabaseDetails {
         this.password = password;
         this.database = database;
         this.maxPoolSize = maxPoolSize;
+        this.maxLifeTimeSeconds = maxLifeTimeSeconds;
     }
 
     public String getPoolName() {
@@ -61,5 +63,9 @@ public  class SQLDatabaseDetails {
 
     public String getConnectionUrl() {
         return this.connectionUrl;
+    }
+
+    public long getMaxLifeTimeSeconds() {
+        return this.maxLifeTimeSeconds;
     }
 }

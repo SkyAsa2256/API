@@ -1,5 +1,7 @@
 package com.envyful.api.concurrency;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -19,7 +21,9 @@ public class UtilConcurrency {
      * A cached thread pool executor service instance for running tasks off the main server thread
      *
      */
-    public static final ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool();
+    public static final ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool(
+            new ThreadFactoryBuilder().setDaemon(true).setNameFormat("envyware_concurrency_%d").build()
+    );
 
     /**
      *

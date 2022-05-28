@@ -1,5 +1,7 @@
 package com.envyful.api.concurrency;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
+
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -11,7 +13,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class AsyncTaskBuilder {
 
-    private static final ScheduledExecutorService EXECUTOR_SERVICE = Executors.newScheduledThreadPool(5);
+    private static final ScheduledExecutorService EXECUTOR_SERVICE = Executors.newScheduledThreadPool(5,
+            new ThreadFactoryBuilder().setDaemon(true).setNameFormat("envyware_concurrency_%d").build());
 
     private long delayMillis = 0;
     private long intervalMillis = 10L;

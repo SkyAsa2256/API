@@ -1,8 +1,12 @@
 package com.envyful.api.forge.chat;
 
 import com.google.common.collect.Lists;
+import net.minecraft.util.text.*;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -13,6 +17,91 @@ public class UtilChatColour {
 
     private static final char COLOUR_CHAR = '§';
     private static final String CHARACTERS = "0123456789AaBbCcDdEeFfKkLlMmNnOoRrXx";
+    private static final Pattern COLOUR_PATTERN = Pattern.compile("&(#\\w{6}|[\\da-zA-Z])");
+
+    /**
+     *
+     * Parses the string to a {@link ITextComponent} with the correctly formatted colour codes and hex codes
+     *
+     * @param text The unformatted text
+     * @return The newly formatted text
+     */
+    public static ITextComponent colour(String text) {
+        Matcher matcher = COLOUR_PATTERN.matcher(text);
+        IFormattableTextComponent textComponent = new StringTextComponent("");
+        int lastEnd = 0;
+        Color lastColor = null;
+
+        while (matcher.find()) {
+            int start = matcher.start();
+            String segment = text.substring(lastEnd, start);
+            attemptAppend(textComponent, segment, lastColor);
+
+            lastEnd = matcher.end();
+            String colourCode = matcher.group(1);
+            Optional<Color> colour = parseColour(colourCode);
+
+            if (colour.isPresent()) {
+                lastColor = colour.get();
+            } else {
+                textComponent.append(new StringTextComponent("&" + colourCode));
+            }
+        }
+
+        String segment = text.substring(lastEnd);
+        attemptAppend(textComponent, segment, lastColor);
+
+        return textComponent;
+    }
+
+    /**
+     *
+     * Attempts to append the segment to the {@link TextComponent} with the given (nullable) colour
+     *
+     * @param textComponent The text component
+     * @param segment The segment
+     * @param lastColour The colour
+     */
+    public static void attemptAppend(IFormattableTextComponent textComponent, String segment, Color lastColour) {
+        if (segment.isEmpty()) {
+            return;
+        }
+
+        IFormattableTextComponent appended = new StringTextComponent(segment);
+
+        if (lastColour != null) {
+            appended.setStyle(Style.EMPTY.withColor(lastColour));
+        }
+
+        textComponent.append(appended);
+    }
+
+    /**
+     *
+     * Attempts to parse the colour code firstly as a hex, then as a legacy
+     *
+     * @param colourCode The colour code
+     * @return The potential equivalent colour
+     */
+    public static Optional<Color> parseColour(String colourCode) {
+        Color colour = Color.parseColor(colourCode);
+
+        if (colour != null) {
+            return Optional.of(colour);
+        }
+
+        if (colourCode.length() > 1) {
+            return Optional.empty();
+        }
+
+        TextFormatting byCode = TextFormatting.getByCode(colourCode.toCharArray()[0]);
+
+        if (byCode == null) {
+            return Optional.empty();
+        }
+
+        return Optional.ofNullable(Color.fromLegacyFormat(byCode));
+    }
 
     /**
      *

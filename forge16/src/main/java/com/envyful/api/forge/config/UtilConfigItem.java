@@ -20,6 +20,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.*;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.ResourceLocationException;
 import net.minecraft.util.registry.Registry;
 
 import java.util.Collections;
@@ -260,19 +261,23 @@ public class UtilConfigItem {
     }
 
     public static Item fromNameOrId(String data) {
-        Item item = Registry.ITEM.getOptional(new ResourceLocation(data)).orElse(null);
+        try {
+            Item item = Registry.ITEM.getOptional(new ResourceLocation(data)).orElse(null);
 
-        if (item != null) {
-            return item;
-        }
+            if (item != null) {
+                return item;
+            }
 
-        int integer = UtilParse.parseInteger(data).orElse(-1);
+            int integer = UtilParse.parseInteger(data).orElse(-1);
 
-        if (integer == -1) {
+            if (integer == -1) {
+                return null;
+            }
+
+            return Item.byId(integer);
+        } catch (ResourceLocationException e) {
             return null;
         }
-
-        return Item.byId(integer);
     }
 
 }

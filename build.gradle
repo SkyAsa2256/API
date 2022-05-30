@@ -17,7 +17,6 @@ subprojects {
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
-    compileJava.options.fork = true
 
     tasks.withType(JavaCompile) {
         options.encoding = 'UTF-8'

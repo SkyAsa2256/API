@@ -38,9 +38,6 @@ dependencies {
 }
 
 shadowJar {
-    print "Hello\n"
-    print project.configurations.shadow.dependencies.toArray()
-    print "\n"
     configurations = [project.configurations.shadow]
     archiveName = rootProject.name + '-Forge.jar'
 

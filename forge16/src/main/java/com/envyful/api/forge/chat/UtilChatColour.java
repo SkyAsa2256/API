@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import net.minecraft.util.text.*;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -94,13 +95,44 @@ public class UtilChatColour {
             return Optional.empty();
         }
 
-        TextFormatting byCode = TextFormatting.getByCode(colourCode.toCharArray()[0]);
+        TextFormatting byCode = getByCode(colourCode.toCharArray()[0]);
 
         if (byCode == null) {
             return Optional.empty();
         }
 
         return Optional.ofNullable(Color.fromLegacyFormat(byCode));
+    }
+
+    public static TextFormatting getByCode(char p_211165_0_) {
+        char c0 = Character.toString(p_211165_0_).toLowerCase(Locale.ROOT).charAt(0);
+
+        switch (c0) {
+            case '0': return TextFormatting.BLACK;
+            case '1': return TextFormatting.DARK_BLUE;
+            case '2': return TextFormatting.DARK_GREEN;
+            case '3': return TextFormatting.DARK_AQUA;
+            case '4': return TextFormatting.DARK_RED;
+            case '5': return TextFormatting.DARK_PURPLE;
+            case '6': return TextFormatting.GOLD;
+            case '7': return TextFormatting.GRAY;
+            case '8': return TextFormatting.DARK_GRAY;
+            case '9': return TextFormatting.BLUE;
+            case 'a': return TextFormatting.GREEN;
+            case 'b': return TextFormatting.AQUA;
+            case 'c': return TextFormatting.RED;
+            case 'd': return TextFormatting.LIGHT_PURPLE;
+            case 'e': return TextFormatting.YELLOW;
+            case 'f': return TextFormatting.WHITE;
+            case 'k': return TextFormatting.OBFUSCATED;
+            case 'l': return TextFormatting.BOLD;
+            case 'm': return TextFormatting.STRIKETHROUGH;
+            case 'n': return TextFormatting.UNDERLINE;
+            case 'o': return TextFormatting.ITALIC;
+            case 'r': return TextFormatting.RESET;
+        }
+
+        return null;
     }
 
     /**

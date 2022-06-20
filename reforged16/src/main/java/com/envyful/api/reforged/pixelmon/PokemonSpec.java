@@ -81,7 +81,7 @@ public class PokemonSpec {
      */
     public List<String> getDescription(String colour, String offColour) {
         List<String> desc = Lists.newArrayList(
-                colour + "Species: " + offColour + this.species
+                colour + "Species: " + offColour + this.species.getLocalizedName()
         );
 
         if (this.gender != null) {

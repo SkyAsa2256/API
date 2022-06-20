@@ -8,6 +8,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.pixelmonmod.pixelmon.api.pokemon.Nature;
 import com.pixelmonmod.pixelmon.api.pokemon.species.Species;
+import com.pixelmonmod.pixelmon.api.pokemon.species.Stats;
 import com.pixelmonmod.pixelmon.api.pokemon.species.gender.Gender;
 import com.pixelmonmod.pixelmon.api.registries.PixelmonSpecies;
 import com.pixelmonmod.pixelmon.enums.EnumGrowth;
@@ -72,7 +73,11 @@ public class PokemonGenerator {
         PokemonSpec.Builder builder = PokemonSpec.builder();
 
         if (this.speciesRequirement) {
-            builder.species(this.getRandomSpecies());
+            Species randomSpecies = this.getRandomSpecies();
+            Stats form = randomSpecies.getDefaultForm();
+            builder.species(randomSpecies);
+            builder.form(form.getName());
+            builder.palette(form.getDefaultGenderProperties().getDefaultPalette().getName());
             builder.allowEvolutions(this.allowEvolutions);
         }
 

@@ -25,16 +25,20 @@ import java.util.Objects;
 public class PokemonSpec {
 
     protected final Species species;
+    protected final String form;
+    protected final String palette;
     protected final boolean allowEvolutions;
     protected final Gender gender;
     protected final Requirement<Integer> ivRequirement;
     protected final List<Nature> natures;
     protected final List<EnumGrowth> growths;
 
-    protected PokemonSpec(Species species, boolean allowEvolutions, Gender gender,
+    protected PokemonSpec(Species species, String form, String palette, boolean allowEvolutions, Gender gender,
                           Requirement<Integer> ivRequirement,
                           List<Nature> natures, List<EnumGrowth> growths) {
         this.species = species;
+        this.form = form;
+        this.palette = palette;
         this.allowEvolutions = allowEvolutions;
         this.gender = gender;
         this.ivRequirement = ivRequirement;
@@ -50,6 +54,23 @@ public class PokemonSpec {
      */
     public String getDisplayName() {
         return this.species.getLocalizedName();
+    }
+
+    /**
+     *
+     * Gets a photo of the species of the {@link PokemonSpec}
+     *
+     * @return The photo generated
+     */
+    public ItemStack getPhoto() {
+        ItemStack itemStack = new ItemStack(PixelmonItems.pixelmon_sprite);
+        CompoundNBT tagCompound = new CompoundNBT();
+        itemStack.setTag(tagCompound);
+        tagCompound.putShort("ndex", (short) this.species.getDex());
+        tagCompound.putString("form", this.form);
+        tagCompound.putString("palette", this.palette);
+        tagCompound.putByte("gender", (byte) this.gender.ordinal());
+        return itemStack;
     }
 
     /**
@@ -191,6 +212,8 @@ public class PokemonSpec {
     public static final class Builder {
 
         private Species species = null;
+        private String form = null;
+        private String palette = null;
         private boolean allowEvolutions = false;
         private Gender gender = null;
         private Requirement<Integer> ivRequirement = null;
@@ -201,6 +224,16 @@ public class PokemonSpec {
 
         public Builder species(Species species) {
             this.species = species;
+            return this;
+        }
+
+        public Builder form(String form) {
+            this.form = form;
+            return this;
+        }
+
+        public Builder palette(String palette) {
+            this.palette = palette;
             return this;
         }
 
@@ -240,7 +273,7 @@ public class PokemonSpec {
         }
 
         public PokemonSpec build() {
-            return new PokemonSpec(this.species, this.allowEvolutions, this.gender, this.ivRequirement, this.natures,
+            return new PokemonSpec(this.species, this.form, this.palette, this.allowEvolutions, this.gender, this.ivRequirement, this.natures,
                     this.growths);
         }
     }

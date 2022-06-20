@@ -128,7 +128,13 @@ public class ForgeCommandFactory implements CommandFactory<CommandDispatcher<Com
 
     private int handleExecution(ForgeCommand command, CommandContext<CommandSource> context) {
         try {
-            command.execute(context.getSource().getServer(), context.getSource().getEntity(), context.getArgument("", String.class).split(" "));
+            ICommandSource source = context.getSource().getEntity();
+
+            if (source == null) {
+                source = context.getSource().getServer();
+            }
+
+            command.execute(context.getSource().getServer(), source, context.getArgument("", String.class).split(" "));
         } catch (IllegalArgumentException e) {
             command.execute(context.getSource().getServer(), context.getSource().getEntity(), new String[0]);
         }

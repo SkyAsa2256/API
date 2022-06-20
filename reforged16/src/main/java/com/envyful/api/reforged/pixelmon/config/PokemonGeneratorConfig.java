@@ -1,14 +1,19 @@
 package com.envyful.api.reforged.pixelmon.config;
 
+import com.google.common.collect.Sets;
 import com.pixelmonmod.pixelmon.api.pokemon.species.Species;
+import com.pixelmonmod.pixelmon.api.registries.PixelmonSpecies;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @ConfigSerializable
 public class PokemonGeneratorConfig {
 
-    private Set<Species> blockedTypes;
+    private transient Set<Species> blockedSpecies = null;
+    private List<String> blockedTypes;
     private boolean speciesRequirement;
     private boolean allowLegends;
     private boolean allowUltraBeasts;
@@ -30,7 +35,8 @@ public class PokemonGeneratorConfig {
                                   int potentialNatureRequirements, boolean allowEvolutions, boolean ivRequirement,
                                   boolean randomIVGeneration, int minIVPercentage, int maxIVPercentage,
                                   boolean onlyLegends) {
-        this.blockedTypes = blockedTypes;
+        this.blockedSpecies = blockedTypes;
+        this.blockedTypes = blockedTypes.stream().map(Species::getName).collect(Collectors.toList());
         this.speciesRequirement = speciesRequirement;
         this.allowLegends = allowLegends;
         this.allowUltraBeasts = allowUltraBeasts;
@@ -51,7 +57,17 @@ public class PokemonGeneratorConfig {
     }
 
     public Set<Species> getBlockedTypes() {
-        return this.blockedTypes;
+        if (this.blockedSpecies == null) {
+            Set<Species> blockedSpecies = Sets.newHashSet();
+
+            for (String blockedType : this.blockedTypes) {
+                blockedSpecies.add(PixelmonSpecies.fromNameOrDex(blockedType).orElse(null));
+            }
+
+            this.blockedSpecies = blockedSpecies;
+        }
+
+        return this.blockedSpecies;
     }
 
     public boolean isSpeciesRequirement() {

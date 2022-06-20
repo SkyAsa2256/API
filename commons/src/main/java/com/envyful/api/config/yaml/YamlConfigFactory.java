@@ -3,8 +3,8 @@ package com.envyful.api.config.yaml;
 import com.envyful.api.config.data.ConfigPath;
 import com.envyful.api.config.data.Serializers;
 import com.envyful.api.config.yaml.data.YamlConfigStyle;
-import com.envyful.api.player.SaveModeTypeAdapter;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationOptions;
@@ -21,6 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -107,12 +108,21 @@ public class YamlConfigFactory {
                             for (Class<? extends ScalarSerializer<?>> serializer : serializers) {
                                 builder.register(serializer.newInstance());
                             }
-
-                            builder.register(new SaveModeTypeAdapter());
                         } catch (InstantiationException | IllegalAccessException e) {
                             e.printStackTrace();
                         }
-                    }))
+                    }).nativeTypes(
+                            Sets.newHashSet(
+                                    String.class,
+                                    Integer.class,
+                                    Byte.class,
+                                    Double.class,
+                                    Boolean.class,
+                                    Long.class,
+                                    Map.class,
+                                    List.class
+                            )
+                    ))
                     .defaultOptions(opts -> opts.shouldCopyDefaults(true))
                     .path(file).build(), configFile);
         } catch (ConfigurateException e) {

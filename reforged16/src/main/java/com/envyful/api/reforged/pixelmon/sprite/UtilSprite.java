@@ -4,12 +4,14 @@ import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.reforged.pixelmon.config.SpriteConfig;
 import com.pixelmonmod.api.Flags;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
+import com.pixelmonmod.pixelmon.api.pokemon.species.Species;
 import com.pixelmonmod.pixelmon.api.pokemon.species.gender.Gender;
 import com.pixelmonmod.pixelmon.api.pokemon.stats.BattleStatsType;
 import com.pixelmonmod.pixelmon.api.pokemon.stats.ExtraStats;
 import com.pixelmonmod.pixelmon.api.pokemon.stats.IVStore;
 import com.pixelmonmod.pixelmon.api.pokemon.stats.extraStats.LakeTrioStats;
 import com.pixelmonmod.pixelmon.api.pokemon.stats.extraStats.MewStats;
+import com.pixelmonmod.pixelmon.api.registries.PixelmonItems;
 import com.pixelmonmod.pixelmon.items.SpriteItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -40,6 +42,18 @@ public class UtilSprite {
 
         tag.put("display", compound);
         itemStack.setTag(tag);
+
+        return itemStack;
+    }
+
+    public static ItemStack getPixelmonSprite(Species pokemon) {
+        ItemStack itemStack = new ItemStack(PixelmonItems.pixelmon_sprite);
+        CompoundNBT tagCompound = new CompoundNBT();
+        itemStack.setTag(tagCompound);
+        tagCompound.putShort("ndex", (short)pokemon.getDex());
+        tagCompound.putString("form", pokemon.getDefaultForm().getName());
+        tagCompound.putByte("gender", (byte)Gender.MALE.ordinal());
+        tagCompound.putString("palette", pokemon.getDefaultForm().getDefaultGenderProperties().getDefaultPalette().getName());
 
         return itemStack;
     }

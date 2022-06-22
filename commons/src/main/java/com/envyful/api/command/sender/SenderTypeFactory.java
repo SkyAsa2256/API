@@ -13,6 +13,18 @@ public class SenderTypeFactory {
 
     /**
      *
+     * Registers custom sender types
+     *
+     * @param senderType The sender type instances
+     */
+    public static void register(SenderType<?, ?>... senderType) {
+        for (SenderType<?, ?> type : senderType) {
+            register(type);
+        }
+    }
+
+    /**
+     *
      * Registers a custom sender type
      *
      * @param senderType The sender type instance
@@ -35,7 +47,7 @@ public class SenderTypeFactory {
      * @param <T> The sender type generic
      */
     @SuppressWarnings("unchecked")
-    public static <A, B, T extends SenderType<A, B>> Optional<T> getSenderType(Class<T> clazz) {
+    public static <A, B, T extends SenderType<A, B>> Optional<T> getSenderType(Class<?> clazz) {
         return (Optional<T>) Optional.ofNullable(REGISTERED_SENDER_TYPES.get(clazz));
     }
 

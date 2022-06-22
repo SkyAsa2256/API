@@ -11,6 +11,8 @@ public interface SenderType<A, B> {
 
     Class<?> getType();
 
+    boolean isAccepted(A sender);
+
     B getInstance(A sender);
 
 }

@@ -2,7 +2,7 @@ package com.envyful.api.forge.command.command.executor;
 
 import com.envyful.api.command.injector.ArgumentInjector;
 import com.envyful.api.command.injector.TabCompleter;
-import com.envyful.api.forge.command.command.ForgeSenderType;
+import com.envyful.api.command.sender.SenderType;
 import com.envyful.api.forge.command.completion.FillerTabCompleter;
 import com.envyful.api.forge.player.util.UtilPlayer;
 import com.envyful.api.type.Pair;
@@ -25,11 +25,12 @@ import java.util.List;
  * server start for future use.
  *
  */
+@SuppressWarnings("unchecked")
 public class CommandExecutor {
 
     private final String identifier;
     private final int senderPosition;
-    private final ForgeSenderType sender;
+    private final SenderType<?, ?> sender;
     private final Object commandClass;
     private final Method executor;
     private final boolean executeAsync;
@@ -53,7 +54,7 @@ public class CommandExecutor {
      * @param requiredPermission The permission required to execute the command
      * @param arguments The injected argument types
      */
-    public CommandExecutor(String identifier, ForgeSenderType sender, int senderPosition, Object commandClass, Method executor,
+    public CommandExecutor(String identifier, SenderType<?, ?> sender, int senderPosition, Object commandClass, Method executor,
                            boolean executeAsync, int justArgsPos, String requiredPermission,
                            Pair<ArgumentInjector<?, ICommandSource>, String>[] arguments,
                            List<TabCompleter<?, ?>> tabCompleters,
@@ -115,7 +116,7 @@ public class CommandExecutor {
      *
      * @return The sender type
      */
-    public ForgeSenderType getSender() {
+    public SenderType<?, ?> getSender() {
         return this.sender;
     }
 
@@ -226,16 +227,13 @@ public class CommandExecutor {
             }
         }
 
-        if (this.sender.getType().equals(sender.getClass())) {
-            args[this.senderPosition] = sender;
-        } else {
-            try {
-                args[this.senderPosition] = this.sender.getType().cast(sender);
-            } catch (ClassCastException e) {
-                LogManager.getLogger().info("You cannot use this command from this source (player only).");
-                return false;
-            }
+
+        if (!((SenderType<ICommandSource, ?>) this.sender).isAccepted(sender)) {
+            LogManager.getLogger().info("You cannot use this command from this source (player only).");
+            return false;
         }
+
+        args[this.senderPosition] = ((SenderType<ICommandSource, ?>) this.sender).getInstance(sender);
 
         if (this.justArgsPos != -1) {
             if (arguments == null) {

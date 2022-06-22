@@ -6,9 +6,12 @@ import com.envyful.api.command.annotate.executor.*;
 import com.envyful.api.command.exception.CommandLoadException;
 import com.envyful.api.command.injector.ArgumentInjector;
 import com.envyful.api.command.injector.TabCompleter;
+import com.envyful.api.command.sender.SenderType;
+import com.envyful.api.command.sender.SenderTypeFactory;
 import com.envyful.api.forge.command.command.ForgeCommand;
-import com.envyful.api.forge.command.command.ForgeSenderType;
 import com.envyful.api.forge.command.command.executor.CommandExecutor;
+import com.envyful.api.forge.command.command.sender.ConsoleSenderType;
+import com.envyful.api.forge.command.command.sender.ForgePlayerSenderType;
 import com.envyful.api.forge.command.completion.FillerTabCompleter;
 import com.envyful.api.forge.command.completion.number.IntegerTabCompleter;
 import com.envyful.api.forge.command.completion.player.PlayerTabCompleter;
@@ -56,6 +59,8 @@ public class ForgeCommandFactory implements CommandFactory<CommandDispatcher<Com
     private final Map<Class<?>, TabCompleter<?, ?>> registeredCompleters = Maps.newConcurrentMap();
 
     public ForgeCommandFactory() {
+        SenderTypeFactory.register(new ConsoleSenderType(), new ForgePlayerSenderType());
+
         this.registerInjector(ServerPlayerEntity.class, (sender, args) -> ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByName(args[0]));
         this.registerInjector(int.class, (ICommandSource, args) -> {
             try {
@@ -242,7 +247,7 @@ public class ForgeCommandFactory implements CommandFactory<CommandDispatcher<Com
             List<Pair<ArgumentInjector<?, ICommandSource>, String>> arguments = Lists.newArrayList();
             Class<?>[] parameterTypes = declaredMethod.getParameterTypes();
             Annotation[][] annotations = declaredMethod.getParameterAnnotations();
-            ForgeSenderType senderType = null;
+            SenderType<?, ?> senderType = null;
             int senderPosition = -1;
             int justArgsPos = -1;
             List<TabCompleter<?, ?>> tabCompleters = Lists.newArrayList();
@@ -260,7 +265,12 @@ public class ForgeCommandFactory implements CommandFactory<CommandDispatcher<Com
                 }
 
                 if (annotations[i][0] instanceof Sender) {
-                    senderType = ForgeSenderType.get(parameterTypes[i]);
+                    senderType = SenderTypeFactory.getSenderType(parameterTypes[i]).orElse(null);
+
+                    if (senderType == null) {
+                        throw new RuntimeException("Unregistered sender type " + parameterTypes[i].getSimpleName());
+                    }
+
                     senderPosition = i;
                     arguments.add(null);
                 } else {

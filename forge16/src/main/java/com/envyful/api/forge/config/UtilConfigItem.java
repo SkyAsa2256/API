@@ -149,7 +149,7 @@ public class UtilConfigItem {
         }
 
         for (String s : lore) {
-            itemBuilder.addLore(UtilChatColour.translateColourCodes('&', s));
+            itemBuilder.addLore(UtilChatColour.colour(s));
         }
 
         itemBuilder.name(UtilChatColour.translateColourCodes('&', name));

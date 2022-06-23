@@ -16,6 +16,7 @@ import net.minecraft.util.text.StringTextComponent;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -26,9 +27,9 @@ public class ItemBuilder implements Cloneable {
 
     private Item type = Items.AIR;
     private int amount = 1;
-    private String name = "";
+    private ITextComponent name = StringTextComponent.EMPTY;
     private boolean unbreakable = false;
-    private List<String> lore = Lists.newArrayList();
+    private List<ITextComponent> lore = Lists.newArrayList();
     private List<ItemFlag> itemFlags = Lists.newArrayList();
     private Map<String, INBT> nbtData = Maps.newHashMap();
     private Map<Enchantment, Integer> enchants = Maps.newHashMap();
@@ -49,8 +50,8 @@ public class ItemBuilder implements Cloneable {
     public ItemBuilder(ItemStack itemStack) {
         this.type = itemStack.getItem();
         this.amount = itemStack.getCount();
-        this.name = itemStack.getDisplayName().getString();
-        this.lore = UtilItemStack.getLore(itemStack);
+        this.name = itemStack.getDisplayName();
+        this.lore = UtilItemStack.getRealLore(itemStack);
 
         if (itemStack.getTag() != null) {
             for (String s : itemStack.getTag().getAllKeys()) {
@@ -91,6 +92,18 @@ public class ItemBuilder implements Cloneable {
      * @return The builder
      */
     public ItemBuilder name(String name) {
+        this.name = new StringTextComponent(name);
+        return this;
+    }
+
+    /**
+     *
+     * Sets the new name of the item
+     *
+     * @param name The new name
+     * @return The builder
+     */
+    public ItemBuilder name(ITextComponent name) {
         this.name = name;
         return this;
     }
@@ -102,7 +115,7 @@ public class ItemBuilder implements Cloneable {
      * @param lore The new lore for the item
      * @return The builder
      */
-    public ItemBuilder lore(List<String> lore) {
+    public ItemBuilder lore(List<ITextComponent> lore) {
         this.lore = lore;
         return this;
     }
@@ -115,9 +128,22 @@ public class ItemBuilder implements Cloneable {
      * @return The builder
      */
     public ItemBuilder lore(String... lore) {
-        this.lore = Arrays.asList(lore);
+        this.lore = Arrays.stream(lore).map(StringTextComponent::new).collect(Collectors.toList());
         return this;
     }
+
+    /**
+     *
+     * Sets the array of the ITextComponent as the stored lore (doesn't ADD to the lore)
+     *
+     * @param lore The new lore for the item
+     * @return The builder
+     */
+    public ItemBuilder lore(ITextComponent... lore) {
+        this.lore = Lists.newArrayList(lore);
+        return this;
+    }
+
 
     /**
      *
@@ -127,6 +153,17 @@ public class ItemBuilder implements Cloneable {
      * @return The builder
      */
     public ItemBuilder addLore(String... lore) {
+        return this.addLore(Arrays.stream(lore).map(StringTextComponent::new).toArray(ITextComponent[]::new));
+    }
+
+    /**
+     *
+     * Adds the array of {@link ITextComponent} to the stored lore (doesn't SET the lore)
+     *
+     * @param lore The lines to add to the lore
+     * @return The builder
+     */
+    public ItemBuilder addLore(ITextComponent... lore) {
         this.lore.addAll(Lists.newArrayList(lore));
         return this;
     }
@@ -230,9 +267,9 @@ public class ItemBuilder implements Cloneable {
 
         itemStack.setTag(compound);
 
-        if (this.name != null && !this.name.isEmpty()) {
+        if (this.name != null) {
             CompoundNBT display = itemStack.getOrCreateTagElement("display");
-            display.put("Name", StringNBT.valueOf(ITextComponent.Serializer.toJson(new StringTextComponent(this.name))));
+            display.put("Name", StringNBT.valueOf(ITextComponent.Serializer.toJson(this.name)));
             itemStack.addTagElement("display", display);
         }
 
@@ -240,7 +277,7 @@ public class ItemBuilder implements Cloneable {
             CompoundNBT display = itemStack.getOrCreateTagElement("display");
             ListNBT lore = new ListNBT();
 
-            this.lore.forEach(s -> lore.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(new StringTextComponent(s)))));
+            this.lore.forEach(s -> lore.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(s))));
 
             display.put("Lore", lore);
             itemStack.addTagElement("display", display);

@@ -32,6 +32,7 @@ public class UtilChatColour {
         IFormattableTextComponent textComponent = new StringTextComponent("");
         int lastEnd = 0;
         Color lastColor = null;
+        Style lastStyle = null;
 
         while (matcher.find()) {
             int start = matcher.start();
@@ -45,7 +46,13 @@ public class UtilChatColour {
             if (colour.isPresent()) {
                 lastColor = colour.get();
             } else {
-                textComponent.append(new StringTextComponent("&" + colourCode));
+                TextFormatting byCode = getByCode(colourCode.toCharArray()[0]);
+
+                if (byCode != null && byCode.isFormat()) {
+                    textComponent = textComponent.withStyle(byCode);
+                } else {
+                    textComponent.append(new StringTextComponent("&" + colourCode));
+                }
             }
         }
 

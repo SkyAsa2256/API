@@ -152,7 +152,7 @@ public class UtilConfigItem {
             itemBuilder.addLore(UtilChatColour.colour(s));
         }
 
-        itemBuilder.name(UtilChatColour.translateColourCodes('&', name));
+        itemBuilder.name(UtilChatColour.colour(name));
 
         for (ConfigItem.EnchantData value : configItem.getEnchants().values()) {
             String enchantName = value.getEnchant();

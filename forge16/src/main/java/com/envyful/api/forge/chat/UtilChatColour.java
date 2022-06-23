@@ -29,10 +29,9 @@ public class UtilChatColour {
      */
     public static ITextComponent colour(String text) {
         Matcher matcher = COLOUR_PATTERN.matcher(text);
-        IFormattableTextComponent textComponent = new StringTextComponent("");
+        IFormattableTextComponent textComponent = new StringTextComponent("").withStyle(TextFormatting.RESET);
         int lastEnd = 0;
         Color lastColor = null;
-        Style lastStyle = null;
 
         while (matcher.find()) {
             int start = matcher.start();
@@ -50,6 +49,8 @@ public class UtilChatColour {
 
                 if (byCode != null && byCode.isFormat()) {
                     textComponent = textComponent.withStyle(byCode);
+                } else if (byCode != null && byCode == TextFormatting.RESET) {
+                    textComponent = textComponent.withStyle(TextFormatting.RESET);
                 } else {
                     textComponent.append(new StringTextComponent("&" + colourCode));
                 }

@@ -32,7 +32,7 @@ public class SenderTypeFactory {
      * @param <T> The generic type
      */
     public static <T extends SenderType<?, ?>> T register(T senderType) {
-        REGISTERED_SENDER_TYPES.put(senderType.getClass(), senderType);
+        REGISTERED_SENDER_TYPES.put(senderType.getType(), senderType);
         return senderType;
     }
 

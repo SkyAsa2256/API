@@ -10,6 +10,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
+import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
@@ -269,7 +270,12 @@ public class ItemBuilder implements Cloneable {
 
         if (this.name != null) {
             CompoundNBT display = itemStack.getOrCreateTagElement("display");
-            display.put("Name", StringNBT.valueOf(ITextComponent.Serializer.toJson(this.name)));
+            ITextComponent name = this.name.copy();
+            if (name instanceof IFormattableTextComponent) {
+                name = ((IFormattableTextComponent) name).setStyle(name.getStyle().withItalic(false));
+            }
+
+            display.put("Name", StringNBT.valueOf(ITextComponent.Serializer.toJson(name)));
             itemStack.addTagElement("display", display);
         }
 
@@ -277,7 +283,13 @@ public class ItemBuilder implements Cloneable {
             CompoundNBT display = itemStack.getOrCreateTagElement("display");
             ListNBT lore = new ListNBT();
 
-            this.lore.forEach(s -> lore.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(s))));
+            this.lore.forEach(s -> {
+                if (s instanceof IFormattableTextComponent) {
+                    s = ((IFormattableTextComponent) s).setStyle(s.getStyle().withItalic(false));
+                }
+
+                lore.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(s)));
+            });
 
             display.put("Lore", lore);
             itemStack.addTagElement("display", display);

@@ -7,7 +7,10 @@ import com.pixelmonmod.pixelmon.api.pokemon.Nature;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.pokemon.species.Species;
 import com.pixelmonmod.pixelmon.api.pokemon.species.gender.Gender;
+import com.pixelmonmod.pixelmon.api.registries.PixelmonForms;
 import com.pixelmonmod.pixelmon.api.registries.PixelmonItems;
+import com.pixelmonmod.pixelmon.api.registries.PixelmonPalettes;
+import com.pixelmonmod.pixelmon.api.registries.PixelmonSpecies;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.pixelmonmod.pixelmon.enums.EnumGrowth;
 import net.minecraft.item.ItemStack;
@@ -66,10 +69,30 @@ public class PokemonSpec {
         ItemStack itemStack = new ItemStack(PixelmonItems.pixelmon_sprite);
         CompoundNBT tagCompound = new CompoundNBT();
         itemStack.setTag(tagCompound);
-        tagCompound.putShort("ndex", (short) this.species.getDex());
-        tagCompound.putString("form", this.form);
-        tagCompound.putString("palette", this.palette);
-        tagCompound.putByte("gender", (byte) this.gender.ordinal());
+        if (this.species == null) {
+            tagCompound.putShort("ndex", (short)PixelmonSpecies.MISSINGNO.getValueUnsafe().getDex());
+        } else {
+            tagCompound.putShort("ndex", (short) this.species.getDex());
+        }
+
+        if (this.form == null) {
+            tagCompound.putString("form", PixelmonForms.NONE);
+        } else {
+            tagCompound.putString("form", this.form);
+        }
+
+        if (this.palette == null) {
+            tagCompound.putString("palette", PixelmonPalettes.NONE);
+        } else {
+            tagCompound.putString("palette", this.palette);
+        }
+
+        if (this.gender == null) {
+            tagCompound.putByte("gender", (byte) Gender.MALE.ordinal());
+        } else {
+            tagCompound.putByte("gender", (byte) this.gender.ordinal());
+        }
+
         return itemStack;
     }
 

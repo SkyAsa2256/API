@@ -61,6 +61,10 @@ public class ForgeGuiBuilder implements Gui.Builder {
         }
 
         return new ForgeGui(this.title, this.height, this.playerManager,
-                forgeEnvyPlayer -> this.closeConsumer.accept(forgeEnvyPlayer), this.panes.toArray(new Pane[0]));
+                forgeEnvyPlayer -> {
+                    if (this.closeConsumer != null) {
+                        this.closeConsumer.accept(forgeEnvyPlayer);
+                    }
+                }, this.panes.toArray(new Pane[0]));
     }
 }

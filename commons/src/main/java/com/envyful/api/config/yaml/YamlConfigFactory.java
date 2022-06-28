@@ -30,6 +30,16 @@ import java.util.Map;
  */
 public class YamlConfigFactory {
 
+    private static final WatchServiceListener WATCH_SERVICE;
+
+    static {
+        try {
+            WATCH_SERVICE = WatchServiceListener.builder().build();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     /**
      *
      * Gets the instance of the given config from the class using Sponge's Configurate
@@ -61,8 +71,11 @@ public class YamlConfigFactory {
             serializers.addAll(Arrays.asList(serializedData.value()));
         }
 
-        WatchServiceListener listener = WatchServiceListener.builder().build();
-        ConfigurationReference<CommentedConfigurationNode> base = listenToConfig(listener, configFile, serializers, style);
+        if (WATCH_SERVICE == null) {
+            throw new IOException("Failed to get watch service for configs");
+        }
+
+        ConfigurationReference<CommentedConfigurationNode> base = listenToConfig(WATCH_SERVICE, configFile, serializers, style);
 
         if (base == null) {
             throw new IOException("Error config loaded as null");

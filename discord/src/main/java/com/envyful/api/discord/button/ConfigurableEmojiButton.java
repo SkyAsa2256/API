@@ -46,4 +46,73 @@ public class ConfigurableEmojiButton extends ConfigurableButton {
         return super.create(jda)
                 .withEmoji(this.getEmoji(jda));
     }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+
+        protected boolean unicode = false;
+        protected boolean markdown = false;
+        protected String emojiId;
+        protected String idOrUrl;
+        protected ButtonStyle style;
+        protected String label;
+        protected boolean enabled = true;
+
+        private Builder() {}
+
+        public Builder idOrUrl(String idOrUrl) {
+            this.idOrUrl = idOrUrl;
+            return this;
+        }
+
+        public Builder style(ButtonStyle style) {
+            this.style = style;
+            return this;
+        }
+
+        public Builder label(String label) {
+            this.label = label;
+            return this;
+        }
+
+        public Builder enabled() {
+            this.enabled = true;
+            return this;
+        }
+
+        public Builder disabled() {
+            this.enabled = false;
+            return this;
+        }
+
+        public Builder emoji(String emoji) {
+            this.emojiId = emoji;
+            return this;
+        }
+
+        public Builder unicodeEmoji() {
+            this.unicode = true;
+            return this;
+        }
+
+        public Builder markdownEmoji() {
+            this.markdown = true;
+            this.unicode = false;
+            return this;
+        }
+
+        public ConfigurableEmojiButton build() {
+            ConfigurableEmojiButton button = new ConfigurableEmojiButton(
+                    this.idOrUrl, this.style, this.label, this.emojiId
+            );
+
+            button.unicode = this.unicode;
+            button.markdown = this.markdown;
+            button.enabled = this.enabled;
+            return button;
+        }
+    }
 }

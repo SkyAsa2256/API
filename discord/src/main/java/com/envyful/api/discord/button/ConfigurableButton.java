@@ -13,10 +13,10 @@ import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 @ConfigSerializable
 public class ConfigurableButton {
 
-    private String idOrUrl;
-    private ButtonStyle style;
-    private String label;
-    private boolean enabled = true;
+    protected String idOrUrl;
+    protected ButtonStyle style;
+    protected String label;
+    protected boolean enabled = true;
 
     public ConfigurableButton(String idOrUrl, ButtonStyle style, String label) {
         this.idOrUrl = idOrUrl;

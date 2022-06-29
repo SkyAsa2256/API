@@ -1,5 +1,8 @@
 package com.envyful.api.database;
 
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.exceptions.JedisException;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -19,6 +22,26 @@ public interface Database {
      * @throws UnsupportedOperationException If this isn't an SQL database
      */
     Connection getConnection() throws SQLException,UnsupportedOperationException;
+
+    /**
+     *
+     * Gets the Jedis connection from the database if available
+     *
+     * @return The jedis connection
+     * @throws JedisException If there's an error with the jedis
+     * @throws UnsupportedOperationException If this database isn't redis lol
+     */
+    Jedis getJedis() throws JedisException,UnsupportedOperationException;
+
+    /**
+     *
+     *
+     *
+     * @param o
+     * @throws JedisException
+     * @throws UnsupportedOperationException
+     */
+    void subscribe(Object o) throws JedisException,UnsupportedOperationException;
 
     /**
      *

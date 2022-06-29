@@ -1,6 +1,7 @@
 package com.envyful.api.database.impl;
 
 import com.envyful.api.concurrency.UtilConcurrency;
+import com.envyful.api.config.type.RedisDatabaseDetails;
 import com.envyful.api.database.Database;
 import com.envyful.api.database.impl.redis.Subscribe;
 import com.google.common.collect.Lists;
@@ -18,6 +19,10 @@ public class SimpleJedisDatabase implements Database {
 
     private final JedisPool pool;
     private final List<ReflectivePubSub> pubSubs = Lists.newArrayList();
+
+    public SimpleJedisDatabase(RedisDatabaseDetails details) {
+        this(details.getIp(), details.getPort(), details.getPassword());
+    }
 
     public SimpleJedisDatabase(String host, int port, String password) {
         this.pool = this.initJedis(host, port, password);

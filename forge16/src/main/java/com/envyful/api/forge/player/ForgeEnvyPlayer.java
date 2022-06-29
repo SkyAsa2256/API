@@ -1,11 +1,11 @@
 package com.envyful.api.forge.player;
 
+import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.attribute.PlayerAttribute;
 import com.google.common.collect.Maps;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.Util;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import java.util.List;
@@ -48,7 +48,7 @@ public class ForgeEnvyPlayer implements EnvyPlayer<ServerPlayerEntity> {
 
     @Override
     public void message(String message) {
-        this.player.sendMessage(new StringTextComponent(message), Util.NIL_UUID);
+        this.player.sendMessage(UtilChatColour.colour(message), Util.NIL_UUID);
     }
 
     @Override

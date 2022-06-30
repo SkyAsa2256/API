@@ -4,6 +4,8 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -24,6 +26,8 @@ public class UtilConcurrency {
     public static final ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool(
             new ThreadFactoryBuilder().setDaemon(true).setNameFormat("envyware_concurrency_%d").build()
     );
+    public static final ScheduledExecutorService SCHEDULED_EXECUTOR_SERVICE = Executors.newScheduledThreadPool(5,
+            new ThreadFactoryBuilder().setDaemon(true).setNameFormat("envyware_concurrency_%d").build());
 
     /**
      *
@@ -45,14 +49,7 @@ public class UtilConcurrency {
      * @param delay The delay before running it
      */
     public static void runLater(Runnable runnable, long delay) {
-        runAsync(() -> {
-            try {
-                Thread.sleep(delay);
-                runnable.run();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
+        SCHEDULED_EXECUTOR_SERVICE.schedule(runnable, delay, TimeUnit.MILLISECONDS);
     }
 
 }

@@ -35,7 +35,7 @@ public interface Gui {
          * @param title The title of the GUI
          * @return The builder
          */
-        Builder title(String title);
+        Builder title(Object title);
 
         /**
          *

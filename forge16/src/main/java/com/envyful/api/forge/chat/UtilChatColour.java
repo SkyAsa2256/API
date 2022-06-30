@@ -29,14 +29,19 @@ public class UtilChatColour {
      */
     public static ITextComponent colour(String text) {
         Matcher matcher = COLOUR_PATTERN.matcher(text);
-        IFormattableTextComponent textComponent = new StringTextComponent("").withStyle(TextFormatting.RESET);
+        IFormattableTextComponent textComponent = new StringTextComponent("");
+        TextFormatting nextApply = null;
         int lastEnd = 0;
         Color lastColor = null;
 
         while (matcher.find()) {
             int start = matcher.start();
             String segment = text.substring(lastEnd, start);
-            attemptAppend(textComponent, segment, lastColor);
+            IFormattableTextComponent iFormattableTextComponent = attemptAppend(textComponent, segment, lastColor);
+
+            if (nextApply != null && iFormattableTextComponent != null) {
+                iFormattableTextComponent.withStyle(nextApply);
+            }
 
             lastEnd = matcher.end();
             String colourCode = matcher.group(1);
@@ -44,13 +49,12 @@ public class UtilChatColour {
 
             if (colour.isPresent()) {
                 lastColor = colour.get();
+                nextApply = null;
             } else {
                 TextFormatting byCode = getByCode(colourCode.toCharArray()[0]);
 
-                if (byCode != null && byCode.isFormat()) {
-                    textComponent = textComponent.withStyle(byCode);
-                } else if (byCode != null && byCode == TextFormatting.RESET) {
-                    textComponent = textComponent.withStyle(TextFormatting.RESET);
+                if (byCode != null) {
+                    nextApply = byCode;
                 } else {
                     textComponent.append(new StringTextComponent("&" + colourCode));
                 }
@@ -58,7 +62,11 @@ public class UtilChatColour {
         }
 
         String segment = text.substring(lastEnd);
-        attemptAppend(textComponent, segment, lastColor);
+        IFormattableTextComponent iFormattableTextComponent = attemptAppend(textComponent, segment, lastColor);
+
+        if (nextApply != null && iFormattableTextComponent != null) {
+            iFormattableTextComponent.withStyle(nextApply);
+        }
 
         return textComponent;
     }
@@ -71,9 +79,9 @@ public class UtilChatColour {
      * @param segment The segment
      * @param lastColour The colour
      */
-    public static void attemptAppend(IFormattableTextComponent textComponent, String segment, Color lastColour) {
+    public static IFormattableTextComponent attemptAppend(IFormattableTextComponent textComponent, String segment, Color lastColour) {
         if (segment.isEmpty()) {
-            return;
+            return null;
         }
 
         IFormattableTextComponent appended = new StringTextComponent(segment);
@@ -83,6 +91,7 @@ public class UtilChatColour {
         }
 
         textComponent.append(appended);
+        return appended;
     }
 
     /**

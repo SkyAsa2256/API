@@ -1,5 +1,6 @@
 package com.envyful.api.forge.items;
 
+import com.envyful.api.forge.chat.UtilChatColour;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraft.enchantment.Enchantment;
@@ -93,8 +94,7 @@ public class ItemBuilder implements Cloneable {
      * @return The builder
      */
     public ItemBuilder name(String name) {
-        this.name = new StringTextComponent(name);
-        return this;
+        return this.name(UtilChatColour.colour(name));
     }
 
     /**

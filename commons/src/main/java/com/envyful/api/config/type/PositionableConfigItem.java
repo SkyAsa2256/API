@@ -23,6 +23,12 @@ public class PositionableConfigItem extends ConfigItem {
 
         this.positions.put("first", Pair.of(xPos, yPos));
     }
+    public PositionableConfigItem(String type, int amount, String name, List<String> lore, int xPos,
+                                  int yPos, Map<String, NBTValue> nbt) {
+        super(type, amount, (byte) 0, name, lore, nbt);
+
+        this.positions.put("first", Pair.of(xPos, yPos));
+    }
 
     public List<Pair<Integer, Integer>> getPositions() {
         return Lists.newArrayList(this.positions.values());

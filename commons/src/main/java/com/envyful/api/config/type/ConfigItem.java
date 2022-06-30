@@ -2,6 +2,7 @@ package com.envyful.api.config.type;
 
 import com.envyful.api.gui.Transformer;
 import com.envyful.api.type.UtilParse;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
@@ -37,6 +38,14 @@ public class ConfigItem {
         this.lore = lore;
         this.enchants = enchants;
         this.nbt = nbt;
+    }
+
+    public ConfigItem(String type, int amount, String name, List<String> lore, Map<String, EnchantData> enchants, Map<String, NBTValue> nbt) {
+        this(type, amount, (byte) 0, name, lore, enchants, nbt);
+    }
+
+    public ConfigItem(String type, int amount, String name, List<String> lore) {
+        this(type, amount, (byte) 0, name, lore, ImmutableMap.of(), ImmutableMap.of());
     }
 
     public ConfigItem(String type, int amount, byte damage, String name, List<String> lore, Map<String, NBTValue> nbt) {

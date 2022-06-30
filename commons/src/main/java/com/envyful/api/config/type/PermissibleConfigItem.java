@@ -23,6 +23,14 @@ public class PermissibleConfigItem extends PositionableConfigItem {
         this.elseItem = elseItem;
     }
 
+    public PermissibleConfigItem(String type, int amount, String name, List<String> lore, int xPos,
+                                 int yPos, String permission, Map<String, NBTValue> nbt, ConfigItem elseItem) {
+        super(type, amount, (byte) 0, name, lore, xPos, yPos, nbt);
+
+        this.permission = permission;
+        this.elseItem = elseItem;
+    }
+
     public String getPermission() {
         return this.permission;
     }

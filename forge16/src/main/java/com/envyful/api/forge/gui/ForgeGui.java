@@ -24,7 +24,6 @@ import net.minecraft.network.play.server.SOpenWindowPacket;
 import net.minecraft.network.play.server.SSetSlotPacket;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import java.util.List;
@@ -47,9 +46,9 @@ public class ForgeGui implements Gui {
 
     private final List<ForgeGuiContainer> containers = Lists.newArrayList();
 
-    ForgeGui(String title, int height, PlayerManager<ForgeEnvyPlayer, ServerPlayerEntity> playerManager,
+    ForgeGui(ITextComponent title, int height, PlayerManager<ForgeEnvyPlayer, ServerPlayerEntity> playerManager,
              Consumer<ForgeEnvyPlayer> closeConsumer, Pane... panes) {
-        this.title = new StringTextComponent(title);
+        this.title = title;
         this.height = height;
         this.playerManager = playerManager;
         this.closeConsumer = closeConsumer;

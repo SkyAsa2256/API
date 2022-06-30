@@ -1,5 +1,6 @@
 package com.envyful.api.forge.gui;
 
+import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.forge.player.ForgeEnvyPlayer;
 import com.envyful.api.gui.Gui;
 import com.envyful.api.gui.pane.Pane;
@@ -7,6 +8,7 @@ import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.text.ITextComponent;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -18,15 +20,22 @@ import java.util.function.Consumer;
  */
 public class ForgeGuiBuilder implements Gui.Builder {
 
-    private String title;
+    private ITextComponent title;
     private int height = 5;
     private List<Pane> panes = Lists.newArrayList();
     private PlayerManager<ForgeEnvyPlayer, ServerPlayerEntity> playerManager;
     private Consumer<EnvyPlayer<?>> closeConsumer = null;
 
     @Override
-    public Gui.Builder title(String title) {
-        this.title = title;
+    public Gui.Builder title(Object title) {
+        if (title instanceof ITextComponent) {
+            this.title = (ITextComponent) title;
+        } else if (title instanceof String) {
+            this.title = UtilChatColour.colour((String) title);
+        } else {
+            throw new RuntimeException("Unsupported title type given");
+        }
+
         return this;
     }
 

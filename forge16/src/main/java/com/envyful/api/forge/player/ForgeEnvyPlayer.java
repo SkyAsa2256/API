@@ -6,6 +6,7 @@ import com.envyful.api.player.attribute.PlayerAttribute;
 import com.google.common.collect.Maps;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.Util;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import java.util.List;
@@ -47,20 +48,26 @@ public class ForgeEnvyPlayer implements EnvyPlayer<ServerPlayerEntity> {
     }
 
     @Override
-    public void message(String message) {
-        this.player.sendMessage(UtilChatColour.colour(message), Util.NIL_UUID);
+    public void message(Object message) {
+        if (message instanceof String) {
+            this.player.sendMessage(UtilChatColour.colour((String) message), Util.NIL_UUID);
+        } else if (message instanceof ITextComponent) {
+            this.player.sendMessage((ITextComponent) message, Util.NIL_UUID);
+        } else {
+            throw new RuntimeException("Unsupported message type");
+        }
     }
 
     @Override
-    public void message(String... messages) {
-        for (String message : messages) {
+    public void message(Object... messages) {
+        for (Object message : messages) {
             this.message(message);
         }
     }
 
     @Override
-    public void message(List<String> messages) {
-        for (String message : messages) {
+    public void message(List<Object> messages) {
+        for (Object message : messages) {
             this.message(message);
         }
     }

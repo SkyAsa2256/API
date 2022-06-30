@@ -1,9 +1,11 @@
 package com.envyful.api.forge.player;
 
+import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.attribute.PlayerAttribute;
 import com.google.common.collect.Maps;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -46,20 +48,26 @@ public class ForgeEnvyPlayer implements EnvyPlayer<EntityPlayerMP> {
     }
 
     @Override
-    public void message(String message) {
-        this.player.sendMessage(new TextComponentString(message));
+    public void message(Object message) {
+        if (message instanceof String) {
+            this.player.sendMessage(new TextComponentString(UtilChatColour.translateColourCodes('&', (String) message)));
+        } else if (message instanceof ITextComponent) {
+            this.player.sendMessage((ITextComponent) message);
+        } else {
+            throw new RuntimeException("Unsupported message type");
+        }
     }
 
     @Override
-    public void message(String... messages) {
-        for (String message : messages) {
+    public void message(Object... messages) {
+        for (Object message : messages) {
             this.message(message);
         }
     }
 
     @Override
-    public void message(List<String> messages) {
-        for (String message : messages) {
+    public void message(List<Object> messages) {
+        for (Object message : messages) {
             this.message(message);
         }
     }

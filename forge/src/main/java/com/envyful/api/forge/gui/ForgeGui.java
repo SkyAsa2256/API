@@ -23,7 +23,6 @@ import net.minecraft.network.play.server.SPacketOpenWindow;
 import net.minecraft.network.play.server.SPacketSetSlot;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import java.util.List;
@@ -45,9 +44,9 @@ public class ForgeGui implements Gui {
 
     private final List<ForgeGuiContainer> containers = Lists.newArrayList();
 
-    ForgeGui(String title, int height, PlayerManager<ForgeEnvyPlayer, EntityPlayerMP> playerManager,
+    ForgeGui(ITextComponent title, int height, PlayerManager<ForgeEnvyPlayer, EntityPlayerMP> playerManager,
              Consumer<ForgeEnvyPlayer> closeConsumer, Pane... panes) {
-        this.title = new TextComponentString(title);
+        this.title = title;
         this.height = height;
         this.playerManager = playerManager;
         this.closeConsumer = closeConsumer;

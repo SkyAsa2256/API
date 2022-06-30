@@ -25,11 +25,11 @@ public interface EnvyPlayer<T> {
 
     T getParent();
 
-    void message(String message);
+    void message(Object message);
 
-    void message(String... messages);
+    void message(Object... messages);
 
-    void message(List<String> messages);
+    void message(List<Object> messages);
 
     void executeCommand(String command);
 

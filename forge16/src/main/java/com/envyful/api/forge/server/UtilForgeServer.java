@@ -1,7 +1,6 @@
 package com.envyful.api.forge.server;
 
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 /**
@@ -10,8 +9,6 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
  *
  */
 public class UtilForgeServer {
-
-    private static final MinecraftServer SERVER = ServerLifecycleHooks.getCurrentServer();
 
     /**
      *
@@ -22,7 +19,7 @@ public class UtilForgeServer {
      * @param command The command to execute
      */
     public static void executeCommand(String command) {
-        SERVER.getCommands().performCommand(SERVER.createCommandSourceStack(), command);
+        ServerLifecycleHooks.getCurrentServer().getCommands().performCommand(ServerLifecycleHooks.getCurrentServer().createCommandSourceStack(), command);
     }
 
 
@@ -36,6 +33,6 @@ public class UtilForgeServer {
      * @param command The command to execute
      */
     public static void executeCommand(ServerPlayerEntity player, String command) {
-        SERVER.getCommands().performCommand(player.createCommandSourceStack(), command);
+        ServerLifecycleHooks.getCurrentServer().getCommands().performCommand(player.createCommandSourceStack(), command);
     }
 }

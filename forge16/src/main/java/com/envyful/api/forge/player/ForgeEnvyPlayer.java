@@ -48,27 +48,19 @@ public class ForgeEnvyPlayer implements EnvyPlayer<ServerPlayerEntity> {
     }
 
     @Override
-    public void message(Object message) {
-        if (message instanceof String) {
-            this.player.sendMessage(UtilChatColour.colour((String) message), Util.NIL_UUID);
-        } else if (message instanceof ITextComponent) {
-            this.player.sendMessage((ITextComponent) message, Util.NIL_UUID);
-        } else {
-            throw new RuntimeException("Unsupported message type");
-        }
-    }
-
-    @Override
     public void message(Object... messages) {
         for (Object message : messages) {
-            this.message(message);
-        }
-    }
-
-    @Override
-    public void message(List<Object> messages) {
-        for (Object message : messages) {
-            this.message(message);
+            if (message instanceof String) {
+                this.getParent().sendMessage(UtilChatColour.colour((String) message), Util.NIL_UUID);
+            } else if (message instanceof ITextComponent) {
+                this.getParent().sendMessage((ITextComponent) message, Util.NIL_UUID);
+            } else if (message instanceof List) {
+                for (Object subMessage : ((List) message)) {
+                    this.message(subMessage);
+                }
+            } else {
+                throw new RuntimeException("Unsupported message type");
+            }
         }
     }
 

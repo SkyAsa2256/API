@@ -48,27 +48,19 @@ public class ForgeEnvyPlayer implements EnvyPlayer<EntityPlayerMP> {
     }
 
     @Override
-    public void message(Object message) {
-        if (message instanceof String) {
-            this.player.sendMessage(new TextComponentString(UtilChatColour.translateColourCodes('&', (String) message)));
-        } else if (message instanceof ITextComponent) {
-            this.player.sendMessage((ITextComponent) message);
-        } else {
-            throw new RuntimeException("Unsupported message type");
-        }
-    }
-
-    @Override
     public void message(Object... messages) {
         for (Object message : messages) {
-            this.message(message);
-        }
-    }
-
-    @Override
-    public void message(List<Object> messages) {
-        for (Object message : messages) {
-            this.message(message);
+            if (message instanceof String) {
+                this.player.sendMessage(new TextComponentString(UtilChatColour.translateColourCodes('&', (String) message)));
+            } else if (message instanceof ITextComponent) {
+                this.player.sendMessage((ITextComponent) message);
+            } else if (message instanceof List) {
+                for (Object subMessage : ((List) message)) {
+                    this.message(subMessage);
+                }
+            } else {
+                throw new RuntimeException("Unsupported message type");
+            }
         }
     }
 

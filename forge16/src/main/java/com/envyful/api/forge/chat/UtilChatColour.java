@@ -28,6 +28,10 @@ public class UtilChatColour {
      * @return The newly formatted text
      */
     public static ITextComponent colour(String text) {
+        if (text.contains("{")) {
+            return ITextComponent.Serializer.fromJson(text);
+        }
+
         Matcher matcher = COLOUR_PATTERN.matcher(text);
         IFormattableTextComponent textComponent = new StringTextComponent("");
         TextFormatting nextApply = null;

@@ -14,6 +14,7 @@ import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.type.Pair;
 import com.envyful.api.type.UtilParse;
+import com.google.common.collect.Lists;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
@@ -23,7 +24,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.ResourceLocationException;
 import net.minecraft.util.registry.Registry;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -34,13 +34,14 @@ public class UtilConfigItem {
         addPermissibleConfigItem(pane, player, configItem, transformers,null);
     }
 
-    public static void addPermissibleConfigItem(Pane pane, ServerPlayerEntity player, PermissibleConfigItem configItem) {
-        addPermissibleConfigItem(pane, player, configItem, null);
+    public static void addPermissibleConfigItem(Pane pane, ServerPlayerEntity player, PermissibleConfigItem configItem,
+                                                Transformer... transformers) {
+        addPermissibleConfigItem(pane, player, configItem, Lists.newArrayList(transformers), null);
     }
 
     public static void addPermissibleConfigItem(Pane pane, ServerPlayerEntity player, PermissibleConfigItem configItem,
-                                                BiConsumer<EnvyPlayer<?>, Displayable.ClickType> clickHandler) {
-        addPermissibleConfigItem(pane, player, configItem, Collections.emptyList(), clickHandler);
+                                                BiConsumer<EnvyPlayer<?>, Displayable.ClickType> clickHandler, Transformer... transformers) {
+        addPermissibleConfigItem(pane, player, configItem, Lists.newArrayList(transformers), clickHandler);
     }
 
     public static void addPermissibleConfigItem(Pane pane, ServerPlayerEntity player, PermissibleConfigItem configItem,
@@ -62,8 +63,8 @@ public class UtilConfigItem {
         }
     }
 
-    public static void addConfigItem(Pane pane, PositionableConfigItem configItem) {
-        addConfigItem(pane, configItem, null);
+    public static void addConfigItem(Pane pane, PositionableConfigItem configItem, Transformer... transformers) {
+        addConfigItem(pane, configItem, Lists.newArrayList(transformers), null);
     }
 
     public static void addConfigItem(Pane pane, List<Transformer> transformers, PositionableConfigItem configItem) {
@@ -71,8 +72,8 @@ public class UtilConfigItem {
     }
 
     public static void addConfigItem(Pane pane, PositionableConfigItem configItem,
-                                     BiConsumer<EnvyPlayer<?>, Displayable.ClickType> clickHandler) {
-        addConfigItem(pane, configItem, Collections.emptyList(), clickHandler);
+                                     BiConsumer<EnvyPlayer<?>, Displayable.ClickType> clickHandler, Transformer... transformers) {
+        addConfigItem(pane, configItem, Lists.newArrayList(transformers), clickHandler);
     }
 
     public static void addConfigItem(Pane pane, PositionableConfigItem configItem, List<Transformer> transformers,
@@ -96,8 +97,8 @@ public class UtilConfigItem {
         }
     }
 
-    public static ItemStack fromPermissibleItem(ServerPlayerEntity player, PermissibleConfigItem permissibleConfigItem) {
-        return fromPermissibleItem(player, permissibleConfigItem, Collections.emptyList());
+    public static ItemStack fromPermissibleItem(ServerPlayerEntity player, PermissibleConfigItem permissibleConfigItem, Transformer... transformers) {
+        return fromPermissibleItem(player, permissibleConfigItem, Lists.newArrayList(transformers));
     }
 
     public static ItemStack fromPermissibleItem(ServerPlayerEntity player, PermissibleConfigItem permissibleConfigItem, List<Transformer> transformers) {
@@ -117,8 +118,8 @@ public class UtilConfigItem {
         return fromConfigItem(permissibleConfigItem.getElseItem());
     }
 
-    public static ItemStack fromConfigItem(ConfigItem configItem) {
-        return fromConfigItem(configItem, Collections.emptyList());
+    public static ItemStack fromConfigItem(ConfigItem configItem, Transformer... transformers) {
+        return fromConfigItem(configItem, Lists.newArrayList(transformers));
     }
 
     public static ItemStack fromConfigItem(ConfigItem configItem, List<Transformer> transformers) {

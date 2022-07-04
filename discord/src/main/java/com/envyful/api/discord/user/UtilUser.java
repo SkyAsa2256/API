@@ -3,7 +3,6 @@ package com.envyful.api.discord.user;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.PrivateChannel;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 
 import javax.annotation.Nullable;
 
@@ -21,7 +20,7 @@ public class UtilUser {
     public static PrivateChannel getDMs(User user) {
         try {
             return user.openPrivateChannel().complete();
-        } catch (ErrorResponseException e) {
+        } catch (Exception e) {
             return null;
         }
     }

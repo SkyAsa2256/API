@@ -2,7 +2,6 @@ package com.envyful.api.player;
 
 import com.envyful.api.player.attribute.PlayerAttribute;
 
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -25,11 +24,7 @@ public interface EnvyPlayer<T> {
 
     T getParent();
 
-    void message(Object message);
-
     void message(Object... messages);
-
-    void message(List<Object> messages);
 
     void executeCommand(String command);
 

@@ -1,6 +1,7 @@
 package com.envyful.api.forge.gui;
 
 import com.envyful.api.forge.concurrency.UtilForgeConcurrency;
+import com.envyful.api.forge.gui.close.ForgeCloseConsumer;
 import com.envyful.api.forge.gui.item.EmptySlot;
 import com.envyful.api.forge.gui.pane.ForgeSimplePane;
 import com.envyful.api.forge.player.ForgeEnvyPlayer;
@@ -26,7 +27,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 /**
  *
@@ -38,14 +38,14 @@ public class ForgeGui implements Gui {
     private final ITextComponent title;
     private final int height;
     private final PlayerManager<ForgeEnvyPlayer, EntityPlayerMP> playerManager;
-    private final Consumer<ForgeEnvyPlayer> closeConsumer;
+    private final ForgeCloseConsumer closeConsumer;
     private final ForgeSimplePane parentPane;
     private final ForgeSimplePane[] panes;
 
     private final List<ForgeGuiContainer> containers = Lists.newArrayList();
 
     ForgeGui(ITextComponent title, int height, PlayerManager<ForgeEnvyPlayer, EntityPlayerMP> playerManager,
-             Consumer<ForgeEnvyPlayer> closeConsumer, Pane... panes) {
+             ForgeCloseConsumer closeConsumer, Pane... panes) {
         this.title = title;
         this.height = height;
         this.playerManager = playerManager;
@@ -323,9 +323,7 @@ public class ForgeGui implements Gui {
             sender.connection.processCloseWindow(closeWindowClient);
             sender.connection.sendPacket(closeWindowServer);
 
-            if (this.gui.closeConsumer != null) {
-                this.gui.closeConsumer.accept(player);
-            }
+            this.gui.closeConsumer.handle(player);
 
             ForgeGui.this.containers.remove(this);
 

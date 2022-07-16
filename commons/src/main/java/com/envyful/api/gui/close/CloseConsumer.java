@@ -53,6 +53,25 @@ public interface CloseConsumer<A extends EnvyPlayer<B>, B> {
 
         /**
          *
+         * Sets the close consumer to handle the task asynchronously
+         *
+         * @return The builder
+         */
+        default Builder<A, B> async() {
+            return this.async(true);
+        }
+
+        /**
+         *
+         * Sets if the close consumer should handle the task synchronously, or asyncrhonously
+         *
+         * @param async If the task is async
+         * @return The builder
+         */
+        Builder<A, B> async(boolean async);
+
+        /**
+         *
          * Builds the close consumer
          *
          * @return The close consumer

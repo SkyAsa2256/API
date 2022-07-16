@@ -17,6 +17,16 @@ public class GuiFactory {
 
     /**
      *
+     * Gets the platform factory instance
+     *
+     * @return The platform factory
+     */
+    public static PlatformGuiFactory<?> getPlatformFactory() {
+        return platformFactory;
+    }
+
+    /**
+     *
      * Sets the platform factory instance (to be done on startup)
      *
      * @param platformFactory The platform factory instance

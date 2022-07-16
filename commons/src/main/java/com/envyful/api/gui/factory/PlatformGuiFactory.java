@@ -1,6 +1,7 @@
 package com.envyful.api.gui.factory;
 
 import com.envyful.api.gui.Gui;
+import com.envyful.api.gui.close.CloseConsumer;
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.gui.pane.type.PagedPane;
@@ -43,5 +44,13 @@ public interface PlatformGuiFactory<T> {
      * @return The gui builder for the given platform
      */
     Gui.Builder guiBuilder();
+
+    /**
+     *
+     * Gets a close consumer builder instance
+     *
+     * @return The builder instance
+     */
+    CloseConsumer.Builder<?, ?> closeConsumerBuilder();
 
 }

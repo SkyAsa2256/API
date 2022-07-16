@@ -83,6 +83,37 @@ public interface Displayable {
 
         /**
          *
+         * Sets the click to be handled asynchronously
+         *
+         * @return The builder
+         */
+        default Builder<T> asyncClick() {
+            return this.asyncClick(true);
+        }
+
+        /**
+         *
+         * The delay between clicking and the function executing
+         *
+         * @param tickDelay The delay in ticks
+         * @return The builder
+         */
+        default Builder<T> delayTicks(int tickDelay) {
+            return this.asyncClick(true);
+        }
+
+        /**
+         *
+         * Sets the click to be handled asynchronously
+         *
+         * @return The builder
+         */
+        default Builder<T> asyncClick(boolean async) {
+            return this.asyncClick(true);
+        }
+
+        /**
+         *
          * Creates the displayable from the specifications
          *
          * @return The new displayable implementation

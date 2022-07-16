@@ -1,6 +1,7 @@
 package com.envyful.api.gui.factory;
 
 import com.envyful.api.gui.Gui;
+import com.envyful.api.gui.close.CloseConsumer;
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.gui.pane.type.PagedPane;
@@ -114,5 +115,19 @@ public class GuiFactory {
         }
 
         return platformFactory.guiBuilder();
+    }
+
+    /**
+     *
+     * Gets a close consumer builder instance
+     *
+     * @return The builder instance
+     */
+    public static CloseConsumer.Builder<?, ?> closeConsumerBuilder() {
+        if (platformFactory == null) {
+            throw new RuntimeException("Platform's factory hasn't been set yet!");
+        }
+
+        return platformFactory.closeConsumerBuilder();
     }
 }

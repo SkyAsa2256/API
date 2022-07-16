@@ -92,7 +92,7 @@ public class ForgeSimplePane implements Pane {
 
     @Override
     public void set(int pos, Displayable displayable) {
-        this.set(pos % (this.width), pos % (this.height), displayable);
+        this.set(pos % (this.width), pos / (this.height), displayable);
     }
 
     @Override

@@ -98,9 +98,7 @@ public interface Displayable {
          * @param tickDelay The delay in ticks
          * @return The builder
          */
-        default Builder<T> delayTicks(int tickDelay) {
-            return this.asyncClick(true);
-        }
+        Builder<T> delayTicks(int tickDelay);
 
         /**
          *
@@ -108,9 +106,26 @@ public interface Displayable {
          *
          * @return The builder
          */
-        default Builder<T> asyncClick(boolean async) {
-            return this.asyncClick(true);
+        Builder<T> asyncClick(boolean async);
+
+        /**
+         *
+         * Sets the button so it can only be clicked once
+         *
+         * @return The builder
+         */
+        default Builder<T> singleClick() {
+            return this.singleClick(true);
         }
+
+        /**
+         *
+         * Sets if the button can only be clicked once
+         *
+         * @param singleClick True if only once
+         * @return The builder
+         */
+        Builder<T> singleClick(boolean singleClick);
 
         /**
          *

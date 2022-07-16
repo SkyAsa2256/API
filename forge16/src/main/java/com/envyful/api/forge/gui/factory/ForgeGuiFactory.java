@@ -1,9 +1,11 @@
 package com.envyful.api.forge.gui.factory;
 
 import com.envyful.api.forge.gui.ForgeGuiBuilder;
+import com.envyful.api.forge.gui.close.ForgeCloseConsumer;
 import com.envyful.api.forge.gui.item.ForgeSimpleDisplayable;
 import com.envyful.api.forge.gui.pane.ForgeSimplePane;
 import com.envyful.api.gui.Gui;
+import com.envyful.api.gui.close.CloseConsumer;
 import com.envyful.api.gui.factory.PlatformGuiFactory;
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
@@ -35,5 +37,10 @@ public class ForgeGuiFactory implements PlatformGuiFactory<ItemStack> {
     @Override
     public Gui.Builder guiBuilder() {
         return new ForgeGuiBuilder();
+    }
+
+    @Override
+    public CloseConsumer.Builder<?, ?> closeConsumerBuilder() {
+        return new ForgeCloseConsumer.Builder();
     }
 }

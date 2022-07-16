@@ -1,5 +1,6 @@
 package com.envyful.api.gui;
 
+import com.envyful.api.gui.close.CloseConsumer;
 import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
@@ -72,7 +73,27 @@ public interface Gui {
          * @param consumer The close consumer
          * @return The builder
          */
+        @Deprecated
         Builder setCloseConsumer(Consumer<EnvyPlayer<?>> consumer);
+
+        /**
+         *
+         * Sets the consumer for when the GUI is closed.
+         *
+         * @param consumer The close consumer
+         * @return The builder
+         */
+        @Deprecated
+        Builder closeConsumer(Consumer<EnvyPlayer<?>> consumer);
+
+        /**
+         *
+         * Sets the close consumer instance
+         *
+         * @param closeConsumer The close consumer handler
+         * @return The builder
+         */
+        Builder closeConsumer(CloseConsumer<?, ?> closeConsumer);
 
         /**
          *

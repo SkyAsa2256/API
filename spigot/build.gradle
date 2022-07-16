@@ -3,6 +3,10 @@ repositories {
         name = 'spongepowered-repo'
         url = 'https://repo.spongepowered.org/maven'
     }
+
+    maven {
+        url = 'https://repo.papermc.io/repository/maven-public/'
+    }
 }
 
 dependencies {

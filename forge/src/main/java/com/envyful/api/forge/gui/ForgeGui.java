@@ -70,24 +70,22 @@ public class ForgeGui implements Gui {
             return;
         }
 
-        UtilForgeConcurrency.runLater(() -> {
-            EntityPlayerMP parent = ((ForgeEnvyPlayer) player).getParent();
+        EntityPlayerMP parent = ((ForgeEnvyPlayer)player).getParent();
 
-            parent.closeContainer();
+        parent.closeContainer();
 
-            ForgeGuiContainer container = new ForgeGuiContainer(this, parent);
+        ForgeGuiContainer container = new ForgeGuiContainer(this, parent);
 
-            UtilForgeConcurrency.runWhenTrue(__ -> parent.openContainer == parent.inventoryContainer, () -> {
-                parent.openContainer = container;
-                parent.currentWindowId = 1;
-                parent.connection.sendPacket(new SPacketOpenWindow(parent.currentWindowId, "minecraft:container", this.title,
-                                                                   (9 * this.height)
-                ));
-                container.refreshPlayerContents();
-                this.containers.add(container);
-                ForgeGuiTracker.addGui(player, this);
-            });
-        }, 1);
+        UtilForgeConcurrency.runWhenTrue(__ -> parent.openContainer == parent.inventoryContainer, () -> {
+            parent.openContainer = container;
+            parent.currentWindowId = 1;
+            parent.connection.sendPacket(new SPacketOpenWindow(parent.currentWindowId, "minecraft:container", this.title,
+                    (9 * this.height)
+            ));
+            container.refreshPlayerContents();
+            this.containers.add(container);
+            ForgeGuiTracker.addGui(player, this);
+        });
     }
 
     public void update() {
@@ -255,25 +253,6 @@ public class ForgeGui implements Gui {
                 Pair<Integer, Integer> panePosition = pane.convertXandY(xPos, yPos);
 
                 ForgeSimplePane.SimpleDisplayableSlot simpleDisplayableSlot = pane.getItems()[panePosition.getY()][panePosition.getX()];
-
-                if (simpleDisplayableSlot.getClicks() < 0) {
-                    simpleDisplayableSlot.setClicks(simpleDisplayableSlot.getClicks() - 1);
-
-                    if (simpleDisplayableSlot.getClicks() < -100) {
-                        locked = true;
-                    }
-
-                    return ItemStack.EMPTY;
-                }
-
-                if (!simpleDisplayableSlot.shouldClick()) {
-                    simpleDisplayableSlot.updateClick();
-                    return ItemStack.EMPTY;
-                }
-
-                simpleDisplayableSlot.updateClick();
-
-                simpleDisplayableSlot.setClicks(simpleDisplayableSlot.getClicks() - 1);
                 simpleDisplayableSlot.getDisplayable().onClick(envyPlayer, clickType);
                 ForgeGuiTracker.enqueueUpdate(envyPlayer);
             }

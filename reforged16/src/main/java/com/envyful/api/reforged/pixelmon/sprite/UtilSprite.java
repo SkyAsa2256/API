@@ -12,7 +12,7 @@ import com.pixelmonmod.pixelmon.api.pokemon.stats.IVStore;
 import com.pixelmonmod.pixelmon.api.pokemon.stats.extraStats.LakeTrioStats;
 import com.pixelmonmod.pixelmon.api.pokemon.stats.extraStats.MewStats;
 import com.pixelmonmod.pixelmon.api.registries.PixelmonItems;
-import com.pixelmonmod.pixelmon.items.SpriteItem;
+import com.pixelmonmod.pixelmon.api.util.helpers.SpriteItemHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -59,7 +59,7 @@ public class UtilSprite {
     }
 
     public static ItemStack getPixelmonSprite(Pokemon pokemon) {
-        return SpriteItem.getPhoto(pokemon);
+        return SpriteItemHelper.getPhoto(pokemon);
     }
 
     public static List<String> getPokemonDesc(Pokemon pokemon, SpriteConfig config) {

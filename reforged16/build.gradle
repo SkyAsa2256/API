@@ -47,7 +47,7 @@ dependencies {
     shadow project(':commons')
     shadow(project(':forge16'))
 
-    implementation fg.deobf('pixelmon:Pixelmon-1.16.5-9.0.2-server:9.0.2')
+    implementation fg.deobf('pixelmon:Pixelmon-1.16.5-9.0.5-server:9.0.5')
 }
 
 shadowJar {

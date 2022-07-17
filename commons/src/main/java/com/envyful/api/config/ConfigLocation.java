@@ -25,6 +25,9 @@ public class ConfigLocation {
         this(worldName, posX, posY, posZ, 0.0F, 0.0F);
     }
 
+    public ConfigLocation() {
+    }
+
     public String getWorldName() {
         return this.worldName;
     }

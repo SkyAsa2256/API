@@ -1,5 +1,6 @@
 package com.envyful.api.player;
 
+import com.envyful.api.config.ConfigLocation;
 import com.envyful.api.player.attribute.PlayerAttribute;
 
 import java.util.UUID;
@@ -29,6 +30,8 @@ public interface EnvyPlayer<T> {
     void executeCommand(String command);
 
     void executeCommands(String... commands);
+
+    void teleport(ConfigLocation location);
 
     <A extends PlayerAttribute<B>, B> A getAttribute(Class<B> plugin);
 

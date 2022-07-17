@@ -1,5 +1,6 @@
 package com.envyful.api.spigot.player;
 
+import com.envyful.api.config.ConfigLocation;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.attribute.PlayerAttribute;
 import com.google.common.collect.Maps;
@@ -65,6 +66,11 @@ public class SpigotEnvyPlayer implements EnvyPlayer<Player> {
     @Override
     public void executeCommand(String command) {
         this.getParent().performCommand(command);
+    }
+
+    @Override
+    public void teleport(ConfigLocation location) {
+        //TODO:
     }
 
     @Override

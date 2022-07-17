@@ -1,5 +1,6 @@
 package com.envyful.api.forge.player;
 
+import com.envyful.api.config.ConfigLocation;
 import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.attribute.PlayerAttribute;
@@ -74,6 +75,11 @@ public class ForgeEnvyPlayer implements EnvyPlayer<EntityPlayerMP> {
     @Override
     public void executeCommand(String command) {
         FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(this.player, command);
+    }
+
+    @Override
+    public void teleport(ConfigLocation location) {
+        //TODO:
     }
 
     @Override

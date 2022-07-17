@@ -1,12 +1,15 @@
 package com.envyful.api.forge.player;
 
+import com.envyful.api.config.ConfigLocation;
 import com.envyful.api.forge.chat.UtilChatColour;
+import com.envyful.api.forge.world.UtilWorld;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.attribute.PlayerAttribute;
 import com.google.common.collect.Maps;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import java.util.List;
@@ -74,6 +77,12 @@ public class ForgeEnvyPlayer implements EnvyPlayer<ServerPlayerEntity> {
     @Override
     public void executeCommand(String command) {
         ServerLifecycleHooks.getCurrentServer().getCommands().performCommand(this.player.createCommandSourceStack(), command);
+    }
+
+    @Override
+    public void teleport(ConfigLocation location) {
+        this.getParent().teleportTo((ServerWorld) UtilWorld.findWorld(location.getWorldName()),
+                location.getPosX(), location.getPosY(), location.getPosZ(), location.getPitch(), location.getYaw());
     }
 
     @Override

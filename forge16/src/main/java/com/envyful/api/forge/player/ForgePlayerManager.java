@@ -51,7 +51,7 @@ public class ForgePlayerManager implements PlayerManager<ForgeEnvyPlayer, Server
     @Override
     public ForgeEnvyPlayer getOnlinePlayer(String username) {
         for (ForgeEnvyPlayer online : this.cachedPlayers.values()) {
-            if (online.getParent().getName().equals(username)) {
+            if (online.getParent().getName().getString().equals(username)) {
                 return online;
             }
         }

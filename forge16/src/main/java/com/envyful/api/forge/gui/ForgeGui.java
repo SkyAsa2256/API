@@ -81,19 +81,21 @@ public class ForgeGui implements Gui {
             return;
         }
 
-        ServerPlayerEntity parent = ((ForgeEnvyPlayer)player).getParent();
+        UtilForgeConcurrency.runSync(() -> {
+            ServerPlayerEntity parent = ((ForgeEnvyPlayer)player).getParent();
 
-        parent.closeContainer();
+            parent.closeContainer();
 
-        ForgeGuiContainer container = new ForgeGuiContainer(this, parent);
+            ForgeGuiContainer container = new ForgeGuiContainer(this, parent);
 
-        UtilForgeConcurrency.runWhenTrue(__ -> parent.containerMenu == parent.containerMenu, () -> {
-            parent.containerMenu = container;
-            parent.containerCounter = 1;
-            parent.connection.send(new SOpenWindowPacket(parent.containerCounter, this.getContainerType(), title));
-            container.refreshPlayerContents();
-            this.containers.add(container);
-            ForgeGuiTracker.addGui(player, this);
+            UtilForgeConcurrency.runWhenTrue(__ -> parent.containerMenu == parent.containerMenu, () -> {
+                parent.containerMenu = container;
+                parent.containerCounter = 1;
+                parent.connection.send(new SOpenWindowPacket(parent.containerCounter, this.getContainerType(), title));
+                container.refreshPlayerContents();
+                this.containers.add(container);
+                ForgeGuiTracker.addGui(player, this);
+            });
         });
     }
 

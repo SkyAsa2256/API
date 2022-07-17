@@ -1,6 +1,7 @@
 package com.envyful.api.forge.gui.item;
 
 import com.envyful.api.forge.gui.pane.ForgeSimplePane;
+import com.envyful.api.gui.factory.GuiFactory;
 import net.minecraft.item.ItemStack;
 
 /**
@@ -11,8 +12,7 @@ import net.minecraft.item.ItemStack;
 public class EmptySlot extends ForgeSimplePane.SimpleDisplayableSlot {
 
     public EmptySlot(ForgeSimplePane pane, int index) {
-        super(pane, new ForgeSimpleDisplayable(ItemStack.EMPTY, (envyPlayer, clickType) -> {}, envyPlayer -> {}),
-                0, 0);
+        super(pane, GuiFactory.displayable(ItemStack.EMPTY), 0, 0);
     }
 
     @Override

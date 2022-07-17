@@ -25,17 +25,24 @@ public class SpigotSimpleDisplayable implements Displayable {
     private final int tickDelay;
     private final boolean async;
     private final boolean singleClick;
+    private final long clickDelay;
+    private final int lockOutClicks;
 
     private boolean clicked = false;
+    private long lastClick = -1L;
+    private int clicks = 0;
 
     public SpigotSimpleDisplayable(ItemStack itemStack, BiConsumer<EnvyPlayer<?>, ClickType> clickHandler,
-                                  Consumer<EnvyPlayer<?>> updateHandler, int tickDelay, boolean async, boolean singleClick) {
+                                  Consumer<EnvyPlayer<?>> updateHandler, int tickDelay, boolean async, boolean singleClick,
+                                  long clickDelay, int lockOutClicks) {
         this.itemStack = itemStack;
         this.clickHandler = clickHandler;
         this.updateHandler = updateHandler;
         this.tickDelay = tickDelay;
         this.async = async;
         this.singleClick = singleClick;
+        this.clickDelay = clickDelay;
+        this.lockOutClicks = lockOutClicks;
     }
 
     @Override
@@ -46,6 +53,16 @@ public class SpigotSimpleDisplayable implements Displayable {
 
         this.clicked = true;
 
+        if (++this.clicks >= this.lockOutClicks) {
+            return;
+        }
+
+        if (this.lastClick != -1 && (System.currentTimeMillis() - this.lastClick) <= this.clickDelay) {
+            return;
+        }
+
+        this.lastClick = System.currentTimeMillis();
+
         if (this.tickDelay <= 0) {
             if (this.async) {
                 UtilConcurrency.runAsync(() -> this.clickHandler.accept(player, clickType));
@@ -53,6 +70,7 @@ public class SpigotSimpleDisplayable implements Displayable {
                 Bukkit.getScheduler().runTask(((SpigotGuiFactory)GuiFactory.getPlatformFactory()).getPlugin(),
                         () -> this.clickHandler.accept(player, clickType));
             }
+
             return;
         }
 
@@ -84,6 +102,8 @@ public class SpigotSimpleDisplayable implements Displayable {
         private int tickDelay = 0;
         private boolean async = true;
         private boolean singleClick = false;
+        private long clickDelay = 50L;
+        private int lockOutClicks = 100;
 
         @Override
         public Displayable.Builder<ItemStack> itemStack(ItemStack itemStack) {
@@ -122,12 +142,25 @@ public class SpigotSimpleDisplayable implements Displayable {
         }
 
         @Override
+        public Displayable.Builder<ItemStack> clickDelay(long milliseconds) {
+            this.clickDelay = milliseconds;
+            return this;
+        }
+
+        @Override
+        public Displayable.Builder<ItemStack> lockOutClicks(int clickLockCount) {
+            this.lockOutClicks = clickLockCount;
+            return this;
+        }
+
+        @Override
         public Displayable build() {
             if (this.itemStack == null) {
                 throw new RuntimeException("Cannot create displayable without itemstack");
             }
 
-            return new SpigotSimpleDisplayable(this.itemStack, this.clickHandler, this.updateHandler, this.tickDelay, this.async, this.singleClick);
+            return new SpigotSimpleDisplayable(this.itemStack, this.clickHandler, this.updateHandler, this.tickDelay,
+                    this.async, this.singleClick, this.clickDelay, this.lockOutClicks);
         }
     }
 }

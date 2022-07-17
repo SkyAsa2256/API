@@ -129,6 +129,24 @@ public interface Displayable {
 
         /**
          *
+         * Allowed delay between user's clicks (defaults to 50 millis i.e. 1 tick)
+         *
+         * @param milliseconds The delay in milliseconds
+         * @return The builder
+         */
+        Builder<T> clickDelay(long milliseconds);
+
+        /**
+         *
+         * The number of clicks to lock the user out after (defaults to 100)
+         *
+         * @param clickLockCount The click count to lock the user out after
+         * @return The builder
+         */
+        Builder<T> lockOutClicks(int clickLockCount);
+
+        /**
+         *
          * Creates the displayable from the specifications
          *
          * @return The new displayable implementation

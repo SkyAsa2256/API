@@ -6,10 +6,12 @@ import com.envyful.api.gui.factory.PlatformGuiFactory;
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.gui.pane.type.PagedPane;
+import com.envyful.api.spigot.gui.SpigotGui;
 import com.envyful.api.spigot.gui.SpigotGuiBuilder;
 import com.envyful.api.spigot.gui.close.SpigotCloseConsumer;
 import com.envyful.api.spigot.gui.item.SpigotSimpleDisplayable;
 import com.envyful.api.spigot.gui.pane.SpigotSimplePane;
+import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
@@ -25,7 +27,7 @@ public class SpigotGuiFactory implements PlatformGuiFactory<ItemStack> {
     public SpigotGuiFactory(Plugin plugin) {
         this.plugin = plugin;
 
-        //TODO: register listeners
+        Bukkit.getPluginManager().registerEvents(new SpigotGui.Listener(), plugin);
     }
 
     public Plugin getPlugin() {

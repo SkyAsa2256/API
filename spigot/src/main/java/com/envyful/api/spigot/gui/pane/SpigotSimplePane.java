@@ -34,6 +34,14 @@ public class SpigotSimplePane implements Pane {
         }
     }
 
+    public Displayable[][] getItems() {
+        return this.items;
+    }
+
+    public int updateIndex(int index) {
+        return index + (9 * this.topLeftY) + this.topLeftX;
+    }
+
     @Override
     public void add(Displayable displayable) {
         if (this.full) {

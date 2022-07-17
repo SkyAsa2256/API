@@ -6,6 +6,7 @@ import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.spigot.gui.factory.SpigotGuiFactory;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.function.BiConsumer;
@@ -89,8 +90,12 @@ public class SpigotSimpleDisplayable implements Displayable {
     }
 
     public static final class Converter {
-        public static ItemStack toNative(SpigotSimpleDisplayable displayable) {
-            return displayable.itemStack;
+        public static ItemStack toNative(Displayable displayable) {
+            if (!(displayable instanceof SpigotSimpleDisplayable)) {
+                return new ItemStack(Material.AIR);
+            }
+
+            return ((SpigotSimpleDisplayable) displayable).itemStack;
         }
     }
 

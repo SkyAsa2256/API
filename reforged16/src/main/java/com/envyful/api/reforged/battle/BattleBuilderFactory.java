@@ -5,6 +5,8 @@ import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.events.BattleStartedEvent;
 import com.pixelmonmod.pixelmon.api.events.battles.BattleEndEvent;
 import com.pixelmonmod.pixelmon.battles.controller.BattleController;
+import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
+import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipant;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.Map;
@@ -42,5 +44,13 @@ public class BattleBuilderFactory {
 
         battleBuilder.endConsumer.accept(event);
         LISTENED_CONTROLLERS.remove(event.bc.battleIndex);
+
+        for (BattleParticipant battleParticipant : event.results.keySet()) {
+            if (!(battleParticipant instanceof PlayerParticipant)) {
+                continue;
+            }
+
+            ((PlayerParticipant) battleParticipant).getStorage().setInTemporaryMode(false, null);
+        }
     }
 }

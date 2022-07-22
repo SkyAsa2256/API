@@ -2,6 +2,7 @@ package com.envyful.api.reforged.pixelmon;
 
 import com.envyful.api.math.UtilRandom;
 import com.envyful.api.reforged.pixelmon.config.PokemonGeneratorConfig;
+import com.envyful.api.type.Pair;
 import com.envyful.api.type.requirement.impl.MinimumIntegerRequirement;
 import com.envyful.api.type.requirement.impl.RandomMinimumIntegerRequirement;
 import com.google.common.collect.Lists;
@@ -73,11 +74,10 @@ public class PokemonGenerator {
         PokemonSpec.Builder builder = PokemonSpec.builder();
 
         if (this.speciesRequirement) {
-            Species randomSpecies = this.getRandomSpecies();
-            Stats form = randomSpecies.getDefaultForm();
-            builder.species(randomSpecies);
-            builder.form(form.getName());
-            builder.palette(form.getDefaultGenderProperties().getDefaultPalette().getName());
+            Pair<Species, Stats> randomSpecies = this.getRandomSpecies();
+            builder.species(randomSpecies.getX());
+            builder.form(randomSpecies.getY().getName());
+            builder.palette(randomSpecies.getY().getDefaultGenderProperties().getDefaultPalette().getName());
             builder.allowEvolutions(this.allowEvolutions);
         }
 
@@ -114,32 +114,35 @@ public class PokemonGenerator {
         return builder.build();
     }
 
-    private Species getRandomSpecies() {
+    private Pair<Species, Stats> getRandomSpecies() {
         if (this.onlyLegends) {
-            return PixelmonSpecies.getRandomLegendary();
+            Species randomLegendary = PixelmonSpecies.getRandomLegendary();
+            return Pair.of(randomLegendary, randomLegendary.getDefaultForm());
         }
 
         Species species = PixelmonSpecies.getRandomSpecies(!this.allowLegends,  true, true);
+        Stats defaultForm = species.getDefaultForm();
 
-        while (!this.isAllowedSpecies(species)) {
+        while (!this.isAllowedSpecies(species, defaultForm)) {
             species = PixelmonSpecies.getRandomSpecies(!this.allowLegends,  true, true);
+            defaultForm = species.getDefaultForm();
         }
 
-        return species;
+        return Pair.of(species, defaultForm);
     }
 
-    private boolean isAllowedSpecies(Species species) {
-//        if (!this.allowUltraBeasts && PixelmonSpecies.ULTRA {
-//            return false;
-//        }
-//
-//        if (!this.allowLegends && species.isLegendary()) {
-//            return false;
-//        }
-//
-//        if (this.genderRequirement && species.g().isGenderless()) {
-//            return false;
-//        }
+    private boolean isAllowedSpecies(Species species, Stats stats) {
+        if (!this.allowUltraBeasts && species.isUltraBeast()) {
+            return false;
+        }
+
+        if (!this.allowLegends && species.isLegendary()) {
+            return false;
+        }
+
+        if (this.genderRequirement && stats.isGenderless()) {
+            return false;
+        }
 
         return !this.blockedTypes.contains(species);
     }

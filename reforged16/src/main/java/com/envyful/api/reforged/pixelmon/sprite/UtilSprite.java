@@ -17,6 +17,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
+import net.minecraft.util.text.IFormattableTextComponent;
+import net.minecraft.util.text.ITextComponent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,9 +36,15 @@ public class UtilSprite {
         ListNBT lore = new ListNBT();
 
         for (String s : getPokemonDesc(pokemon, config)) {
-            lore.add(StringNBT.valueOf(s));
+            ITextComponent colour = UtilChatColour.colour(s);
+            if (colour instanceof IFormattableTextComponent) {
+                colour = ((IFormattableTextComponent) colour).setStyle(colour.getStyle().withItalic(false));
+            }
+
+            lore.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(colour)));
         }
 
+        compound.putString("Name", ITextComponent.Serializer.toJson(UtilChatColour.colour(config.getName())).toString());
         compound.put("Lore", lore);
         CompoundNBT tag = itemStack.getTag();
 

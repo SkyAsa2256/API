@@ -35,16 +35,15 @@ public class UtilSprite {
         CompoundNBT compound = itemStack.getOrCreateTagElement("display");
         ListNBT lore = new ListNBT();
 
-        for (String s : getPokemonDesc(pokemon, config)) {
-            ITextComponent colour = UtilChatColour.colour(s);
-            if (colour instanceof IFormattableTextComponent) {
-                colour = ((IFormattableTextComponent) colour).setStyle(colour.getStyle().withItalic(false));
+        for (ITextComponent s : getPokemonDesc(pokemon, config)) {
+            if (s instanceof IFormattableTextComponent) {
+                s = ((IFormattableTextComponent) s).setStyle(s.getStyle().withItalic(false));
             }
 
-            lore.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(colour)));
+            lore.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(s)));
         }
 
-        compound.putString("Name", ITextComponent.Serializer.toJson(UtilChatColour.colour(config.getName())).toString());
+        compound.putString("Name", ITextComponent.Serializer.toJson(UtilChatColour.colour(replacePokemonPlaceholders(config.getName(), pokemon, config))));
         compound.put("Lore", lore);
         CompoundNBT tag = itemStack.getTag();
 
@@ -70,9 +69,17 @@ public class UtilSprite {
         return SpriteItemHelper.getPhoto(pokemon);
     }
 
-    public static List<String> getPokemonDesc(Pokemon pokemon, SpriteConfig config) {
-        List<String> lore = new ArrayList<>();
+    public static List<ITextComponent> getPokemonDesc(Pokemon pokemon, SpriteConfig config) {
+        List<ITextComponent> lore = new ArrayList<>();
 
+        for (String line : config.getLore()) {
+            lore.add(UtilChatColour.colour(replacePokemonPlaceholders(line, pokemon, config)));
+        }
+
+        return lore;
+    }
+
+    public static String replacePokemonPlaceholders(String line, Pokemon pokemon, SpriteConfig config) {
         IVStore iVs = pokemon.getIVs();
         float ivHP = iVs.getStat(BattleStatsType.HP);
         float ivAtk = iVs.getStat(BattleStatsType.ATTACK);
@@ -89,73 +96,58 @@ public class UtilSprite {
         float evSDef = pokemon.getEVs().getStat(BattleStatsType.SPECIAL_DEFENSE);
         ExtraStats extraStats = pokemon.getExtraStats();
 
+        line = line.replace("%level%", pokemon.getPokemonLevel() + "")
+                        .replace("%gender%", pokemon.getGender() == Gender.MALE ? config.getMaleFormat() :
+                                pokemon.getGender() == Gender.NONE ? config.getNoneFormat() :
+                                        config.getFemaleFormat())
+                        .replace("%breedable%", pokemon.hasFlag(Flags.UNBREEDABLE) ?
+                                config.getUnbreedableTrueFormat() : config.getUnbreedableFalseFormat())
+                        .replace("%nature%", config.getNatureFormat()
+                                .replace("%nature_name%",
+                                        pokemon.getMintNature() != null ?
+                                                pokemon.getBaseNature().getLocalizedName() :
+                                                pokemon.getNature().getLocalizedName())
+                                .replace("%mint_nature%", pokemon.getMintNature() != null ?
+                                        config.getMintNatureFormat().replace("%mint_nature_name%", pokemon.getMintNature().getLocalizedName()) : ""))
+                        .replace("%ability%", config.getAbilityFormat()
+                                .replace("%ability_name%", pokemon.getAbility().getLocalizedName())
+                                .replace("%ability_ha%", pokemon.hasHiddenAbility() ? config.getHaFormat() : ""))
+                        .replace("%friendship%", pokemon.getFriendship() + "")
+                        .replace("%untradeable%", pokemon.hasFlag("untradeable") ?
+                                config.getUntrdeableTrueFormat() : config.getUntradeableFalseFormat())
+                        .replace("%iv_percentage%", percentage + "")
+                        .replace("%iv_hp%", getColour(config, iVs, BattleStatsType.HP) + ((int) ivHP) + "")
+                        .replace("%iv_attack%", getColour(config, iVs, BattleStatsType.ATTACK) + ((int) ivAtk) + "")
+                        .replace("%iv_defence%", getColour(config, iVs, BattleStatsType.DEFENSE) + ((int) ivDef) + "")
+                        .replace("%iv_spattack%", getColour(config, iVs, BattleStatsType.SPECIAL_ATTACK) + ((int) ivSAtk) + "")
+                        .replace("%iv_spdefence%", getColour(config, iVs, BattleStatsType.SPECIAL_DEFENSE) + ((int) ivSDef) + "")
+                        .replace("%iv_speed%", getColour(config, iVs, BattleStatsType.SPEED) + ((int) ivSpeed) + "")
+                        .replace("%ev_hp%", ((int) evHP) + "")
+                        .replace("%ev_attack%", ((int) evAtk) + "")
+                        .replace("%ev_defence%", ((int) evDef) + "")
+                        .replace("%ev_spattack%", ((int) evSAtk) + "")
+                        .replace("%ev_spdefence%", ((int) evSDef) + "")
+                        .replace("%ev_speed%", ((int) evSpeed) + "")
+                        .replace("%move_1%", getMove(pokemon, 0))
+                        .replace("%move_2%", getMove(pokemon, 1))
+                        .replace("%move_3%", getMove(pokemon, 2))
+                        .replace("%move_4%", getMove(pokemon, 3))
+                        .replace("%shiny%", pokemon.isShiny() ? config.getShinyTrueFormat() : config.getShinyFalseFormat())
+                        .replace("%form%", pokemon.getForm().getLocalizedName())
+                        .replace("%size%", pokemon.getGrowth().getLocalizedName())
+                        .replace("%friendship%", pokemon.getFriendship() + "");
 
-        for (String line : config.getLore()) {
-            String newLine =
-                    line
-                            .replace("%level%", pokemon.getPokemonLevel() + "")
-                            .replace("%gender%", pokemon.getGender() == Gender.MALE ? config.getMaleFormat() :
-                                    pokemon.getGender() == Gender.NONE ? config.getNoneFormat() :
-                                            config.getFemaleFormat())
-                            .replace("%breedable%", pokemon.hasFlag(Flags.UNBREEDABLE) ?
-                                    config.getUnbreedableTrueFormat() : config.getUnbreedableFalseFormat())
-                            .replace("%nature%", config.getNatureFormat()
-                                    .replace("%nature_name%",
-                                             pokemon.getMintNature() != null ?
-                                                     pokemon.getBaseNature().getLocalizedName() :
-                                                     pokemon.getNature().getLocalizedName())
-                                    .replace("%mint_nature%", pokemon.getMintNature() != null ?
-                                            config.getMintNatureFormat().replace("%mint_nature_name%", pokemon.getMintNature().getLocalizedName()) : ""))
-                            .replace("%ability%", config.getAbilityFormat()
-                                    .replace("%ability_name%", pokemon.getAbility().getLocalizedName())
-                                    .replace("%ability_ha%", pokemon.hasHiddenAbility() ? config.getHaFormat() : ""))
-                            .replace("%friendship%", pokemon.getFriendship() + "")
-                            .replace("%untradeable%", pokemon.hasFlag("untradeable") ?
-                                    config.getUntrdeableTrueFormat() : config.getUntradeableFalseFormat())
-                            .replace("%iv_percentage%", percentage + "")
-                            .replace("%iv_hp%", getColour(config, iVs, BattleStatsType.HP) + ((int) ivHP) + "")
-                            .replace("%iv_attack%", getColour(config, iVs, BattleStatsType.ATTACK) + ((int) ivAtk) + "")
-                            .replace("%iv_defence%", getColour(config, iVs, BattleStatsType.DEFENSE) + ((int) ivDef) + "")
-                            .replace("%iv_spattack%", getColour(config, iVs, BattleStatsType.SPECIAL_ATTACK) + ((int) ivSAtk) + "")
-                            .replace("%iv_spdefence%", getColour(config, iVs, BattleStatsType.SPECIAL_DEFENSE) + ((int) ivSDef) + "")
-                            .replace("%iv_speed%", getColour(config, iVs, BattleStatsType.SPEED) + ((int) ivSpeed) + "")
-                            .replace("%ev_hp%", ((int) evHP) + "")
-                            .replace("%ev_attack%", ((int) evAtk) + "")
-                            .replace("%ev_defence%", ((int) evDef) + "")
-                            .replace("%ev_spattack%", ((int) evSAtk) + "")
-                            .replace("%ev_spdefence%", ((int) evSDef) + "")
-                            .replace("%ev_speed%", ((int) evSpeed) + "")
-                            .replace("%move_1%", getMove(pokemon, 0))
-                            .replace("%move_2%", getMove(pokemon, 1))
-                            .replace("%move_3%", getMove(pokemon, 2))
-                            .replace("%move_4%", getMove(pokemon, 3))
-                            .replace("%shiny%", pokemon.isShiny() ? config.getShinyTrueFormat() : config.getShinyFalseFormat())
-                            .replace("%form%", pokemon.getForm().getLocalizedName())
-                            .replace("%size%", pokemon.getGrowth().getLocalizedName())
-                    .replace("%friendship%", pokemon.getFriendship() + "");
-
-            if (extraStats instanceof MewStats) {
-                newLine = newLine.replace("%mew_cloned%", config.getMewClonedFormat()
-                                .replace("%cloned%", ((MewStats) extraStats).numCloned + ""));
-            } else {
-                if (newLine.contains("%mew_cloned%")) {
-                    continue;
-                }
-            }
-
-            if (extraStats instanceof LakeTrioStats) {
-                newLine = newLine.replace("%trio_gemmed%", config.getGemmedFormat()
-                                .replace("%gemmed%", ((LakeTrioStats) extraStats).numEnchanted + ""));
-            } else {
-                if (newLine.contains("%trio_gemmed%")) {
-                    continue;
-                }
-            }
-
-            lore.add(UtilChatColour.translateColourCodes('&', newLine));
+        if (extraStats instanceof MewStats) {
+            line = line.replace("%mew_cloned%", config.getMewClonedFormat()
+                    .replace("%cloned%", ((MewStats) extraStats).numCloned + ""));
         }
 
-        return lore;
+        if (extraStats instanceof LakeTrioStats) {
+            line = line.replace("%trio_gemmed%", config.getGemmedFormat()
+                    .replace("%gemmed%", ((LakeTrioStats) extraStats).numEnchanted + ""));
+        }
+
+        return line;
     }
 
     private static String getColour(SpriteConfig config, IVStore ivStore, BattleStatsType statsType) {

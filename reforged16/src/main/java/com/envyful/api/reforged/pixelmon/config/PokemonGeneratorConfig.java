@@ -14,6 +14,7 @@ public class PokemonGeneratorConfig {
 
     private transient Set<Species> blockedSpecies = null;
     private List<String> blockedTypes;
+    private List<String> blockedTypeAndForm;
     private boolean speciesRequirement;
     private boolean allowLegends;
     private boolean allowUltraBeasts;
@@ -29,7 +30,7 @@ public class PokemonGeneratorConfig {
     private int maxIVPercentage;
     private boolean onlyLegends;
 
-    public PokemonGeneratorConfig(Set<Species> blockedTypes, boolean speciesRequirement, boolean allowLegends,
+    public PokemonGeneratorConfig(Set<Species> blockedTypes, List<String> blockedTypeAndForm, boolean speciesRequirement, boolean allowLegends,
                                   boolean allowUltraBeasts, boolean genderRequirement, boolean growthRequirement,
                                   boolean natureRequirement, int potentialGrowthRequirements,
                                   int potentialNatureRequirements, boolean allowEvolutions, boolean ivRequirement,
@@ -37,6 +38,7 @@ public class PokemonGeneratorConfig {
                                   boolean onlyLegends) {
         this.blockedSpecies = blockedTypes;
         this.blockedTypes = blockedTypes.stream().map(Species::getName).collect(Collectors.toList());
+        this.blockedTypeAndForm = blockedTypeAndForm;
         this.speciesRequirement = speciesRequirement;
         this.allowLegends = allowLegends;
         this.allowUltraBeasts = allowUltraBeasts;
@@ -68,6 +70,10 @@ public class PokemonGeneratorConfig {
         }
 
         return this.blockedSpecies;
+    }
+
+    public List<String> getBlockedTypeAndForm() {
+        return this.blockedTypeAndForm;
     }
 
     public boolean isSpeciesRequirement() {

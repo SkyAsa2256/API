@@ -25,6 +25,7 @@ import java.util.Set;
 public class PokemonGenerator {
 
     private final Set<Species> blockedTypes;
+    private final Set<String> blockedTypeAndForm;
     private final boolean speciesRequirement;
     private final boolean allowLegends;
     private final boolean allowUltraBeasts;
@@ -40,11 +41,12 @@ public class PokemonGenerator {
     private final int maxIVPercentage;
     private final boolean onlyLegends;
 
-    private PokemonGenerator(Set<Species> blockedTypes, boolean speciesRequirement, boolean allowLegends, boolean allowUltraBeasts, boolean genderRequirement,
+    private PokemonGenerator(Set<Species> blockedTypes, Set<String> blockedTypeAndForm, boolean speciesRequirement, boolean allowLegends, boolean allowUltraBeasts, boolean genderRequirement,
                              boolean growthRequirement, boolean natureRequirement, int potentialGrowthRequirements, int potentialNatureRequirements,
                              boolean allowEvolutions, boolean ivRequirement, boolean randomIVGeneration,
                              int minIVPercentage, int maxIVPercentage, boolean onlyLegends) {
         this.blockedTypes = blockedTypes;
+        this.blockedTypeAndForm = blockedTypeAndForm;
         this.speciesRequirement = speciesRequirement;
         this.allowLegends = allowLegends;
         this.allowUltraBeasts = allowUltraBeasts;
@@ -62,7 +64,7 @@ public class PokemonGenerator {
     }
 
     public PokemonGenerator(PokemonGeneratorConfig config) {
-        this(config.getBlockedTypes(), config.isSpeciesRequirement(), config.isAllowLegends(),
+        this(config.getBlockedTypes(), Sets.newHashSet(config.getBlockedTypeAndForm()), config.isSpeciesRequirement(), config.isAllowLegends(),
              config.isAllowUltraBeasts(), config.isGenderRequirement(), config.isGrowthRequirement(),
              config.isNatureRequirement(), config.getPotentialGrowthRequirements(),
              config.getPotentialNatureRequirements(), config.isAllowEvolutions(), config.isIvRequirement(),
@@ -141,6 +143,16 @@ public class PokemonGenerator {
         }
 
         if (this.genderRequirement && stats.isGenderless()) {
+            return false;
+        }
+
+        String formName = stats.getName();
+
+        if (formName.isEmpty()) {
+            formName = "none";
+        }
+
+        if (this.blockedTypeAndForm.contains(species.getName().toLowerCase() + " form:" + formName)) {
             return false;
         }
 
@@ -248,7 +260,7 @@ public class PokemonGenerator {
 
         public PokemonGenerator build() {
             return new PokemonGenerator(this.blockedTypes,
-                    this.speciesRequirement,
+                    Sets.newHashSet(), this.speciesRequirement,
                     this.allowLegends,
                     this.allowUltraBeasts,
                     this.genderRequirement,

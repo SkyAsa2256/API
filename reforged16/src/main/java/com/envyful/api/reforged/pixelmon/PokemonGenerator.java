@@ -142,7 +142,7 @@ public class PokemonGenerator {
             return false;
         }
 
-        if (this.genderRequirement && stats.isGenderless()) {
+        if (this.genderRequirement && (stats.isGenderless() || stats.getMalePercentage() >= 100 || stats.getMalePercentage() <= 0)) {
             return false;
         }
 

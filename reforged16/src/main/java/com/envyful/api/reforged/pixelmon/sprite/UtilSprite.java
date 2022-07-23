@@ -103,6 +103,7 @@ public class UtilSprite {
         ExtraStats extraStats = pokemon.getExtraStats();
 
         line = line
+                .replace("%nickname%", pokemon.getDisplayName())
                 .replace("%palette%", pokemon.getPalette().getLocalizedName())
                 .replace("%species_name%", pokemon.getSpecies().getLocalizedName())
                 .replace("%level%", pokemon.getPokemonLevel() + "")

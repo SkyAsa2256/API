@@ -73,7 +73,13 @@ public class UtilSprite {
         List<ITextComponent> lore = new ArrayList<>();
 
         for (String line : config.getLore()) {
-            lore.add(UtilChatColour.colour(replacePokemonPlaceholders(line, pokemon, config)));
+            line = replacePokemonPlaceholders(line, pokemon, config);
+
+            if (line == null) {
+                continue;
+            }
+
+            lore.add(UtilChatColour.colour(line));
         }
 
         return lore;
@@ -96,7 +102,9 @@ public class UtilSprite {
         float evSDef = pokemon.getEVs().getStat(BattleStatsType.SPECIAL_DEFENSE);
         ExtraStats extraStats = pokemon.getExtraStats();
 
-        line = line.replace("%level%", pokemon.getPokemonLevel() + "")
+        line = line
+                .replace("%species_name%", pokemon.getSpecies().getLocalizedName())
+                .replace("%level%", pokemon.getPokemonLevel() + "")
                         .replace("%gender%", pokemon.getGender() == Gender.MALE ? config.getMaleFormat() :
                                 pokemon.getGender() == Gender.NONE ? config.getNoneFormat() :
                                         config.getFemaleFormat())
@@ -140,11 +148,15 @@ public class UtilSprite {
         if (extraStats instanceof MewStats) {
             line = line.replace("%mew_cloned%", config.getMewClonedFormat()
                     .replace("%cloned%", ((MewStats) extraStats).numCloned + ""));
+        } else {
+            line = null;
         }
 
         if (extraStats instanceof LakeTrioStats) {
             line = line.replace("%trio_gemmed%", config.getGemmedFormat()
                     .replace("%gemmed%", ((LakeTrioStats) extraStats).numEnchanted + ""));
+        } else {
+            line = null;
         }
 
         return line;

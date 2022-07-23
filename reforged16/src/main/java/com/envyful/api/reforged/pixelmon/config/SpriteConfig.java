@@ -15,6 +15,7 @@ public class SpriteConfig {
     private List<String> lore = Lists.newArrayList(
             "&7Level: &b%level%",
             "&7Shiny: &b%shiny%",
+            "&7Palette: &b%palette%",
             "&7Gender: %gender%",
             "&7Breedable: %breedable%",
             "&7Friendship: %friendship%",

@@ -155,12 +155,14 @@ public class UtilSprite {
             }
         }
 
-        if (extraStats instanceof LakeTrioStats) {
-            line = line.replace("%trio_gemmed%", config.getGemmedFormat()
-                    .replace("%gemmed%", ((LakeTrioStats) extraStats).numEnchanted + ""));
-        } else {
-            if (line.contains("%trio_gemmed%") || line.contains("%gemmed%")) {
-                line = null;
+        if (line != null) {
+            if (extraStats instanceof LakeTrioStats) {
+                line = line.replace("%trio_gemmed%", config.getGemmedFormat()
+                        .replace("%gemmed%", ((LakeTrioStats)extraStats).numEnchanted + ""));
+            } else {
+                if (line.contains("%trio_gemmed%") || line.contains("%gemmed%")) {
+                    line = null;
+                }
             }
         }
 

@@ -150,14 +150,18 @@ public class UtilSprite {
             line = line.replace("%mew_cloned%", config.getMewClonedFormat()
                     .replace("%cloned%", ((MewStats) extraStats).numCloned + ""));
         } else {
-            line = null;
+            if (line.contains("%mew_cloned%") || line.contains("%cloned%")) {
+                line = null;
+            }
         }
 
         if (extraStats instanceof LakeTrioStats) {
             line = line.replace("%trio_gemmed%", config.getGemmedFormat()
                     .replace("%gemmed%", ((LakeTrioStats) extraStats).numEnchanted + ""));
         } else {
-            line = null;
+            if (line.contains("%trio_gemmed%") || line.contains("%gemmed%")) {
+                line = null;
+            }
         }
 
         return line;

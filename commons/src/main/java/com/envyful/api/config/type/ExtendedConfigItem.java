@@ -156,7 +156,8 @@ public class ExtendedConfigItem extends ConfigItem {
             return this;
         }
 
-        public Builder positions(Pair<Integer, Integer>... positions) {
+        @SafeVarargs
+        public final Builder positions(Pair<Integer, Integer>... positions) {
             for (Pair<Integer, Integer> position : positions) {
                 this.positions.put(this.positions.size() + "", position);
             }

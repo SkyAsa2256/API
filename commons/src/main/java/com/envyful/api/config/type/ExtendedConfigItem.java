@@ -78,6 +78,10 @@ public class ExtendedConfigItem extends ConfigItem {
         return this.commandsExecuted;
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public static class Builder {
 
         private boolean enabled = true;

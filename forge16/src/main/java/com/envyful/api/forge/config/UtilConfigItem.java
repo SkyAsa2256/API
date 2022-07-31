@@ -1,11 +1,11 @@
 package com.envyful.api.forge.config;
 
 import com.envyful.api.config.type.ConfigItem;
-import com.envyful.api.config.type.PermissibleConfigItem;
-import com.envyful.api.config.type.PositionableConfigItem;
+import com.envyful.api.config.type.ExtendedConfigItem;
 import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.forge.items.ItemBuilder;
 import com.envyful.api.forge.items.ItemFlag;
+import com.envyful.api.forge.player.ForgeEnvyPlayer;
 import com.envyful.api.forge.player.util.UtilPlayer;
 import com.envyful.api.gui.Transformer;
 import com.envyful.api.gui.factory.GuiFactory;
@@ -34,13 +34,8 @@ public class UtilConfigItem {
         return new ConfigItemBuilder();
     }
 
-    /**
-     *
-     * @deprecated Use {@link UtilConfigItem#builder()}
-     */
-    @Deprecated
-    public static void addPermissibleConfigItem(Pane pane, ServerPlayerEntity player, List<Transformer> transformers, PermissibleConfigItem configItem) {
-        addPermissibleConfigItem(pane, player, configItem, transformers,null);
+    public static void addExtendedConfigItem(Pane pane, ForgeEnvyPlayer player, ExtendedConfigItem configItem, Transformer... transformers) {
+        builder().extendedConfigItem(player, pane, configItem, transformers);
     }
 
     /**
@@ -48,7 +43,16 @@ public class UtilConfigItem {
      * @deprecated Use {@link UtilConfigItem#builder()}
      */
     @Deprecated
-    public static void addPermissibleConfigItem(Pane pane, ServerPlayerEntity player, PermissibleConfigItem configItem,
+    public static void addPermissibleConfigItem(Pane pane, ServerPlayerEntity player, List<Transformer> transformers, ExtendedConfigItem configItem) {
+        addPermissibleConfigItem(pane, player, configItem, transformers, null);
+    }
+
+    /**
+     *
+     * @deprecated Use {@link UtilConfigItem#builder()}
+     */
+    @Deprecated
+    public static void addPermissibleConfigItem(Pane pane, ServerPlayerEntity player, ExtendedConfigItem configItem,
                                                 Transformer... transformers) {
         addPermissibleConfigItem(pane, player, configItem, Lists.newArrayList(transformers), null);
     }
@@ -58,7 +62,7 @@ public class UtilConfigItem {
      * @deprecated Use {@link UtilConfigItem#builder()}
      */
     @Deprecated
-    public static void addPermissibleConfigItem(Pane pane, ServerPlayerEntity player, PermissibleConfigItem configItem,
+    public static void addPermissibleConfigItem(Pane pane, ServerPlayerEntity player, ExtendedConfigItem configItem,
                                                 BiConsumer<EnvyPlayer<?>, Displayable.ClickType> clickHandler, Transformer... transformers) {
         addPermissibleConfigItem(pane, player, configItem, Lists.newArrayList(transformers), clickHandler);
     }
@@ -68,7 +72,7 @@ public class UtilConfigItem {
      * @deprecated Use {@link UtilConfigItem#builder()}
      */
     @Deprecated
-    public static void addPermissibleConfigItem(Pane pane, ServerPlayerEntity player, PermissibleConfigItem configItem,
+    public static void addPermissibleConfigItem(Pane pane, ServerPlayerEntity player, ExtendedConfigItem configItem,
                                                 List<Transformer> transformers,
                                                 BiConsumer<EnvyPlayer<?>, Displayable.ClickType> clickHandler) {
         ItemStack itemStack = fromPermissibleItem(player, configItem, transformers);
@@ -92,7 +96,7 @@ public class UtilConfigItem {
      * @deprecated Use {@link UtilConfigItem#builder()}
      */
     @Deprecated
-    public static void addConfigItem(Pane pane, PositionableConfigItem configItem, Transformer... transformers) {
+    public static void addConfigItem(Pane pane, ExtendedConfigItem configItem, Transformer... transformers) {
         addConfigItem(pane, configItem, Lists.newArrayList(transformers), null);
     }
 
@@ -101,7 +105,7 @@ public class UtilConfigItem {
      * @deprecated Use {@link UtilConfigItem#builder()}
      */
     @Deprecated
-    public static void addConfigItem(Pane pane, List<Transformer> transformers, PositionableConfigItem configItem) {
+    public static void addConfigItem(Pane pane, List<Transformer> transformers, ExtendedConfigItem configItem) {
         addConfigItem(pane, configItem, transformers,null);
     }
 
@@ -110,7 +114,7 @@ public class UtilConfigItem {
      * @deprecated Use {@link UtilConfigItem#builder()}
      */
     @Deprecated
-    public static void addConfigItem(Pane pane, PositionableConfigItem configItem,
+    public static void addConfigItem(Pane pane, ExtendedConfigItem configItem,
                                      BiConsumer<EnvyPlayer<?>, Displayable.ClickType> clickHandler, Transformer... transformers) {
         addConfigItem(pane, configItem, Lists.newArrayList(transformers), clickHandler);
     }
@@ -120,7 +124,7 @@ public class UtilConfigItem {
      * @deprecated Use {@link UtilConfigItem#builder()}
      */
     @Deprecated
-    public static void addConfigItem(Pane pane, PositionableConfigItem configItem, List<Transformer> transformers,
+    public static void addConfigItem(Pane pane, ExtendedConfigItem configItem, List<Transformer> transformers,
                                      BiConsumer<EnvyPlayer<?>, Displayable.ClickType> clickHandler) {
         if (!configItem.isEnabled()) {
             return;
@@ -141,25 +145,25 @@ public class UtilConfigItem {
         }
     }
 
-    public static ItemStack fromPermissibleItem(ServerPlayerEntity player, PermissibleConfigItem permissibleConfigItem, Transformer... transformers) {
+    public static ItemStack fromPermissibleItem(ServerPlayerEntity player, ExtendedConfigItem permissibleConfigItem, Transformer... transformers) {
         return fromPermissibleItem(player, permissibleConfigItem, Lists.newArrayList(transformers));
     }
 
-    public static ItemStack fromPermissibleItem(ServerPlayerEntity player, PermissibleConfigItem permissibleConfigItem, List<Transformer> transformers) {
+    public static ItemStack fromPermissibleItem(ServerPlayerEntity player, ExtendedConfigItem permissibleConfigItem, List<Transformer> transformers) {
         if (!permissibleConfigItem.isEnabled()) {
             return null;
         }
 
-        if (permissibleConfigItem.getPermission().isEmpty() || UtilPlayer.hasPermission(player,
-                                                                                        permissibleConfigItem.getPermission())) {
-            return fromConfigItem(permissibleConfigItem);
+        if (permissibleConfigItem.getPermission().isEmpty() || !permissibleConfigItem.requiresPermission() ||
+                UtilPlayer.hasPermission(player, permissibleConfigItem.getPermission())) {
+            return fromConfigItem(permissibleConfigItem, transformers);
         }
 
         if (permissibleConfigItem.getElseItem() == null || !permissibleConfigItem.getElseItem().isEnabled()) {
             return null;
         }
 
-        return fromConfigItem(permissibleConfigItem.getElseItem());
+        return fromConfigItem(permissibleConfigItem.getElseItem(), transformers);
     }
 
     public static ItemStack fromConfigItem(ConfigItem configItem, Transformer... transformers) {

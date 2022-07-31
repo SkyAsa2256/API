@@ -1,15 +1,16 @@
 package com.envyful.api.forge.config;
 
 import com.envyful.api.config.type.ConfigItem;
-import com.envyful.api.config.type.PermissibleConfigItem;
-import com.envyful.api.config.type.PositionableConfigItem;
+import com.envyful.api.config.type.ExtendedConfigItem;
 import com.envyful.api.forge.gui.item.ForgeSimpleDisplayable;
 import com.envyful.api.forge.player.ForgeEnvyPlayer;
+import com.envyful.api.forge.server.UtilForgeServer;
 import com.envyful.api.gui.Transformer;
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.type.Pair;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 
 import java.util.function.BiConsumer;
@@ -21,15 +22,11 @@ public class ConfigItemBuilder extends ForgeSimpleDisplayable.Builder {
         super();
     }
 
-    public Displayable permissibleConfigItem(ForgeEnvyPlayer player, Pane pane, PermissibleConfigItem configItem, Transformer... transformers) {
-        return this.positionableConfigItem(pane, UtilConfigItem.fromPermissibleItem(player.getParent(), configItem, transformers), configItem);
+    public Displayable extendedConfigItem(ForgeEnvyPlayer player, Pane pane, ExtendedConfigItem configItem, Transformer... transformers) {
+        return this.extendedConfigItem(pane, UtilConfigItem.fromPermissibleItem(player.getParent(), configItem, transformers), configItem);
     }
 
-    public Displayable positionableConfigItem(Pane pane, PositionableConfigItem configItem, Transformer... transformers) {
-        return this.positionableConfigItem(pane, UtilConfigItem.fromConfigItem(configItem, transformers), configItem);
-    }
-
-    public Displayable positionableConfigItem(Pane pane, ItemStack item, PositionableConfigItem configItem) {
+    public Displayable extendedConfigItem(Pane pane, ItemStack item, ExtendedConfigItem configItem) {
         Displayable build = this.itemStack(item).build();
 
         if (build == null) {
@@ -38,6 +35,26 @@ public class ConfigItemBuilder extends ForgeSimpleDisplayable.Builder {
 
         for (Pair<Integer, Integer> position : configItem.getPositions()) {
             pane.set(position.getX(), position.getY(), build);
+        }
+
+        if (this.clickHandler == null) {
+            if (configItem.shouldCloseOnClick() || !configItem.getCommandsExecuted().isEmpty()) {
+                if (!configItem.getCommandsExecuted().isEmpty()) {
+                    this.asyncClick(false);
+                }
+
+                this.clickHandler((player, clickType) -> {
+                    if (!configItem.getCommandsExecuted().isEmpty()) {
+                        for (String s : configItem.getCommandsExecuted()) {
+                            UtilForgeServer.executeCommand((ServerPlayerEntity) player.getParent(), s);
+                        }
+                    }
+
+                    if (configItem.shouldCloseOnClick()) {
+                        ((ServerPlayerEntity) player.getParent()).closeContainer();
+                    }
+                });
+            }
         }
 
         return build;

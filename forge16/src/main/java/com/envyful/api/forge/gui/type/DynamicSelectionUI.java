@@ -2,7 +2,7 @@ package com.envyful.api.forge.gui.type;
 
 import com.envyful.api.config.type.ConfigInterface;
 import com.envyful.api.config.type.ConfigItem;
-import com.envyful.api.config.type.PositionableConfigItem;
+import com.envyful.api.config.type.ExtendedConfigItem;
 import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.forge.config.UtilConfigItem;
 import com.envyful.api.forge.gui.item.PositionableItem;
@@ -71,7 +71,7 @@ public class DynamicSelectionUI {
 
         UtilConfigItem.addConfigItem(pane, config.config.backButton, config.transformers, config.returnHandler);
 
-        for (PositionableConfigItem displayItem : config.displayConfigItems) {
+        for (ExtendedConfigItem displayItem : config.displayConfigItems) {
             UtilConfigItem.addConfigItem(pane, config.transformers, displayItem);
         }
 
@@ -100,7 +100,7 @@ public class DynamicSelectionUI {
         private BiConsumer<EnvyPlayer<?>, Displayable.ClickType> returnHandler = null;
         private TriConsumer<EnvyPlayer<?>, Displayable.ClickType, String> acceptHandler = null;
         private ConfirmationUI.Builder confirm = null;
-        private List<PositionableConfigItem> displayConfigItems = Lists.newArrayList();
+        private List<ExtendedConfigItem> displayConfigItems = Lists.newArrayList();
         private List<PositionableItem> displayItems = Lists.newArrayList();
         private List<String> displayNames = Lists.newArrayList();
         private List<Transformer> transformers = Lists.newArrayList();
@@ -137,17 +137,17 @@ public class DynamicSelectionUI {
             return this;
         }
 
-        public Builder displayConfigItems(List<PositionableConfigItem> displayConfigItems) {
+        public Builder displayConfigItems(List<ExtendedConfigItem> displayConfigItems) {
             this.displayConfigItems.addAll(displayConfigItems);
             return this;
         }
 
-        public Builder displayConfigItem(PositionableConfigItem displayConfigItem) {
+        public Builder displayConfigItem(ExtendedConfigItem displayConfigItem) {
             this.displayConfigItems.add(displayConfigItem);
             return this;
         }
 
-        public Builder displayConfigItems(PositionableConfigItem... displayConfigItems) {
+        public Builder displayConfigItems(ExtendedConfigItem... displayConfigItems) {
             this.displayConfigItems.addAll(Arrays.asList(displayConfigItems));
             return this;
         }
@@ -214,7 +214,7 @@ public class DynamicSelectionUI {
 
         private List<Integer> optionPositions;
 
-        private PositionableConfigItem backButton = new PositionableConfigItem(
+        private ExtendedConfigItem backButton = new ExtendedConfigItem(
                 "pixelmon:eject_button", 1, (byte) 0, "&cBack",
                 Lists.newArrayList(), 0, 0, Maps.newHashMap()
         );
@@ -250,7 +250,7 @@ public class DynamicSelectionUI {
             return this.optionPositions;
         }
 
-        public PositionableConfigItem getBackButton() {
+        public ExtendedConfigItem getBackButton() {
             return this.backButton;
         }
 

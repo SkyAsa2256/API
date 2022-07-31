@@ -2,7 +2,7 @@ package com.envyful.api.forge.gui.type;
 
 import com.envyful.api.config.type.ConfigInterface;
 import com.envyful.api.config.type.ConfigItem;
-import com.envyful.api.config.type.PositionableConfigItem;
+import com.envyful.api.config.type.ExtendedConfigItem;
 import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.forge.config.UtilConfigItem;
 import com.envyful.api.forge.gui.item.PositionableItem;
@@ -97,7 +97,7 @@ public class MultiSelectionUI {
             });
         }
 
-        for (PositionableConfigItem displayItem : config.displayConfigItems) {
+        for (ExtendedConfigItem displayItem : config.displayConfigItems) {
             UtilConfigItem.addConfigItem(pane, config.transformers, displayItem);
         }
 
@@ -127,7 +127,7 @@ public class MultiSelectionUI {
         private TriConsumer<EnvyPlayer<?>, Displayable.ClickType, String> acceptHandler = null;
         private TriConsumer<EnvyPlayer<?>, Displayable.ClickType, String> selectHandler = null;
         private ConfirmationUI.Builder confirm = null;
-        private List<PositionableConfigItem> displayConfigItems = Lists.newArrayList();
+        private List<ExtendedConfigItem> displayConfigItems = Lists.newArrayList();
         private List<PositionableItem> displayItems = Lists.newArrayList();
         private int page = 0;
         private List<Transformer> transformers = Lists.newArrayList();
@@ -169,17 +169,17 @@ public class MultiSelectionUI {
             return this;
         }
 
-        public Builder displayConfigItems(List<PositionableConfigItem> displayConfigItems) {
+        public Builder displayConfigItems(List<ExtendedConfigItem> displayConfigItems) {
             this.displayConfigItems.addAll(displayConfigItems);
             return this;
         }
 
-        public Builder displayConfigItem(PositionableConfigItem displayConfigItem) {
+        public Builder displayConfigItem(ExtendedConfigItem displayConfigItem) {
             this.displayConfigItems.add(displayConfigItem);
             return this;
         }
 
-        public Builder displayConfigItems(PositionableConfigItem... displayConfigItems) {
+        public Builder displayConfigItems(ExtendedConfigItem... displayConfigItems) {
             this.displayConfigItems.addAll(Arrays.asList(displayConfigItems));
             return this;
         }
@@ -236,17 +236,17 @@ public class MultiSelectionUI {
         private Map<String, ConfigItem> options;
         private List<Integer> optionPositions;
 
-        private PositionableConfigItem backButton = new PositionableConfigItem(
+        private ExtendedConfigItem backButton = new ExtendedConfigItem(
                 "pixelmon:eject_button", 1, (byte) 0, "&cBack",
                 Lists.newArrayList(), 0, 0, Maps.newHashMap()
         );
 
-        private PositionableConfigItem nextPageButton = new PositionableConfigItem(
+        private ExtendedConfigItem nextPageButton = new ExtendedConfigItem(
                 "pixelmon:trade_holder_right", 1, (byte) 0, "&aNext Page",
                 Lists.newArrayList(), 8, 5, Maps.newHashMap()
         );
 
-        private PositionableConfigItem previousPageButton = new PositionableConfigItem(
+        private ExtendedConfigItem previousPageButton = new ExtendedConfigItem(
                 "pixelmon:trade_holder_left", 1, (byte) 0, "&aPrevious Page",
                 Lists.newArrayList(), 0, 5, Maps.newHashMap()
         );
@@ -277,15 +277,15 @@ public class MultiSelectionUI {
             return this.optionPositions;
         }
 
-        public PositionableConfigItem getBackButton() {
+        public ExtendedConfigItem getBackButton() {
             return this.backButton;
         }
 
-        public PositionableConfigItem getNextPageButton() {
+        public ExtendedConfigItem getNextPageButton() {
             return this.nextPageButton;
         }
 
-        public PositionableConfigItem getPreviousPageButton() {
+        public ExtendedConfigItem getPreviousPageButton() {
             return this.previousPageButton;
         }
     }

@@ -1,8 +1,7 @@
 package com.envyful.api.forge.config;
 
 import com.envyful.api.config.type.ConfigItem;
-import com.envyful.api.config.type.PermissibleConfigItem;
-import com.envyful.api.config.type.PositionableConfigItem;
+import com.envyful.api.config.type.ExtendedConfigItem;
 import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.forge.items.ItemBuilder;
 import com.envyful.api.forge.items.ItemFlag;
@@ -27,20 +26,20 @@ import java.util.function.BiConsumer;
 
 public class UtilConfigItem {
 
-    public static void addPermissibleConfigItem(Pane pane, EntityPlayerMP player, List<Transformer> transformers, PermissibleConfigItem configItem) {
+    public static void addPermissibleConfigItem(Pane pane, EntityPlayerMP player, List<Transformer> transformers, ExtendedConfigItem configItem) {
         addPermissibleConfigItem(pane, player, configItem, transformers,null);
     }
 
-    public static void addPermissibleConfigItem(Pane pane, EntityPlayerMP player, PermissibleConfigItem configItem) {
+    public static void addPermissibleConfigItem(Pane pane, EntityPlayerMP player, ExtendedConfigItem configItem) {
         addPermissibleConfigItem(pane, player, configItem, null);
     }
 
-    public static void addPermissibleConfigItem(Pane pane, EntityPlayerMP player, PermissibleConfigItem configItem,
+    public static void addPermissibleConfigItem(Pane pane, EntityPlayerMP player, ExtendedConfigItem configItem,
                                                 BiConsumer<EnvyPlayer<?>, Displayable.ClickType> clickHandler) {
         addPermissibleConfigItem(pane, player, configItem, Collections.emptyList(), clickHandler);
     }
 
-    public static void addPermissibleConfigItem(Pane pane, EntityPlayerMP player, PermissibleConfigItem configItem,
+    public static void addPermissibleConfigItem(Pane pane, EntityPlayerMP player, ExtendedConfigItem configItem,
                                                 List<Transformer> transformers,
                                                 BiConsumer<EnvyPlayer<?>, Displayable.ClickType> clickHandler) {
         ItemStack itemStack = fromPermissibleItem(player, configItem, transformers);
@@ -59,20 +58,20 @@ public class UtilConfigItem {
         }
     }
 
-    public static void addConfigItem(Pane pane, PositionableConfigItem configItem) {
+    public static void addConfigItem(Pane pane, ExtendedConfigItem configItem) {
         addConfigItem(pane, configItem, null);
     }
 
-    public static void addConfigItem(Pane pane, List<Transformer> transformers, PositionableConfigItem configItem) {
+    public static void addConfigItem(Pane pane, List<Transformer> transformers, ExtendedConfigItem configItem) {
         addConfigItem(pane, configItem, transformers,null);
     }
 
-    public static void addConfigItem(Pane pane, PositionableConfigItem configItem,
+    public static void addConfigItem(Pane pane, ExtendedConfigItem configItem,
                                      BiConsumer<EnvyPlayer<?>, Displayable.ClickType> clickHandler) {
         addConfigItem(pane, configItem, Collections.emptyList(), clickHandler);
     }
 
-    public static void addConfigItem(Pane pane, PositionableConfigItem configItem, List<Transformer> transformers,
+    public static void addConfigItem(Pane pane, ExtendedConfigItem configItem, List<Transformer> transformers,
                                      BiConsumer<EnvyPlayer<?>, Displayable.ClickType> clickHandler) {
         if (!configItem.isEnabled()) {
             return;
@@ -93,17 +92,17 @@ public class UtilConfigItem {
         }
     }
 
-    public static ItemStack fromPermissibleItem(EntityPlayerMP player, PermissibleConfigItem permissibleConfigItem) {
+    public static ItemStack fromPermissibleItem(EntityPlayerMP player, ExtendedConfigItem permissibleConfigItem) {
         return fromPermissibleItem(player, permissibleConfigItem, Collections.emptyList());
     }
 
-    public static ItemStack fromPermissibleItem(EntityPlayerMP player, PermissibleConfigItem permissibleConfigItem, List<Transformer> transformers) {
+    public static ItemStack fromPermissibleItem(EntityPlayerMP player, ExtendedConfigItem permissibleConfigItem, List<Transformer> transformers) {
         if (!permissibleConfigItem.isEnabled()) {
             return null;
         }
 
-        if (permissibleConfigItem.getPermission().isEmpty() || UtilPlayer.hasPermission(player,
-                                                                                        permissibleConfigItem.getPermission())) {
+        if (permissibleConfigItem.getPermission().isEmpty() || !permissibleConfigItem.requiresPermission() ||
+                UtilPlayer.hasPermission(player, permissibleConfigItem.getPermission())) {
             return fromConfigItem(permissibleConfigItem);
         }
 

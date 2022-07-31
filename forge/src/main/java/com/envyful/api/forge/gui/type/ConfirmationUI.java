@@ -2,7 +2,7 @@ package com.envyful.api.forge.gui.type;
 
 import com.envyful.api.config.type.ConfigInterface;
 import com.envyful.api.config.type.ConfigItem;
-import com.envyful.api.config.type.PositionableConfigItem;
+import com.envyful.api.config.type.ExtendedConfigItem;
 import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.forge.config.UtilConfigItem;
 import com.envyful.api.forge.gui.item.PositionableItem;
@@ -57,7 +57,7 @@ public class ConfirmationUI {
             );
         }
 
-        for (PositionableConfigItem displayItem : builder.displayConfigItems) {
+        for (ExtendedConfigItem displayItem : builder.displayConfigItems) {
             UtilConfigItem.addConfigItem(pane, builder.transformers, displayItem);
         }
 
@@ -97,7 +97,7 @@ public class ConfirmationUI {
         private PlayerManager<?, ?> playerManager;
         private BiConsumer<EnvyPlayer<?>, Displayable.ClickType> returnHandler;
         private BiConsumer<EnvyPlayer<?>, Displayable.ClickType> confirmHandler;
-        private List<PositionableConfigItem> displayConfigItems = Lists.newArrayList();
+        private List<ExtendedConfigItem> displayConfigItems = Lists.newArrayList();
         private List<PositionableItem> displayItems = Lists.newArrayList();
         private List<Transformer> transformers = Lists.newArrayList();
 
@@ -133,17 +133,17 @@ public class ConfirmationUI {
             return this;
         }
 
-        public Builder displayConfigItems(List<PositionableConfigItem> displayConfigItems) {
+        public Builder displayConfigItems(List<ExtendedConfigItem> displayConfigItems) {
             this.displayConfigItems.addAll(displayConfigItems);
             return this;
         }
 
-        public Builder displayConfigItem(PositionableConfigItem displayConfigItem) {
+        public Builder displayConfigItem(ExtendedConfigItem displayConfigItem) {
             this.displayConfigItems.add(displayConfigItem);
             return this;
         }
 
-        public Builder displayConfigItems(PositionableConfigItem... displayConfigItems) {
+        public Builder displayConfigItems(ExtendedConfigItem... displayConfigItems) {
             this.displayConfigItems.addAll(Arrays.asList(displayConfigItems));
             return this;
         }
@@ -202,11 +202,11 @@ public class ConfirmationUI {
                 ))
         );
 
-        private PositionableConfigItem declineItem = new PositionableConfigItem("minecraft:wool", 1, (byte) 14, "&c&lDECLINE",
+        private ExtendedConfigItem declineItem = new ExtendedConfigItem("minecraft:wool", 1, (byte) 14, "&c&lDECLINE",
                                                                     Lists.newArrayList(), 2, 1, Maps.newHashMap());
 
 
-        private PositionableConfigItem acceptItem = new PositionableConfigItem("minecraft:wool", 1, (byte) 5,
+        private ExtendedConfigItem acceptItem = new ExtendedConfigItem("minecraft:wool", 1, (byte) 5,
                                                                                "&a&lACCEPT",
                                                                                 Lists.newArrayList(), 6, 1,
                                                                                Maps.newHashMap());
@@ -220,11 +220,11 @@ public class ConfirmationUI {
             return this.guiSettings;
         }
 
-        public PositionableConfigItem getDeclineItem() {
+        public ExtendedConfigItem getDeclineItem() {
             return this.declineItem;
         }
 
-        public PositionableConfigItem getAcceptItem() {
+        public ExtendedConfigItem getAcceptItem() {
             return this.acceptItem;
         }
 

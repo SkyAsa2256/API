@@ -2,7 +2,7 @@ package com.envyful.api.forge.gui.type;
 
 import com.envyful.api.config.type.ConfigInterface;
 import com.envyful.api.config.type.ConfigItem;
-import com.envyful.api.config.type.PositionableConfigItem;
+import com.envyful.api.config.type.ExtendedConfigItem;
 import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.forge.config.UtilConfigItem;
 import com.envyful.api.forge.gui.item.PositionableItem;
@@ -67,7 +67,7 @@ public class TrueFalseSelectionUI {
 
         UtilConfigItem.addConfigItem(pane, config.config.backButton, config.transformers, config.returnHandler);
 
-        for (PositionableConfigItem displayItem : config.displayConfigItems) {
+        for (ExtendedConfigItem displayItem : config.displayConfigItems) {
             UtilConfigItem.addConfigItem(pane, config.transformers, displayItem);
         }
 
@@ -98,7 +98,7 @@ public class TrueFalseSelectionUI {
         private BiConsumer<EnvyPlayer<?>, Displayable.ClickType> falseAcceptHandler = null;
         private ConfirmationUI.Builder confirm = null;
         private boolean startsTrue = true;
-        private List<PositionableConfigItem> displayConfigItems = Lists.newArrayList();
+        private List<ExtendedConfigItem> displayConfigItems = Lists.newArrayList();
         private List<PositionableItem> displayItems = Lists.newArrayList();
         private List<Transformer> transformers = Lists.newArrayList();
 
@@ -144,17 +144,17 @@ public class TrueFalseSelectionUI {
             return this;
         }
 
-        public Builder displayConfigItems(List<PositionableConfigItem> displayConfigItems) {
+        public Builder displayConfigItems(List<ExtendedConfigItem> displayConfigItems) {
             this.displayConfigItems.addAll(displayConfigItems);
             return this;
         }
 
-        public Builder displayConfigItem(PositionableConfigItem displayConfigItem) {
+        public Builder displayConfigItem(ExtendedConfigItem displayConfigItem) {
             this.displayConfigItems.add(displayConfigItem);
             return this;
         }
 
-        public Builder displayConfigItems(PositionableConfigItem... displayConfigItems) {
+        public Builder displayConfigItems(ExtendedConfigItem... displayConfigItems) {
             this.displayConfigItems.addAll(Arrays.asList(displayConfigItems));
             return this;
         }
@@ -210,20 +210,20 @@ public class TrueFalseSelectionUI {
                 ))
         );
 
-        private PositionableConfigItem trueItem;
-        private PositionableConfigItem falseItem;
+        private ExtendedConfigItem trueItem;
+        private ExtendedConfigItem falseItem;
 
-        private PositionableConfigItem acceptItem = new PositionableConfigItem(
+        private ExtendedConfigItem acceptItem = new ExtendedConfigItem(
                 "minecraft:stained_glass_pane", 1, (byte) 5, "&a&lCONFIRM",
                 Lists.newArrayList(), 6, 1, Maps.newHashMap()
         );
 
-        private PositionableConfigItem backButton = new PositionableConfigItem(
+        private ExtendedConfigItem backButton = new ExtendedConfigItem(
                 "pixelmon:eject_button", 1, (byte) 0, "&cBack",
                 Lists.newArrayList(), 0, 0, Maps.newHashMap()
         );
 
-        public TrueFalseConfig(PositionableConfigItem trueItem, PositionableConfigItem falseItem) {
+        public TrueFalseConfig(ExtendedConfigItem trueItem, ExtendedConfigItem falseItem) {
             this.trueItem = trueItem;
             this.falseItem = falseItem;
         }
@@ -234,19 +234,19 @@ public class TrueFalseSelectionUI {
             return this.guiSettings;
         }
 
-        public PositionableConfigItem getTrueItem() {
+        public ExtendedConfigItem getTrueItem() {
             return this.trueItem;
         }
 
-        public PositionableConfigItem getFalseItem() {
+        public ExtendedConfigItem getFalseItem() {
             return this.falseItem;
         }
 
-        public PositionableConfigItem getAcceptItem() {
+        public ExtendedConfigItem getAcceptItem() {
             return this.acceptItem;
         }
 
-        public PositionableConfigItem getBackButton() {
+        public ExtendedConfigItem getBackButton() {
             return this.backButton;
         }
     }

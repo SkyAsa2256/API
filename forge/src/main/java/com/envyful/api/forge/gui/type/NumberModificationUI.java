@@ -2,7 +2,7 @@ package com.envyful.api.forge.gui.type;
 
 import com.envyful.api.config.type.ConfigInterface;
 import com.envyful.api.config.type.ConfigItem;
-import com.envyful.api.config.type.PositionableConfigItem;
+import com.envyful.api.config.type.ExtendedConfigItem;
 import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.forge.config.UtilConfigItem;
 import com.envyful.api.forge.gui.item.PositionableItem;
@@ -80,7 +80,7 @@ public class NumberModificationUI {
             }
         }
 
-        for (PositionableConfigItem displayItem : config.displayConfigItems) {
+        for (ExtendedConfigItem displayItem : config.displayConfigItems) {
             UtilConfigItem.addConfigItem(pane, config.transformers, displayItem);
         }
 
@@ -109,7 +109,7 @@ public class NumberModificationUI {
         private BiConsumer<EnvyPlayer<?>, Displayable.ClickType> returnHandler = null;
         private TriConsumer<EnvyPlayer<?>, Displayable.ClickType, Integer> acceptHandler = null;
         private ConfirmationUI.Builder confirm = null;
-        private List<PositionableConfigItem> displayConfigItems = Lists.newArrayList();
+        private List<ExtendedConfigItem> displayConfigItems = Lists.newArrayList();
         private List<PositionableItem> displayItems = Lists.newArrayList();
         private int currentValue;
         private String key;
@@ -147,17 +147,17 @@ public class NumberModificationUI {
             return this;
         }
 
-        public Builder displayConfigItems(List<PositionableConfigItem> displayConfigItems) {
+        public Builder displayConfigItems(List<ExtendedConfigItem> displayConfigItems) {
             this.displayConfigItems.addAll(displayConfigItems);
             return this;
         }
 
-        public Builder displayConfigItem(PositionableConfigItem displayConfigItem) {
+        public Builder displayConfigItem(ExtendedConfigItem displayConfigItem) {
             this.displayConfigItems.add(displayConfigItem);
             return this;
         }
 
-        public Builder displayConfigItems(PositionableConfigItem... displayConfigItems) {
+        public Builder displayConfigItems(ExtendedConfigItem... displayConfigItems) {
             this.displayConfigItems.addAll(Arrays.asList(displayConfigItems));
             return this;
         }
@@ -219,22 +219,22 @@ public class NumberModificationUI {
 
         private Map<String, EditValueButton> editValueButtons;
 
-        private PositionableConfigItem backButton = new PositionableConfigItem(
+        private ExtendedConfigItem backButton = new ExtendedConfigItem(
                 "pixelmon:eject_button", 1, (byte) 0, "&cBack",
                 Lists.newArrayList(), 0, 0, Maps.newHashMap()
         );
 
-        private PositionableConfigItem confirmItem = new PositionableConfigItem(
+        private ExtendedConfigItem confirmItem = new ExtendedConfigItem(
                 "pixelmon:poke_ball", 1, (byte) 0, "&a&lCONFIRM",
                 Lists.newArrayList(), 2, 2, Maps.newHashMap()
         );
 
-        private PositionableConfigItem currentValue;
+        private ExtendedConfigItem currentValue;
         private int maxValue;
         private int minValue;
 
         public NumberModificationConfig(String title, int height, int maxValue, int minValue,
-                                        PositionableConfigItem currentValue, Map<String, EditValueButton> editValueButtons) {
+                                        ExtendedConfigItem currentValue, Map<String, EditValueButton> editValueButtons) {
             this.editValueButtons = editValueButtons;
             this.currentValue = currentValue;
             this.maxValue = maxValue;
@@ -253,7 +253,7 @@ public class NumberModificationUI {
             return Lists.newArrayList(this.editValueButtons.values());
         }
 
-        public PositionableConfigItem getConfirmItem() {
+        public ExtendedConfigItem getConfirmItem() {
             return this.confirmItem;
         }
 
@@ -261,7 +261,7 @@ public class NumberModificationUI {
             return this.guiSettings;
         }
 
-        public PositionableConfigItem getBackButton() {
+        public ExtendedConfigItem getBackButton() {
             return this.backButton;
         }
 
@@ -277,10 +277,10 @@ public class NumberModificationUI {
     @ConfigSerializable
     public static class EditValueButton {
 
-        private PositionableConfigItem configItem;
+        private ExtendedConfigItem configItem;
         private int amountModifier;
 
-        public EditValueButton(PositionableConfigItem configItem, int amountModifier) {
+        public EditValueButton(ExtendedConfigItem configItem, int amountModifier) {
             this.configItem = configItem;
             this.amountModifier = amountModifier;
         }
@@ -288,7 +288,7 @@ public class NumberModificationUI {
         public EditValueButton() {
         }
 
-        public PositionableConfigItem getConfigItem() {
+        public ExtendedConfigItem getConfigItem() {
             return this.configItem;
         }
 

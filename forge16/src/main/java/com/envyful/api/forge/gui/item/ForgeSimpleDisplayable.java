@@ -89,16 +89,16 @@ public class ForgeSimpleDisplayable implements Displayable {
         }
     }
 
-    public static final class Builder implements Displayable.Builder<ItemStack> {
+    public static class Builder implements Displayable.Builder<ItemStack> {
 
-        private ItemStack itemStack;
-        private BiConsumer<EnvyPlayer<?>, ClickType> clickHandler = (envyPlayer, clickType) -> {};
-        private Consumer<EnvyPlayer<?>> updateHandler = envyPlayer -> {};
-        private int tickDelay = 0;
-        private boolean async = true;
-        private boolean singleClick = false;
-        private long clickDelay = 50L;
-        private int lockOutClicks = 100;
+        protected ItemStack itemStack;
+        protected BiConsumer<EnvyPlayer<?>, ClickType> clickHandler = (envyPlayer, clickType) -> {};
+        protected Consumer<EnvyPlayer<?>> updateHandler = envyPlayer -> {};
+        protected int tickDelay = 0;
+        protected boolean async = true;
+        protected boolean singleClick = false;
+        protected long clickDelay = 50L;
+        protected int lockOutClicks = 100;
 
         @Override
         public Displayable.Builder<ItemStack> itemStack(ItemStack itemStack) {

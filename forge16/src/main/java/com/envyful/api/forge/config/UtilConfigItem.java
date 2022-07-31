@@ -30,20 +30,44 @@ import java.util.function.BiConsumer;
 
 public class UtilConfigItem {
 
+    public static ConfigItemBuilder builder() {
+        return new ConfigItemBuilder();
+    }
+
+    /**
+     *
+     * @deprecated Use {@link UtilConfigItem#builder()}
+     */
+    @Deprecated
     public static void addPermissibleConfigItem(Pane pane, ServerPlayerEntity player, List<Transformer> transformers, PermissibleConfigItem configItem) {
         addPermissibleConfigItem(pane, player, configItem, transformers,null);
     }
 
+    /**
+     *
+     * @deprecated Use {@link UtilConfigItem#builder()}
+     */
+    @Deprecated
     public static void addPermissibleConfigItem(Pane pane, ServerPlayerEntity player, PermissibleConfigItem configItem,
                                                 Transformer... transformers) {
         addPermissibleConfigItem(pane, player, configItem, Lists.newArrayList(transformers), null);
     }
 
+    /**
+     *
+     * @deprecated Use {@link UtilConfigItem#builder()}
+     */
+    @Deprecated
     public static void addPermissibleConfigItem(Pane pane, ServerPlayerEntity player, PermissibleConfigItem configItem,
                                                 BiConsumer<EnvyPlayer<?>, Displayable.ClickType> clickHandler, Transformer... transformers) {
         addPermissibleConfigItem(pane, player, configItem, Lists.newArrayList(transformers), clickHandler);
     }
 
+    /**
+     *
+     * @deprecated Use {@link UtilConfigItem#builder()}
+     */
+    @Deprecated
     public static void addPermissibleConfigItem(Pane pane, ServerPlayerEntity player, PermissibleConfigItem configItem,
                                                 List<Transformer> transformers,
                                                 BiConsumer<EnvyPlayer<?>, Displayable.ClickType> clickHandler) {
@@ -63,19 +87,39 @@ public class UtilConfigItem {
         }
     }
 
+    /**
+     *
+     * @deprecated Use {@link UtilConfigItem#builder()}
+     */
+    @Deprecated
     public static void addConfigItem(Pane pane, PositionableConfigItem configItem, Transformer... transformers) {
         addConfigItem(pane, configItem, Lists.newArrayList(transformers), null);
     }
 
+    /**
+     *
+     * @deprecated Use {@link UtilConfigItem#builder()}
+     */
+    @Deprecated
     public static void addConfigItem(Pane pane, List<Transformer> transformers, PositionableConfigItem configItem) {
         addConfigItem(pane, configItem, transformers,null);
     }
 
+    /**
+     *
+     * @deprecated Use {@link UtilConfigItem#builder()}
+     */
+    @Deprecated
     public static void addConfigItem(Pane pane, PositionableConfigItem configItem,
                                      BiConsumer<EnvyPlayer<?>, Displayable.ClickType> clickHandler, Transformer... transformers) {
         addConfigItem(pane, configItem, Lists.newArrayList(transformers), clickHandler);
     }
 
+    /**
+     *
+     * @deprecated Use {@link UtilConfigItem#builder()}
+     */
+    @Deprecated
     public static void addConfigItem(Pane pane, PositionableConfigItem configItem, List<Transformer> transformers,
                                      BiConsumer<EnvyPlayer<?>, Displayable.ClickType> clickHandler) {
         if (!configItem.isEnabled()) {

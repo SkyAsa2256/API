@@ -2,6 +2,7 @@ package com.envyful.api.forge.config;
 
 import com.envyful.api.config.type.ConfigItem;
 import com.envyful.api.config.type.ExtendedConfigItem;
+import com.envyful.api.forge.concurrency.UtilForgeConcurrency;
 import com.envyful.api.forge.gui.item.ForgeSimpleDisplayable;
 import com.envyful.api.forge.player.ForgeEnvyPlayer;
 import com.envyful.api.forge.server.UtilForgeServer;
@@ -10,7 +11,6 @@ import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.type.Pair;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 
 import java.util.function.BiConsumer;
@@ -43,17 +43,7 @@ public class ConfigItemBuilder extends ForgeSimpleDisplayable.Builder {
                     this.asyncClick(false);
                 }
 
-                this.clickHandler((player, clickType) -> {
-                    if (!configItem.getCommandsExecuted().isEmpty()) {
-                        for (String s : configItem.getCommandsExecuted()) {
-                            UtilForgeServer.executeCommand((ServerPlayerEntity) player.getParent(), s);
-                        }
-                    }
-
-                    if (configItem.shouldCloseOnClick()) {
-                        ((ServerPlayerEntity) player.getParent()).closeContainer();
-                    }
-                });
+                this.clickHandler((player, clickType) -> this.handleCommands(configItem, (ForgeEnvyPlayer) player));
             }
         }
 
@@ -62,6 +52,34 @@ public class ConfigItemBuilder extends ForgeSimpleDisplayable.Builder {
 
     public ConfigItemBuilder configItem(ConfigItem configItem, Transformer... transformers) {
         return this.itemStack(UtilConfigItem.fromConfigItem(configItem, transformers));
+    }
+
+    public ConfigItemBuilder combinedClickHandler(ExtendedConfigItem configItem, BiConsumer<EnvyPlayer<?>, Displayable.ClickType> clickHandler) {
+        return this.clickHandler((player, clickType) -> {
+            if (configItem.shouldCloseOnClick() || !configItem.getCommandsExecuted().isEmpty()) {
+                if (this.async) {
+                    UtilForgeConcurrency.runSync(() -> this.handleCommands(configItem, (ForgeEnvyPlayer) player));
+                } else {
+                    this.handleCommands(configItem, (ForgeEnvyPlayer) player);
+                }
+            }
+
+            if (clickHandler != null) {
+                clickHandler.accept(player, clickType);
+            }
+        });
+    }
+
+    protected void handleCommands(ExtendedConfigItem configItem, ForgeEnvyPlayer player) {
+        if (!configItem.getCommandsExecuted().isEmpty()) {
+            for (String s : configItem.getCommandsExecuted()) {
+                UtilForgeServer.executeCommand(player.getParent(), s);
+            }
+        }
+
+        if (configItem.shouldCloseOnClick()) {
+            player.getParent().closeContainer();
+        }
     }
 
     @Override

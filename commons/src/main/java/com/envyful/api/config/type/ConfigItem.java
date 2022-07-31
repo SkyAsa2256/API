@@ -21,7 +21,7 @@ public class ConfigItem {
     private boolean enabled = true;
     private String type = "minecraft:stained_glass_pane";
     private String amount = "1";
-    private String damage = "14";
+    private String damage;
     private String name = " ";
     private List<String> flags = Lists.newArrayList();
     private List<String> lore = Lists.newArrayList();
@@ -29,6 +29,17 @@ public class ConfigItem {
     private Map<String, NBTValue> nbt = Maps.newHashMap();
 
     public ConfigItem() {}
+
+    public ConfigItem(boolean enabled, String type, String amount, String name, List<String> flags, List<String> lore, Map<String, EnchantData> enchants, Map<String, NBTValue> nbt) {
+        this.enabled = enabled;
+        this.type = type;
+        this.amount = amount;
+        this.name = name;
+        this.flags = flags;
+        this.lore = lore;
+        this.enchants = enchants;
+        this.nbt = nbt;
+    }
 
     public ConfigItem(String type, int amount, byte damage, String name, List<String> lore, Map<String, EnchantData> enchants, Map<String, NBTValue> nbt) {
         this.type = type;

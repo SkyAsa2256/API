@@ -14,7 +14,7 @@ public class ExtendedConfigItem extends ConfigItem {
     private Map<String, Pair<Integer, Integer>> positions = Maps.newHashMap();
     private boolean requiresPermission;
     private String permission;
-    private ExtendedConfigItem elseItem;
+    private ConfigItem elseItem;
     private boolean closeOnClick;
     private List<String> commandsExecuted;
 
@@ -42,7 +42,7 @@ public class ExtendedConfigItem extends ConfigItem {
     public ExtendedConfigItem(boolean enabled, String type, String amount, String name, List<String> flags,
                               List<String> lore, Map<String, EnchantData> enchants, Map<String, NBTValue> nbt,
                               Map<String, Pair<Integer, Integer>> positions, boolean requiresPermission,
-                              String permission, ExtendedConfigItem elseItem, boolean closeOnClick,
+                              String permission, ConfigItem elseItem, boolean closeOnClick,
                               List<String> commandsExecuted) {
         super(enabled, type, amount, name, flags, lore, enchants, nbt);
 
@@ -66,7 +66,7 @@ public class ExtendedConfigItem extends ConfigItem {
         return this.permission;
     }
 
-    public ExtendedConfigItem getElseItem() {
+    public ConfigItem getElseItem() {
         return this.elseItem;
     }
 
@@ -95,7 +95,7 @@ public class ExtendedConfigItem extends ConfigItem {
         private Map<String, Pair<Integer, Integer>> positions = Maps.newHashMap();
         private boolean requiresPermission = false;
         private String permission;
-        private ExtendedConfigItem elseItem;
+        private ConfigItem elseItem;
         private boolean closeOnClick = false;
         private List<String> commandsExecuted = Lists.newArrayList();
 

@@ -3,6 +3,7 @@ package com.envyful.api.forge.command.command.executor;
 import com.envyful.api.command.injector.ArgumentInjector;
 import com.envyful.api.command.injector.TabCompleter;
 import com.envyful.api.command.sender.SenderType;
+import com.envyful.api.command.sender.SenderTypeFactory;
 import com.envyful.api.forge.command.completion.FillerTabCompleter;
 import com.envyful.api.forge.player.util.UtilPlayer;
 import com.envyful.api.type.Pair;
@@ -281,6 +282,8 @@ public class CommandExecutor {
             return Collections.emptyList();
         }
 
-        return completer.getCompletions(completer.getSenderClass().cast(sender), args, this.extraTabData.get(pos));
+        return completer.getCompletions((A)
+                        SenderTypeFactory.getSenderType(completer.getSenderClass()).get().getInstance(sender),
+                args, this.extraTabData.get(pos));
     }
 }

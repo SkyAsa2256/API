@@ -6,6 +6,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 
 /**
  *
@@ -52,4 +53,23 @@ public class UtilConcurrency {
         SCHEDULED_EXECUTOR_SERVICE.schedule(runnable, delay, TimeUnit.MILLISECONDS);
     }
 
+    /**
+     *
+     * Executes the runnable task the tick after the predicate returns true
+     *
+     * @param predicate The predicate to use
+     * @param runnable The runnable to execute
+     */
+    public static void runLaterWhenTrue(Predicate<Runnable> predicate, int delay, Runnable runnable) {
+        runLater(() -> attemptRun(predicate, runnable), delay);
+    }
+
+    private static void attemptRun(Predicate<Runnable> predicate, Runnable runnable) {
+        if (!predicate.test(runnable)) {
+            runLater(() -> attemptRun(predicate, runnable), 50L);
+            return;
+        }
+
+        runnable.run();
+    }
 }

@@ -147,6 +147,7 @@ public class ForgeCommandFactory implements CommandFactory<CommandDispatcher<Com
     }
 
     private CompletableFuture<Suggestions> buildSuggestions(ForgeCommand command, CommandContext<CommandSource> context, SuggestionsBuilder builder) {
+        List<String> tabCompletions;
         String[] initialArgs = context.getInput().split(" ");
         List<String> args = Lists.newArrayList(Arrays.copyOfRange(initialArgs, 1, initialArgs.length));
         int spaces = 0;
@@ -161,14 +162,18 @@ public class ForgeCommandFactory implements CommandFactory<CommandDispatcher<Com
             spaces--;
         }
 
+        tabCompletions = command.getTabCompletions(context.getSource().getServer(),
+                context.getSource().getEntity(),
+                args.toArray(new String[0]),
+                new BlockPos(context.getSource().getPosition()));
+
         if (args.size() > 0 && !args.get(args.size() - 1).trim().isEmpty()) {
             builder = builder.createOffset(context.getInput().length() - args.get(args.size() - 1).length());
         } else {
             builder = builder.createOffset(context.getInput().length());
         }
 
-        for (String tabCompletion : command.getTabCompletions(context.getSource().getServer(),
-                context.getSource().getEntity(), args.toArray(new String[0]), new BlockPos(context.getSource().getPosition()))) {
+        for (String tabCompletion : tabCompletions) {
             if (args.isEmpty()) {
                 builder.suggest(tabCompletion);
                 continue;

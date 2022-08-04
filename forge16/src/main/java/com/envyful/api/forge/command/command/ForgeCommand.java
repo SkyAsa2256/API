@@ -22,7 +22,6 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
@@ -232,33 +231,16 @@ public class ForgeCommand {
             }
         }
 
-        if (args.length == 0) {
-            List<String> values = this.getAccessibleSubCommands(sender);
-
-            if (!values.isEmpty()) {
-                return values;
-            }
-        }
-
-        if (args.length == 1) {
-            List<String> values = this.getMatching(args[0], this.getAccessibleSubCommands(sender));
-
-            if (!values.isEmpty()) {
-                return values;
-            }
-        }
+        List<String> values = Lists.newArrayList();
 
         for (ForgeCommand subCommand : this.subCommands) {
             if (args[0].equalsIgnoreCase(subCommand.getName()) || subCommand.getAliases().contains(args[0])) {
-                List<String> values = subCommand.getTabCompletions(server, sender, Arrays.copyOfRange(args, 1, args.length), pos);
-
-                if (!values.isEmpty()) {
-                    return values;
-                }
+                values.addAll(subCommand.getTabCompletions(server, sender, Arrays.copyOfRange(args, 1, args.length), pos));
             }
         }
 
-        return Collections.emptyList();
+        values.addAll(this.getAccessibleSubCommands(sender));
+        return values;
     }
 
     protected List<String> getPlayers(ICommandSource sender, String name) {

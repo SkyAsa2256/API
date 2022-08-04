@@ -276,6 +276,11 @@ public class CommandExecutor {
         }
 
         int pos = Math.min(this.requiredArgs, Math.max(args.length - 1, 0));
+
+        if (pos >= this.tabCompleters.size()) {
+            return Collections.emptyList();
+        }
+
         TabCompleter<?, A> completer = (TabCompleter<?, A>) this.tabCompleters.get(pos);
 
         if (completer instanceof FillerTabCompleter) {

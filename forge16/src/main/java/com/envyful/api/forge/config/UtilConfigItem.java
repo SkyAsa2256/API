@@ -154,7 +154,7 @@ public class UtilConfigItem {
             return null;
         }
 
-        if (permissibleConfigItem.getPermission().isEmpty() || !permissibleConfigItem.requiresPermission() ||
+        if (!permissibleConfigItem.requiresPermission() || permissibleConfigItem.getPermission().isEmpty() ||
                 UtilPlayer.hasPermission(player, permissibleConfigItem.getPermission())) {
             return fromConfigItem(permissibleConfigItem, transformers);
         }

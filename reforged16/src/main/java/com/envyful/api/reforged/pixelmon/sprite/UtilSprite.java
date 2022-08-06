@@ -43,7 +43,9 @@ public class UtilSprite {
             lore.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(s)));
         }
 
-        compound.putString("Name", ITextComponent.Serializer.toJson(UtilChatColour.colour(replacePokemonPlaceholders(config.getName(), pokemon, config))));
+        ITextComponent colour = UtilChatColour.colour(replacePokemonPlaceholders(config.getName(), pokemon, config));
+        colour = colour.copy().withStyle(colour.getStyle().withItalic(false));
+        compound.putString("Name", ITextComponent.Serializer.toJson(colour));
         compound.put("Lore", lore);
         CompoundNBT tag = itemStack.getTag();
 

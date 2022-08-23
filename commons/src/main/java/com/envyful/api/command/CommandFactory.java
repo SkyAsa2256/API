@@ -39,7 +39,7 @@ public interface CommandFactory<A, B> {
     /**
      *
      * Default method for registering an injector where multiple args defaults to false.
-     * By default uses the {@link CommandFactory#registerInjector(Class, boolean, BiFunction)} method with the
+     * By default, uses the {@link CommandFactory#registerInjector(Class, boolean, BiFunction)} method with the
      * multipleArgs flag as false (as this is the most common use-case)
      *
      * @param parentClass The converted class to be registered

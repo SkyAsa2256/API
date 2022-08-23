@@ -16,6 +16,7 @@ public class BattleBuilder {
     protected BattleRules rules;
     protected Consumer<BattleEndEvent> endConsumer;
     protected Consumer<BattleStartedEvent> startConsumer;
+    protected boolean disableExp = false;
 
     private BattleBuilder() {
     }
@@ -42,6 +43,15 @@ public class BattleBuilder {
 
     public BattleBuilder startHandler(Consumer<BattleStartedEvent> startConsumer) {
         this.startConsumer = startConsumer;
+        return this;
+    }
+
+    public BattleBuilder disableExp() {
+        return this.expEnabled(false);
+    }
+
+    public BattleBuilder expEnabled(boolean expEnabled) {
+        this.disableExp = !expEnabled;
         return this;
     }
 

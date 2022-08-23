@@ -2,7 +2,9 @@ package com.envyful.api.reforged.battle;
 
 import com.google.common.collect.Maps;
 import com.pixelmonmod.pixelmon.Pixelmon;
+import com.pixelmonmod.pixelmon.api.enums.ExperienceGainType;
 import com.pixelmonmod.pixelmon.api.events.BattleStartedEvent;
+import com.pixelmonmod.pixelmon.api.events.ExperienceGainEvent;
 import com.pixelmonmod.pixelmon.api.events.battles.BattleEndEvent;
 import com.pixelmonmod.pixelmon.battles.controller.BattleController;
 import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
@@ -51,6 +53,24 @@ public class BattleBuilderFactory {
             }
 
             ((PlayerParticipant) battleParticipant).getStorage().setInTemporaryMode(false, null);
+        }
+    }
+
+    @SubscribeEvent
+    public void onExpGained(ExperienceGainEvent event) {
+        if (event.getType() != ExperienceGainType.BATTLE) {
+            return;
+        }
+
+        if (event.pokemon.getBattleController() == null) {
+            return;
+        }
+
+        BattleBuilder battleBuilder = LISTENED_CONTROLLERS.get(event.pokemon.getBattleController().battleIndex);
+
+        if (battleBuilder.disableExp) {
+            event.setCanceled(true);
+            event.setExperience(0);
         }
     }
 }

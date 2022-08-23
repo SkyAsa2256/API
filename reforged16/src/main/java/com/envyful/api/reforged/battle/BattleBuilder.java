@@ -17,6 +17,7 @@ public class BattleBuilder {
     protected Consumer<BattleEndEvent> endConsumer;
     protected Consumer<BattleStartedEvent> startConsumer;
     protected boolean disableExp = false;
+    protected boolean allowSpectators = true;
 
     private BattleBuilder() {
     }
@@ -52,6 +53,19 @@ public class BattleBuilder {
 
     public BattleBuilder expEnabled(boolean expEnabled) {
         this.disableExp = !expEnabled;
+        return this;
+    }
+
+    public BattleBuilder allowSpectators() {
+        return this.allowSpectators(true);
+    }
+
+    public BattleBuilder disallowSpectators() {
+        return this.allowSpectators(false);
+    }
+
+    public BattleBuilder allowSpectators(boolean allowSpectators) {
+        this.allowSpectators = allowSpectators;
         return this;
     }
 

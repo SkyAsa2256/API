@@ -5,6 +5,7 @@ import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.enums.ExperienceGainType;
 import com.pixelmonmod.pixelmon.api.events.BattleStartedEvent;
 import com.pixelmonmod.pixelmon.api.events.ExperienceGainEvent;
+import com.pixelmonmod.pixelmon.api.events.SpectateEvent;
 import com.pixelmonmod.pixelmon.api.events.battles.BattleEndEvent;
 import com.pixelmonmod.pixelmon.battles.controller.BattleController;
 import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
@@ -71,6 +72,16 @@ public class BattleBuilderFactory {
         if (battleBuilder.disableExp) {
             event.setCanceled(true);
             event.setExperience(0);
+        }
+    }
+
+
+    @SubscribeEvent
+    public void onSpectateAttempt(SpectateEvent.StartSpectate event) {
+        BattleBuilder battleBuilder = LISTENED_CONTROLLERS.get(event.battleController.battleIndex);
+
+        if (battleBuilder.allowSpectators) {
+            event.setCanceled(true);
         }
     }
 }

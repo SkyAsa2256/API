@@ -170,7 +170,7 @@ public class ExtendedConfigItem extends ConfigItem {
             return this;
         }
 
-        public Builder requiresPermission(String permission, ExtendedConfigItem elseItem) {
+        public Builder requiresPermission(String permission, ConfigItem elseItem) {
             this.requiresPermission = true;
             this.permission = permission;
             this.elseItem = elseItem;

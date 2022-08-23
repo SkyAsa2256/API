@@ -3,7 +3,6 @@ package com.envyful.api.reforged.pixelmon;
 import com.envyful.api.forge.items.UtilItemStack;
 import com.envyful.api.type.requirement.Requirement;
 import com.google.common.collect.Lists;
-import com.pixelmonmod.api.pokemon.PokemonSpecification;
 import com.pixelmonmod.pixelmon.api.pokemon.Nature;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.pokemon.species.Species;
@@ -184,8 +183,8 @@ public class PokemonSpec {
 
         if (this.allowEvolutions) {
             if (!Objects.equals(this.species, pokemon.getSpecies())) {
-                for (PokemonSpecification preEvolution : pokemon.getForm().getBaseEvolution().getForm().getPreEvolutions()) {
-                    if (preEvolution.matches(pokemon)) {
+                for (Species preEvolution : pokemon.getForm().getPreEvolutions()) {
+                    if (Objects.equals(pokemon.getSpecies(), preEvolution)) {
                         return true;
                     }
                 }

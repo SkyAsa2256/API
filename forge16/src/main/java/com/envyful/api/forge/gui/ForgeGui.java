@@ -26,7 +26,6 @@ import net.minecraft.network.play.server.SSetSlotPacket;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import java.util.List;
 
@@ -90,6 +89,7 @@ public class ForgeGui implements Gui {
             ForgeGuiContainer container = new ForgeGuiContainer(this, parent);
 
             UtilForgeConcurrency.runWhenTrue(__ -> parent.containerMenu == parent.containerMenu, () -> {
+                System.out.println("Debug line #3");
                 parent.containerMenu = container;
                 parent.containerCounter = 1;
                 parent.connection.send(new SOpenWindowPacket(parent.containerCounter, this.getContainerType(), title));
@@ -309,6 +309,7 @@ public class ForgeGui implements Gui {
         }
 
         public void refreshPlayerContents() {
+            System.out.println("Debug line #2");
             this.player.refreshContainer(this, this.getItems());
             ForgeGuiTracker.dequeueUpdate(this.player);
             this.player.containerMenu.broadcastChanges();
@@ -316,6 +317,7 @@ public class ForgeGui implements Gui {
         }
 
         private void clearPlayerCursor() {
+            System.out.println("Debug line #4");
             SSetSlotPacket setCursorSlot = new SSetSlotPacket(-1, 0, ItemStack.EMPTY);
             player.connection.send(setCursorSlot);
         }
@@ -326,11 +328,8 @@ public class ForgeGui implements Gui {
                 return;
             }
 
-            if (ServerLifecycleHooks.getCurrentServer().isSameThread()) {
-                this.handleClose(playerIn);
-            } else {
-                UtilForgeConcurrency.runSync(() -> this.handleClose(playerIn));
-            }
+            System.out.println("Debug line #1");
+            UtilForgeConcurrency.runSync(() -> this.handleClose(playerIn));
         }
 
         private void handleClose(PlayerEntity playerIn) {
@@ -342,6 +341,7 @@ public class ForgeGui implements Gui {
 
             int windowId = sender.containerMenu.containerId;
 
+            System.out.println("Debug line #5");
             CCloseWindowPacket closeWindowClient = new CCloseWindowPacket();
             ObfuscationReflectionHelper.setPrivateValue(CCloseWindowPacket.class, closeWindowClient, 0,"field_149556_a");
             SCloseWindowPacket closeWindowServer = new SCloseWindowPacket(windowId);

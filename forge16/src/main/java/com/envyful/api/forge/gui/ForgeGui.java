@@ -26,6 +26,7 @@ import net.minecraft.network.play.server.SSetSlotPacket;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import java.util.List;
 
@@ -325,6 +326,14 @@ public class ForgeGui implements Gui {
                 return;
             }
 
+            if (ServerLifecycleHooks.getCurrentServer().isSameThread()) {
+                this.handleClose(playerIn);
+            } else {
+                UtilForgeConcurrency.runSync(() -> this.handleClose(playerIn));
+            }
+        }
+
+        private void handleClose(PlayerEntity playerIn) {
             this.closed = true;
             super.removed(player);
 

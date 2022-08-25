@@ -87,7 +87,6 @@ public class ForgeGui implements Gui {
             ForgeGuiContainer container = new ForgeGuiContainer(this, parent);
 
             UtilForgeConcurrency.runWhenTrue(__ -> parent.containerMenu == parent.containerMenu, () -> {
-                System.out.println("Debug line #3");
                 parent.containerMenu = container;
                 parent.containerCounter = 1;
                 parent.connection.send(new SOpenWindowPacket(parent.containerCounter, this.getContainerType(), title));
@@ -307,7 +306,6 @@ public class ForgeGui implements Gui {
         }
 
         public void refreshPlayerContents() {
-            System.out.println("Debug line #2");
             this.player.refreshContainer(this, this.getItems());
             ForgeGuiTracker.dequeueUpdate(this.player);
             this.player.containerMenu.broadcastChanges();
@@ -315,7 +313,6 @@ public class ForgeGui implements Gui {
         }
 
         private void clearPlayerCursor() {
-            System.out.println("Debug line #4");
             SSetSlotPacket setCursorSlot = new SSetSlotPacket(-1, 0, ItemStack.EMPTY);
             player.connection.send(setCursorSlot);
         }
@@ -326,7 +323,6 @@ public class ForgeGui implements Gui {
                 return;
             }
 
-            System.out.println("Debug line #1");
             UtilForgeConcurrency.runSync(() -> this.handleClose(playerIn));
         }
 

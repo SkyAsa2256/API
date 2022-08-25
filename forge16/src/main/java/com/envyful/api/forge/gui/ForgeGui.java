@@ -345,7 +345,9 @@ public class ForgeGui implements Gui {
             ObfuscationReflectionHelper.setPrivateValue(CCloseWindowPacket.class, closeWindowClient, 0,"field_149556_a");
             SCloseWindowPacket closeWindowServer = new SCloseWindowPacket(windowId);
 
-//            sender.connection.handleContainerClose(closeWindowClient);
+            if (playerIn.level.getServer().isSameThread()) {
+                sender.connection.handleContainerClose(closeWindowClient);
+            }
             sender.connection.send(closeWindowServer);
 
             this.gui.closeConsumer.handle(player);

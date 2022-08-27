@@ -29,6 +29,7 @@ public class ExtendedConfigItem extends ConfigItem {
         this.closeOnClick = false;
         this.requiresPermission = false;
         this.positions.put("first", Pair.of(xPos, yPos));
+        this.commandsExecuted = Lists.newArrayList();
     }
     public ExtendedConfigItem(String type, int amount, String name, List<String> lore, int xPos,
                               int yPos, Map<String, NBTValue> nbt) {
@@ -37,6 +38,7 @@ public class ExtendedConfigItem extends ConfigItem {
         this.closeOnClick = false;
         this.requiresPermission = false;
         this.positions.put("first", Pair.of(xPos, yPos));
+        this.commandsExecuted = Lists.newArrayList();
     }
 
     public ExtendedConfigItem(boolean enabled, String type, String amount, String name, List<String> flags,

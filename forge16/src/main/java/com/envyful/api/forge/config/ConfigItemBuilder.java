@@ -56,7 +56,7 @@ public class ConfigItemBuilder extends ForgeSimpleDisplayable.Builder {
 
     public ConfigItemBuilder combinedClickHandler(ExtendedConfigItem configItem, BiConsumer<EnvyPlayer<?>, Displayable.ClickType> clickHandler) {
         return this.clickHandler((player, clickType) -> {
-            if (configItem.shouldCloseOnClick() || !configItem.getCommandsExecuted().isEmpty()) {
+            if (configItem.shouldCloseOnClick() || (configItem.getCommandsExecuted() != null && !configItem.getCommandsExecuted().isEmpty())) {
                 if (this.async) {
                     UtilForgeConcurrency.runSync(() -> this.handleCommands(configItem, (ForgeEnvyPlayer) player));
                 } else {

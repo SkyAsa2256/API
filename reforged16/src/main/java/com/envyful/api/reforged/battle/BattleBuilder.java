@@ -4,6 +4,7 @@ import com.pixelmonmod.pixelmon.api.events.BattleStartedEvent;
 import com.pixelmonmod.pixelmon.api.events.battles.BattleEndEvent;
 import com.pixelmonmod.pixelmon.battles.BattleRegistry;
 import com.pixelmonmod.pixelmon.battles.api.rules.BattleRules;
+import com.pixelmonmod.pixelmon.battles.api.rules.teamselection.TeamSelectionRegistry;
 import com.pixelmonmod.pixelmon.battles.controller.BattleController;
 import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
 
@@ -18,6 +19,8 @@ public class BattleBuilder {
     protected Consumer<BattleStartedEvent> startConsumer;
     protected boolean disableExp = false;
     protected boolean allowSpectators = true;
+    protected boolean teamSelection = false;
+    protected TeamSelectionRegistry.Builder selectionBuilder = null;
 
     private BattleBuilder() {
     }
@@ -69,10 +72,35 @@ public class BattleBuilder {
         return this;
     }
 
-    public BattleController start() {
-        BattleController controller = BattleRegistry.startBattle(this.teamOne, this.teamTwo, this.rules);
-        BattleBuilderFactory.registerBattleBuilder(controller, this);
-        return controller;
+    public BattleBuilder teamSelection() {
+        return this.teamSelection(true);
+    }
+
+    public BattleBuilder teamSelection(boolean teamSelection) {
+        this.teamSelection = teamSelection;
+
+        if (this.teamSelection) {
+            this.selectionBuilder = TeamSelectionRegistry.builder();
+        }
+
+        return this;
+    }
+
+    public BattleBuilder teamSelectionBuilder(TeamSelectionRegistry.Builder selectionBuilder) {
+        this.selectionBuilder = selectionBuilder;
+        return this;
+    }
+
+    public void start() {
+        if (this.teamSelection) {
+            this.selectionBuilder
+                    .members(this.teamOne[0].getStorage(), this.teamTwo[0].getStorage())
+                    .battleStartConsumer(battleController -> BattleBuilderFactory.registerBattleBuilder(battleController, this))
+                    .start();
+        } else {
+            BattleController controller = BattleRegistry.startBattle(this.teamOne, this.teamTwo, this.rules);
+            BattleBuilderFactory.registerBattleBuilder(controller, this);
+        }
     }
 
     public static BattleBuilder builder() {

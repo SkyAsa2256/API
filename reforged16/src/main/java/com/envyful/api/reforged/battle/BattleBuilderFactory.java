@@ -39,16 +39,16 @@ public class BattleBuilderFactory {
 
     @SubscribeEvent
     public void onBattleEvent(BattleEndEvent event) {
-        BattleBuilder battleBuilder = LISTENED_CONTROLLERS.get(event.bc.battleIndex);
+        BattleBuilder battleBuilder = LISTENED_CONTROLLERS.get(event.getBattleController().battleIndex);
 
         if (battleBuilder == null) {
             return;
         }
 
         battleBuilder.endConsumer.accept(event);
-        LISTENED_CONTROLLERS.remove(event.bc.battleIndex);
+        LISTENED_CONTROLLERS.remove(event.getBattleController().battleIndex);
 
-        for (BattleParticipant battleParticipant : event.results.keySet()) {
+        for (BattleParticipant battleParticipant : event.getResults().keySet()) {
             if (!(battleParticipant instanceof PlayerParticipant)) {
                 continue;
             }

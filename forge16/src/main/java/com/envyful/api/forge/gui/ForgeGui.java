@@ -26,6 +26,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  *
@@ -79,9 +80,18 @@ public class ForgeGui implements Gui {
             return;
         }
 
-        UtilForgeConcurrency.runSync(() -> {
-            ServerPlayerEntity parent = ((ForgeEnvyPlayer)player).getParent();
+        ServerPlayerEntity parent = (ServerPlayerEntity)player.getParent();
 
+        if (ForgeGuiTracker.inGui(player) && Objects.equals(parent.containerMenu.getType(), this.getContainerType())) {
+            UtilForgeConcurrency.runSync(() -> {
+                ((ForgeGuiContainer) parent.containerMenu).gui.closeConsumer.handle((ForgeEnvyPlayer)player);
+                ((ForgeGuiContainer) parent.containerMenu).setGui(this);
+                ((ForgeGuiContainer) parent.containerMenu).update(this.panes, true);
+            });
+            return;
+        }
+
+        UtilForgeConcurrency.runSync(() -> {
             parent.closeContainer();
 
             ForgeGuiContainer container = new ForgeGuiContainer(this, parent);
@@ -114,7 +124,7 @@ public class ForgeGui implements Gui {
      */
     private final class ForgeGuiContainer extends Container {
 
-        private final ForgeGui gui;
+        private ForgeGui gui;
         private final ServerPlayerEntity player;
         private final List<EmptySlot> emptySlots = Lists.newArrayList();
         private final NonNullList<ItemStack> inventoryItemStacks = NonNullList.create();
@@ -129,6 +139,10 @@ public class ForgeGui implements Gui {
             this.player = player;
 
             this.update(this.gui.panes, true);
+        }
+
+        public void setGui(ForgeGui gui) {
+            this.gui = gui;
         }
 
         @Override
@@ -310,6 +324,7 @@ public class ForgeGui implements Gui {
             ForgeGuiTracker.dequeueUpdate(this.player);
             this.player.containerMenu.broadcastChanges();
             this.player.refreshContainer(this.player.containerMenu, this.player.containerMenu.getItems());
+            this.player.refreshContainer(this.player.inventoryMenu);
         }
 
         private void clearPlayerCursor() {
@@ -335,8 +350,6 @@ public class ForgeGui implements Gui {
 
             int windowId = sender.containerMenu.containerId;
 
-//            CCloseWindowPacket closeWindowClient = new CCloseWindowPacket();
-//            ObfuscationReflectionHelper.setPrivateValue(CCloseWindowPacket.class, closeWindowClient, 0,"field_149556_a");
             SCloseWindowPacket closeWindowServer = new SCloseWindowPacket(windowId);
 
             sender.connection.send(closeWindowServer);

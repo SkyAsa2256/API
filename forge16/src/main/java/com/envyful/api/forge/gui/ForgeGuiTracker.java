@@ -34,6 +34,10 @@ public class ForgeGuiTracker {
         OPEN_GUIS.put(player.getUuid(), gui);
     }
 
+    public static boolean inGui(EnvyPlayer<?> player) {
+        return OPEN_GUIS.containsKey(player.getUuid());
+    }
+
     public static void removePlayer(EnvyPlayer<?> player) {
         if (player == null) {
             return;

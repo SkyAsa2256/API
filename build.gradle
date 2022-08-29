@@ -13,7 +13,7 @@ subprojects {
     apply plugin: 'java'
 
     group = 'com.envyful.api'
-    version = '3.2.2'
+    version = '3.2.3'
 
     tasks.withType(JavaCompile) {
         options.encoding = 'UTF-8'

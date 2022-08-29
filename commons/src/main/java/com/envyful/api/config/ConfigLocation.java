@@ -9,10 +9,10 @@ public class ConfigLocation {
     private double posX;
     private double posY;
     private double posZ;
-    private float pitch;
-    private float yaw;
+    private double pitch;
+    private double yaw;
 
-    public ConfigLocation(String worldName, double posX, double posY, double posZ, float pitch, float yaw) {
+    public ConfigLocation(String worldName, double posX, double posY, double posZ, double pitch, double yaw) {
         this.worldName = worldName;
         this.posX = posX;
         this.posY = posY;
@@ -44,11 +44,11 @@ public class ConfigLocation {
         return this.posZ;
     }
 
-    public float getPitch() {
+    public double getPitch() {
         return this.pitch;
     }
 
-    public float getYaw() {
+    public double getYaw() {
         return this.yaw;
     }
 }

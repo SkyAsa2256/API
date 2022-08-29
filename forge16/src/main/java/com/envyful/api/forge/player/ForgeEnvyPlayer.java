@@ -82,7 +82,7 @@ public class ForgeEnvyPlayer implements EnvyPlayer<ServerPlayerEntity> {
     @Override
     public void teleport(ConfigLocation location) {
         this.getParent().teleportTo((ServerWorld) UtilWorld.findWorld(location.getWorldName()),
-                location.getPosX(), location.getPosY(), location.getPosZ(), location.getPitch(), location.getYaw());
+                location.getPosX(), location.getPosY(), location.getPosZ(), (float)location.getPitch(), (float)location.getYaw());
     }
 
     @Override

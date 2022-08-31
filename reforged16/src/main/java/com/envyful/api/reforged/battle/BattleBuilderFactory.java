@@ -9,6 +9,7 @@ import com.pixelmonmod.pixelmon.api.events.SpectateEvent;
 import com.pixelmonmod.pixelmon.api.events.battles.BattleEndEvent;
 import com.pixelmonmod.pixelmon.battles.controller.BattleController;
 import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
+import com.pixelmonmod.pixelmon.battles.controller.participants.PixelmonWrapper;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipant;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -54,6 +55,10 @@ public class BattleBuilderFactory {
             }
 
             ((PlayerParticipant) battleParticipant).getStorage().setInTemporaryMode(false, null);
+
+            for (PixelmonWrapper pixelmonWrapper : battleParticipant.controlledPokemon) {
+                pixelmonWrapper.entity.kill();
+            }
         }
     }
 

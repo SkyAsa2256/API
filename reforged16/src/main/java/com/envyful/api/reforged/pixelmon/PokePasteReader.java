@@ -11,6 +11,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 public class PokePasteReader {
 
@@ -74,6 +75,10 @@ public class PokePasteReader {
     }
 
     private static URL getPokePasteURL(String paste) {
+        if (!paste.toLowerCase(Locale.ROOT).endsWith("/raw")) {
+            paste += "/raw";
+        }
+
         try {
             return new URL(paste);
         } catch (MalformedURLException e) {

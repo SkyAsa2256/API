@@ -1,5 +1,7 @@
 package com.envyful.api.reforged.battle;
 
+import com.envyful.api.concurrency.UtilConcurrency;
+import com.envyful.api.forge.concurrency.UtilForgeConcurrency;
 import com.pixelmonmod.pixelmon.api.events.BattleStartedEvent;
 import com.pixelmonmod.pixelmon.api.events.battles.BattleEndEvent;
 import com.pixelmonmod.pixelmon.battles.BattleRegistry;
@@ -21,6 +23,8 @@ public class BattleBuilder {
     protected boolean allowSpectators = true;
     protected boolean teamSelection = false;
     protected TeamSelectionRegistry.Builder selectionBuilder = null;
+    protected long startDelayMillis = -1;
+    protected boolean startSync = false;
 
     private BattleBuilder() {
     }
@@ -91,7 +95,40 @@ public class BattleBuilder {
         return this;
     }
 
+    public BattleBuilder startDelayTicks(long ticks) {
+        this.startDelayMillis = 50 * ticks;
+        return this;
+    }
+
+    public BattleBuilder startDelay(long startDelayMillis) {
+        this.startDelayMillis = startDelayMillis;
+        return this;
+    }
+
+    public BattleBuilder startSync() {
+        this.startSync = true;
+        return this;
+    }
+
+    public BattleBuilder startAsync() {
+        this.startSync = false;
+        return this;
+    }
+
     public void start() {
+        if (this.startDelayMillis != -1) {
+            if (this.startSync) {
+                UtilForgeConcurrency.runLater(this::startBattle, (int) (this.startDelayMillis / 50L));
+            } else {
+                UtilConcurrency.runLater(this::startBattle, this.startDelayMillis);
+            }
+            return;
+        }
+
+        this.startBattle();
+    }
+
+    protected void startBattle() {
         if (this.teamSelection) {
             this.selectionBuilder
                     .members(this.teamOne[0].getStorage(), this.teamTwo[0].getStorage())

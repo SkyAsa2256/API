@@ -1,11 +1,8 @@
 package com.envyful.api.forge.concurrency;
 
 import com.envyful.api.forge.concurrency.listener.ServerTickListener;
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import net.minecraftforge.common.MinecraftForge;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.function.Predicate;
 
 /**
@@ -15,7 +12,6 @@ import java.util.function.Predicate;
  */
 public class UtilForgeConcurrency {
 
-    static final ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool(new ThreadFactoryBuilder().setDaemon(true).setNameFormat("envyware_concurrency_%d").build());
     static final ServerTickListener TICK_LISTENER = new ServerTickListener();
 
     static {

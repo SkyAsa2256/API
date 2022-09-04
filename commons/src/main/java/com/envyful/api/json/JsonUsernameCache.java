@@ -95,7 +95,7 @@ public class JsonUsernameCache {
                     return;
                 }
 
-                writer.write(entry.getKey() + "@@##@@" + entry.getValue().getMostSignificantBits() + "@@##@@" + entry.getValue().getLeastSignificantBits());
+                writer.write(entry.getKey() + "@@##@@" + entry.getValue().getMostSignificantBits() + "@@##@@" + entry.getValue().getLeastSignificantBits() + System.lineSeparator());
             }
 
             this.saving = false;

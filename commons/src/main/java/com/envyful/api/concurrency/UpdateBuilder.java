@@ -117,8 +117,7 @@ public class UpdateBuilder<T> {
             while (true) {
                 try {
                     this.sendRequest();
-                    Thread.sleep(10_000_000);
-                } catch (InterruptedException | IOException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }

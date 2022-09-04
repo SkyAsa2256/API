@@ -19,31 +19,23 @@ import java.util.function.Predicate;
  */
 public class UtilConcurrency {
 
-    /**
-     *
-     * A cached thread pool executor service instance for running tasks off the main server thread
-     *
-     */
-    public static final ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool(
-            new ThreadFactoryBuilder().setDaemon(true).setNameFormat("envyware_concurrency_%d").build()
-    );
     public static final ScheduledExecutorService SCHEDULED_EXECUTOR_SERVICE = Executors.newScheduledThreadPool(5,
             new ThreadFactoryBuilder().setDaemon(true).setNameFormat("envyware_concurrency_%d").build());
 
     /**
      *
-     * Takes the runnable and passes it to the {@link UtilConcurrency#EXECUTOR_SERVICE} to be executed using one of the
+     * Takes the runnable and passes it to the {@link UtilConcurrency#SCHEDULED_EXECUTOR_SERVICE} to be executed using one of the
      * cached threads. (typically minimal [or no set] delay)
      *
      * @param runnable The runnable to execute asynchronously
      */
     public static void runAsync(Runnable runnable) {
-        EXECUTOR_SERVICE.execute(runnable);
+        SCHEDULED_EXECUTOR_SERVICE.execute(runnable);
     }
 
     /**
      *
-     * Takes the runnable and passes it to the {@link UtilConcurrency#EXECUTOR_SERVICE} to be executed later using one of the
+     * Takes the runnable and passes it to the {@link UtilConcurrency#SCHEDULED_EXECUTOR_SERVICE} to be executed later using one of the
      * cached threads
      *
      * @param runnable the runnable to execute asynchronously
@@ -71,5 +63,13 @@ public class UtilConcurrency {
         }
 
         runnable.run();
+    }
+
+    public static void runRepeatingTask(Runnable runnable, long delay, long period) {
+        runRepeatingTask(runnable, delay, period, TimeUnit.MILLISECONDS);
+    }
+
+    public static void runRepeatingTask(Runnable runnable, long delay, long period, TimeUnit timeUnit) {
+        SCHEDULED_EXECUTOR_SERVICE.scheduleAtFixedRate(runnable, delay, period, timeUnit);
     }
 }

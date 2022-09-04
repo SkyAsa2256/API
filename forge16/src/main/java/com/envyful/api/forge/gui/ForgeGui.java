@@ -82,7 +82,8 @@ public class ForgeGui implements Gui {
 
         ServerPlayerEntity parent = (ServerPlayerEntity)player.getParent();
 
-        if (ForgeGuiTracker.inGui(player) && Objects.equals(parent.containerMenu.getType(), this.getContainerType())) {
+        if (ForgeGuiTracker.inGui(player) && parent.containerMenu != parent.inventoryMenu &&
+                Objects.equals(parent.containerMenu.getType(), this.getContainerType())) {
             UtilForgeConcurrency.runSync(() -> {
                 ((ForgeGuiContainer) parent.containerMenu).gui.closeConsumer.handle((ForgeEnvyPlayer)player);
                 parent.containerMenu = new ForgeGuiContainer(this, parent);

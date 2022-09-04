@@ -10,6 +10,10 @@ public class DefaultUncaughtExceptionHandler implements Thread.UncaughtException
     }
 
     public void uncaughtException(Thread p_uncaughtException_1_, Throwable p_uncaughtException_2_) {
+        if (this.logger == null) {
+            return;
+        }
+
         this.logger.error("Caught previously unhandled exception :", p_uncaughtException_2_);
     }
 }

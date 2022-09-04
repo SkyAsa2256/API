@@ -13,6 +13,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 
 import java.util.Collections;
 import java.util.List;
@@ -145,6 +146,17 @@ public class ForgePlayerManager implements PlayerManager<ForgeEnvyPlayer, Server
 
                 player.setPlayer((ServerPlayerEntity) event.getPlayer());
             }, 5L);
+        }
+
+        @SubscribeEvent(priority = EventPriority.HIGHEST)
+        public void onPreServerShutdown(FMLServerStoppingEvent event) {
+            UtilConcurrency.runAsync(() -> {
+                for (ForgeEnvyPlayer value : this.manager.cachedPlayers.values()) {
+                    for (PlayerAttribute<?> playerAttribute : value.attributes.values()) {
+                        playerAttribute.save();
+                    }
+                }
+            });
         }
     }
 }

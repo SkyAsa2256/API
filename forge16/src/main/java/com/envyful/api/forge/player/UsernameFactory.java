@@ -27,22 +27,42 @@ public class UsernameFactory {
     }
 
     public static void addCache(UUID uuid, String name) {
+        if (usernameCache == null) {
+            return;
+        }
+
         usernameCache.addCache(uuid, name);
     }
 
     public static UUID getUUID(String name) {
+        if (usernameCache == null) {
+            return null;
+        }
+
         return usernameCache.getUUID(name);
     }
 
     public static void invalidateUUID(UUID uuid) {
+        if (usernameCache == null) {
+            return;
+        }
+
         usernameCache.invalidateUUID(uuid);
     }
 
     public static void setSaving(boolean saving) {
+        if (usernameCache == null) {
+            return;
+        }
+
         usernameCache.setSaving(saving);
     }
 
     public static void save() {
+        if (usernameCache == null) {
+            return;
+        }
+
         usernameCache.save();
     }
 

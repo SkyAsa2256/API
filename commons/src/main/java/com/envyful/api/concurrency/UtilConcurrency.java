@@ -20,7 +20,8 @@ import java.util.function.Predicate;
 public class UtilConcurrency {
 
     public static final ScheduledExecutorService SCHEDULED_EXECUTOR_SERVICE = Executors.newScheduledThreadPool(5,
-            new ThreadFactoryBuilder().setDaemon(true).setNameFormat("envyware_concurrency_%d").build());
+            new ThreadFactoryBuilder().setDaemon(true).setNameFormat("envyware_concurrency_%d")
+                    .setUncaughtExceptionHandler(new DefaultUncaughtExceptionHandler(UtilLogger.getLogger())).build());
 
     /**
      *

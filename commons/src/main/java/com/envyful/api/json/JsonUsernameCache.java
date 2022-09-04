@@ -15,6 +15,10 @@ public class JsonUsernameCache {
     private final Map<String, UUID> uuidByUsername = Maps.newConcurrentMap();
     private boolean saving = false;
 
+    public JsonUsernameCache() {
+        this(new File("config/players/users.json"));
+    }
+
     public JsonUsernameCache(File usernameCache) {
         this.usernameCache = usernameCache;
 

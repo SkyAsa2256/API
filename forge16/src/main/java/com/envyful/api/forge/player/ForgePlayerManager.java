@@ -37,6 +37,7 @@ public class ForgePlayerManager implements PlayerManager<ForgeEnvyPlayer, Server
 
     public ForgePlayerManager() {
         MinecraftForge.EVENT_BUS.register(new PlayerListener(this));
+        UsernameFactory.init();
     }
 
     @Override

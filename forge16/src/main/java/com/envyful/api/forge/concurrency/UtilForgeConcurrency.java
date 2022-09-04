@@ -1,13 +1,8 @@
 package com.envyful.api.forge.concurrency;
 
-import com.envyful.api.forge.UtilLogger;
 import com.envyful.api.forge.concurrency.listener.ServerTickListener;
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import net.minecraft.util.DefaultUncaughtExceptionHandler;
 import net.minecraftforge.common.MinecraftForge;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.function.Predicate;
 
 /**

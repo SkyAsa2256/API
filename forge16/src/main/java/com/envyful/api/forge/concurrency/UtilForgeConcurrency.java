@@ -17,10 +17,6 @@ import java.util.function.Predicate;
  */
 public class UtilForgeConcurrency {
 
-    static final ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool(
-            new ThreadFactoryBuilder().setDaemon(true).setNameFormat("envyware_concurrency_%d")
-                    .setUncaughtExceptionHandler(new DefaultUncaughtExceptionHandler(UtilLogger.getLogger())).build()
-    );
     static final ServerTickListener TICK_LISTENER = new ServerTickListener();
 
     static {

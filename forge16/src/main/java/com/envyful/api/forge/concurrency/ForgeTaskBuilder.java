@@ -1,5 +1,7 @@
 package com.envyful.api.forge.concurrency;
 
+import com.envyful.api.concurrency.UtilConcurrency;
+
 /**
  *
  * Builder class for repeating tasks on Forge
@@ -82,17 +84,7 @@ public class ForgeTaskBuilder {
         this.started = true;
         RepeatedRunnable runnable = new RepeatedRunnable(this);
 
-        UtilForgeConcurrency.EXECUTOR_SERVICE.submit(() -> {
-            while (true) {
-                try {
-                    Thread.sleep(50L);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                runnable.run();
-            }
-        });
+        UtilConcurrency.runRepeatingTask(runnable, 50L, 50L);
     }
 
     private final class RepeatedRunnable implements Runnable {
@@ -121,7 +113,7 @@ public class ForgeTaskBuilder {
                 this.lastRunTicks = this.ticks;
 
                 if (this.taskBuilder.async) {
-                    UtilForgeConcurrency.EXECUTOR_SERVICE.submit(() -> this.taskBuilder.task.run());
+                    UtilConcurrency.runAsync(() -> this.taskBuilder.task.run());
                 } else {
                     UtilForgeConcurrency.runSync(this.taskBuilder.task);
                 }

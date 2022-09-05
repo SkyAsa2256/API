@@ -6,4 +6,5 @@ include 'forge16'
 include 'discord'
 include 'reforged16'
 include 'spigot'
+include 'velocity'
 

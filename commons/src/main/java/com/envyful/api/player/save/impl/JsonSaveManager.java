@@ -1,5 +1,6 @@
 package com.envyful.api.player.save.impl;
 
+import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.attribute.PlayerAttribute;
 import com.envyful.api.player.save.SaveManager;
@@ -68,7 +69,7 @@ public class JsonSaveManager<T> implements SaveManager<T> {
                     file.getParentFile().mkdirs();
                     Files.createFile(file.toPath());
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    UtilLogger.getLogger().catching(e);
                 }
                 attribute.postLoad();
                 attributes.add(attribute);
@@ -93,7 +94,7 @@ public class JsonSaveManager<T> implements SaveManager<T> {
                     declaredField.set(attribute, declaredField.get(loaded));
                 }
             } catch (IOException | IllegalAccessException e) {
-                e.printStackTrace();
+                UtilLogger.getLogger().catching(e);
             }
 
             attribute.postLoad();
@@ -153,14 +154,14 @@ public class JsonSaveManager<T> implements SaveManager<T> {
                 file.getParentFile().mkdirs();
                 Files.createFile(file.toPath());
             } catch (IOException e) {
-                e.printStackTrace();
+                UtilLogger.getLogger().catching(e);
             }
         }
 
         try (FileWriter fileWriter = new FileWriter(file)) {
             getGson().toJson(attribute, attribute.getClass(), new JsonWriter(fileWriter));
         } catch (IOException e) {
-            e.printStackTrace();
+            UtilLogger.getLogger().catching(e);
         }
 
         attribute.postSave();
@@ -184,14 +185,14 @@ public class JsonSaveManager<T> implements SaveManager<T> {
                 file.getParentFile().mkdirs();
                 Files.createFile(file.toPath());
             } catch (IOException e) {
-                e.printStackTrace();
+                UtilLogger.getLogger().catching(e);
             }
         }
 
         try (FileWriter fileWriter = new FileWriter(file)) {
             getGson().toJson(attribute, attribute.getClass(), new JsonWriter(fileWriter));
         } catch (IOException e) {
-            e.printStackTrace();
+            UtilLogger.getLogger().catching(e);
         }
 
         attribute.postSave();
@@ -211,7 +212,7 @@ public class JsonSaveManager<T> implements SaveManager<T> {
             try {
                 builder.registerTypeAdapter(attribute, typeAdapter.value().newInstance());
             } catch (InstantiationException | IllegalAccessException e) {
-                e.printStackTrace();
+                UtilLogger.getLogger().catching(e);
             }
         }
 
@@ -241,7 +242,7 @@ public class JsonSaveManager<T> implements SaveManager<T> {
                 return null;
             };
         } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+            UtilLogger.getLogger().catching(e);
         }
 
         return null;

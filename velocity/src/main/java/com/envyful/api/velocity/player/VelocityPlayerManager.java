@@ -34,8 +34,10 @@ public class VelocityPlayerManager implements PlayerManager<VelocityEnvyPlayer, 
     private final List<PlayerAttributeData> attributeData = Lists.newArrayList();
 
     private SaveManager<Player> saveManager = new EmptySaveManager<>();
+    private ProxyServer proxyServer;
 
     public VelocityPlayerManager(Object plugin, ProxyServer proxy) {
+        this.proxyServer = proxy;
         proxy.getEventManager().register(plugin, new PlayerListener(this));
     }
 
@@ -90,6 +92,10 @@ public class VelocityPlayerManager implements PlayerManager<VelocityEnvyPlayer, 
         }
     }
 
+    public ProxyServer getProxyServer() {
+        return this.proxyServer;
+    }
+
     @Override
     public void setSaveManager(SaveManager<Player> saveManager) {
         this.saveManager = saveManager;
@@ -105,7 +111,7 @@ public class VelocityPlayerManager implements PlayerManager<VelocityEnvyPlayer, 
 
         @Subscribe(order = PostOrder.LAST)
         public void onAsyncPrePlayerLogin(LoginEvent event) {
-            VelocityEnvyPlayer player = new VelocityEnvyPlayer(event.getPlayer().getUniqueId());
+            VelocityEnvyPlayer player = new VelocityEnvyPlayer(this.manager.proxyServer, event.getPlayer().getUniqueId());
             player.setPlayer(event.getPlayer());
             this.manager.cachedPlayers.put(event.getPlayer().getUniqueId(), player);
 

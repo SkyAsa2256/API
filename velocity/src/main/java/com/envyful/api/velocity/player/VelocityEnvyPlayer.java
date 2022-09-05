@@ -5,6 +5,7 @@ import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.attribute.PlayerAttribute;
 import com.google.common.collect.Maps;
 import com.velocitypowered.api.proxy.Player;
+import com.velocitypowered.api.proxy.ProxyServer;
 import net.kyori.adventure.text.Component;
 
 import java.util.Map;
@@ -19,10 +20,11 @@ public class VelocityEnvyPlayer implements EnvyPlayer<Player> {
 
     protected final Map<Class<?>, PlayerAttribute<?>> attributes = Maps.newHashMap();
 
+    private ProxyServer proxy;
     private Player player;
     private UUID uuid;
 
-    protected VelocityEnvyPlayer(UUID uuid) {
+    protected VelocityEnvyPlayer(ProxyServer proxy, UUID uuid) {
         this.uuid = uuid;
     }
 
@@ -65,7 +67,7 @@ public class VelocityEnvyPlayer implements EnvyPlayer<Player> {
 
     @Override
     public void executeCommand(String command) {
-        //TODO:
+        this.proxy.getCommandManager().executeAsync(this.getParent(), command);
     }
 
     @Override

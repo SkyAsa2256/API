@@ -138,17 +138,21 @@ public class JsonSaveManager<T> implements SaveManager<T> {
 
     @Override
     public void saveData(EnvyPlayer<T> player, PlayerAttribute<?> attribute) {
+        UtilLogger.getLogger().info("1");
         AttributeData attributeData = this.loadedAttributes.get(attribute.getClass());
 
         if (attributeData == null) {
+            UtilLogger.getLogger().info("2");
             attribute.save();
             return;
         }
 
+        UtilLogger.getLogger().info("3");
         attribute.preSave();
 
         File file = Paths.get(attributeData.getDataDirectory(), player.getUuid().toString() + ".json").toFile();
 
+        UtilLogger.getLogger().info("4");
         if (!file.exists()) {
             try {
                 file.getParentFile().mkdirs();
@@ -159,13 +163,16 @@ public class JsonSaveManager<T> implements SaveManager<T> {
             }
         }
 
+        UtilLogger.getLogger().info("5");
         try (FileWriter fileWriter = new FileWriter(file)) {
             getGson().toJson(attribute, attribute.getClass(), new JsonWriter(fileWriter));
+            UtilLogger.getLogger().info("6");
         } catch (IOException e) {
             UtilLogger.getLogger().catching(e);
             UtilLogger.getLogger().info("There was an error writing to the file");
         }
 
+        UtilLogger.getLogger().info("7");
         attribute.postSave();
     }
 
@@ -188,6 +195,7 @@ public class JsonSaveManager<T> implements SaveManager<T> {
                 Files.createFile(file.toPath());
             } catch (IOException e) {
                 UtilLogger.getLogger().catching(e);
+                UtilLogger.getLogger().info("There was an error creating the file");
             }
         }
 
@@ -195,6 +203,7 @@ public class JsonSaveManager<T> implements SaveManager<T> {
             getGson().toJson(attribute, attribute.getClass(), new JsonWriter(fileWriter));
         } catch (IOException e) {
             UtilLogger.getLogger().catching(e);
+            UtilLogger.getLogger().info("There was an error writing to the file");
         }
 
         attribute.postSave();

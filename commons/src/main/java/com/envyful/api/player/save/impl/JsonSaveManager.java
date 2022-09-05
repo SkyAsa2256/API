@@ -155,6 +155,7 @@ public class JsonSaveManager<T> implements SaveManager<T> {
                 Files.createFile(file.toPath());
             } catch (IOException e) {
                 UtilLogger.getLogger().catching(e);
+                UtilLogger.getLogger().info("There was an error creating the file");
             }
         }
 
@@ -162,6 +163,7 @@ public class JsonSaveManager<T> implements SaveManager<T> {
             getGson().toJson(attribute, attribute.getClass(), new JsonWriter(fileWriter));
         } catch (IOException e) {
             UtilLogger.getLogger().catching(e);
+            UtilLogger.getLogger().info("There was an error writing to the file");
         }
 
         attribute.postSave();

@@ -1,5 +1,7 @@
 package com.envyful.api.player.attribute;
 
+import com.envyful.api.player.EnvyPlayer;
+
 import java.util.UUID;
 
 /**
@@ -20,6 +22,8 @@ public interface PlayerAttribute<A> {
      * @return The owner's UUID
      */
     UUID getUuid();
+
+    void setParent(EnvyPlayer<?> parent);
 
     /**
      *

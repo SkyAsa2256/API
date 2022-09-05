@@ -23,8 +23,6 @@ public interface PlayerAttribute<A> {
      */
     UUID getUuid();
 
-    void setParent(EnvyPlayer<?> parent);
-
     /**
      *
      * Implementation for loading the data for the player attribute if no

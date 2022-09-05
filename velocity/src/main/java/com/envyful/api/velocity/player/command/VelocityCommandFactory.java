@@ -8,9 +8,6 @@ import com.envyful.api.command.injector.ArgumentInjector;
 import com.envyful.api.command.injector.TabCompleter;
 import com.envyful.api.command.sender.SenderType;
 import com.envyful.api.command.sender.SenderTypeFactory;
-import com.envyful.api.forge.command.command.ForgeCommand;
-import com.envyful.api.forge.command.command.executor.CommandExecutor;
-import com.envyful.api.forge.command.completion.FillerTabCompleter;
 import com.envyful.api.type.Pair;
 import com.envyful.api.velocity.player.command.command.VelocityCommand;
 import com.envyful.api.velocity.player.command.command.executor.CommandExecutor;
@@ -25,6 +22,7 @@ import com.google.common.collect.Maps;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
@@ -36,9 +34,6 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import io.leangen.geantyref.AnnotationFormatException;
 import io.leangen.geantyref.TypeFactory;
-import net.minecraft.command.Commands;
-import net.minecraft.command.ICommandSource;
-import net.minecraft.util.math.BlockPos;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -104,9 +99,9 @@ public class VelocityCommandFactory implements CommandFactory<CommandDispatcher<
     public boolean registerCommand(CommandDispatcher<CommandSource> dispatcher, Object o) throws CommandLoadException {
         VelocityCommand command = this.createCommand(o.getClass(), o);
 
-        LiteralCommandNode<CommandSource> args = dispatcher.register(Commands.literal(command.getName())
-                .requires(commandSource -> command.checkPermission(commandSource.getServer(), commandSource.getEntity()))
-                .then(Commands.argument("", StringArgumentType.greedyString())
+        LiteralCommandNode<CommandSource> args = dispatcher.register(LiteralArgumentBuilder.<CommandSource>literal(command.getName())
+                .<CommandSource>requires(command::checkPermission)
+                .then(RequiredArgumentBuilder.<CommandSource, String>argument("", StringArgumentType.greedyString())
                         .suggests((context, builder) -> this.buildSuggestions(command, context, builder))
                         .executes(context -> this.handleExecution(command, context)))
                 .executes(context -> this.handleExecution(command, context)));
@@ -158,7 +153,7 @@ public class VelocityCommandFactory implements CommandFactory<CommandDispatcher<
         return 1;
     }
 
-    private CompletableFuture<Suggestions> buildSuggestions(ForgeCommand command, CommandContext<CommandSource> context, SuggestionsBuilder builder) {
+    private CompletableFuture<Suggestions> buildSuggestions(VelocityCommand command, CommandContext<CommandSource> context, SuggestionsBuilder builder) {
         List<String> tabCompletions;
         String[] initialArgs = context.getInput().split(" ");
         List<String> args = Lists.newArrayList(Arrays.copyOfRange(initialArgs, 1, initialArgs.length));
@@ -174,10 +169,8 @@ public class VelocityCommandFactory implements CommandFactory<CommandDispatcher<
             spaces--;
         }
 
-        tabCompletions = command.getTabCompletions(context.getSource().getServer(),
-                context.getSource().getEntity(),
-                args.toArray(new String[0]),
-                new BlockPos(context.getSource().getPosition()));
+        tabCompletions = command.getTabCompletions(context.getSource(),
+                args.toArray(new String[0]));
 
         if (args.size() > 0 && !args.get(args.size() - 1).trim().isEmpty()) {
             builder = builder.createOffset(context.getInput().length() - args.get(args.size() - 1).length());
@@ -433,7 +426,7 @@ public class VelocityCommandFactory implements CommandFactory<CommandDispatcher<
 
     @Override
     public void registerInjector(Class<?> parentClass, boolean multipleArgs, BiFunction<CommandSource, String[], ?> function) {
-        this.registeredInjectors.add(new VelocityFunctionInjector<>(parentClass, multipleArgs, function));
+        this.registeredInjectors.add(new VelocityFunctionInjector(parentClass, multipleArgs, function));
     }
 
     @Override

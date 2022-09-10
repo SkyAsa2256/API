@@ -12,7 +12,7 @@ import com.envyful.api.type.Pair;
 import com.envyful.api.velocity.player.command.command.VelocityCommand;
 import com.envyful.api.velocity.player.command.command.executor.CommandExecutor;
 import com.envyful.api.velocity.player.command.command.sender.ConsoleSenderType;
-import com.envyful.api.velocity.player.command.command.sender.ForgePlayerSenderType;
+import com.envyful.api.velocity.player.command.command.sender.VelocityPlayerSenderType;
 import com.envyful.api.velocity.player.command.completion.FillerTabCompleter;
 import com.envyful.api.velocity.player.command.completion.number.IntegerTabCompleter;
 import com.envyful.api.velocity.player.command.completion.player.PlayerTabCompleter;
@@ -62,7 +62,7 @@ public class VelocityCommandFactory implements CommandFactory<CommandDispatcher<
     public VelocityCommandFactory(ProxyServer proxy) {
         this.proxy = proxy;
 
-        SenderTypeFactory.register(new ConsoleSenderType(), new ForgePlayerSenderType());
+        SenderTypeFactory.register(new ConsoleSenderType(), new VelocityPlayerSenderType());
 
         this.registerInjector(Player.class, (sender, args) -> this.proxy.getPlayer(args[0]));
         this.registerInjector(int.class, (ICommandSource, args) -> {

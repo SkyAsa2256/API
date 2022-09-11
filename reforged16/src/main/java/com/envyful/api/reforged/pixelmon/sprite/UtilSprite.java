@@ -106,7 +106,7 @@ public class UtilSprite {
 
         line = line
                 .replace("%nickname%", pokemon.getDisplayName())
-                .replace("%held_item%", pokemon.getHeldItem().getDisplayName().getString())
+                .replace("%held_item%", pokemon.getHeldItem().getHoverName().getString())
                 .replace("%palette%", pokemon.getPalette().getLocalizedName())
                 .replace("%species_name%", pokemon.getSpecies().getLocalizedName())
                 .replace("%level%", pokemon.getPokemonLevel() + "")

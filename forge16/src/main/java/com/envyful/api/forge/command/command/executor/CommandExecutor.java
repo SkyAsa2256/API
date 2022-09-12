@@ -11,7 +11,6 @@ import com.envyful.api.type.Pair;
 import net.minecraft.command.ICommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -230,7 +229,7 @@ public class CommandExecutor {
 
 
         if (!((SenderType<ICommandSource, ?>) this.sender).isAccepted(sender)) {
-            LogManager.getLogger().info("You cannot use this command from this source (player only).");
+            UtilLogger.getLogger().error("You cannot use this command from this source (player only).");
             return false;
         }
 

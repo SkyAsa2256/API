@@ -166,6 +166,14 @@ public class UtilConfigItem {
         return fromConfigItem(permissibleConfigItem.getElseItem(), transformers);
     }
 
+    public static ItemStack fromConfigItem(ExtendedConfigItem configItem, Transformer... transformers) {
+        return fromConfigItem(configItem.asConfigItem(), Lists.newArrayList(transformers));
+    }
+
+    public static ItemStack fromConfigItem(ExtendedConfigItem configItem, List<Transformer> transformers) {
+        return fromConfigItem(configItem.asConfigItem(), transformers);
+    }
+
     public static ItemStack fromConfigItem(ConfigItem configItem, Transformer... transformers) {
         return fromConfigItem(configItem, Lists.newArrayList(transformers));
     }

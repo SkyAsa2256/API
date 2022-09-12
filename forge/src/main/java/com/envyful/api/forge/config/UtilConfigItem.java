@@ -13,6 +13,7 @@ import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.type.Pair;
 import com.envyful.api.type.UtilParse;
+import com.google.common.collect.Lists;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
@@ -113,8 +114,16 @@ public class UtilConfigItem {
         return fromConfigItem(permissibleConfigItem.getElseItem());
     }
 
-    public static ItemStack fromConfigItem(ConfigItem configItem) {
-        return fromConfigItem(configItem, Collections.emptyList());
+    public static ItemStack fromConfigItem(ExtendedConfigItem configItem, Transformer... transformers) {
+        return fromConfigItem(configItem, Lists.newArrayList(transformers));
+    }
+
+    public static ItemStack fromConfigItem(ExtendedConfigItem configItem, List<Transformer> transformers) {
+        return fromConfigItem(configItem.asConfigItem(), transformers);
+    }
+
+    public static ItemStack fromConfigItem(ConfigItem configItem, Transformer... transformers) {
+        return fromConfigItem(configItem, Lists.newArrayList(transformers));
     }
 
     public static ItemStack fromConfigItem(ConfigItem configItem, List<Transformer> transformers) {

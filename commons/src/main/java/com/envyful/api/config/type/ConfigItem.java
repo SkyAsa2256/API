@@ -29,8 +29,10 @@ public class ConfigItem {
     private Map<String, EnchantData> enchants = Maps.newHashMap();
     private Map<String, NBTValue> nbt = Maps.newHashMap();
 
+    @Deprecated
     public ConfigItem() {}
 
+    @Deprecated
     public ConfigItem(boolean enabled, String type, String amount, String damage, String name, List<String> flags, List<String> lore, Map<String, EnchantData> enchants, Map<String, NBTValue> nbt) {
         this.enabled = enabled;
         this.type = type;
@@ -43,6 +45,7 @@ public class ConfigItem {
         this.nbt = nbt;
     }
 
+    @Deprecated
     public ConfigItem(boolean enabled, String type, String amount, String name, List<String> flags, List<String> lore, Map<String, EnchantData> enchants, Map<String, NBTValue> nbt) {
         this.enabled = enabled;
         this.type = type;
@@ -54,6 +57,7 @@ public class ConfigItem {
         this.nbt = nbt;
     }
 
+    @Deprecated
     public ConfigItem(String type, int amount, byte damage, String name, List<String> lore, Map<String, EnchantData> enchants, Map<String, NBTValue> nbt) {
         this.type = type;
         this.amount = amount + "";
@@ -64,14 +68,17 @@ public class ConfigItem {
         this.nbt = nbt;
     }
 
+    @Deprecated
     public ConfigItem(String type, int amount, String name, List<String> lore, Map<String, EnchantData> enchants, Map<String, NBTValue> nbt) {
         this(type, amount, (byte) 0, name, lore, enchants, nbt);
     }
 
+    @Deprecated
     public ConfigItem(String type, int amount, String name, List<String> lore) {
         this(type, amount, (byte) 0, name, lore, ImmutableMap.of(), ImmutableMap.of());
     }
 
+    @Deprecated
     public ConfigItem(String type, int amount, byte damage, String name, List<String> lore, Map<String, NBTValue> nbt) {
         this(type, amount, damage, name, lore, Maps.newHashMap(), nbt);
     }

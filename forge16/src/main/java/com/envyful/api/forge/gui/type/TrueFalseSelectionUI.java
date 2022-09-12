@@ -206,7 +206,7 @@ public class TrueFalseSelectionUI {
         private ConfigInterface guiSettings = new ConfigInterface(
                 "True or False", 3, "BLOCK",
                 ImmutableMap.of("one", new ConfigItem(
-                        "minecraft:stained_glass_pane", 1, (byte) 15, " ", Lists.newArrayList(), Maps.newHashMap()
+                        "minecraft:black_stained_glass_pane", 1, (byte) 15, " ", Lists.newArrayList(), Maps.newHashMap()
                 ))
         );
 

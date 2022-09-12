@@ -198,15 +198,15 @@ public class ConfirmationUI {
         private ConfigInterface guiSettings = new ConfigInterface(
                 "UltimatePokeBuilder", 3, "BLOCK",
                 ImmutableMap.of("one", new ConfigItem(
-                        "minecraft:stained_glass_pane", 1, (byte) 15, " ", Lists.newArrayList(), Maps.newHashMap()
+                        "minecraft:black_stained_glass_pane", 1," ", Lists.newArrayList()
                 ))
         );
 
-        private ExtendedConfigItem declineItem = new ExtendedConfigItem("minecraft:wool", 1, (byte) 14, "&c&lDECLINE",
+        private ExtendedConfigItem declineItem = new ExtendedConfigItem("minecraft:red_wool", 1, (byte) 14, "&c&lDECLINE",
                                                                     Lists.newArrayList(), 2, 1, Maps.newHashMap());
 
 
-        private ExtendedConfigItem acceptItem = new ExtendedConfigItem("minecraft:wool", 1, (byte) 5,
+        private ExtendedConfigItem acceptItem = new ExtendedConfigItem("minecraft:lime_wool", 1, (byte) 5,
                                                                                "&a&lACCEPT",
                                                                                 Lists.newArrayList(), 6, 1,
                                                                                Maps.newHashMap());

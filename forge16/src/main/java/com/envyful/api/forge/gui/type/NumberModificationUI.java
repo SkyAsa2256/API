@@ -242,7 +242,7 @@ public class NumberModificationUI {
             this.guiSettings = new ConfigInterface(
                     title, height, "BLOCK",
                     ImmutableMap.of("one", new ConfigItem(
-                            "minecraft:stained_glass_pane", 1, (byte) 15, " ", Lists.newArrayList(), Maps.newHashMap()
+                            "minecraft:black_stained_glass_pane", 1, (byte) 15, " ", Lists.newArrayList(), Maps.newHashMap()
                     ))
             );
         }

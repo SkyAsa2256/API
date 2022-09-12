@@ -365,6 +365,7 @@ public class ForgeGui implements Gui {
             ForgeGui.this.containers.remove(this);
 
             sender.containerCounter = 0;
+            sender.containerMenu = sender.inventoryMenu;
             sender.containerMenu.broadcastChanges();
             sender.refreshContainer(sender.containerMenu, sender.containerMenu.getItems());
 

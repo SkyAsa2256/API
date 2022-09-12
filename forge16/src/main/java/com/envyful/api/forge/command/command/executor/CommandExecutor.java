@@ -4,15 +4,15 @@ import com.envyful.api.command.injector.ArgumentInjector;
 import com.envyful.api.command.injector.TabCompleter;
 import com.envyful.api.command.sender.SenderType;
 import com.envyful.api.command.sender.SenderTypeFactory;
+import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.forge.command.completion.FillerTabCompleter;
 import com.envyful.api.forge.player.util.UtilPlayer;
 import com.envyful.api.type.Pair;
 import net.minecraft.command.ICommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 
-import java.io.PrintWriter;
-import java.io.Writer;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -252,19 +252,7 @@ public class CommandExecutor {
             this.executor.invoke(this.commandClass, args);
             return true;
         } catch (Exception e) {
-            Throwable cause = e.getCause();
-            cause.printStackTrace(new PrintWriter(new Writer() {
-                @Override
-                public void write(char[] cbuf, int off, int len) {
-                    LogManager.getLogger().error(new String(cbuf));
-                }
-
-                @Override
-                public void flush() {}
-
-                @Override
-                public void close() {}
-            }));
+            UtilLogger.getLogger().catching(Level.FATAL, e);
         }
 
         return false;

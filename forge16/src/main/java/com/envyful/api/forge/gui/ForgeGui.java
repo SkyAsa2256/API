@@ -19,13 +19,11 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.play.client.CCloseWindowPacket;
 import net.minecraft.network.play.server.SCloseWindowPacket;
 import net.minecraft.network.play.server.SOpenWindowPacket;
 import net.minecraft.network.play.server.SSetSlotPacket;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import java.util.List;
 import java.util.Objects;
@@ -354,10 +352,7 @@ public class ForgeGui implements Gui {
             int windowId = sender.containerMenu.containerId;
 
             SCloseWindowPacket closeWindowServer = new SCloseWindowPacket(windowId);
-            CCloseWindowPacket closeWindowClient = new CCloseWindowPacket();
-            ObfuscationReflectionHelper.setPrivateValue(CCloseWindowPacket.class, closeWindowClient, 0,"field_149556_a");
 
-            UtilForgeConcurrency.runSync(() -> sender.connection.handleContainerClose(closeWindowClient));
             sender.connection.send(closeWindowServer);
 
             this.gui.closeConsumer.handle(player);

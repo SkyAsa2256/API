@@ -21,3 +21,6 @@ shadowJar {
 
     exclude "**/module-info.class"
 }
+
+//build.finalizedBy(shadowJar)
+//shadowJar.finalizedBy(notifyDiscordChannel)

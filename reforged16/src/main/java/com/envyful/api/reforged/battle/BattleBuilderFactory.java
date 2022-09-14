@@ -74,6 +74,10 @@ public class BattleBuilderFactory {
 
         BattleBuilder battleBuilder = LISTENED_CONTROLLERS.get(event.pokemon.getBattleController().battleIndex);
 
+        if (battleBuilder == null) {
+            return;
+        }
+
         if (battleBuilder.disableExp) {
             event.setCanceled(true);
             event.setExperience(0);

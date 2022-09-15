@@ -1,7 +1,7 @@
 package com.envyful.api.discord.button;
 
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.Emoji;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
@@ -35,10 +35,10 @@ public class ConfigurableEmojiButton extends ConfigurableButton {
         }
 
         if (this.markdown) {
-            return Emoji.fromMarkdown(this.emojiId);
+            return Emoji.fromFormatted(this.emojiId);
         }
 
-        return Emoji.fromEmote(jda.getEmoteById(Long.parseLong(this.emojiId)));
+        return jda.getEmojiById(Long.parseLong(this.emojiId));
     }
 
     @Override

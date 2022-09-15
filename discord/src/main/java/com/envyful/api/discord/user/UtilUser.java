@@ -1,8 +1,8 @@
 package com.envyful.api.discord.user;
 
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.PrivateChannel;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.concrete.PrivateChannel;
 
 import javax.annotation.Nullable;
 

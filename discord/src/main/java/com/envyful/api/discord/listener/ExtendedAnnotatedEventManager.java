@@ -86,7 +86,7 @@ public class ExtendedAnnotatedEventManager implements IEventManager {
                 }
 
                 Class<?>[] parameterTypes = m.getParameterTypes();
-                if (parameterTypes.length == 1 || !GenericEvent.class.isAssignableFrom(parameterTypes[0])) {
+                if (parameterTypes.length != 1 || !GenericEvent.class.isAssignableFrom(parameterTypes[0])) {
                     continue;
                 }
 

@@ -13,6 +13,10 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class UtilRandom {
 
+    public static boolean randomBoolean() {
+        return ThreadLocalRandom.current().nextBoolean();
+    }
+
     /**
      *
      * Generates a random integer between the specified minimum and maximum values.

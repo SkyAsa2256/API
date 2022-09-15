@@ -3,8 +3,7 @@ package com.envyful.api.discord.component;
 import com.envyful.api.discord.listener.SubscribeEvent;
 import com.google.common.collect.Maps;
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.Emoji;
-import net.dv8tion.jda.api.entities.Emote;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle;
@@ -79,11 +78,6 @@ public class ButtonFactory {
             return this;
         }
 
-        public Builder emote(Emote emote) {
-            this.emoji = Emoji.fromEmote(emote);
-            return this;
-        }
-
         public Builder emoji(String unicode) {
             this.emoji = Emoji.fromUnicode(unicode);
             return this;
@@ -110,6 +104,7 @@ public class ButtonFactory {
                 jda.addEventListener(ButtonFactory.class);
             }
 
+            REGISTERED_BUTTONS.put(this.id.toLowerCase(Locale.ROOT), this);
             return new ButtonImpl(this.id, this.label, this.style, this.disabled, this.emoji);
         }
     }

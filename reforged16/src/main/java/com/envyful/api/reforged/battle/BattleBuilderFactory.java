@@ -89,7 +89,7 @@ public class BattleBuilderFactory {
     public void onSpectateAttempt(SpectateEvent.StartSpectate event) {
         BattleBuilder battleBuilder = LISTENED_CONTROLLERS.get(event.battleController.battleIndex);
 
-        if (battleBuilder.allowSpectators) {
+        if (battleBuilder != null && battleBuilder.allowSpectators) {
             event.setCanceled(true);
         }
     }

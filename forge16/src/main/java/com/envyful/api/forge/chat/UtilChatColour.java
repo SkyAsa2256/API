@@ -1,5 +1,7 @@
 package com.envyful.api.forge.chat;
 
+import com.envyful.api.config.Replacer;
+import com.envyful.api.config.UtilReplacer;
 import com.google.common.collect.Lists;
 import net.minecraft.util.text.*;
 
@@ -27,7 +29,7 @@ public class UtilChatColour {
      * @param text The unformatted text
      * @return The newly formatted text
      */
-    public static ITextComponent colour(String text) {
+    public static ITextComponent colour(String text, Replacer... placeholders) {
         if (text.contains("{")) {
             return ITextComponent.Serializer.fromJson(text);
         }
@@ -41,7 +43,7 @@ public class UtilChatColour {
         while (matcher.find()) {
             int start = matcher.start();
             String segment = text.substring(lastEnd, start);
-            IFormattableTextComponent iFormattableTextComponent = attemptAppend(textComponent, segment, lastColor);
+            IFormattableTextComponent iFormattableTextComponent = attemptAppend(textComponent, segment, lastColor, placeholders);
 
             if (nextApply != null && iFormattableTextComponent != null) {
                 iFormattableTextComponent.withStyle(nextApply);
@@ -66,7 +68,7 @@ public class UtilChatColour {
         }
 
         String segment = text.substring(lastEnd);
-        IFormattableTextComponent iFormattableTextComponent = attemptAppend(textComponent, segment, lastColor);
+        IFormattableTextComponent iFormattableTextComponent = attemptAppend(textComponent, segment, lastColor, placeholders);
 
         if (nextApply != null && iFormattableTextComponent != null) {
             iFormattableTextComponent.withStyle(nextApply);
@@ -83,11 +85,12 @@ public class UtilChatColour {
      * @param segment The segment
      * @param lastColour The colour
      */
-    public static IFormattableTextComponent attemptAppend(IFormattableTextComponent textComponent, String segment, Color lastColour) {
+    public static IFormattableTextComponent attemptAppend(IFormattableTextComponent textComponent, String segment, Color lastColour, Replacer... placeholers) {
         if (segment.isEmpty()) {
             return null;
         }
 
+        segment = UtilReplacer.getReplacedText(segment, placeholers);
         IFormattableTextComponent appended = new StringTextComponent(segment);
 
         if (lastColour != null) {

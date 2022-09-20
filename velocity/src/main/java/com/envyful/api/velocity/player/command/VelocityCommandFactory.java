@@ -19,7 +19,6 @@ import com.envyful.api.velocity.player.command.completion.player.PlayerTabComple
 import com.envyful.api.velocity.player.command.injector.VelocityFunctionInjector;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
@@ -29,6 +28,8 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
+import com.velocitypowered.api.command.BrigadierCommand;
+import com.velocitypowered.api.command.CommandManager;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
@@ -50,7 +51,7 @@ import java.util.regex.Pattern;
  * Forge implementation of the {@link CommandFactory} interface
  *
  */
-public class VelocityCommandFactory implements CommandFactory<CommandDispatcher<CommandSource>, CommandSource> {
+public class VelocityCommandFactory implements CommandFactory<CommandManager, CommandSource> {
 
     private static final Pattern SPACE_PATTERN = Pattern.compile("\\s");
 
@@ -96,18 +97,20 @@ public class VelocityCommandFactory implements CommandFactory<CommandDispatcher<
     }
 
     @Override
-    public boolean registerCommand(CommandDispatcher<CommandSource> dispatcher, Object o) throws CommandLoadException {
+    public boolean registerCommand(CommandManager dispatcher, Object o) throws CommandLoadException {
         VelocityCommand command = this.createCommand(o.getClass(), o);
 
-        LiteralCommandNode<CommandSource> args = dispatcher.register(LiteralArgumentBuilder.<CommandSource>literal(command.getName())
-                .<CommandSource>requires(command::checkPermission)
+        BrigadierCommand brigadierCommand = new BrigadierCommand(LiteralArgumentBuilder.<CommandSource>literal(command.getName())
+                .requires(command::checkPermission)
                 .then(RequiredArgumentBuilder.<CommandSource, String>argument("", StringArgumentType.greedyString())
                         .suggests((context, builder) -> this.buildSuggestions(command, context, builder))
                         .executes(context -> this.handleExecution(command, context)))
                 .executes(context -> this.handleExecution(command, context)));
 
+        dispatcher.register(brigadierCommand);
+
         for (String alias : command.getAliases()) {
-            dispatcher.getRoot().addChild(buildRedirect(alias, args));
+            dispatcher.register(alias, brigadierCommand);
         }
 
         return true;
@@ -420,7 +423,7 @@ public class VelocityCommandFactory implements CommandFactory<CommandDispatcher<
     }
 
     @Override
-    public boolean unregisterCommand(CommandDispatcher<CommandSource> server, Object o) {
+    public boolean unregisterCommand(CommandManager server, Object o) {
         return false;
     }
 

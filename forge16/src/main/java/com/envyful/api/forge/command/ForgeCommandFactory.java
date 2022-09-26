@@ -229,7 +229,7 @@ public class ForgeCommandFactory implements CommandFactory<CommandDispatcher<Com
                 TabCompletions tabCompletions = declaredMethod.getAnnotation(TabCompletions.class);
 
                 if (tabCompletions != null) {
-                    if (declaredMethod.getReturnType().equals(List.class) && declaredMethod.getParameterCount() == 3) {
+                    if (declaredMethod.getReturnType().equals(List.class) && declaredMethod.getParameterCount() == 2) {
                         Object finalInstance = instance;
                         tabCompleter = (sender, args) -> {
                             try {

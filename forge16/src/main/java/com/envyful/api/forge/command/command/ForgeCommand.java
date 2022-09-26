@@ -239,7 +239,10 @@ public class ForgeCommand {
             }
         }
 
-        values.addAll(this.getAccessibleSubCommands(sender));
+        if (values.isEmpty()) {
+            values.addAll(this.getAccessibleSubCommands(sender));
+        }
+
         return values;
     }
 

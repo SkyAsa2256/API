@@ -2,7 +2,6 @@ package com.envyful.api.config.yaml;
 
 import com.envyful.api.config.Config;
 import org.spongepowered.configurate.CommentedConfigurationNode;
-import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.reference.ConfigurationReference;
@@ -28,12 +27,9 @@ public abstract class AbstractYamlConfig implements Config {
         return this.config.node();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void save() {
-        try {
-            this.base.save();
-        } catch (ConfigurateException e) {
-            e.printStackTrace();
-        }
+        ((ValueReference <AbstractYamlConfig, ?>) this.config).setAndSave(this);
     }
 }

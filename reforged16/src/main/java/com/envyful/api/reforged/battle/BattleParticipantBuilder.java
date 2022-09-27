@@ -3,6 +3,7 @@ package com.envyful.api.reforged.battle;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.storage.PartyStorage;
 import com.pixelmonmod.pixelmon.api.storage.PlayerPartyStorage;
+import com.pixelmonmod.pixelmon.api.storage.StoragePosition;
 import com.pixelmonmod.pixelmon.api.storage.StorageProxy;
 import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipant;
@@ -36,6 +37,11 @@ public class BattleParticipantBuilder {
         }
 
         storage.setInTemporaryMode(true, Color.RED, tempTeam);
+
+        for (int i = 0; i < tempTeam.length; i++) {
+            tempTeam[i].setStorage(storage, new StoragePosition(-1, i));
+        }
+
         return this;
     }
 

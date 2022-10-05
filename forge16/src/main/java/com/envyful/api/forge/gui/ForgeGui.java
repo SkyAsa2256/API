@@ -85,7 +85,10 @@ public class ForgeGui implements Gui {
         if (ForgeGuiTracker.inGui(player) && parent.containerMenu != parent.inventoryMenu &&
                 Objects.equals(parent.containerMenu.getType(), this.getContainerType())) {
             UtilForgeConcurrency.runSync(() -> {
-                ((ForgeGuiContainer) parent.containerMenu).gui.closeConsumer.handle((ForgeEnvyPlayer)player);
+                if (parent.containerMenu instanceof ForgeGuiContainer) {
+                    ((ForgeGuiContainer)parent.containerMenu).gui.closeConsumer.handle((ForgeEnvyPlayer)player);
+                }
+
                 parent.containerMenu = new ForgeGuiContainer(this, parent);
                 ((ForgeGuiContainer) parent.containerMenu).refreshPlayerContents();
             });

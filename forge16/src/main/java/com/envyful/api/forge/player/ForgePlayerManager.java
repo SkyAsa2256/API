@@ -11,11 +11,13 @@ import com.google.common.collect.Maps;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -96,6 +98,7 @@ public class ForgePlayerManager implements PlayerManager<ForgeEnvyPlayer, Server
     private final class PlayerListener {
 
         private final ForgePlayerManager manager;
+        private long lastSave = -1L;
 
         private PlayerListener(ForgePlayerManager manager) {
             this.manager = manager;
@@ -146,6 +149,27 @@ public class ForgePlayerManager implements PlayerManager<ForgeEnvyPlayer, Server
                     }
                 }
             });
+        }
+
+        @SubscribeEvent
+        public void onWorldSave(WorldEvent.Save event) {
+            if (!this.shouldSave()) {
+                return;
+            }
+
+            this.lastSave = System.currentTimeMillis();
+
+            UtilConcurrency.runAsync(() -> {
+                for (ForgeEnvyPlayer onlinePlayer : this.manager.getOnlinePlayers()) {
+                    for (PlayerAttribute<?> value : onlinePlayer.attributes.values()) {
+                        UtilConcurrency.runAsync(value::save);
+                    }
+                }
+            });
+        }
+
+        private boolean shouldSave() {
+            return this.lastSave == -1 || (System.currentTimeMillis() - this.lastSave) >= TimeUnit.MINUTES.toMillis(2);
         }
 
         @SubscribeEvent(priority = EventPriority.LOWEST)

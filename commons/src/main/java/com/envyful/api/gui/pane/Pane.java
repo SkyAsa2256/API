@@ -103,6 +103,15 @@ public interface Pane {
 
         /**
          *
+         * Sets the tick handler for the pane
+         *
+         * @param tickHandler The tick handler for the pane
+         * @return The builder
+         */
+        Builder tickHandler(TickHandler tickHandler);
+
+        /**
+         *
          * Sets the width of the pane
          *
          * @param width The width of the new pane

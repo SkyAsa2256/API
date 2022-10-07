@@ -25,7 +25,7 @@ public class UtilWorld {
                 0,
                 (UtilRandom.randomBoolean() ? 1 : -1) * UtilRandom.randomInteger(0, radiusZ));
 
-        int y = world.getHeight(Heightmap.Type.MOTION_BLOCKING, pos.getX(), pos.getZ());
+        int y = world.getChunk(pos).getHeight(Heightmap.Type.MOTION_BLOCKING, pos.getX(), pos.getZ());
         return new BlockPos(pos.getX(), y, pos.getZ());
     }
 

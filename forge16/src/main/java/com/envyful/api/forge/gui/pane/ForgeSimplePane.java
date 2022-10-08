@@ -4,10 +4,13 @@ import com.envyful.api.forge.gui.item.EmptySlot;
 import com.envyful.api.forge.gui.item.ForgeSimpleDisplayable;
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
+import com.envyful.api.gui.pane.TickHandler;
 import com.envyful.api.type.Pair;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+
+import javax.annotation.Nullable;
 
 /**
  *
@@ -22,15 +25,17 @@ public class ForgeSimplePane implements Pane {
     private final int height;
     private final SimpleDisplayableSlot[][] items;
     private final Inventory inventoryBasic;
+    private final TickHandler tickHandler;
 
     private boolean full = false;
     private Pair<Integer, Integer> lastPos = Pair.of(0, 0);
 
-    private ForgeSimplePane(int topLeftX, int topLeftY, int height, int width) {
+    private ForgeSimplePane(int topLeftX, int topLeftY, int height, int width, TickHandler tickHandler) {
         this.topLeftX = topLeftX;
         this.topLeftY = topLeftY;
         this.width = width;
         this.height = height;
+        this.tickHandler = tickHandler;
         this.inventoryBasic = new Inventory(1);
         this.items = new SimpleDisplayableSlot[height][width];
 
@@ -39,6 +44,14 @@ public class ForgeSimplePane implements Pane {
                 this.items[y][x] = new EmptySlot(this,x + y * 9);
             }
         }
+    }
+
+    public Inventory getInventoryBasic() {
+        return this.inventoryBasic;
+    }
+
+    public TickHandler getTickHandler() {
+        return this.tickHandler;
     }
 
     @Override
@@ -76,7 +89,7 @@ public class ForgeSimplePane implements Pane {
         }
 
         if (posY >= (this.topLeftY + this.height)) {
-            throw new RuntimeException("Cannot set an Y position greater than the height");
+            throw new RuntimeException("Cannot set a Y position greater than the height");
         }
 
         SimpleDisplayableSlot slot;
@@ -88,11 +101,38 @@ public class ForgeSimplePane implements Pane {
         }
 
         this.items[posY][posX] = slot;
+        this.inventoryBasic.setChanged();
     }
 
     @Override
     public void set(int pos, Displayable displayable) {
         this.set(pos % (this.width), pos / (this.height), displayable);
+    }
+
+    @Nullable
+    @Override
+    public Displayable get(int pos) {
+        return this.get(pos % this.width, pos / this.height);
+    }
+
+    @Nullable
+    @Override
+    public Displayable get(int posX, int posY) {
+        if (posX >= (this.topLeftX + this.width)) {
+            throw new RuntimeException("Cannot get an X position greater than the width");
+        }
+
+        if (posY >= (this.topLeftY + this.height)) {
+            throw new RuntimeException("Cannot get a Y position greater than the height");
+        }
+
+        SimpleDisplayableSlot simpleDisplayableSlot = this.items[posY][posX];
+
+        if (simpleDisplayableSlot == null) {
+            return null;
+        }
+
+        return simpleDisplayableSlot.displayable;
     }
 
     @Override
@@ -160,6 +200,7 @@ public class ForgeSimplePane implements Pane {
         private int topLeftY = 0;
         private int width = 9;
         private int height = 5;
+        private TickHandler tickHandler;
 
         public Builder() {}
 
@@ -172,6 +213,12 @@ public class ForgeSimplePane implements Pane {
         @Override
         public Pane.Builder topLeftY(int topLeftY) {
             this.topLeftY = topLeftY;
+            return this;
+        }
+
+        @Override
+        public Pane.Builder tickHandler(TickHandler tickHandler) {
+            this.tickHandler = tickHandler;
             return this;
         }
 
@@ -189,7 +236,7 @@ public class ForgeSimplePane implements Pane {
 
         @Override
         public Pane build() {
-            return new ForgeSimplePane(this.topLeftX, this.topLeftY, this.height, this.width);
+            return new ForgeSimplePane(this.topLeftX, this.topLeftY, this.height, this.width, this.tickHandler);
         }
     }
 }

@@ -113,6 +113,12 @@ public class ForgeGui implements Gui {
 
     public void update() {
         for (ForgeGuiContainer value : this.containers) {
+            for (ForgeSimplePane pane : value.gui.panes) {
+                if (pane.getTickHandler() != null) {
+                    pane.getTickHandler().tick(pane);
+                }
+            }
+
             value.update(this.panes, false);
         }
     }
@@ -197,6 +203,10 @@ public class ForgeGui implements Gui {
                 if (pane == null) {
                     continue;
                 }
+
+                pane.getInventoryBasic().addListener(p_76316_1_ -> {
+                    this.update(this.gui.panes, true);
+                });
 
                 for (int y = 0; y < pane.getItems().length; y++) {
                     ForgeSimplePane.SimpleDisplayableSlot[] row = pane.getItems()[y];

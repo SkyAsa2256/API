@@ -4,6 +4,7 @@ import com.envyful.api.gui.Gui;
 import com.envyful.api.gui.close.CloseConsumer;
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
+import com.envyful.api.gui.pane.TickHandler;
 import com.envyful.api.gui.pane.type.PagedPane;
 
 /**
@@ -125,6 +126,20 @@ public class GuiFactory {
         }
 
         return platformFactory.guiBuilder();
+    }
+
+    /**
+     *
+     * Creates a tick handler builder instance
+     *
+     * @return The builder
+     */
+    public static TickHandler.Builder tickBuilder() {
+        if (platformFactory == null) {
+            throw new RuntimeException("Platform's factory hasn't been set yet!");
+        }
+
+        return platformFactory.tickBuilder();
     }
 
     /**

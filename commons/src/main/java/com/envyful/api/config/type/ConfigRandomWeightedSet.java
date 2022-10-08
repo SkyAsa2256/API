@@ -24,6 +24,9 @@ public class ConfigRandomWeightedSet<A> {
         }
     }
 
+    public ConfigRandomWeightedSet() {
+    }
+
     public RandomWeightedSet<A> getWeightedSet() {
         if (this.weightedSet == null) {
             this.weightedSet = new RandomWeightedSet<>();

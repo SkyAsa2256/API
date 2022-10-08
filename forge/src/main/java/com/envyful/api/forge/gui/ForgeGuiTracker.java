@@ -1,5 +1,6 @@
 package com.envyful.api.forge.gui;
 
+import com.envyful.api.concurrency.UtilConcurrency;
 import com.envyful.api.forge.listener.LazyListener;
 import com.envyful.api.player.EnvyPlayer;
 import com.google.common.collect.Maps;
@@ -66,9 +67,11 @@ public class ForgeGuiTracker {
 
         @SubscribeEvent
         public void onServerTick(TickEvent.ServerTickEvent event) {
-            for (ForgeGui value : OPEN_GUIS.values()) {
-                value.update();
-            }
+            UtilConcurrency.runAsync(() -> {
+                for (ForgeGui value : OPEN_GUIS.values()) {
+                    value.update();
+                }
+            });
         }
     }
 }

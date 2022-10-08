@@ -141,6 +141,7 @@ public class ForgeGui implements Gui {
 
         private boolean closed = false;
         private boolean locked = false;
+        private boolean init = false;
 
         public ForgeGuiContainer(ForgeGui gui, ServerPlayerEntity player) {
             super(gui.getContainerType(), 1);
@@ -204,9 +205,11 @@ public class ForgeGui implements Gui {
                     continue;
                 }
 
-                pane.getInventoryBasic().addListener(p_76316_1_ -> {
-                    this.update(this.gui.panes, true);
-                });
+                if (!this.init) {
+                    pane.getInventoryBasic().addListener(p_76316_1_ -> {
+                        this.update(this.gui.panes, true);
+                    });
+                }
 
                 for (int y = 0; y < pane.getItems().length; y++) {
                     ForgeSimplePane.SimpleDisplayableSlot[] row = pane.getItems()[y];
@@ -221,6 +224,8 @@ public class ForgeGui implements Gui {
                     }
                 }
             }
+
+            this.init = true;
 
             for (int i = 9; i < 36; i++) {
                 ItemStack itemStack = player.inventory.items.get(i);

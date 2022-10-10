@@ -1,6 +1,7 @@
 package com.envyful.api.forge.world;
 
 import com.envyful.api.math.UtilRandom;
+import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.Heightmap;
@@ -24,6 +25,19 @@ public class UtilWorld {
                 (UtilRandom.randomBoolean() ? 1 : -1) * UtilRandom.randomInteger(0, radiusX) + 0.5,
                 0,
                 (UtilRandom.randomBoolean() ? 1 : -1) * UtilRandom.randomInteger(0, radiusZ) + 0.5);
+
+        if (world.dimensionType().hasCeiling()) {
+            for (int i = world.getHeight(); i > 5; i--) {
+                BlockPos testPos = new BlockPos(pos.getX(), i, pos.getZ());
+                if (world.getBlockState(testPos).getBlock().is(Blocks.AIR)) {
+                    if (world.getBlockState(testPos.below(1)).getBlock().is(Blocks.AIR)) {
+                        if (world.getBlockState(testPos.below(2)).getMaterial().isSolid() && !world.getBlockState(testPos.below(2)).getMaterial().isLiquid()) {
+                            return new BlockPos(pos.getX(), testPos.getY() - 1, pos.getZ());
+                        }
+                    }
+                }
+            }
+        }
 
         int y = world.getChunk(pos).getHeight(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, pos.getX(), pos.getZ());
         return new BlockPos(pos.getX(), y, pos.getZ());

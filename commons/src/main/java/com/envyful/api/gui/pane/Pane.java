@@ -2,6 +2,8 @@ package com.envyful.api.gui.pane;
 
 import com.envyful.api.gui.item.Displayable;
 
+import javax.annotation.Nullable;
+
 /**
  *
  * An interface representing a section of the {@link com.envyful.api.gui.Gui} where {@link Displayable}s can be placed.
@@ -37,6 +39,27 @@ public interface Pane {
      * @param displayable The item to display at X and Y
      */
     void set(int pos, Displayable displayable);
+
+    /**
+     *
+     * Gets the displayable at the given slot
+     *
+     * @param pos The position you're getting from
+     * @return The displayable there
+     */
+    @Nullable
+    Displayable get(int pos);
+
+    /**
+     *
+     * Gets the displayable at the given X and Y pos
+     *
+     * @param posX The x position
+     * @param posY The y position
+     * @return The displayable there
+     */
+    @Nullable
+    Displayable get(int posX, int posY);
 
     /**
      *
@@ -77,6 +100,15 @@ public interface Pane {
          * @return The builder
          */
         Builder topLeftY(int topLeftY);
+
+        /**
+         *
+         * Sets the tick handler for the pane
+         *
+         * @param tickHandler The tick handler for the pane
+         * @return The builder
+         */
+        Builder tickHandler(TickHandler tickHandler);
 
         /**
          *

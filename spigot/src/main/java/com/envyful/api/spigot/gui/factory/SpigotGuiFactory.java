@@ -5,6 +5,7 @@ import com.envyful.api.gui.close.CloseConsumer;
 import com.envyful.api.gui.factory.PlatformGuiFactory;
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
+import com.envyful.api.gui.pane.TickHandler;
 import com.envyful.api.gui.pane.type.PagedPane;
 import com.envyful.api.spigot.gui.SpigotGui;
 import com.envyful.api.spigot.gui.SpigotGuiBuilder;
@@ -52,6 +53,11 @@ public class SpigotGuiFactory implements PlatformGuiFactory<ItemStack> {
     @Override
     public Gui.Builder guiBuilder() {
         return new SpigotGuiBuilder();
+    }
+
+    @Override
+    public TickHandler.Builder tickBuilder() {
+        return null;
     }
 
     @Override

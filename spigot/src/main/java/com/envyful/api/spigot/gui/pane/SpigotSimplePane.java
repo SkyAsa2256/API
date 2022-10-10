@@ -2,7 +2,10 @@ package com.envyful.api.spigot.gui.pane;
 
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
+import com.envyful.api.gui.pane.TickHandler;
 import com.envyful.api.type.Pair;
+
+import javax.annotation.Nullable;
 
 /**
  *
@@ -80,6 +83,26 @@ public class SpigotSimplePane implements Pane {
         this.set(pos % (this.width), pos / (this.height), displayable);
     }
 
+    @javax.annotation.Nullable
+    @Override
+    public Displayable get(int pos) {
+        return this.get(pos % this.width, pos / this.height);
+    }
+
+    @Nullable
+    @Override
+    public Displayable get(int posX, int posY) {
+        if (posX >= (this.topLeftX + this.width)) {
+            throw new RuntimeException("Cannot get an X position greater than the width");
+        }
+
+        if (posY >= (this.topLeftY + this.height)) {
+            throw new RuntimeException("Cannot get a Y position greater than the height");
+        }
+
+        return this.items[posY][posX];
+    }
+
     @Override
     public void fill(Displayable displayable) {
         for (int x = 0; x < this.width; x++) {
@@ -116,6 +139,11 @@ public class SpigotSimplePane implements Pane {
         @Override
         public Pane.Builder topLeftY(int topLeftY) {
             this.topLeftY = topLeftY;
+            return this;
+        }
+
+        @Override
+        public Pane.Builder tickHandler(TickHandler tickHandler) {
             return this;
         }
 

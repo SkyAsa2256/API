@@ -1,10 +1,11 @@
 rootProject.name = 'EnvyAPI'
 include 'commons'
 include 'forge'
-include 'reforged'
 include 'forge16'
-include 'discord'
+include 'forge19'
+include 'reforged'
 include 'reforged16'
+include 'discord'
 include 'spigot'
 include 'velocity'
 

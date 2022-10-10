@@ -90,6 +90,12 @@ public class ForgeGui implements Gui {
 
     public void update() {
         for (ForgeGuiContainer value : this.containers) {
+            for (ForgeSimplePane pane : value.gui.panes) {
+                if (pane.getTickHandler() != null) {
+                    pane.getTickHandler().tick(pane);
+                }
+            }
+
             value.update(this.panes, false);
         }
     }
@@ -107,6 +113,7 @@ public class ForgeGui implements Gui {
 
         private boolean closed = false;
         private boolean locked = false;
+        private boolean init = false;
 
         public ForgeGuiContainer(ForgeGui gui, EntityPlayerMP player) {
             this.windowId = 1;
@@ -152,6 +159,12 @@ public class ForgeGui implements Gui {
                     continue;
                 }
 
+                if (!this.init) {
+                    pane.getInventoryBasic().addInventoryChangeListener(invBasic -> {
+                        this.update(gui.panes, true);
+                    });
+                }
+
                 for (int y = 0; y < pane.getItems().length; y++) {
                     ForgeSimplePane.SimpleDisplayableSlot[] row = pane.getItems()[y];
 
@@ -165,6 +178,8 @@ public class ForgeGui implements Gui {
                     }
                 }
             }
+
+            this.init = true;
 
             for (int i = 9; i < 36; i++) {
                 ItemStack itemStack = player.inventory.mainInventory.get(i);

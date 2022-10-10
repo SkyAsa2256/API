@@ -68,7 +68,7 @@ public class ForgeCommand {
             newDescription.add(Component.empty());
             Component textComponent = Component.literal("§eFor further support visit the §nEnvyWare Ltd§e discord: ");
             textComponent.getStyle().withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.envyware.co.uk"));
-            Component textComponent2 = Component.literal("§enhttps://discord.envyware.co.uk§e");
+            Component textComponent2 = Component.literal("§e§nhttps://discord.envyware.co.uk§e");
             textComponent2.getStyle().withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.envyware.co.uk"));
             newDescription.add(textComponent);
             newDescription.add(textComponent2);

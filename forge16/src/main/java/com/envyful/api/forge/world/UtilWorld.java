@@ -21,9 +21,9 @@ public class UtilWorld {
 
     public static BlockPos getRandomPosition(World world, int radiusX, int radiusZ) {
         BlockPos pos = new BlockPos(
-                (UtilRandom.randomBoolean() ? 1 : -1) * UtilRandom.randomInteger(0, radiusX),
+                (UtilRandom.randomBoolean() ? 1 : -1) * UtilRandom.randomInteger(0, radiusX) + 0.5,
                 0,
-                (UtilRandom.randomBoolean() ? 1 : -1) * UtilRandom.randomInteger(0, radiusZ));
+                (UtilRandom.randomBoolean() ? 1 : -1) * UtilRandom.randomInteger(0, radiusZ) + 0.5);
 
         int y = world.getChunk(pos).getHeight(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, pos.getX(), pos.getZ());
         return new BlockPos(pos.getX(), y, pos.getZ());

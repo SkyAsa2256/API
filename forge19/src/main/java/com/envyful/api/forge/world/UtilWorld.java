@@ -4,6 +4,7 @@ import com.envyful.api.math.UtilRandom;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.storage.ServerLevelData;
 import net.minecraftforge.server.ServerLifecycleHooks;
@@ -21,9 +22,23 @@ public class UtilWorld {
 
     public static BlockPos getRandomPosition(Level world, int radiusX, int radiusZ) {
         BlockPos pos = new BlockPos(
-                (UtilRandom.randomBoolean() ? 1 : -1) * UtilRandom.randomInteger(0, radiusX),
+                (UtilRandom.randomBoolean() ? 1 : -1) * UtilRandom.randomInteger(0, radiusX) + 0.5,
                 0,
-                (UtilRandom.randomBoolean() ? 1 : -1) * UtilRandom.randomInteger(0, radiusZ));
+                (UtilRandom.randomBoolean() ? 1 : -1) * UtilRandom.randomInteger(0, radiusZ) + 0.5);
+
+        if (world.dimensionType().hasCeiling()) {
+            for (int i = world.getHeight(); i > 5; i--) {
+                BlockPos testPos = new BlockPos(pos.getX(), i, pos.getZ());
+                if (world.getBlockState(testPos).getBlock().equals(Blocks.AIR)) {
+                    if (world.getBlockState(testPos.below(1)).getBlock().equals(Blocks.AIR)) {
+                        if (world.getBlockState(testPos.below(2)).getMaterial().isSolid() && !world.getBlockState(testPos.below(2)).getMaterial().isLiquid()) {
+                            return new BlockPos(pos.getX(), testPos.getY() - 1, pos.getZ());
+                        }
+                    }
+                }
+            }
+        }
+
 
         int y = world.getChunk(pos).getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, pos.getX(), pos.getZ());
         return new BlockPos(pos.getX(), y, pos.getZ());

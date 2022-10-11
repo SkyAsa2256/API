@@ -1,5 +1,6 @@
 package com.envyful.api.math;
 
+import javax.annotation.Nullable;
 import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.List;
@@ -60,7 +61,12 @@ public class UtilRandom {
      * @param <T> The type of items in the list
      * @return The random element selected
      */
+    @Nullable
     public static <T> T getRandomElement(List<T> list) {
+        if (list == null || list.isEmpty()) {
+            return null;
+        }
+
         return list.get(ThreadLocalRandom.current().nextInt(list.size()));
     }
 
@@ -72,7 +78,12 @@ public class UtilRandom {
      * @param <T> The data type of the array
      * @return The randomly selected element
      */
+    @Nullable
     public static <T> T getRandomElement(T[] array) {
+        if (array == null || array.length == 0) {
+            return null;
+        }
+
         return array[ThreadLocalRandom.current().nextInt(array.length)];
     }
 
@@ -85,7 +96,12 @@ public class UtilRandom {
      * @param <T> The data type of the two arrays
      * @return The randomly selected element
      */
+    @Nullable
     public static <T> T getRandomElementExcluding(T[] array, T... excluded) {
+        if (array == null || array.length == 0) {
+            return null;
+        }
+
         List<T> excludedValues = Arrays.asList(excluded);
         T value = null;
 

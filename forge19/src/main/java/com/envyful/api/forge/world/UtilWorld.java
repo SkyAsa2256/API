@@ -44,7 +44,7 @@ public class UtilWorld {
         BlockPos pos = null;
         int y = -1;
         while (pos == null || y == -1) {
-            pos = getRandomXAndYPosition(radiusX, RadiusZ);
+            pos = getRandomXAndZPosition(radiusX, RadiusZ);
 
             if (world.dimensionType().hasCeiling()) {
                 y = getNetherYPosition(world, pos);
@@ -56,7 +56,7 @@ public class UtilWorld {
         return new BlockPos(pos.getX(), y, pos.getZ());
     }
 
-    private static BlockPos getRandomXAndYPosition(int radiusX, int radiusZ) {
+    private static BlockPos getRandomXAndZPosition(int radiusX, int radiusZ) {
         return new BlockPos(
                 (UtilRandom.randomBoolean() ? 1 : -1) * UtilRandom.randomInteger(0, radiusX) + 0.5,
                 0,

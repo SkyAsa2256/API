@@ -58,9 +58,9 @@ public class UtilWorld {
 
     private static BlockPos getRandomXAndZPosition(int radiusX, int radiusZ) {
         return new BlockPos(
-                (UtilRandom.randomBoolean() ? 1 : -1) * UtilRandom.randomInteger(0, radiusX) + 0.5,
+                (UtilRandom.randomBoolean() ? 1 : -1) * UtilRandom.randomInteger(0, radiusX),
                 0,
-                (UtilRandom.randomBoolean() ? 1 : -1) * UtilRandom.randomInteger(0, radiusZ) + 0.5);
+                (UtilRandom.randomBoolean() ? 1 : -1) * UtilRandom.randomInteger(0, radiusZ));
     }
 
     private static int getNetherYPosition(Level world, BlockPos pos) {

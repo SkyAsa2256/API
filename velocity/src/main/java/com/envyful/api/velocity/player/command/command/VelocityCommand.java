@@ -63,7 +63,7 @@ public class VelocityCommand {
             newDescription.add(Component.text(""));
             Component textComponent = Component.text("§eFor further support visit the §nEnvyWare Ltd§e discord: ");
             textComponent = textComponent.style(textComponent.style().clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, "https://discord.envyware.co.uk")));
-            Component textComponent2 = Component.text("§enhttps://discord.envyware.co.uk§e");
+            Component textComponent2 = Component.text("§e§nhttps://discord.envyware.co.uk§e");
             textComponent2 = textComponent2.style(textComponent2.style().clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, "https://discord.envyware.co.uk")));
             newDescription.add(textComponent);
             newDescription.add(textComponent2);

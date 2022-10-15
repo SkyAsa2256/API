@@ -73,7 +73,7 @@ public class ForgeCommand extends CommandBase {
             newDescription.add(new TextComponentString(""));
             TextComponentString textComponent = new TextComponentString("§eFor further support visit the §nEnvyWare§e discord: ");
             textComponent.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.envyware.co.uk"));
-            TextComponentString textComponent2 = new TextComponentString("§enhttps://discord.envyware.co.uk§e");
+            TextComponentString textComponent2 = new TextComponentString("§e§nhttps://discord.envyware.co.uk§e");
             textComponent2.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.envyware.co.uk"));
             newDescription.add(textComponent);
             newDescription.add(textComponent2);

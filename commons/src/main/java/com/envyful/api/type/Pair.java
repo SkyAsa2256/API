@@ -2,6 +2,7 @@ package com.envyful.api.type;
 
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -14,7 +15,7 @@ import java.util.Objects;
  * @param <Y> The type of the second parameter
  */
 @ConfigSerializable
-public class Pair<X, Y> {
+public class Pair<X, Y> implements Map.Entry<X, Y> {
 
     private X x;
     private Y y;
@@ -32,6 +33,23 @@ public class Pair<X, Y> {
 
     public Y getY() {
         return this.y;
+    }
+
+    @Override
+    public X getKey() {
+        return this.getX();
+    }
+
+    @Override
+    public Y getValue() {
+        return this.getY();
+    }
+
+    @Override
+    public Y setValue(Y value) {
+        Y y = this.y;
+        this.y = value;
+        return y;
     }
 
     @Override

@@ -19,6 +19,11 @@ public class UtilForgeServer {
      * @param command The command to execute
      */
     public static void executeCommand(String command) {
+        if (!ServerLifecycleHooks.getCurrentServer().isSameThread()) {
+            ServerLifecycleHooks.getCurrentServer().execute(() -> executeCommand(command));
+            return;
+        }
+
         ServerLifecycleHooks.getCurrentServer().getCommands().performCommand(ServerLifecycleHooks.getCurrentServer().createCommandSourceStack(), command);
     }
 

@@ -54,10 +54,12 @@ public class BattleBuilderFactory {
                 continue;
             }
 
-            ((PlayerParticipant) battleParticipant).getStorage().setInTemporaryMode(false, null);
+            if (((PlayerParticipant) battleParticipant).getStorage().inTemporaryMode()) {
+                ((PlayerParticipant)battleParticipant).getStorage().setInTemporaryMode(false, null);
 
-            for (PixelmonWrapper pixelmonWrapper : battleParticipant.controlledPokemon) {
-                pixelmonWrapper.entity.kill();
+                for (PixelmonWrapper pixelmonWrapper : battleParticipant.controlledPokemon) {
+                    pixelmonWrapper.entity.kill();
+                }
             }
         }
     }

@@ -5,6 +5,7 @@ import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.enums.ExperienceGainType;
 import com.pixelmonmod.pixelmon.api.events.BattleStartedEvent;
 import com.pixelmonmod.pixelmon.api.events.ExperienceGainEvent;
+import com.pixelmonmod.pixelmon.api.events.PixelmonFaintEvent;
 import com.pixelmonmod.pixelmon.api.events.SpectateEvent;
 import com.pixelmonmod.pixelmon.api.events.battles.BattleEndEvent;
 import com.pixelmonmod.pixelmon.battles.controller.BattleController;
@@ -31,7 +32,7 @@ public class BattleBuilderFactory {
     public void onBattleEvent(BattleStartedEvent event) {
         BattleBuilder battleBuilder = LISTENED_CONTROLLERS.get(event.bc.battleIndex);
 
-        if (battleBuilder == null) {
+        if (battleBuilder == null || battleBuilder.startConsumer == null) {
             return;
         }
 
@@ -46,7 +47,10 @@ public class BattleBuilderFactory {
             return;
         }
 
-        battleBuilder.endConsumer.accept(event);
+        if (battleBuilder.endConsumer != null) {
+            battleBuilder.endConsumer.accept(event);
+        }
+
         LISTENED_CONTROLLERS.remove(event.getBattleController().battleIndex);
 
         for (BattleParticipant battleParticipant : event.getResults().keySet()) {
@@ -62,6 +66,22 @@ public class BattleBuilderFactory {
                 }
             }
         }
+    }
+
+    @SubscribeEvent
+    public void onFaint(PixelmonFaintEvent.Pre event) {
+        if (event.getPokemon() == null || !event.getPokemon().getPixelmonEntity().isPresent() ||
+                event.getPokemon().getPixelmonEntity().get().battleController == null) {
+            return;
+        }
+
+        BattleBuilder battleBuilder = LISTENED_CONTROLLERS.get(event.getPokemon().getPixelmonEntity().get().battleController.battleIndex);
+
+        if (battleBuilder == null || battleBuilder.faintConsumer == null) {
+            return;
+        }
+
+        battleBuilder.faintConsumer.accept(event);
     }
 
     @SubscribeEvent

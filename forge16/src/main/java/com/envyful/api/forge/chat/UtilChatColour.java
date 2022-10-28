@@ -5,6 +5,7 @@ import com.envyful.api.config.UtilReplacer;
 import com.google.common.collect.Lists;
 import net.minecraft.util.text.*;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;

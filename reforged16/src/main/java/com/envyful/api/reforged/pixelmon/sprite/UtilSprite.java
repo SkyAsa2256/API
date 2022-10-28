@@ -108,7 +108,7 @@ public class UtilSprite {
                 .replace("%nickname%", pokemon.getDisplayName())
                 .replace("%held_item%", pokemon.getHeldItem().getHoverName().getString())
                 .replace("%palette%", pokemon.getPalette().getLocalizedName())
-                .replace("%species_name%", pokemon.getSpecies().getLocalizedName())
+                .replace("%species_name%", pokemon.isEgg() ? "Egg" : pokemon.getSpecies().getLocalizedName())
                 .replace("%level%", pokemon.getPokemonLevel() + "")
                         .replace("%gender%", pokemon.getGender() == Gender.MALE ? config.getMaleFormat() :
                                 pokemon.getGender() == Gender.NONE ? config.getNoneFormat() :

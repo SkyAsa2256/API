@@ -8,6 +8,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Locale;
@@ -25,6 +26,7 @@ public class UtilChatColour {
     private static final char COLOUR_CHAR = '§';
     private static final String CHARACTERS = "0123456789AaBbCcDdEeFfKkLlMmNnOoRrXx";
     private static final Pattern COLOUR_PATTERN = Pattern.compile("&(#\\w{6}|[\\da-zA-Z])");
+    private static final Pattern STRIP_PATTERN = Pattern.compile("(?i)&([0-9A-FK-ORX]|#([A-F0-9]{6}|[A-F0-9]{3}))");
 
     /**
      *
@@ -202,5 +204,20 @@ public class UtilChatColour {
         }
 
         return newLines;
+    }
+
+    /**
+     *
+     * Removes the colour codes in a message
+     *
+     * @param input The original message
+     * @return The stripped message
+     */
+    public static String stripColor(@Nullable String input) {
+        if (input == null) {
+            return null;
+        }
+
+        return STRIP_PATTERN.matcher(input).replaceAll("");
     }
 }

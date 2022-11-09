@@ -1,15 +1,17 @@
 package com.envyful.api.forge.config;
 
+import net.minecraft.network.protocol.game.ClientboundSoundPacket;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.sounds.SoundSource;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 @ConfigSerializable
 public class ConfigSound {
 
     private String sound;
-    private transient ResourceLocation cachedSound = null;
+    private transient SoundEvent cachedSound = null;
     private float volume;
     private float pitch;
 
@@ -22,11 +24,13 @@ public class ConfigSound {
     public ConfigSound() {
     }
 
-    public void playSound(Player player) {
+    public void playSound(ServerPlayer... players) {
         if (this.cachedSound == null) {
-            this.cachedSound = new ResourceLocation(this.sound);
+            this.cachedSound = new SoundEvent(new ResourceLocation(this.sound));
         }
 
-        player.playSound(new SoundEvent(this.cachedSound), this.volume, this.pitch);
+        for (ServerPlayer player : players) {
+            player.connection.send(new ClientboundSoundPacket(this.cachedSound, SoundSource.MUSIC, player.getX(), player.getY(), player.getZ(), 1.0f, 1.0f, 1));
+        }
     }
 }

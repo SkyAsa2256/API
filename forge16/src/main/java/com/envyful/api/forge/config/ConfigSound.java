@@ -1,8 +1,10 @@
 package com.envyful.api.forge.config;
 
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.play.server.SPlaySoundPacket;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.vector.Vector3d;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 @ConfigSerializable
@@ -22,11 +24,14 @@ public class ConfigSound {
     public ConfigSound() {
     }
 
-    public void playSound(PlayerEntity player) {
+    public void playSound(ServerPlayerEntity... players) {
         if (this.cachedSound == null) {
             this.cachedSound = new ResourceLocation(this.sound);
         }
 
-        player.playSound(new SoundEvent(this.cachedSound), this.volume, this.pitch);
+        for (ServerPlayerEntity player : players) {
+            player.connection.send(new SPlaySoundPacket(this.cachedSound, SoundCategory.MUSIC,
+                    new Vector3d(player.getX(), player.getY(), player.getZ()), 1.0f, 1.0f));
+        }
     }
 }

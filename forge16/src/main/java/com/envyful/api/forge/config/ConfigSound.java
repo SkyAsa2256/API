@@ -29,6 +29,10 @@ public class ConfigSound {
             this.cachedSound = new ResourceLocation(this.sound);
         }
 
+        if (this.cachedSound == null) {
+            return;
+        }
+
         for (ServerPlayerEntity player : players) {
             player.connection.send(new SPlaySoundPacket(this.cachedSound, SoundCategory.MUSIC,
                     new Vector3d(player.getX(), player.getY(), player.getZ()), 1.0f, 1.0f));

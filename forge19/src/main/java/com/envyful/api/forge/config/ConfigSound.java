@@ -29,6 +29,10 @@ public class ConfigSound {
             this.cachedSound = new SoundEvent(new ResourceLocation(this.sound));
         }
 
+        if (this.cachedSound == null) {
+            return;
+        }
+
         for (ServerPlayer player : players) {
             player.connection.send(new ClientboundSoundPacket(this.cachedSound, SoundSource.MUSIC, player.getX(), player.getY(), player.getZ(), 1.0f, 1.0f, 1));
         }

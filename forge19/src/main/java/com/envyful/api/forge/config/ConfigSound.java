@@ -26,7 +26,7 @@ public class ConfigSound {
 
     public void playSound(ServerPlayer... players) {
         if (this.cachedSound == null) {
-            this.cachedSound = new SoundEvent(new ResourceLocation(this.sound));
+            this.cachedSound = new SoundEvent(ResourceLocation.tryParse(this.sound));
         }
 
         if (this.cachedSound == null) {

@@ -26,7 +26,7 @@ public class ConfigSound {
 
     public void playSound(ServerPlayerEntity... players) {
         if (this.cachedSound == null) {
-            this.cachedSound = new ResourceLocation(this.sound);
+            this.cachedSound = ResourceLocation.tryParse(this.sound);
         }
 
         if (this.cachedSound == null) {

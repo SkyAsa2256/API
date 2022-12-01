@@ -59,6 +59,7 @@ public class DialogueInputRegistry {
 
         private ITextComponent title;
         private ITextComponent text;
+        private String defaultInputValue = "";
         private boolean closeOnEsc = true;
         private Consumer<DialogueInputEvent.Submitted> submitHandler;
         private Consumer<DialogueInputEvent.ClosedScreen> closeHandler;
@@ -93,9 +94,14 @@ public class DialogueInputRegistry {
             return this;
         }
 
+        public Builder defaultInputValue(String defaultInputValue) {
+            this.defaultInputValue = defaultInputValue;
+            return this;
+        }
+
         public void open(ServerPlayerEntity player) {
             NetworkHelper.sendPacket(player, new OpenDialogueInputPacket(
-                    this.title, this.text, this.text.getString(), this.closeOnEsc
+                    this.title, this.text, this.defaultInputValue, this.closeOnEsc
             ));
             DialogueInputRegistry.addDialogue(player, this);
         }

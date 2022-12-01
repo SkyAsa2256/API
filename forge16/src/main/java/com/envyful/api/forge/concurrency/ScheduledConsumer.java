@@ -4,7 +4,7 @@ import com.envyful.api.concurrency.UtilConcurrency;
 
 import java.util.function.Consumer;
 
-public class ScheduledConsumer<T> {
+public class ScheduledConsumer<T> implements Consumer<T> {
 
     private final boolean async;
     private final long delayTicks;
@@ -16,6 +16,7 @@ public class ScheduledConsumer<T> {
         this.handler = handler;
     }
 
+    @Override
     public void accept(T t) {
         if (this.async) {
             if (this.delayTicks == -1) {

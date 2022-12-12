@@ -1,9 +1,9 @@
 package com.envyful.api.forge.player.util;
 
-import com.mojang.math.Vector3d;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
+import org.joml.Vector3d;
 
 /**
  *

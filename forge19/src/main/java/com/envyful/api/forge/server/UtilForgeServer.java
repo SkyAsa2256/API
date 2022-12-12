@@ -19,7 +19,7 @@ public class UtilForgeServer {
      * @param command The command to execute
      */
     public static void executeCommand(String command) {
-        ServerLifecycleHooks.getCurrentServer().getCommands().performCommand(ServerLifecycleHooks.getCurrentServer().createCommandSourceStack(), command);
+        ServerLifecycleHooks.getCurrentServer().getCommands().performPrefixedCommand(ServerLifecycleHooks.getCurrentServer().createCommandSourceStack(), command);
     }
 
 
@@ -33,6 +33,6 @@ public class UtilForgeServer {
      * @param command The command to execute
      */
     public static void executeCommand(ServerPlayer player, String command) {
-        ServerLifecycleHooks.getCurrentServer().getCommands().performCommand(player.createCommandSourceStack(), command);
+        ServerLifecycleHooks.getCurrentServer().getCommands().performPrefixedCommand(player.createCommandSourceStack(), command);
     }
 }

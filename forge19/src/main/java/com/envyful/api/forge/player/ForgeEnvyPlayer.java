@@ -75,7 +75,7 @@ public class ForgeEnvyPlayer implements EnvyPlayer<ServerPlayer> {
 
     @Override
     public void executeCommand(String command) {
-        ServerLifecycleHooks.getCurrentServer().getCommands().performCommand(this.player.createCommandSourceStack(), command);
+        ServerLifecycleHooks.getCurrentServer().getCommands().performPrefixedCommand(this.player.createCommandSourceStack(), command);
     }
 
     @Override

@@ -16,7 +16,7 @@ import com.envyful.api.type.Pair;
 import com.envyful.api.type.UtilParse;
 import com.google.common.collect.Lists;
 import net.minecraft.ResourceLocationException;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -222,7 +222,7 @@ public class UtilConfigItem {
                 }
             }
 
-            Enchantment enchantment = Registry.ENCHANTMENT.getOptional(new ResourceLocation(enchantName.toLowerCase())).orElse(null);
+            Enchantment enchantment = BuiltInRegistries.ENCHANTMENT.get(new ResourceLocation(enchantName.toLowerCase()));
             int parsedLevel = UtilParse.parseInteger(level).orElse(1);
 
             if (enchantment == null) {
@@ -319,7 +319,7 @@ public class UtilConfigItem {
 
     public static Item fromNameOrId(String data) {
         try {
-            Item item = Registry.ITEM.getOptional(new ResourceLocation(data)).orElse(null);
+            Item item = BuiltInRegistries.ITEM.getOptional(new ResourceLocation(data)).orElse(null);
 
             if (item != null) {
                 return item;

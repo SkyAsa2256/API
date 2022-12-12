@@ -1,5 +1,6 @@
 package com.envyful.api.forge.config;
 
+import net.minecraft.core.Holder;
 import net.minecraft.network.protocol.game.ClientboundSoundPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -26,7 +27,7 @@ public class ConfigSound {
 
     public void playSound(ServerPlayer... players) {
         if (this.cachedSound == null) {
-            this.cachedSound = new SoundEvent(ResourceLocation.tryParse(this.sound));
+            this.cachedSound = SoundEvent.createVariableRangeEvent(ResourceLocation.tryParse(this.sound));
         }
 
         if (this.cachedSound == null) {
@@ -34,7 +35,7 @@ public class ConfigSound {
         }
 
         for (ServerPlayer player : players) {
-            player.connection.send(new ClientboundSoundPacket(this.cachedSound, SoundSource.MUSIC, player.getX(), player.getY(), player.getZ(), 1.0f, 1.0f, 1));
+            player.connection.send(new ClientboundSoundPacket(Holder.direct(this.cachedSound), SoundSource.MUSIC, player.getX(), player.getY(), player.getZ(), 1.0f, 1.0f, 1));
         }
     }
 }

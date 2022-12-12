@@ -39,7 +39,7 @@ public class UtilPlayer {
      * @param command The command
      */
     public static void runCommand(ServerPlayer player, String command) {
-        ServerLifecycleHooks.getCurrentServer().getCommands().performCommand(player.createCommandSourceStack(), command);
+        ServerLifecycleHooks.getCurrentServer().getCommands().performPrefixedCommand(player.createCommandSourceStack(), command);
     }
 
     /**

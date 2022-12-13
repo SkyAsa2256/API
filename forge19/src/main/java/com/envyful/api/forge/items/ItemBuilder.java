@@ -291,13 +291,15 @@ public class ItemBuilder implements Cloneable {
             itemStack.enchant(enchantment, enchants.get(enchantment));
         }
 
-        int hideFlags = 0;
+        if (this.itemFlags != null && !this.itemFlags.isEmpty()) {
+            int hideFlags = 0;
 
-        for (ItemFlag itemFlag : this.itemFlags) {
-            hideFlags += itemFlag.getNbtId();
+            for (ItemFlag itemFlag : this.itemFlags) {
+                hideFlags += itemFlag.getNbtId();
+            }
+
+            itemStack.getTag().putInt("HideFlags", hideFlags);
         }
-
-        itemStack.getTag().putInt("HideFlags", hideFlags);
 
         return itemStack;
     }

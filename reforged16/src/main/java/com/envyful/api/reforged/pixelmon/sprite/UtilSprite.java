@@ -45,7 +45,11 @@ public class UtilSprite {
         }
 
         ITextComponent colour = UtilChatColour.colour(replacePokemonPlaceholders(config.getName(), pokemon, config, transformers));
-        colour = colour.copy().withStyle(colour.getStyle().withItalic(false));
+
+        if (colour instanceof IFormattableTextComponent) {
+            colour = ((IFormattableTextComponent) colour).setStyle(colour.getStyle().withItalic(false));
+        }
+
         compound.put("Name", StringNBT.valueOf(ITextComponent.Serializer.toJson(colour)));
         compound.put("Lore", lore);
         CompoundNBT tag = itemStack.getOrCreateTag();

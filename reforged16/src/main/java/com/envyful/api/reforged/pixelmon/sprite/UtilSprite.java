@@ -1,6 +1,7 @@
 package com.envyful.api.reforged.pixelmon.sprite;
 
 import com.envyful.api.forge.chat.UtilChatColour;
+import com.envyful.api.gui.Transformer;
 import com.envyful.api.reforged.pixelmon.config.SpriteConfig;
 import com.pixelmonmod.api.Flags;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
@@ -29,13 +30,13 @@ public class UtilSprite {
         return getPokemonElement(pokemon, SpriteConfig.DEFAULT);
     }
 
-    public static ItemStack getPokemonElement(Pokemon pokemon, SpriteConfig config) {
+    public static ItemStack getPokemonElement(Pokemon pokemon, SpriteConfig config, Transformer... transformers) {
         ItemStack itemStack = getPixelmonSprite(pokemon);
 
         CompoundNBT compound = itemStack.getOrCreateTagElement("display");
         ListNBT lore = new ListNBT();
 
-        for (ITextComponent s : getPokemonDesc(pokemon, config)) {
+        for (ITextComponent s : getPokemonDesc(pokemon, config, transformers)) {
             if (s instanceof IFormattableTextComponent) {
                 s = ((IFormattableTextComponent) s).setStyle(s.getStyle().withItalic(false));
             }
@@ -43,11 +44,11 @@ public class UtilSprite {
             lore.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(s)));
         }
 
-        ITextComponent colour = UtilChatColour.colour(replacePokemonPlaceholders(config.getName(), pokemon, config));
+        ITextComponent colour = UtilChatColour.colour(replacePokemonPlaceholders(config.getName(), pokemon, config, transformers));
         colour = colour.copy().withStyle(colour.getStyle().withItalic(false));
-        compound.putString("Name", ITextComponent.Serializer.toJson(colour));
+        compound.put("Name", StringNBT.valueOf(ITextComponent.Serializer.toJson(colour)));
         compound.put("Lore", lore);
-        CompoundNBT tag = itemStack.getTag();
+        CompoundNBT tag = itemStack.getOrCreateTag();
 
         tag.put("display", compound);
         itemStack.setTag(tag);
@@ -71,11 +72,11 @@ public class UtilSprite {
         return SpriteItemHelper.getPhoto(pokemon);
     }
 
-    public static List<ITextComponent> getPokemonDesc(Pokemon pokemon, SpriteConfig config) {
+    public static List<ITextComponent> getPokemonDesc(Pokemon pokemon, SpriteConfig config, Transformer... transformers) {
         List<ITextComponent> lore = new ArrayList<>();
 
         for (String line : config.getLore()) {
-            line = replacePokemonPlaceholders(line, pokemon, config);
+            line = replacePokemonPlaceholders(line, pokemon, config, transformers);
 
             if (line == null) {
                 continue;
@@ -87,7 +88,7 @@ public class UtilSprite {
         return lore;
     }
 
-    public static String replacePokemonPlaceholders(String line, Pokemon pokemon, SpriteConfig config) {
+    public static String replacePokemonPlaceholders(String line, Pokemon pokemon, SpriteConfig config, Transformer... transformers) {
         IVStore iVs = pokemon.getIVs();
         float ivHP = iVs.getStat(BattleStatsType.HP);
         float ivAtk = iVs.getStat(BattleStatsType.ATTACK);
@@ -168,6 +169,10 @@ public class UtilSprite {
                     line = null;
                 }
             }
+        }
+
+        for (Transformer transformer : transformers) {
+            line = transformer.transformName(line);
         }
 
         return line;

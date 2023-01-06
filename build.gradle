@@ -16,7 +16,7 @@ subprojects {
     apply plugin: "com.github.dosmike.PluginPublisher"
 
     group = 'com.envyful.api'
-    version = '4.0.0'
+    version = '4.0.1'
 
     tasks.withType(JavaCompile) {
         options.encoding = 'UTF-8'

@@ -24,23 +24,25 @@ subprojects {
         options.encoding = 'UTF-8'
     }
 
-    publishing {
-        repositories {
-            maven {
-                name = "envyware"
-                url = uri("https://maven.envyware.co.uk/releases")
-                credentials(PasswordCredentials)
-                authentication {
-                    basic(BasicAuthentication)
+    afterEvaluate {
+        publishing {
+            repositories {
+                maven {
+                    name = "envyware"
+                    url = uri("https://maven.envyware.co.uk/releases")
+                    credentials(PasswordCredentials)
+                    authentication {
+                        basic(BasicAuthentication)
+                    }
                 }
             }
-        }
-        publications {
-            maven(MavenPublication) {
-                groupId = "com.envyful.api"
-                artifactId = "api"
-                version = "4.0.1"
-                from components.java
+            publications {
+                maven(MavenPublication) {
+                    groupId = "com.envyful.api"
+                    artifactId = project.name
+                    version = "4.0.1"
+                    from components.java
+                }
             }
         }
     }

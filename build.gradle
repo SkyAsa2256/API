@@ -29,27 +29,21 @@ subprojects {
             maven {
                 name = "envyware"
                 url = uri("https://maven.envyware.co.uk/releases")
-                credentials(PasswordCredentials::class)
+                credentials(PasswordCredentials)
                 authentication {
-                    create("basic")
+                    basic(BasicAuthentication)
                 }
             }
         }
         publications {
-            create("maven") {
+            maven(MavenPublication) {
                 groupId = "com.envyful.api"
                 artifactId = "api"
                 version = "1.0.0"
-                from(components["java"])
+                from components.java
             }
         }
     }
-
-//    task notifyDiscordChannel(type: de.dosmike.sponge.pluginpublisher.gradle.NotifyDiscordTask) {
-//        webHookUrl.set("")
-//        messageHeader.set("API BUILD ${System.getenv("VERSION")}") //is optional
-//        messageBody.set('This is published in channel 1')
-//    }
 
     repositories {
         mavenCentral()

@@ -1,9 +1,9 @@
 package com.envyful.api.reforged.pixelmon.transformer;
 
-import com.envyful.api.gui.Transformer;
+import com.envyful.api.text.parse.SimplePlaceholder;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 
-public class PokemonFormTransformer implements Transformer {
+public class PokemonFormTransformer implements SimplePlaceholder {
 
     private final String name;
 
@@ -14,7 +14,7 @@ public class PokemonFormTransformer implements Transformer {
     private PokemonFormTransformer(String name) {this.name = name;}
 
     @Override
-    public String transformName(String name) {
+    public String replace(String name) {
         return name.replace("%form%", this.name + "");
     }
 }

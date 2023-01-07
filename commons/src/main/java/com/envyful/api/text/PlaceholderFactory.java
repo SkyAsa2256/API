@@ -4,6 +4,7 @@ import com.envyful.api.text.results.OriginalParseResult;
 import com.google.common.collect.Lists;
 
 import javax.annotation.Nonnull;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 
@@ -44,6 +45,11 @@ public class PlaceholderFactory {
         return GLOBAL_PLACEHOLDERS;
     }
 
+    @Nonnull
+    public static List<String> handlePlaceholders(List<String> text, Collection<Placeholder> placeholders) {
+        return handlePlaceholders(text, placeholders.toArray(new Placeholder[0]));
+    }
+
     /**
      *
      * Handles replacing the placeholders given, and global placeholders, in a list of Strings
@@ -77,6 +83,10 @@ public class PlaceholderFactory {
         }
 
         return computedText;
+    }
+    @Nonnull
+    public static <T> List<T> handlePlaceholders(List<String> text, Function<String, T> mapper, Collection<Placeholder> placeholders) {
+        return handlePlaceholders(text, mapper, placeholders.toArray(new Placeholder[0]));
     }
 
     /**

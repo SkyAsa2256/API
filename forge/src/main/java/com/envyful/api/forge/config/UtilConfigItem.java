@@ -6,11 +6,12 @@ import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.forge.items.ItemBuilder;
 import com.envyful.api.forge.items.ItemFlag;
 import com.envyful.api.forge.player.util.UtilPlayer;
-import com.envyful.api.gui.Transformer;
 import com.envyful.api.gui.factory.GuiFactory;
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.player.EnvyPlayer;
+import com.envyful.api.text.Placeholder;
+import com.envyful.api.text.PlaceholderFactory;
 import com.envyful.api.type.Pair;
 import com.envyful.api.type.UtilParse;
 import com.google.common.collect.Lists;
@@ -27,7 +28,7 @@ import java.util.function.BiConsumer;
 
 public class UtilConfigItem {
 
-    public static void addPermissibleConfigItem(Pane pane, EntityPlayerMP player, List<Transformer> transformers, ExtendedConfigItem configItem) {
+    public static void addPermissibleConfigItem(Pane pane, EntityPlayerMP player, List<Placeholder> transformers, ExtendedConfigItem configItem) {
         addPermissibleConfigItem(pane, player, configItem, transformers,null);
     }
 
@@ -41,7 +42,7 @@ public class UtilConfigItem {
     }
 
     public static void addPermissibleConfigItem(Pane pane, EntityPlayerMP player, ExtendedConfigItem configItem,
-                                                List<Transformer> transformers,
+                                                List<Placeholder> transformers,
                                                 BiConsumer<EnvyPlayer<?>, Displayable.ClickType> clickHandler) {
         ItemStack itemStack = fromPermissibleItem(player, configItem, transformers);
 
@@ -63,7 +64,7 @@ public class UtilConfigItem {
         addConfigItem(pane, configItem, null);
     }
 
-    public static void addConfigItem(Pane pane, List<Transformer> transformers, ExtendedConfigItem configItem) {
+    public static void addConfigItem(Pane pane, List<Placeholder> transformers, ExtendedConfigItem configItem) {
         addConfigItem(pane, configItem, transformers,null);
     }
 
@@ -72,7 +73,7 @@ public class UtilConfigItem {
         addConfigItem(pane, configItem, Collections.emptyList(), clickHandler);
     }
 
-    public static void addConfigItem(Pane pane, ExtendedConfigItem configItem, List<Transformer> transformers,
+    public static void addConfigItem(Pane pane, ExtendedConfigItem configItem, List<Placeholder> transformers,
                                      BiConsumer<EnvyPlayer<?>, Displayable.ClickType> clickHandler) {
         if (!configItem.isEnabled()) {
             return;
@@ -97,7 +98,7 @@ public class UtilConfigItem {
         return fromPermissibleItem(player, permissibleConfigItem, Collections.emptyList());
     }
 
-    public static ItemStack fromPermissibleItem(EntityPlayerMP player, ExtendedConfigItem permissibleConfigItem, List<Transformer> transformers) {
+    public static ItemStack fromPermissibleItem(EntityPlayerMP player, ExtendedConfigItem permissibleConfigItem, List<Placeholder> transformers) {
         if (!permissibleConfigItem.isEnabled()) {
             return null;
         }
@@ -114,19 +115,19 @@ public class UtilConfigItem {
         return fromConfigItem(permissibleConfigItem.getElseItem());
     }
 
-    public static ItemStack fromConfigItem(ExtendedConfigItem configItem, Transformer... transformers) {
+    public static ItemStack fromConfigItem(ExtendedConfigItem configItem, Placeholder... transformers) {
         return fromConfigItem(configItem, Lists.newArrayList(transformers));
     }
 
-    public static ItemStack fromConfigItem(ExtendedConfigItem configItem, List<Transformer> transformers) {
+    public static ItemStack fromConfigItem(ExtendedConfigItem configItem, List<Placeholder> transformers) {
         return fromConfigItem(configItem.asConfigItem(), transformers);
     }
 
-    public static ItemStack fromConfigItem(ConfigItem configItem, Transformer... transformers) {
+    public static ItemStack fromConfigItem(ConfigItem configItem, Placeholder... transformers) {
         return fromConfigItem(configItem, Lists.newArrayList(transformers));
     }
 
-    public static ItemStack fromConfigItem(ConfigItem configItem, List<Transformer> transformers) {
+    public static ItemStack fromConfigItem(ConfigItem configItem, List<Placeholder> transformers) {
         if (!configItem.isEnabled()) {
             return null;
         }
@@ -142,11 +143,9 @@ public class UtilConfigItem {
         List<String> flags = configItem.getFlags();
 
         if (!transformers.isEmpty()) {
-            for (Transformer transformer : transformers) {
-                lore = transformer.transformLore(lore);
-                name = transformer.transformName(name);
-                flags = transformer.transformLore(flags);
-            }
+            lore = PlaceholderFactory.handlePlaceholders(lore, transformers);
+            name = PlaceholderFactory.handlePlaceholders(Collections.singletonList(name), transformers).get(0);
+            flags = PlaceholderFactory.handlePlaceholders(flags, transformers);
         }
 
         for (String flag : flags) {
@@ -165,10 +164,8 @@ public class UtilConfigItem {
             String level = value.getLevel();
 
             if (!transformers.isEmpty()) {
-                for (Transformer transformer : transformers) {
-                    enchantName = transformer.transformName(enchantName);
-                    level = transformer.transformName(level);
-                }
+                enchantName = PlaceholderFactory.handlePlaceholders(Collections.singletonList(enchantName), transformers).get(0);
+                level = PlaceholderFactory.handlePlaceholders(Collections.singletonList(level), transformers).get(0);
             }
 
             Enchantment enchantment = Enchantment.getEnchantmentByLocation(enchantName);
@@ -192,7 +189,7 @@ public class UtilConfigItem {
         return itemBuilder.build();
     }
 
-    public static Pair<String, NBTBase> parseNBT(Map.Entry<String, ConfigItem.NBTValue> nbtEntry, List<Transformer> transformers) {
+    public static Pair<String, NBTBase> parseNBT(Map.Entry<String, ConfigItem.NBTValue> nbtEntry, List<Placeholder> transformers) {
         if (nbtEntry.getValue().getType().equalsIgnoreCase("nbt")) {
             NBTTagCompound compound = new NBTTagCompound();
 
@@ -226,13 +223,11 @@ public class UtilConfigItem {
         return Pair.of(nbtEntry.getKey(), parseBasic(nbtEntry.getValue(), transformers));
     }
 
-    public static NBTBase parseBasic(ConfigItem.NBTValue value, List<Transformer> transformers) {
+    public static NBTBase parseBasic(ConfigItem.NBTValue value, List<Placeholder> transformers) {
         String data = value.getData();
 
         if (!transformers.isEmpty()) {
-            for (Transformer transformer : transformers) {
-                data = transformer.transformName(data);
-            }
+            data = PlaceholderFactory.handlePlaceholders(Collections.singletonList(data), transformers).get(0);
         }
 
         NBTBase base;

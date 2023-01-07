@@ -1,13 +1,14 @@
 package com.envyful.api.config.type;
 
-import com.envyful.api.gui.Transformer;
+import com.envyful.api.text.Placeholder;
+import com.envyful.api.text.PlaceholderFactory;
 import com.envyful.api.type.UtilParse;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -29,11 +30,9 @@ public class ConfigItem {
     private Map<String, EnchantData> enchants = Maps.newHashMap();
     private Map<String, NBTValue> nbt = Maps.newHashMap();
 
-    @Deprecated
     public ConfigItem() {}
 
-    @Deprecated
-    public ConfigItem(boolean enabled, String type, String amount, String damage, String name, List<String> flags, List<String> lore, Map<String, EnchantData> enchants, Map<String, NBTValue> nbt) {
+    ConfigItem(boolean enabled, String type, String amount, String damage, String name, List<String> flags, List<String> lore, Map<String, EnchantData> enchants, Map<String, NBTValue> nbt) {
         this.enabled = enabled;
         this.type = type;
         this.amount = amount;
@@ -43,44 +42,6 @@ public class ConfigItem {
         this.lore = lore;
         this.enchants = enchants;
         this.nbt = nbt;
-    }
-
-    @Deprecated
-    public ConfigItem(boolean enabled, String type, String amount, String name, List<String> flags, List<String> lore, Map<String, EnchantData> enchants, Map<String, NBTValue> nbt) {
-        this.enabled = enabled;
-        this.type = type;
-        this.amount = amount;
-        this.name = name;
-        this.flags = flags;
-        this.lore = lore;
-        this.enchants = enchants;
-        this.nbt = nbt;
-    }
-
-    @Deprecated
-    public ConfigItem(String type, int amount, byte damage, String name, List<String> lore, Map<String, EnchantData> enchants, Map<String, NBTValue> nbt) {
-        this.type = type;
-        this.amount = amount + "";
-        this.damage = damage + "";
-        this.name = name;
-        this.lore = lore;
-        this.enchants = enchants;
-        this.nbt = nbt;
-    }
-
-    @Deprecated
-    public ConfigItem(String type, int amount, String name, List<String> lore, Map<String, EnchantData> enchants, Map<String, NBTValue> nbt) {
-        this(type, amount, (byte) 0, name, lore, enchants, nbt);
-    }
-
-    @Deprecated
-    public ConfigItem(String type, int amount, String name, List<String> lore) {
-        this(type, amount, (byte) 0, name, lore, ImmutableMap.of(), ImmutableMap.of());
-    }
-
-    @Deprecated
-    public ConfigItem(String type, int amount, byte damage, String name, List<String> lore, Map<String, NBTValue> nbt) {
-        this(type, amount, damage, name, lore, Maps.newHashMap(), nbt);
     }
 
     public boolean isEnabled() {
@@ -95,26 +56,28 @@ public class ConfigItem {
         return UtilParse.parseInteger(this.amount).orElse(0);
     }
 
-    public int getAmount(List<Transformer> transformers) {
-        String amount = this.amount;
-        for (Transformer transformer : transformers) {
-            amount = transformer.transformName(amount);
+    public int getAmount(List<Placeholder> placeholders) {
+        List<Integer> integers = PlaceholderFactory.handlePlaceholders(Collections.singletonList(amount), s -> UtilParse.parseInteger(s).orElse(0), placeholders);
+
+        if (integers.isEmpty()) {
+            return 0;
         }
 
-        return UtilParse.parseInteger(amount).orElse(0);
+        return integers.get(0);
     }
 
     public byte getDamage() {
         return (byte) (int) UtilParse.parseInteger(this.damage).orElse(0);
     }
 
-    public byte getDamage(List<Transformer> transformers) {
-        String damage = this.damage;
-        for (Transformer transformer : transformers) {
-            damage = transformer.transformName(damage);
+    public byte getDamage(List<Placeholder> placeholders) {
+        List<Integer> integers = PlaceholderFactory.handlePlaceholders(Collections.singletonList(damage), s -> UtilParse.parseInteger(s).orElse(0), placeholders);
+
+        if (integers.isEmpty()) {
+            return 0;
         }
 
-        return (byte) (int) UtilParse.parseInteger(damage).orElse(0);
+        return (byte) integers.get(0).intValue();
     }
 
     public String getName() {

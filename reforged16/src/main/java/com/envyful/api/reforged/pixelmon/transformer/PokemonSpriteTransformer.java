@@ -1,9 +1,9 @@
 package com.envyful.api.reforged.pixelmon.transformer;
 
-import com.envyful.api.gui.Transformer;
+import com.envyful.api.text.parse.SimplePlaceholder;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 
-public class PokemonSpriteTransformer implements Transformer {
+public class PokemonSpriteTransformer implements SimplePlaceholder {
 
     private final String spritePath;
 
@@ -14,7 +14,7 @@ public class PokemonSpriteTransformer implements Transformer {
     private PokemonSpriteTransformer(String spritePath) {this.spritePath = spritePath;}
 
     @Override
-    public String transformName(String name) {
+    public String replace(String name) {
         return name.replace("%sprite%", this.spritePath);
     }
 }

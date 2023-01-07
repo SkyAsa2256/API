@@ -2,7 +2,8 @@ package com.envyful.api.forge.config;
 
 import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.forge.server.UtilForgeServer;
-import com.envyful.api.gui.Transformer;
+import com.envyful.api.text.Placeholder;
+import com.envyful.api.text.PlaceholderFactory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.Util;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
@@ -23,23 +24,15 @@ public class ConfigReward {
     public ConfigReward() {
     }
 
-    public void execute(ServerPlayerEntity player, Transformer... transformers) {
+    public void execute(ServerPlayerEntity player, Placeholder... placeholders) {
         if (this.commands != null && !this.commands.isEmpty()) {
-            for (String command : this.commands) {
-                for (Transformer transformer : transformers) {
-                    command = transformer.transformName(command);
-                }
-
+            for (String command : PlaceholderFactory.handlePlaceholders(this.commands, placeholders)) {
                 UtilForgeServer.executeCommand(command.replace("%player%", player.getName().getString()));
             }
         }
 
         if (this.messages != null && !this.messages.isEmpty()) {
-            for (String message : this.messages) {
-                for (Transformer transformer : transformers) {
-                    message = transformer.transformName(message);
-                }
-
+            for (String message : PlaceholderFactory.handlePlaceholders(this.messages, placeholders)) {
                 player.sendMessage(UtilChatColour.colour(message), Util.NIL_UUID);
             }
         }

@@ -1,10 +1,10 @@
 package com.envyful.api.reforged.pixelmon.transformer;
 
-import com.envyful.api.gui.Transformer;
+import com.envyful.api.text.parse.SimplePlaceholder;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.enums.EnumSpecies;
 
-public class PokemonNameTransformer implements Transformer {
+public class PokemonNameTransformer implements SimplePlaceholder {
 
     private final String name;
 
@@ -19,7 +19,7 @@ public class PokemonNameTransformer implements Transformer {
     private PokemonNameTransformer(String name) {this.name = name;}
 
     @Override
-    public String transformName(String name) {
+    public String replace(String name) {
         return name.replace("%pokemon%", this.name + "");
     }
 }

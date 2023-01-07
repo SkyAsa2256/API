@@ -1,8 +1,8 @@
 package com.envyful.api.forge.config;
 
 import com.envyful.api.config.type.ConfigRandomWeightedSet;
-import com.envyful.api.gui.Transformer;
 import com.envyful.api.math.UtilRandom;
+import com.envyful.api.text.Placeholder;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
@@ -37,7 +37,7 @@ public class ConfigRewardPool {
         return randomlySelectedRewards;
     }
 
-    public void give(ServerPlayerEntity player, Transformer... transformers) {
+    public void give(ServerPlayerEntity player, Placeholder... transformers) {
         if (this.guaranteedReward != null) {
             this.guaranteedReward.execute(player, transformers);
         }

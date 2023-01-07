@@ -16,6 +16,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -203,6 +204,18 @@ public class ItemBuilder implements Cloneable {
      */
     public ItemBuilder itemFlag(ItemFlag itemFlag) {
         this.itemFlags.add(itemFlag);
+        return this;
+    }
+
+    /**
+     *
+     * Adds the specified {@link ItemFlag}s to the builder class
+     *
+     * @param itemFlags The item flags to add
+     * @return The builder
+     */
+    public ItemBuilder itemFlags(Collection<ItemFlag> itemFlags) {
+        this.itemFlags.addAll(itemFlags);
         return this;
     }
 

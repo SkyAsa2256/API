@@ -1,10 +1,10 @@
 package com.envyful.api.reforged.pixelmon.transformer;
 
-import com.envyful.api.gui.Transformer;
+import com.envyful.api.text.parse.SimplePlaceholder;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.pokemon.species.Species;
 
-public class PokemonDexTransformer implements Transformer {
+public class PokemonDexTransformer implements SimplePlaceholder {
 
     private final int ndex;
 
@@ -19,7 +19,7 @@ public class PokemonDexTransformer implements Transformer {
     private PokemonDexTransformer(int ndex) {this.ndex = ndex;}
 
     @Override
-    public String transformName(String name) {
+    public String replace(String name) {
         return name.replace("%pokedex%", this.ndex + "");
     }
 }

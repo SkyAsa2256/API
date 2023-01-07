@@ -1,12 +1,14 @@
 package com.envyful.api.config.type;
 
-import com.envyful.api.gui.Transformer;
+import com.envyful.api.text.Placeholder;
+import com.envyful.api.text.PlaceholderFactory;
 import com.envyful.api.type.Pair;
 import com.envyful.api.type.UtilParse;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -29,10 +31,7 @@ public class ExtendedConfigItem {
     private boolean closeOnClick;
     private List<String> commandsExecuted;
 
-    @Deprecated
-    public ExtendedConfigItem() {
-        super();
-    }
+    public ExtendedConfigItem() {}
 
     @Deprecated
     public ExtendedConfigItem(String type, int amount, byte damage, String name, List<String> lore, int xPos,
@@ -50,22 +49,7 @@ public class ExtendedConfigItem {
         this.commandsExecuted = Lists.newArrayList();
     }
 
-    @Deprecated
-    public ExtendedConfigItem(String type, int amount, String name, List<String> lore, int xPos,
-                              int yPos, Map<String, ConfigItem.NBTValue> nbt) {
-        this.type = type;
-        this.amount = String.valueOf(amount);
-        this.name = name;
-        this.lore = lore;
-        this.nbt = nbt;
-        this.closeOnClick = false;
-        this.requiresPermission = false;
-        this.positions.put("first", Pair.of(xPos, yPos));
-        this.commandsExecuted = Lists.newArrayList();
-    }
-
-    @Deprecated
-    public ExtendedConfigItem(boolean enabled, String type, String amount, String name, List<String> flags,
+    private ExtendedConfigItem(boolean enabled, String type, String amount, String name, List<String> flags,
                               List<String> lore, Map<String, ConfigItem.EnchantData> enchants, Map<String, ConfigItem.NBTValue> nbt,
                               Map<String, Pair<Integer, Integer>> positions, boolean requiresPermission,
                               String permission, ConfigItem elseItem, boolean closeOnClick,
@@ -97,26 +81,28 @@ public class ExtendedConfigItem {
         return UtilParse.parseInteger(this.amount).orElse(0);
     }
 
-    public int getAmount(List<Transformer> transformers) {
-        String amount = this.amount;
-        for (Transformer transformer : transformers) {
-            amount = transformer.transformName(amount);
+    public int getAmount(List<Placeholder> placeholders) {
+        List<Integer> integers = PlaceholderFactory.handlePlaceholders(Collections.singletonList(amount), s -> UtilParse.parseInteger(s).orElse(0), placeholders);
+
+        if (integers.isEmpty()) {
+            return 0;
         }
 
-        return UtilParse.parseInteger(amount).orElse(0);
+        return integers.get(0);
     }
 
     public byte getDamage() {
         return (byte) (int) UtilParse.parseInteger(this.damage).orElse(0);
     }
 
-    public byte getDamage(List<Transformer> transformers) {
-        String damage = this.damage;
-        for (Transformer transformer : transformers) {
-            damage = transformer.transformName(damage);
+    public byte getDamage(List<Placeholder> placeholders) {
+        List<Integer> integers = PlaceholderFactory.handlePlaceholders(Collections.singletonList(damage), s -> UtilParse.parseInteger(s).orElse(0), placeholders);
+
+        if (integers.isEmpty()) {
+            return 0;
         }
 
-        return (byte) (int) UtilParse.parseInteger(damage).orElse(0);
+        return (byte) integers.get(0).intValue();
     }
 
     public String getName() {

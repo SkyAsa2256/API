@@ -6,10 +6,10 @@ import com.envyful.api.forge.concurrency.UtilForgeConcurrency;
 import com.envyful.api.forge.gui.item.ForgeSimpleDisplayable;
 import com.envyful.api.forge.player.ForgeEnvyPlayer;
 import com.envyful.api.forge.server.UtilForgeServer;
-import com.envyful.api.gui.Transformer;
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.player.EnvyPlayer;
+import com.envyful.api.text.Placeholder;
 import com.envyful.api.type.Pair;
 import net.minecraft.world.item.ItemStack;
 
@@ -22,7 +22,7 @@ public class ConfigItemBuilder extends ForgeSimpleDisplayable.Builder {
         super();
     }
 
-    public Displayable extendedConfigItem(ForgeEnvyPlayer player, Pane pane, ExtendedConfigItem configItem, Transformer... transformers) {
+    public Displayable extendedConfigItem(ForgeEnvyPlayer player, Pane pane, ExtendedConfigItem configItem, Placeholder... transformers) {
         return this.extendedConfigItem(pane, UtilConfigItem.fromPermissibleItem(player.getParent(), configItem, transformers), configItem);
     }
 
@@ -50,7 +50,7 @@ public class ConfigItemBuilder extends ForgeSimpleDisplayable.Builder {
         return build;
     }
 
-    public ConfigItemBuilder configItem(ConfigItem configItem, Transformer... transformers) {
+    public ConfigItemBuilder configItem(ConfigItem configItem, Placeholder... transformers) {
         return this.itemStack(UtilConfigItem.fromConfigItem(configItem, transformers));
     }
 

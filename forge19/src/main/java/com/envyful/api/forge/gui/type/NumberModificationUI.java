@@ -7,12 +7,12 @@ import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.forge.config.UtilConfigItem;
 import com.envyful.api.forge.gui.item.PositionableItem;
 import com.envyful.api.forge.items.ItemBuilder;
-import com.envyful.api.gui.Transformer;
 import com.envyful.api.gui.factory.GuiFactory;
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
+import com.envyful.api.text.Placeholder;
 import com.envyful.api.type.Pair;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -113,7 +113,7 @@ public class NumberModificationUI {
         private List<PositionableItem> displayItems = Lists.newArrayList();
         private int currentValue;
         private String key;
-        private List<Transformer> transformers = Lists.newArrayList();
+        private List<Placeholder> transformers = Lists.newArrayList();
 
         protected Builder() {}
 
@@ -187,17 +187,17 @@ public class NumberModificationUI {
             return this;
         }
 
-        public Builder transformers(List<Transformer> transformers) {
+        public Builder transformers(List<Placeholder> transformers) {
             this.transformers.addAll(transformers);
             return this;
         }
 
-        public Builder transformer(Transformer transformer) {
+        public Builder transformer(Placeholder transformer) {
             this.transformers.add(transformer);
             return this;
         }
 
-        public Builder transformers(Transformer... transformers) {
+        public Builder transformers(Placeholder... transformers) {
             this.transformers.addAll(Arrays.asList(transformers));
             return this;
         }
@@ -241,9 +241,12 @@ public class NumberModificationUI {
             this.minValue = minValue;
             this.guiSettings = new ConfigInterface(
                     title, height, "BLOCK",
-                    ImmutableMap.of("one", new ConfigItem(
-                            "minecraft:black_stained_glass_pane", 1, (byte) 15, " ", Lists.newArrayList(), Maps.newHashMap()
-                    ))
+                    ImmutableMap.of("one", ConfigItem.builder()
+                            .type("minecraft:stained_glass_pane")
+                            .amount(1)
+                            .damage(15)
+                            .name(" ")
+                            .build())
             );
         }
 

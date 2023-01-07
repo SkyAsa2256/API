@@ -7,12 +7,12 @@ import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.forge.config.UtilConfigItem;
 import com.envyful.api.forge.gui.item.PositionableItem;
 import com.envyful.api.forge.items.ItemBuilder;
-import com.envyful.api.gui.Transformer;
 import com.envyful.api.gui.factory.GuiFactory;
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
+import com.envyful.api.text.Placeholder;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -35,7 +35,7 @@ public class DynamicSelectionUI {
                 .build();
 
         for (ConfigItem fillerItem : config.config.guiSettings.getFillerItems()) {
-            pane.add(GuiFactory.displayable(UtilConfigItem.fromConfigItem(fillerItem, config.transformers)));
+            pane.add(GuiFactory.displayable(UtilConfigItem.fromConfigItem(fillerItem, config.placeholders)));
         }
 
         for (int i = 0; i < config.config.optionPositions.size(); i++) {
@@ -48,11 +48,8 @@ public class DynamicSelectionUI {
             }
 
             String displayName = config.displayNames.get(i);
-            ItemStack itemStack = new ItemBuilder(UtilConfigItem.fromConfigItem(config.config.getDisplayItem(), config.transformers))
-                            .name(UtilChatColour.translateColourCodes(
-                                    '&',
-                                    config.config.getNameColour() + displayName)
-                            ).build();
+            ItemStack itemStack = new ItemBuilder(UtilConfigItem.fromConfigItem(config.config.getDisplayItem(), config.placeholders))
+                            .name(UtilChatColour.colour(config.config.getNameColour() + displayName)).build();
 
             pane.set(posX, posY,
                      GuiFactory.displayableBuilder(itemStack)
@@ -62,17 +59,17 @@ public class DynamicSelectionUI {
                                  config.confirm.confirmHandler((clicker, clickerType) -> config.acceptHandler.accept(clicker, clickerType, displayName));
                                  config.confirm.playerManager(config.playerManager);
                                  config.confirm.player(envyPlayer);
-                                 config.confirm.transformers(config.transformers);
+                                 config.confirm.transformers(config.placeholders);
                                  config.confirm.open();
                              })
                              .build()
             );
         }
 
-        UtilConfigItem.addConfigItem(pane, config.config.backButton, config.transformers, config.returnHandler);
+        UtilConfigItem.addConfigItem(pane, config.config.backButton, config.placeholders, config.returnHandler);
 
         for (ExtendedConfigItem displayItem : config.displayConfigItems) {
-            UtilConfigItem.addConfigItem(pane, config.transformers, displayItem);
+            UtilConfigItem.addConfigItem(pane, config.placeholders, displayItem);
         }
 
         for (PositionableItem displayItem : config.displayItems) {
@@ -82,7 +79,6 @@ public class DynamicSelectionUI {
         GuiFactory.guiBuilder()
                 .setPlayerManager(config.playerManager)
                 .addPane(pane)
-                .setCloseConsumer(envyPlayer -> {})
                 .height(config.config.guiSettings.getHeight())
                 .title(UtilChatColour.translateColourCodes('&', config.config.guiSettings.getTitle()))
                 .build().open(config.player);
@@ -103,7 +99,7 @@ public class DynamicSelectionUI {
         private List<ExtendedConfigItem> displayConfigItems = Lists.newArrayList();
         private List<PositionableItem> displayItems = Lists.newArrayList();
         private List<String> displayNames = Lists.newArrayList();
-        private List<Transformer> transformers = Lists.newArrayList();
+        private List<Placeholder> placeholders = Lists.newArrayList();
 
         protected Builder() {}
 
@@ -182,18 +178,18 @@ public class DynamicSelectionUI {
             return this;
         }
 
-        public Builder transformers(List<Transformer> transformers) {
-            this.transformers.addAll(transformers);
+        public Builder transformers(List<Placeholder> placeholders) {
+            this.placeholders.addAll(placeholders);
             return this;
         }
 
-        public Builder transformer(Transformer transformer) {
-            this.transformers.add(transformer);
+        public Builder transformer(Placeholder placeholder) {
+            this.placeholders.add(placeholder);
             return this;
         }
 
-        public Builder transformers(Transformer... transformers) {
-            this.transformers.addAll(Arrays.asList(transformers));
+        public Builder transformers(Placeholder... placeholders) {
+            this.placeholders.addAll(Arrays.asList(placeholders));
             return this;
         }
 
@@ -230,9 +226,11 @@ public class DynamicSelectionUI {
             this.displayItem = displayItem;
             this.guiSettings = new ConfigInterface(
                     title, height, "BLOCK",
-                    ImmutableMap.of("one", new ConfigItem(
-                            "minecraft:black_stained_glass_pane", 1," ", Lists.newArrayList()
-                    ))
+                    ImmutableMap.of("one", ConfigItem.builder()
+                            .type("minecraft:black_stained_glass_pane")
+                            .amount(1)
+                            .name(" ")
+                            .build())
             );
         }
 

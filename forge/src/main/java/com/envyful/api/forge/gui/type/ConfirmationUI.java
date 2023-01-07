@@ -6,12 +6,12 @@ import com.envyful.api.config.type.ExtendedConfigItem;
 import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.forge.config.UtilConfigItem;
 import com.envyful.api.forge.gui.item.PositionableItem;
-import com.envyful.api.gui.Transformer;
 import com.envyful.api.gui.factory.GuiFactory;
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
+import com.envyful.api.text.Placeholder;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -99,7 +99,7 @@ public class ConfirmationUI {
         private BiConsumer<EnvyPlayer<?>, Displayable.ClickType> confirmHandler;
         private List<ExtendedConfigItem> displayConfigItems = Lists.newArrayList();
         private List<PositionableItem> displayItems = Lists.newArrayList();
-        private List<Transformer> transformers = Lists.newArrayList();
+        private List<Placeholder> transformers = Lists.newArrayList();
 
         protected Builder() {}
 
@@ -163,17 +163,17 @@ public class ConfirmationUI {
             return this;
         }
 
-        public Builder transformers(List<Transformer> transformers) {
+        public Builder transformers(List<Placeholder> transformers) {
             this.transformers.addAll(transformers);
             return this;
         }
 
-        public Builder transformer(Transformer transformer) {
+        public Builder transformer(Placeholder transformer) {
             this.transformers.add(transformer);
             return this;
         }
 
-        public Builder transformers(Transformer... transformers) {
+        public Builder transformers(Placeholder... transformers) {
             this.transformers.addAll(Arrays.asList(transformers));
             return this;
         }
@@ -197,9 +197,12 @@ public class ConfirmationUI {
 
         private ConfigInterface guiSettings = new ConfigInterface(
                 "UltimatePokeBuilder", 3, "BLOCK",
-                ImmutableMap.of("one", new ConfigItem(
-                        "minecraft:stained_glass_pane", 1, (byte) 15, " ", Lists.newArrayList(), Maps.newHashMap()
-                ))
+                ImmutableMap.of("one", ConfigItem.builder()
+                                .type("minecraft:stained_glass_pane")
+                                .amount(1)
+                                .damage(15)
+                                .name(" ")
+                        .build())
         );
 
         private ExtendedConfigItem declineItem = new ExtendedConfigItem("minecraft:wool", 1, (byte) 14, "&c&lDECLINE",

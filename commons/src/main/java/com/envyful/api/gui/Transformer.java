@@ -1,5 +1,6 @@
 package com.envyful.api.gui;
 
+import com.envyful.api.text.parse.SimplePlaceholder;
 import com.google.common.collect.Lists;
 
 import java.util.List;
@@ -8,8 +9,15 @@ import java.util.List;
  *
  * An interface used for placeholders in the item API for replacing said placeholders with given text.
  *
+ * @deprecated Use {@link SimplePlaceholder}
  */
-public interface Transformer {
+@Deprecated
+public interface Transformer extends SimplePlaceholder {
+
+    @Override
+    default String replace(String line) {
+        return this.transformName(line);
+    }
 
     /**
      *

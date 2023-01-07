@@ -4,9 +4,11 @@ import com.envyful.api.config.type.ConfigInterface;
 import com.envyful.api.config.type.ConfigItem;
 import com.envyful.api.config.type.ExtendedConfigItem;
 import com.envyful.api.forge.chat.UtilChatColour;
+import com.envyful.api.forge.config.UtilConfigInterface;
 import com.envyful.api.forge.config.UtilConfigItem;
 import com.envyful.api.forge.gui.item.PositionableItem;
 import com.envyful.api.forge.items.ItemBuilder;
+import com.envyful.api.forge.player.ForgeEnvyPlayer;
 import com.envyful.api.gui.factory.GuiFactory;
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
@@ -34,9 +36,9 @@ public class DynamicSelectionUI {
                 .height(config.config.guiSettings.getHeight())
                 .build();
 
-        for (ConfigItem fillerItem : config.config.guiSettings.getFillerItems()) {
-            pane.add(GuiFactory.displayable(UtilConfigItem.fromConfigItem(fillerItem, config.placeholders)));
-        }
+        Placeholder[] placeholders = config.placeholders.toArray(new Placeholder[0]);
+
+        UtilConfigInterface.fillBackground(pane, config.config.getGuiSettings(), placeholders);
 
         for (int i = 0; i < config.config.optionPositions.size(); i++) {
             int pos = config.config.optionPositions.get(i);
@@ -66,10 +68,12 @@ public class DynamicSelectionUI {
             );
         }
 
-        UtilConfigItem.addConfigItem(pane, config.config.backButton, config.placeholders, config.returnHandler);
+        UtilConfigItem.builder()
+                .clickHandler(config.returnHandler)
+                .extendedConfigItem((ForgeEnvyPlayer) config.player, pane, config.config.getBackButton(), placeholders);
 
         for (ExtendedConfigItem displayItem : config.displayConfigItems) {
-            UtilConfigItem.addConfigItem(pane, config.placeholders, displayItem);
+            UtilConfigItem.builder().extendedConfigItem((ForgeEnvyPlayer) config.player, pane, displayItem, placeholders);
         }
 
         for (PositionableItem displayItem : config.displayItems) {
@@ -80,7 +84,7 @@ public class DynamicSelectionUI {
                 .setPlayerManager(config.playerManager)
                 .addPane(pane)
                 .height(config.config.guiSettings.getHeight())
-                .title(UtilChatColour.translateColourCodes('&', config.config.guiSettings.getTitle()))
+                .title(UtilChatColour.colour(config.config.guiSettings.getTitle()))
                 .build().open(config.player);
     }
 

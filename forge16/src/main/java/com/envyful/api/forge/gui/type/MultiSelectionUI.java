@@ -4,8 +4,10 @@ import com.envyful.api.config.type.ConfigInterface;
 import com.envyful.api.config.type.ConfigItem;
 import com.envyful.api.config.type.ExtendedConfigItem;
 import com.envyful.api.forge.chat.UtilChatColour;
+import com.envyful.api.forge.config.UtilConfigInterface;
 import com.envyful.api.forge.config.UtilConfigItem;
 import com.envyful.api.forge.gui.item.PositionableItem;
+import com.envyful.api.forge.player.ForgeEnvyPlayer;
 import com.envyful.api.gui.factory.GuiFactory;
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
@@ -35,9 +37,9 @@ public class MultiSelectionUI {
                 .height(config.config.guiSettings.getHeight())
                 .build();
 
-        for (ConfigItem fillerItem : config.config.guiSettings.getFillerItems()) {
-            pane.add(GuiFactory.displayable(UtilConfigItem.fromConfigItem(fillerItem, config.transformers)));
-        }
+        Placeholder[] placeholders = config.transformers.toArray(new Placeholder[0]);
+
+        UtilConfigInterface.fillBackground(pane, config.config.getGuiSettings(), placeholders);
 
         int optionPositionsSize = config.config.optionPositions.size();
         List<Map.Entry<String, ConfigItem>> items = new ArrayList<>(config.config.options.entrySet());
@@ -73,32 +75,38 @@ public class MultiSelectionUI {
             );
         }
 
-        UtilConfigItem.addConfigItem(pane, config.config.backButton, config.transformers, config.returnHandler);
+        UtilConfigItem.builder()
+                .clickHandler(config.returnHandler)
+                .extendedConfigItem((ForgeEnvyPlayer) config.player, pane, config.config.getBackButton(), placeholders);
 
         if (items.size() > optionPositionsSize) {
-            UtilConfigItem.addConfigItem(pane, config.config.previousPageButton, config.transformers, (envyPlayer, clickType) -> {
-                if (config.page == 0) {
-                    config.page = (config.config.options.size() / config.config.optionPositions.size());
-                } else {
-                    config.page -= 1;
-                }
+            UtilConfigItem.builder()
+                    .clickHandler((envyPlayer, clickType) -> {
+                        if (config.page == 0) {
+                            config.page = (config.config.options.size() / config.config.optionPositions.size());
+                        } else {
+                            config.page -= 1;
+                        }
 
-                open(config);
-            });
+                        open(config);
+                    })
+                    .extendedConfigItem((ForgeEnvyPlayer) config.player, pane, config.config.getPreviousPageButton(), placeholders);
 
-            UtilConfigItem.addConfigItem(pane, config.config.nextPageButton, config.transformers, (envyPlayer, clickType) -> {
-                if (config.page == (config.config.options.size() / config.config.optionPositions.size())) {
-                    config.page = 0;
-                } else {
-                    config.page += 1;
-                }
+            UtilConfigItem.builder()
+                    .clickHandler((envyPlayer, clickType) -> {
+                        if (config.page == (config.config.options.size() / config.config.optionPositions.size())) {
+                            config.page = 0;
+                        } else {
+                            config.page += 1;
+                        }
 
-                open(config);
-            });
+                        open(config);
+                    })
+                    .extendedConfigItem((ForgeEnvyPlayer) config.player, pane, config.config.getNextPageButton(), placeholders);
         }
 
         for (ExtendedConfigItem displayItem : config.displayConfigItems) {
-            UtilConfigItem.addConfigItem(pane, config.transformers, displayItem);
+            UtilConfigItem.builder().extendedConfigItem((ForgeEnvyPlayer) config.player, pane, displayItem, placeholders);
         }
 
         for (PositionableItem displayItem : config.displayItems) {

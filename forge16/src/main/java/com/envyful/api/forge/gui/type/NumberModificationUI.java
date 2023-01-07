@@ -4,9 +4,11 @@ import com.envyful.api.config.type.ConfigInterface;
 import com.envyful.api.config.type.ConfigItem;
 import com.envyful.api.config.type.ExtendedConfigItem;
 import com.envyful.api.forge.chat.UtilChatColour;
+import com.envyful.api.forge.config.UtilConfigInterface;
 import com.envyful.api.forge.config.UtilConfigItem;
 import com.envyful.api.forge.gui.item.PositionableItem;
 import com.envyful.api.forge.items.ItemBuilder;
+import com.envyful.api.forge.player.ForgeEnvyPlayer;
 import com.envyful.api.gui.factory.GuiFactory;
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
@@ -35,36 +37,41 @@ public class NumberModificationUI {
                 .height(config.config.guiSettings.getHeight())
                 .build();
 
-        for (ConfigItem fillerItem : config.config.guiSettings.getFillerItems()) {
-            pane.add(GuiFactory.displayable(UtilConfigItem.fromConfigItem(fillerItem, config.transformers)));
-        }
+        Placeholder[] placeholders = config.transformers.toArray(new Placeholder[0]);
+
+        UtilConfigInterface.fillBackground(pane, config.config.getGuiSettings(), placeholders);
 
         for (EditValueButton button : config.config.getButtons()) {
-            UtilConfigItem.addConfigItem(pane, button.getConfigItem(), config.transformers, (envyPlayer, clickType) -> {
-                 int newValue = config.currentValue + button.getAmountModifier();
+            UtilConfigItem.builder()
+                            .clickHandler((envyPlayer, clickType) -> {
+                                int newValue = config.currentValue + button.getAmountModifier();
 
-                 if (newValue >= config.config.maxValue) {
-                     config.currentValue(config.config.maxValue);
-                 } else if (newValue <= config.config.minValue) {
-                     config.currentValue(config.config.minValue);
-                 } else {
-                     config.currentValue(newValue);
-                 }
+                                if (newValue >= config.config.maxValue) {
+                                    config.currentValue(config.config.maxValue);
+                                } else if (newValue <= config.config.minValue) {
+                                    config.currentValue(config.config.minValue);
+                                } else {
+                                    config.currentValue(newValue);
+                                }
 
-                open(config);
-            });
+                                open(config);
+                            }).extendedConfigItem((ForgeEnvyPlayer) config.player, pane, button.getConfigItem(), placeholders);
         }
 
-        UtilConfigItem.addConfigItem(pane, config.config.backButton, config.transformers, config.returnHandler);
-        UtilConfigItem.addConfigItem(pane, config.config.confirmItem, config.transformers, (envyPlayer, clickType) -> {
-            config.confirm.descriptionItem(config.displayItems.get(config.displayItems.size() - 1).getItemStack());
-            config.confirm.returnHandler((envyPlayer1, clickType1) -> open(config));
-            config.confirm.confirmHandler((clicker, clickerType) -> config.acceptHandler.accept(clicker, clickerType, config.currentValue));
-            config.confirm.playerManager(config.playerManager);
-            config.confirm.player(envyPlayer);
-            config.confirm.transformers(config.transformers);
-            config.confirm.open();
-        });
+        UtilConfigItem.builder()
+                .clickHandler(config.returnHandler)
+                .extendedConfigItem((ForgeEnvyPlayer) config.player, pane, config.config.getBackButton(), placeholders);
+
+        UtilConfigItem.builder()
+                .clickHandler((envyPlayer, clickType) -> {
+                    config.confirm.descriptionItem(config.displayItems.get(config.displayItems.size() - 1).getItemStack());
+                    config.confirm.returnHandler((envyPlayer1, clickType1) -> open(config));
+                    config.confirm.confirmHandler((clicker, clickerType) -> config.acceptHandler.accept(clicker, clickerType, config.currentValue));
+                    config.confirm.playerManager(config.playerManager);
+                    config.confirm.player(envyPlayer);
+                    config.confirm.transformers(config.transformers);
+                    config.confirm.open();
+                }).extendedConfigItem((ForgeEnvyPlayer) config.player, pane, config.config.getConfirmItem(), placeholders);
 
         for (Pair<Integer, Integer> position : config.config.currentValue.getPositions()) {
             if (config.config.currentValue.isEnabled()) {
@@ -81,7 +88,7 @@ public class NumberModificationUI {
         }
 
         for (ExtendedConfigItem displayItem : config.displayConfigItems) {
-            UtilConfigItem.addConfigItem(pane, config.transformers, displayItem);
+            UtilConfigItem.builder().extendedConfigItem((ForgeEnvyPlayer) config.player, pane, displayItem, placeholders);
         }
 
         for (PositionableItem displayItem : config.displayItems) {
@@ -92,7 +99,7 @@ public class NumberModificationUI {
                 .setPlayerManager(config.playerManager)
                 .addPane(pane)
                 .height(config.config.guiSettings.getHeight())
-                .title(UtilChatColour.translateColourCodes('&', config.config.guiSettings.getTitle()))
+                .title(UtilChatColour.colour(config.config.guiSettings.getTitle()))
                 .build().open(config.player);
     }
 

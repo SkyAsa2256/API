@@ -4,8 +4,10 @@ import com.envyful.api.config.type.ConfigInterface;
 import com.envyful.api.config.type.ConfigItem;
 import com.envyful.api.config.type.ExtendedConfigItem;
 import com.envyful.api.forge.chat.UtilChatColour;
+import com.envyful.api.forge.config.UtilConfigInterface;
 import com.envyful.api.forge.config.UtilConfigItem;
 import com.envyful.api.forge.gui.item.PositionableItem;
+import com.envyful.api.forge.player.ForgeEnvyPlayer;
 import com.envyful.api.gui.factory.GuiFactory;
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
@@ -44,12 +46,17 @@ public class ConfirmationUI {
                 .height(config.getGuiSettings().getHeight())
                 .build();
 
-        for (ConfigItem fillerItem : config.getGuiSettings().getFillerItems()) {
-            pane.add(GuiFactory.displayable(UtilConfigItem.fromConfigItem(fillerItem, builder.placeholders)));
-        }
+        Placeholder[] placeholders = builder.placeholders.toArray(new Placeholder[0]);
 
-        UtilConfigItem.addConfigItem(pane, config.getAcceptItem(), builder.placeholders, builder.confirmHandler);
-        UtilConfigItem.addConfigItem(pane, config.getDeclineItem(), builder.placeholders, builder.returnHandler);
+        UtilConfigInterface.fillBackground(pane, config.getGuiSettings(), placeholders);
+
+        UtilConfigItem.builder()
+                .clickHandler(builder.confirmHandler)
+                .extendedConfigItem((ForgeEnvyPlayer) builder.player, pane, config.getAcceptItem(), placeholders);
+
+        UtilConfigItem.builder()
+                .clickHandler(builder.returnHandler)
+                .extendedConfigItem((ForgeEnvyPlayer) builder.player, pane, config.getDeclineItem(), placeholders);
 
         if (builder.descriptionItem != null) {
             pane.set(config.getDescriptionPosition() % 9, config.getDescriptionPosition() / 9,
@@ -58,7 +65,7 @@ public class ConfirmationUI {
         }
 
         for (ExtendedConfigItem displayItem : builder.displayConfigItems) {
-            UtilConfigItem.addConfigItem(pane, builder.placeholders, displayItem);
+            UtilConfigItem.builder().extendedConfigItem((ForgeEnvyPlayer) builder.player, pane, displayItem, placeholders);
         }
 
         for (PositionableItem displayItem : builder.displayItems) {
@@ -69,7 +76,7 @@ public class ConfirmationUI {
                 .setPlayerManager(builder.playerManager)
                 .addPane(pane)
                 .height(config.getGuiSettings().getHeight())
-                .title(UtilChatColour.translateColourCodes('&', config.getGuiSettings().getTitle()))
+                .title(UtilChatColour.colour(config.getGuiSettings().getTitle()))
                 .build().open(builder.player);
     }
 

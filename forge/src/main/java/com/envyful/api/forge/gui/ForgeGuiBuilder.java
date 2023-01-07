@@ -5,9 +5,7 @@ import com.envyful.api.forge.gui.close.ForgeCloseConsumer;
 import com.envyful.api.forge.player.ForgeEnvyPlayer;
 import com.envyful.api.gui.Gui;
 import com.envyful.api.gui.close.CloseConsumer;
-import com.envyful.api.gui.factory.GuiFactory;
 import com.envyful.api.gui.pane.Pane;
-import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -15,7 +13,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 /**
  *
@@ -59,17 +56,6 @@ public class ForgeGuiBuilder implements Gui.Builder {
     public Gui.Builder setPlayerManager(PlayerManager<?, ?> playerManager) {
         this.playerManager = (PlayerManager<ForgeEnvyPlayer, EntityPlayerMP>) playerManager;
         return this;
-    }
-
-
-    @Override
-    public Gui.Builder setCloseConsumer(Consumer<EnvyPlayer<?>> consumer) {
-        return this.closeConsumer(consumer);
-    }
-
-    @Override
-    public Gui.Builder closeConsumer(Consumer<EnvyPlayer<?>> consumer) {
-        return this.closeConsumer(GuiFactory.closeConsumerBuilder().handler(consumer::accept).build());
     }
 
     @Override

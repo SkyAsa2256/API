@@ -82,7 +82,6 @@ public class DynamicSelectionUI {
         GuiFactory.guiBuilder()
                 .setPlayerManager(config.playerManager)
                 .addPane(pane)
-                .setCloseConsumer(envyPlayer -> {})
                 .height(config.config.guiSettings.getHeight())
                 .title(UtilChatColour.translateColourCodes('&', config.config.guiSettings.getTitle()))
                 .build().open(config.player);

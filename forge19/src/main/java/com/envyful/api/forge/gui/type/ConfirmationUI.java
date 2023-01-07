@@ -68,7 +68,6 @@ public class ConfirmationUI {
         GuiFactory.guiBuilder()
                 .setPlayerManager(builder.playerManager)
                 .addPane(pane)
-                .setCloseConsumer(envyPlayer -> {})
                 .height(config.getGuiSettings().getHeight())
                 .title(UtilChatColour.translateColourCodes('&', config.getGuiSettings().getTitle()))
                 .build().open(builder.player);

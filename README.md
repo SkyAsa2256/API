@@ -1,6 +1,6 @@
 # API 
 [![Discord](https://img.shields.io/discord/831966641586831431)](https://discord.gg/7vqgtrjDGw) 
-[![Developer Releases](https://jitpack.io/v/EnvyWare/API.svg)](https://jitpack.io/#Pixelmon-Development/API) 
+[![Developer Releases](https://maven.envyware.co.uk/api/badge/latest/releases/com/envyful/api/commons?color=40c14a&prefix=v&name=API)]([https://jitpack.io/#Pixelmon-Development/API](https://maven.envyware.co.uk/#/releases/com/envyful/api)) 
 [![GitHub](https://img.shields.io/github/license/EnvyWare/API)](https://www.gnu.org/licenses/lgpl-3.0.html) 
 
 This repository will contain a multi-project Gradle setup for Minecraft APIs. (Spigot, Forge, Sponge, Velocity, Bungee etc.)

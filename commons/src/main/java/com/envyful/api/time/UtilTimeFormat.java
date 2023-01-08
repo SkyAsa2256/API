@@ -21,7 +21,7 @@ public class UtilTimeFormat {
     private static final Map<String, DateFormat> DATE_FORMATS = Maps.newHashMap();
 
     public static String format(Date date, String format) {
-        return DATE_FORMATS.computeIfAbsent(format, __ -> new SimpleDateFormat(format)).format(date);
+        return DATE_FORMATS.computeIfAbsent(format, unused -> new SimpleDateFormat(format)).format(date);
     }
 
     public static String format(Date date) {

@@ -169,7 +169,9 @@ public class UtilChatColour {
      * @param altColorChar The character
      * @param textToTranslate The text
      * @return The coloured text
+     * @deprecated Use {@link UtilChatColour#colour(String, Replacer...)}
      */
+    @Deprecated
     public static String translateColourCodes(char altColorChar, String textToTranslate) {
         char[] b = textToTranslate.toCharArray();
 

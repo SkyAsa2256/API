@@ -122,7 +122,9 @@ public class PlaceholderFactory {
             }
 
             for (String s : result.getCurrentResult()) {
-                computedText.add(mapper.apply(s));
+                if (s != null) {
+                    computedText.add(mapper.apply(s));
+                }
             }
         }
 

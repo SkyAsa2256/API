@@ -24,6 +24,7 @@ import net.minecraft.nbt.StringNBT;
 import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 
+import java.util.Collections;
 import java.util.List;
 
 public class UtilSprite {
@@ -51,7 +52,7 @@ public class UtilSprite {
             lore.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(s)));
         }
 
-        ITextComponent colour = PlaceholderFactory.handlePlaceholders(config.getLore(), UtilChatColour::colour, pokemonPlaceholders).get(0);
+        ITextComponent colour = PlaceholderFactory.handlePlaceholders(Collections.singletonList(config.getName()), UtilChatColour::colour, pokemonPlaceholders).get(0);
 
         if (colour instanceof IFormattableTextComponent) {
             colour = ((IFormattableTextComponent) colour).setStyle(colour.getStyle().withItalic(false));

@@ -4,6 +4,7 @@ import com.envyful.api.config.type.SQLDatabaseDetails;
 import com.envyful.api.database.Database;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import io.lettuce.core.RedisClient;
 import io.lettuce.core.api.StatefulRedisConnection;
 
 import java.sql.Connection;
@@ -84,5 +85,10 @@ public class SimpleHikariDatabase implements Database {
     @Override
     public void close() {
         this.hikari.close();
+    }
+
+    @Override
+    public RedisClient getClient() throws UnsupportedOperationException {
+        throw new UnsupportedOperationException("This is an SQL Database ");
     }
 }

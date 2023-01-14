@@ -39,6 +39,11 @@ public class SimpleLettuceDatabase implements Database {
     }
 
     @Override
+    public RedisClient getClient() throws UnsupportedOperationException {
+        return this.pool;
+    }
+
+    @Override
     public void close() {
         this.pool.close();
     }

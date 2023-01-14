@@ -1,7 +1,7 @@
 package com.envyful.api.database;
 
 import com.envyful.api.database.impl.SimpleHikariDatabase;
-import com.envyful.api.database.impl.SimpleJedisDatabase;
+import com.envyful.api.database.impl.SimpleLettuceDatabase;
 import com.google.common.collect.Maps;
 import org.spongepowered.configurate.ConfigurationNode;
 
@@ -35,7 +35,7 @@ public enum DatabaseType {
             int port = node.node("port").getInt();
             String password = node.node("password").getString();
 
-            return new SimpleJedisDatabase(ip, port, password);
+            return new SimpleLettuceDatabase(ip, port, password);
         }
     }
 

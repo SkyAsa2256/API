@@ -34,7 +34,7 @@ public class SimpleLettuceDatabase implements Database {
     }
 
     @Override
-    public StatefulRedisClusterConnection<String, String> getJedis() throws UnsupportedOperationException {
+    public StatefulRedisClusterConnection<String, String> getRedis() throws UnsupportedOperationException {
         return this.pool.connect();
     }
 

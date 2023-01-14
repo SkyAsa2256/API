@@ -29,7 +29,7 @@ public interface Database {
      * @return The jedis connection
      * @throws UnsupportedOperationException If this database isn't redis lol
      */
-    StatefulRedisClusterConnection<String, String> getJedis() throws UnsupportedOperationException;
+    StatefulRedisClusterConnection<String, String> getRedis() throws UnsupportedOperationException;
 
     /**
      *

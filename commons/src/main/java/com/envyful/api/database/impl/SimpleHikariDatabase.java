@@ -4,8 +4,7 @@ import com.envyful.api.config.type.SQLDatabaseDetails;
 import com.envyful.api.database.Database;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.exceptions.JedisException;
+import io.lettuce.core.cluster.api.StatefulRedisClusterConnection;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -73,12 +72,12 @@ public class SimpleHikariDatabase implements Database {
     }
 
     @Override
-    public Jedis getJedis() throws JedisException, UnsupportedOperationException {
+    public StatefulRedisClusterConnection<String, String> getRedis() throws UnsupportedOperationException {
         throw new UnsupportedOperationException("This is an SQL Database ");
     }
 
     @Override
-    public void subscribe(Object o) throws JedisException, UnsupportedOperationException {
+    public void subscribe(Object o) throws UnsupportedOperationException {
         throw new UnsupportedOperationException("This is an SQL Database ");
     }
 

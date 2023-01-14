@@ -5,10 +5,10 @@ import com.envyful.api.config.type.RedisDatabaseDetails;
 import com.envyful.api.database.Database;
 import com.envyful.api.database.impl.redis.Subscribe;
 import com.google.common.collect.Lists;
-import io.lettuce.core.cluster.RedisClusterClient;
-import io.lettuce.core.cluster.api.StatefulRedisClusterConnection;
-import io.lettuce.core.cluster.pubsub.StatefulRedisClusterPubSubConnection;
+import io.lettuce.core.RedisClient;
+import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.pubsub.RedisPubSubAdapter;
+import io.lettuce.core.pubsub.StatefulRedisPubSubConnection;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -18,7 +18,7 @@ import java.util.List;
 
 public class SimpleLettuceDatabase implements Database {
 
-    private final RedisClusterClient pool;
+    private final RedisClient pool;
     private final List<ReflectivePubSub> pubSubs = Lists.newArrayList();
 
     public SimpleLettuceDatabase(RedisDatabaseDetails details) {
@@ -29,12 +29,12 @@ public class SimpleLettuceDatabase implements Database {
         this.pool = this.initJedis(host, port, password);
     }
 
-    private RedisClusterClient initJedis(String ip, int port, String password) {
-        return RedisClusterClient.create("redis://" + password + "@" + ip + ":" + port);
+    private RedisClient initJedis(String ip, int port, String password) {
+        return RedisClient.create("redis://" + password + "@" + ip + ":" + port);
     }
 
     @Override
-    public StatefulRedisClusterConnection<String, String> getRedis() throws UnsupportedOperationException {
+    public StatefulRedisConnection<String, String> getRedis() throws UnsupportedOperationException {
         return this.pool.connect();
     }
 
@@ -57,7 +57,7 @@ public class SimpleLettuceDatabase implements Database {
                 continue;
             }
 
-            StatefulRedisClusterPubSubConnection<String, String> connection = this.pool.connectPubSub();
+            StatefulRedisPubSubConnection<String, String> connection = this.pool.connectPubSub();
             connection.addListener(new ReflectivePubSub(o, declaredMethod));
         }
     }

@@ -1,6 +1,6 @@
 package com.envyful.api.database;
 
-import io.lettuce.core.cluster.api.StatefulRedisClusterConnection;
+import io.lettuce.core.api.StatefulRedisConnection;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -29,7 +29,7 @@ public interface Database {
      * @return The jedis connection
      * @throws UnsupportedOperationException If this database isn't redis lol
      */
-    StatefulRedisClusterConnection<String, String> getRedis() throws UnsupportedOperationException;
+    StatefulRedisConnection<String, String> getRedis() throws UnsupportedOperationException;
 
     /**
      *

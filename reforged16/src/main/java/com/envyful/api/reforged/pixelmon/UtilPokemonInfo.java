@@ -5,10 +5,9 @@ import com.pixelmonmod.pixelmon.api.pokemon.species.Stats;
 import com.pixelmonmod.pixelmon.api.spawning.SpawnInfo;
 import com.pixelmonmod.pixelmon.api.spawning.SpawnSet;
 import com.pixelmonmod.pixelmon.api.spawning.archetypes.entities.pokemon.SpawnInfoPokemon;
-import com.pixelmonmod.pixelmon.api.util.helpers.BiomeHelper;
 import com.pixelmonmod.pixelmon.api.world.WorldTime;
 import com.pixelmonmod.pixelmon.spawning.PixelmonSpawning;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -32,8 +31,8 @@ public class UtilPokemonInfo {
                     continue;
                 }
 
-                for (Biome biome : spawnInfoPokemon.condition.biomes) {
-                    names.add(BiomeHelper.getLocalizedBiomeName(biome).getString());
+                for (ResourceLocation biome : spawnInfoPokemon.condition.biomes) {
+                    names.add(biome.toString());
                 }
             }
         }

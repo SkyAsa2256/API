@@ -32,7 +32,6 @@ public class UtilPlayer {
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }
-
     }
 
     public static String getName(ICommandSource source) {

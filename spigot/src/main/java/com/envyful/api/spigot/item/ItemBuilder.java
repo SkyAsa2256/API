@@ -31,8 +31,7 @@ public class ItemBuilder extends ItemStack {
     }
 
     public ItemBuilder name(Component name) {
-        this.updateItemMeta(itemMeta -> itemMeta.displayName(name));
-        return this;
+        return this.updateItemMeta(itemMeta -> itemMeta.displayName(name));
     }
 
     public ItemBuilder lore(Component... lore) {
@@ -48,18 +47,15 @@ public class ItemBuilder extends ItemStack {
     }
 
     public ItemBuilder unbreakable(boolean unbreakable) {
-        this.updateItemMeta(itemMeta -> itemMeta.setUnbreakable(unbreakable));
-        return this;
+        return this.updateItemMeta(itemMeta -> itemMeta.setUnbreakable(unbreakable));
     }
 
     public ItemBuilder itemFlags(ItemFlag... itemFlags) {
-        this.updateItemMeta(itemMeta -> itemMeta.addItemFlags(itemFlags));
-        return this;
+        return this.updateItemMeta(itemMeta -> itemMeta.addItemFlags(itemFlags));
     }
 
     public ItemBuilder enchant(Enchantment enchantment, int level) {
-        this.updateItemMeta(itemMeta -> itemMeta.addEnchant(enchantment, level, true));
-        return this;
+        return this.updateItemMeta(itemMeta -> itemMeta.addEnchant(enchantment, level, true));
     }
 
     public ItemBuilder updateItemMeta(Consumer<ItemMeta> consumer) {

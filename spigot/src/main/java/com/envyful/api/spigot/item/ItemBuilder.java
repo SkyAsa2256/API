@@ -6,8 +6,10 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  *
@@ -29,7 +31,7 @@ public class ItemBuilder extends ItemStack {
     }
 
     public ItemBuilder name(Component name) {
-        this.getItemMeta().displayName(name);
+        this.updateItemMeta(itemMeta -> itemMeta.displayName(name));
         return this;
     }
 
@@ -46,17 +48,24 @@ public class ItemBuilder extends ItemStack {
     }
 
     public ItemBuilder unbreakable(boolean unbreakable) {
-        this.getItemMeta().setUnbreakable(unbreakable);
+        this.updateItemMeta(itemMeta -> itemMeta.setUnbreakable(unbreakable));
         return this;
     }
 
     public ItemBuilder itemFlags(ItemFlag... itemFlags) {
-        this.getItemMeta().addItemFlags(itemFlags);
+        this.updateItemMeta(itemMeta -> itemMeta.addItemFlags(itemFlags));
         return this;
     }
 
     public ItemBuilder enchant(Enchantment enchantment, int level) {
-        this.getItemMeta().addEnchant(enchantment, level, true);
+        this.updateItemMeta(itemMeta -> itemMeta.addEnchant(enchantment, level, true));
+        return this;
+    }
+
+    public ItemBuilder updateItemMeta(Consumer<ItemMeta> consumer) {
+        ItemMeta itemMeta = this.getItemMeta();
+        consumer.accept(itemMeta);
+        this.setItemMeta(itemMeta);
         return this;
     }
 

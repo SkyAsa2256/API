@@ -1,6 +1,7 @@
 package com.envyful.api.database;
 
 import io.lettuce.core.RedisClient;
+import io.lettuce.core.RedisURI;
 import io.lettuce.core.api.StatefulRedisConnection;
 
 import java.sql.Connection;
@@ -40,6 +41,15 @@ public interface Database {
      * @throws UnsupportedOperationException If this database isn't redis
      */
     RedisClient getClient() throws UnsupportedOperationException;
+
+    /**
+     *
+     * Gets the URI
+     *
+     * @return The URI
+     * @throws UnsupportedOperationException If this database isn't redis
+     */
+    RedisURI getURI() throws UnsupportedOperationException;
 
     /**
      *

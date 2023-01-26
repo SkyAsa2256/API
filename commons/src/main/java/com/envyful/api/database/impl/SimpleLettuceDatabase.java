@@ -6,9 +6,11 @@ import com.envyful.api.database.Database;
 import com.envyful.api.database.impl.redis.Subscribe;
 import com.google.common.collect.Lists;
 import io.lettuce.core.RedisClient;
+import io.lettuce.core.RedisURI;
 import io.lettuce.core.api.StatefulRedisConnection;
+import io.lettuce.core.codec.StringCodec;
 import io.lettuce.core.pubsub.RedisPubSubAdapter;
-import io.lettuce.core.pubsub.StatefulRedisPubSubConnection;
+import io.lettuce.core.pubsub.api.async.RedisPubSubAsyncCommands;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -20,17 +22,15 @@ public class SimpleLettuceDatabase implements Database {
 
     private final RedisClient pool;
     private final List<ReflectivePubSub> pubSubs = Lists.newArrayList();
+    private final RedisURI uri;
 
     public SimpleLettuceDatabase(RedisDatabaseDetails details) {
         this(details.getIp(), details.getPort(), details.getPassword());
     }
 
     public SimpleLettuceDatabase(String host, int port, String password) {
-        this.pool = this.initJedis(host, port, password);
-    }
-
-    private RedisClient initJedis(String ip, int port, String password) {
-        return RedisClient.create("redis://" + password + "@" + ip + ":" + port);
+        this.uri = RedisURI.create("redis://" + password + "@" + host + ":" + port);
+        this.pool = RedisClient.create(this.uri);
     }
 
     @Override
@@ -41,6 +41,11 @@ public class SimpleLettuceDatabase implements Database {
     @Override
     public RedisClient getClient() throws UnsupportedOperationException {
         return this.pool;
+    }
+
+    @Override
+    public RedisURI getURI() throws UnsupportedOperationException {
+        return this.uri;
     }
 
     @Override
@@ -62,8 +67,13 @@ public class SimpleLettuceDatabase implements Database {
                 continue;
             }
 
-            StatefulRedisPubSubConnection<String, String> connection = this.pool.connectPubSub();
-            connection.addListener(new ReflectivePubSub(o, declaredMethod));
+            this.pool.connectPubSubAsync(StringCodec.UTF8, this.uri).thenApply(pubSub -> {
+                pubSub.addListener(new ReflectivePubSub(o, declaredMethod));
+
+                RedisPubSubAsyncCommands<String, String> async = pubSub.async();
+                async.subscribe(subscribe.value());
+                return async;
+            });
         }
     }
 

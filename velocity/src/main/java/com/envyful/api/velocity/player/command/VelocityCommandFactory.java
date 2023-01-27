@@ -26,8 +26,6 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import com.mojang.brigadier.tree.CommandNode;
-import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.velocitypowered.api.command.BrigadierCommand;
 import com.velocitypowered.api.command.CommandManager;
 import com.velocitypowered.api.command.CommandSource;
@@ -116,43 +114,17 @@ public class VelocityCommandFactory implements CommandFactory<CommandManager, Co
         return true;
     }
 
-    /**
-     * Returns a literal node that redirects its execution to
-     * the given destination node.
-     *
-     * @param alias the command alias
-     * @param destination the destination node
-     * @return the built node
-     */
-    public static LiteralCommandNode<CommandSource> buildRedirect(
-            final String alias, final LiteralCommandNode<CommandSource> destination) {
-        // Redirects only work for nodes with children, but break the top argument-less command.
-        // Manually adding the root command after setting the redirect doesn't fix it.
-        // See https://github.com/Mojang/brigadier/issues/46). Manually clone the node instead.
-        LiteralArgumentBuilder<CommandSource> builder = LiteralArgumentBuilder
-                .<CommandSource>literal(alias.toLowerCase(Locale.ENGLISH))
-                .requires(destination.getRequirement())
-                .forward(
-                        destination.getRedirect(), destination.getRedirectModifier(), destination.isFork())
-                .executes(destination.getCommand());
-        for (CommandNode<CommandSource> child : destination.getChildren()) {
-            builder.then(child);
-        }
-        return builder.build();
-    }
-
     private int handleExecution(VelocityCommand command, CommandContext<CommandSource> context) {
         try {
-            CommandSource source = context.getSource();
-
-            if (source == null) {
-                source = context.getSource();
-            }
-
             command.execute(context.getSource(), context.getArgument("", String.class).split(" "));
         } catch (IllegalArgumentException | CommandSyntaxException e) {
-
+            try {
+                command.execute(context.getSource(), new String[0]);
+            } catch (CommandSyntaxException ex) {
+                throw new RuntimeException(ex);
+            }
         }
+
         return 1;
     }
 

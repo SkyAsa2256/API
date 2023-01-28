@@ -12,19 +12,14 @@ import java.util.function.Function;
  */
 public class Paginator {
 
-    private int page;
     private int pageSize;
-    private String title;
-    private List<String> header;
-    private List<String> footer;
-    private String nextPageCommand;
-    private String previousPageCommand;
+    private PaginatorConfig config = new PaginatorConfig();
     private List<String> elements = Lists.newArrayList();
 
     private Paginator() {}
 
-    public Paginator page(int page) {
-        this.page = page;
+    public Paginator config(PaginatorConfig config) {
+        this.config = config.copy();
         return this;
     }
 
@@ -34,27 +29,27 @@ public class Paginator {
     }
 
     public Paginator title(String title) {
-        this.title = title;
+        this.config.setTitle(title);
         return this;
     }
 
     public Paginator header(String... header) {
-        this.header.addAll(Lists.newArrayList(header));
+        this.config.setHeader(Lists.newArrayList(header));
         return this;
     }
 
     public Paginator footer(String... footer) {
-        this.footer.addAll(Lists.newArrayList(footer));
+        this.config.setFooter(Lists.newArrayList(footer));
         return this;
     }
 
     public Paginator nextPageCommand(String nextPageCommand) {
-        this.nextPageCommand = nextPageCommand;
+        this.config.setNextPageCommand(nextPageCommand);
         return this;
     }
 
     public Paginator previousPageCommand(String previousPageCommand) {
-        this.previousPageCommand = previousPageCommand;
+        this.config.setPreviousPageCommand(previousPageCommand);
         return this;
     }
 
@@ -76,13 +71,13 @@ public class Paginator {
     public List<String> getPage(int page) {
         List<String> pageText = Lists.newArrayList();
 
-        for (String s : this.header) {
-            pageText.add(s.replace("%title%", this.title)
+        for (String s : this.config.getHeader()) {
+            pageText.add(s.replace("%title%", this.config.getTitle())
                     .replace("%page%", String.valueOf(page))
                     .replace("%max_page%", String.valueOf((int) Math.max(1, Math.ceil((this.elements.size() + 0.0) / this.pageSize)))));
         }
 
-        for (int i = (this.pageSize * (this.page - 1)); i < ((this.pageSize * (this.page - 1)) + this.pageSize); i++) {
+        for (int i = (this.pageSize * (page - 1)); i < ((this.pageSize * (page - 1)) + this.pageSize); i++) {
             if (this.elements.size() <= i) {
                 continue;
             }
@@ -90,8 +85,8 @@ public class Paginator {
             pageText.add(this.elements.get(i));
         }
 
-        for (String s : this.footer) {
-            pageText.add(s.replace("%title%", this.title)
+        for (String s : this.config.getFooter()) {
+            pageText.add(s.replace("%title%", this.config.getTitle())
                     .replace("%page%", String.valueOf(page))
                     .replace("%max_page%", String.valueOf((int) Math.max(1, Math.ceil((this.elements.size() + 0.0) / this.pageSize)))));
         }
@@ -102,13 +97,13 @@ public class Paginator {
     public <T> List<T> getPage(int page, Function<String, T> conversion) {
         List<T> pageText = Lists.newArrayList();
 
-        for (String s : this.header) {
-            pageText.add(conversion.apply(s.replace("%title%", this.title)
+        for (String s : this.config.getHeader()) {
+            pageText.add(conversion.apply(s.replace("%title%", this.config.getTitle())
                     .replace("%page%", String.valueOf(page))
                     .replace("%max_page%", String.valueOf((int) Math.max(1, Math.ceil((this.elements.size() + 0.0) / this.pageSize))))));
         }
 
-        for (int i = (this.pageSize * (this.page - 1)); i < ((this.pageSize * (this.page - 1)) + this.pageSize); i++) {
+        for (int i = (this.pageSize * (page - 1)); i < ((this.pageSize * (page - 1)) + this.pageSize); i++) {
             if (this.elements.size() <= i) {
                 continue;
             }
@@ -116,8 +111,8 @@ public class Paginator {
             pageText.add(conversion.apply(this.elements.get(i)));
         }
 
-        for (String s : this.footer) {
-            pageText.add(conversion.apply(s.replace("%title%", this.title)
+        for (String s : this.config.getFooter()) {
+            pageText.add(conversion.apply(s.replace("%title%", this.config.getTitle())
                     .replace("%page%", String.valueOf(page))
                     .replace("%max_page%", String.valueOf((int) Math.max(1, Math.ceil((this.elements.size() + 0.0) / this.pageSize))))));
         }

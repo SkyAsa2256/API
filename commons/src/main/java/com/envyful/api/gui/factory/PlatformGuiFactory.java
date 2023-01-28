@@ -16,7 +16,7 @@ public interface PlatformGuiFactory<T> {
 
     /**
      *
-     * Gets the platform's {@link Displayable.Builder<T>} class as a new instance
+     * Gets the platform's {@link Displayable.Builder} class as a new instance
      *
      * @return The new displayable builder for the given platform
      */

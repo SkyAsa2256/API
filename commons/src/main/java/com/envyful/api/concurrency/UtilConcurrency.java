@@ -12,7 +12,7 @@ import java.util.function.Predicate;
  *
  * Static utility class for running tasks off the main thread using an {@link ExecutorService}.
  * For a potentially more efficient, platform specific implementation check the platform specific module.
- * Should be named using the following format Util<Platform>Concurrency. For example:
+ * Should be named using the following format Util(Platform)Concurrency. For example:
  *          - UtilForgeConcurrency
  *          - UtilSpigotConcurrency
  *

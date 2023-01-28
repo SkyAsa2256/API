@@ -9,7 +9,7 @@ import java.util.UUID;
 /**
  *
  * An interface designed to store local user objects for the plugin using it.
- * Should handle all login & logout logic (reducing boilerplate / duplicate code) allowing for easy caching
+ * Should handle all login and logout logic (reducing boilerplate / duplicate code) allowing for easy caching
  * with minimal code at the implementation level.
  *
  * Check the implementation level module (i.e. forge module) for details on how to create an instance of this interface.
@@ -85,11 +85,11 @@ public interface PlayerManager<A extends EnvyPlayer<B>, B> {
 
      /**
       *
-      * Registers an {@link com.envyful.api.player.attribute.PlayerAttribute) class so that when the player object is
+      * Registers an {@link com.envyful.api.player.attribute.PlayerAttribute} class so that when the player object is
       * instantiated it can be created (using reflection) from the registry in the PlayerManager implementation.
       *
-      * If {@link PlayerManager#setSaveManager(SaveManager)} has been called then it will call {
-      * @link SaveManager#registerAttribute(Class)} on the given class
+      * If {@link PlayerManager#setSaveManager(SaveManager)} has been called then it will call
+      * {@link SaveManager#registerAttribute(Object, Class)} on the given class
       *
       * @param manager The manager object to be passed through the attribute constructor at instantiation
       * @param attribute The class of the attribute being registered

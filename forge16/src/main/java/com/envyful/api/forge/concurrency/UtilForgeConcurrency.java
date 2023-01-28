@@ -31,7 +31,7 @@ public class UtilForgeConcurrency {
 
     /**
      *
-     * Passes runnable task to be run on the main minecraft thread {@param delay} ticks later
+     * Passes runnable task to be run on the main minecraft thread delay ticks later
      *
      * @param runnable The runnable to be run on the main thread
      * @param delay the delay in ticks

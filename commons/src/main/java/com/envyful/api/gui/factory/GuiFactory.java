@@ -73,7 +73,7 @@ public class GuiFactory {
      *
      * Gets a new instance of the platform's displayable builder
      *
-     * @param unused Used for automatic type detection (So you don't have to do <ItemStack>displayableBuilder [ugly])
+     * @param unused Used for automatic type detection
      * @return The new displayable builder
      * @param <T> The type for the displayable
      */

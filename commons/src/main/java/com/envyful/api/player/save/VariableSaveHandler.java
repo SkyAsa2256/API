@@ -28,7 +28,7 @@ public interface VariableSaveHandler<A> {
 
     /**
      *
-     * Converts and casts {@param o} to {@link A}
+     * Converts and casts o to {@link A}
      *
      * @param o The object
      * @return The converted String

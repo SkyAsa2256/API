@@ -89,7 +89,7 @@ public class UtilRandom {
 
     /**
      *
-     * Gets a random element from the provided array ignoring any values in the {@param excluded} array
+     * Gets a random element from the provided array ignoring any values in the excluded array
      *
      * @param array The array to select a random value from
      * @param excluded The array of values to ignore

@@ -43,7 +43,7 @@ public interface CommandFactory<A, B> {
      * multipleArgs flag as false (as this is the most common use-case)
      *
      * @param parentClass The converted class to be registered
-     * @param function The function converting the sender and args to the {@param parentClass}
+     * @param function The function converting the sender and args to the parentClass
      */
     default void registerInjector(Class<?> parentClass, BiFunction<B, String[], ?> function) {
         this.registerInjector(parentClass, false, function);
@@ -51,11 +51,11 @@ public interface CommandFactory<A, B> {
 
     /**
      *
-     * Method for registering the injectors converting from the args, and command sender, to the {@param parentClass}
+     * Method for registering the injectors converting from the args, and command sender, to the parentClass
      *
      * @param parentClass The converted class to be registered
      * @param multipleArgs if the command requires multiple arguments to determine the converted data
-     * @param function The function converting the sender and args to the {@param parentClass}
+     * @param function The function converting the sender and args to the parentClass
      */
     void registerInjector(Class<?> parentClass, boolean multipleArgs, BiFunction<B, String[], ?> function);
 

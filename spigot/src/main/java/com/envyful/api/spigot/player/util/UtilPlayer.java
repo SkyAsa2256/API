@@ -8,7 +8,7 @@ import java.util.UUID;
 
 /**
  *
- * Static utility class for handling getting online & offline players
+ * Static utility class for handling getting online and offline players
  *
  */
 public class UtilPlayer {

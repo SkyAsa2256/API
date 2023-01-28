@@ -20,7 +20,7 @@ public class UtilItemStack {
 
     /**
      *
-     * Returns the lore of the {@param itemStack} as a {@link List} of Strings.
+     * Returns the lore of the itemStack as a {@link List} of Strings.
      *
      * Will return {@link Collections#emptyList()} if the parameter is null
      *
@@ -47,7 +47,7 @@ public class UtilItemStack {
 
     /**
      *
-     * Returns the lore of the {@param itemStack} as a {@link List} of ITextComponent.
+     * Returns the lore of the itemStack as a {@link List} of ITextComponent.
      *
      * Will return {@link Collections#emptyList()} if the parameter is null
      *

@@ -16,7 +16,7 @@ public interface SaveManager<T> {
 
     /**
      *
-     * Registers an attribute for how this class should handle saving & loading
+     * Registers an attribute for how this class should handle saving and loading
      *
      * @param manager The manager object
      * @param attribute The class of the attribute being registered

@@ -7,7 +7,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.function.*;
+import java.util.function.BiConsumer;
+import java.util.function.BiPredicate;
 
 /**
  *
@@ -109,7 +110,7 @@ public class UpdateBuilder<T> {
 
     /**
      *
-     * Starts the update checking thread & registeres required listeners
+     * Starts the update checking thread and registeres required listeners
      *
      */
     public void start() {

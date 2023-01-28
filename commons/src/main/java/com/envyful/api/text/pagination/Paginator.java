@@ -7,7 +7,7 @@ import java.util.function.Function;
 
 /**
  *
- *
+ * Class for separating a large list of elements into bite-sized chunks
  *
  */
 public class Paginator {

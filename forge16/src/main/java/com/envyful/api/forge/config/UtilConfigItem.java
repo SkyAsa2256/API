@@ -50,7 +50,8 @@ public class UtilConfigItem {
             return null;
         }
 
-        if (!permissibleConfigItem.requiresPermission() || permissibleConfigItem.getPermission().isEmpty() ||
+        if (!permissibleConfigItem.requiresPermission() || permissibleConfigItem.getPermission().isEmpty() || permissibleConfigItem.getPermission() == null ||
+                permissibleConfigItem.getPermission().equalsIgnoreCase("none") ||
                 UtilPlayer.hasPermission(player, permissibleConfigItem.getPermission())) {
             return fromConfigItem(permissibleConfigItem, placeholders);
         }

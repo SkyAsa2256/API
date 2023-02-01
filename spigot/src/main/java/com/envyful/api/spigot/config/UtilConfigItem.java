@@ -80,7 +80,7 @@ public class UtilConfigItem {
         String name = configItem.getName();
 
         ItemBuilder itemBuilder = new ItemBuilder()
-                .type(Material.matchMaterial(configItem.getType()))
+                .type(Material.valueOf(configItem.getType()))
                 .amount(configItem.getAmount(placeholders));
 
         if (!placeholders.isEmpty()) {
@@ -99,7 +99,7 @@ public class UtilConfigItem {
                 level = PlaceholderFactory.handlePlaceholders(Collections.singletonList(level), placeholders).get(0);
             }
 
-            Enchantment enchantment = Enchantment.getByKey(NamespacedKey.fromString(value.getEnchant()));
+            Enchantment enchantment = Enchantment.getByKey(NamespacedKey.fromString(enchantName));
             int parsedLevel = UtilParse.parseInteger(level).orElse(1);
 
             if (enchantment == null) {

@@ -59,7 +59,8 @@ public class SpigotGui implements Gui {
         }
 
         Player parent = (Player)player.getParent();
-        Inventory inventory = Bukkit.createInventory(null, this.height * 9, this.title);
+        SpigotGuiTracker.InventoryDetails details = SpigotGuiTracker.getDetails(((SpigotEnvyPlayer) player).getParent());
+        Inventory inventory = details != null ? details.getInventory() : Bukkit.createInventory(null, this.height * 9, this.title);
 
         for (SpigotSimplePane pane : panes) {
             if (pane == null) {
@@ -87,8 +88,13 @@ public class SpigotGui implements Gui {
             }
         }
 
+        if (details == null) {
+            parent.openInventory(inventory);
+        } else {
+            details.getGui().closeConsumer.handle((SpigotEnvyPlayer) player);
+        }
+
         SpigotGuiTracker.addGui(player, this, inventory);
-        parent.openInventory(inventory);
     }
 
     public static class Listener implements org.bukkit.event.Listener  {

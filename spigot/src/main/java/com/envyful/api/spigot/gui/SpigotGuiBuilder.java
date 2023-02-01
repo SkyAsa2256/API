@@ -27,10 +27,8 @@ public class SpigotGuiBuilder implements Gui.Builder {
 
     @Override
     public Gui.Builder title(Object title) {
-        if (title instanceof Component) {
-            this.title = (Component) title;
-        } else if (title instanceof String) {
-            //TODO:
+        if (title instanceof Component component) {
+            this.title = component;
         } else {
             throw new RuntimeException("Unsupported title type given");
         }

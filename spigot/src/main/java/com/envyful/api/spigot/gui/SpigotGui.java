@@ -105,7 +105,8 @@ public class SpigotGui implements Gui {
                 return;
             }
 
-            Player player = (Player)event.getWhoClicked();
+            event.setCancelled(true);
+            Player player = (Player) event.getWhoClicked();
             Displayable.ClickType clickType = this.convert(event.getClick());
 
             for (SpigotSimplePane pane : details.getGui().panes) {

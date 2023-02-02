@@ -83,11 +83,8 @@ public class UtilConfigItem {
                 .type(Material.valueOf(configItem.getType()))
                 .amount(configItem.getAmount(placeholders));
 
-        if (!placeholders.isEmpty()) {
-            itemBuilder.lore(PlaceholderFactory.handlePlaceholders(configItem.getLore(), MiniMessage.miniMessage()::deserialize, placeholders));
-            itemBuilder.itemFlags(PlaceholderFactory.handlePlaceholders(configItem.getFlags(), s -> ItemFlag.valueOf(s.toUpperCase(Locale.ROOT)), placeholders).toArray(new ItemFlag[0]));
-        }
-
+        itemBuilder.lore(PlaceholderFactory.handlePlaceholders(configItem.getLore(), MiniMessage.miniMessage()::deserialize, placeholders));
+        itemBuilder.itemFlags(PlaceholderFactory.handlePlaceholders(configItem.getFlags(), s -> ItemFlag.valueOf(s.toUpperCase(Locale.ROOT)), placeholders).toArray(new ItemFlag[0]));
         itemBuilder.name(PlaceholderFactory.handlePlaceholders(Collections.singletonList(name), MiniMessage.miniMessage()::deserialize, placeholders).get(0));
 
         for (ConfigItem.EnchantData value : configItem.getEnchants().values()) {

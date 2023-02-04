@@ -25,6 +25,7 @@ public class VelocityEnvyPlayer implements EnvyPlayer<Player> {
     private UUID uuid;
 
     protected VelocityEnvyPlayer(ProxyServer proxy, UUID uuid) {
+        this.proxy = proxy;
         this.uuid = uuid;
     }
 

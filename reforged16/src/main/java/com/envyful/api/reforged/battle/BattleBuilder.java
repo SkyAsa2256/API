@@ -27,6 +27,7 @@ public class BattleBuilder {
     protected TeamSelectionRegistry.Builder selectionBuilder = null;
     protected long startDelayMillis = -1;
     protected boolean startSync = false;
+    protected boolean removeFromTempParties = true;
 
     private BattleBuilder() {
     }
@@ -119,6 +120,28 @@ public class BattleBuilder {
 
     public BattleBuilder startAsync() {
         this.startSync = false;
+        return this;
+    }
+
+    /**
+     *
+     * Sets the battle builder to remove the player from the temporary party mode if they are in it at the end of the battle
+     *
+     * @return The builder
+     */
+    public BattleBuilder removeFromTempParty() {
+        this.removeFromTempParties = true;
+        return this;
+    }
+
+    /**
+     *
+     * The battle builder will not remove the player from temporary party mode if they are in it at the end of the battle
+     *
+     * @return The builder
+     */
+    public BattleBuilder ignoreTempParties() {
+        this.removeFromTempParties = false;
         return this;
     }
 

@@ -58,7 +58,7 @@ public class BattleBuilderFactory {
                 continue;
             }
 
-            if (((PlayerParticipant) battleParticipant).getStorage().inTemporaryMode()) {
+            if (battleBuilder.removeFromTempParties && ((PlayerParticipant) battleParticipant).getStorage().inTemporaryMode()) {
                 ((PlayerParticipant)battleParticipant).getStorage().setInTemporaryMode(false, null);
 
                 for (PixelmonWrapper pixelmonWrapper : battleParticipant.controlledPokemon) {

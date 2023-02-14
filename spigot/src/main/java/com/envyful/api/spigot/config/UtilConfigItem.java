@@ -9,6 +9,8 @@ import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
 import com.envyful.api.type.UtilParse;
 import com.google.common.collect.Lists;
+import de.tr7zw.changeme.nbtapi.NBTCompound;
+import de.tr7zw.changeme.nbtapi.NBTItem;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -16,8 +18,6 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Collections;
 import java.util.List;
@@ -106,52 +106,49 @@ public class UtilConfigItem {
             itemBuilder.enchant(enchantment, parsedLevel);
         }
 
+        NBTItem nbtItem = new NBTItem(itemBuilder.build());
+
         for (Map.Entry<String, ConfigItem.NBTValue> nbtData : configItem.getNbt().entrySet()) {
-            itemBuilder.updateItemMeta(itemMeta -> {
-                PersistentDataContainer persistentDataContainer = itemMeta.getPersistentDataContainer();
-                addValue(persistentDataContainer, nbtData.getKey(), nbtData.getValue());
-            });
+            addValue(nbtItem, nbtData.getKey(), nbtData.getValue());
         }
 
-        return itemBuilder.build();
+        return nbtItem.getItem();
     }
 
-    public static void addValue(PersistentDataContainer container, String key, ConfigItem.NBTValue value) {
-        NamespacedKey namespacedKey = NamespacedKey.fromString(key);
+    public static void addValue(NBTCompound nbtItem, String key, ConfigItem.NBTValue value) {
         if (value.getType().equalsIgnoreCase("nbt")) {
-            PersistentDataContainer subContainer = container.getAdapterContext().newPersistentDataContainer();
+            NBTCompound nbtCompound = nbtItem.addCompound(key);
 
             for (Map.Entry<String, ConfigItem.NBTValue> entry : value.getSubData().entrySet()) {
-                addValue(subContainer, entry.getKey(), entry.getValue());
+                addValue(nbtCompound, entry.getKey(), entry.getValue());
             }
 
-            container.set(namespacedKey, PersistentDataType.TAG_CONTAINER, subContainer);
             return;
         }
 
         switch (value.getType()) {
             case "int":
             case "integer":
-                container.set(namespacedKey, PersistentDataType.INTEGER, Integer.parseInt(value.getData()));
+                nbtItem.setInteger(key, Integer.parseInt(value.getData()));
                 break;
             case "long":
-                container.set(namespacedKey, PersistentDataType.LONG, Long.parseLong(value.getData()));
+                nbtItem.setLong(key, Long.parseLong(value.getData()));
                 break;
             case "byte":
-                container.set(namespacedKey, PersistentDataType.BYTE, Byte.parseByte(value.getData()));
+                nbtItem.setByte(key, Byte.parseByte(value.getData()));
                 break;
             case "double":
-                container.set(namespacedKey, PersistentDataType.DOUBLE, Double.parseDouble(value.getData()));
+                nbtItem.setDouble(key, Double.parseDouble(value.getData()));
                 break;
             case "float":
-                container.set(namespacedKey, PersistentDataType.FLOAT, Float.parseFloat(value.getData()));
+                nbtItem.setFloat(key, Float.parseFloat(value.getData()));
                 break;
             case "short":
-                container.set(namespacedKey, PersistentDataType.SHORT, Short.parseShort(value.getData()));
+                nbtItem.setShort(key, Short.parseShort(value.getData()));
                 break;
             default:
             case "string":
-                container.set(namespacedKey, PersistentDataType.STRING, value.getData());
+                nbtItem.setString(key, value.getData());
                 break;
         }
     }

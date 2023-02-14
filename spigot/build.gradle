@@ -7,12 +7,15 @@ repositories {
     maven {
         url = 'https://repo.papermc.io/repository/maven-public/'
     }
+
     mavenLocal()
 }
 
 dependencies {
     compileOnly 'io.papermc.paper:paper-api:1.19.3-R0.1-SNAPSHOT'
+
     shadow group: 'org.spongepowered', name: 'configurate-yaml', version: '4.0.0'
+    implementation("de.tr7zw:item-nbt-api:2.9.2")
 
     shadow project(':commons')
 }

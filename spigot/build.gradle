@@ -7,7 +7,10 @@ repositories {
     maven {
         url = 'https://repo.papermc.io/repository/maven-public/'
     }
-
+    maven {
+        name = "CodeMC"
+        url = uri("https://repo.codemc.io/repository/maven-public/")
+    }
     mavenLocal()
 }
 

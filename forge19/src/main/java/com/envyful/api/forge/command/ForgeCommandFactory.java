@@ -16,6 +16,7 @@ import com.envyful.api.forge.command.completion.FillerTabCompleter;
 import com.envyful.api.forge.command.completion.number.IntegerTabCompleter;
 import com.envyful.api.forge.command.completion.player.PlayerTabCompleter;
 import com.envyful.api.forge.command.injector.ForgeFunctionInjector;
+import com.envyful.api.forge.player.ForgePlayerManager;
 import com.envyful.api.type.Pair;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -36,6 +37,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
+import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -59,7 +61,15 @@ public class ForgeCommandFactory implements CommandFactory<CommandDispatcher<Com
     private final Map<Class<?>, TabCompleter<?, ?>> registeredCompleters = Maps.newConcurrentMap();
 
     public ForgeCommandFactory() {
+        this(null);
+    }
+
+    public ForgeCommandFactory(@Nullable ForgePlayerManager playerManager) {
         SenderTypeFactory.register(new ConsoleSenderType(), new ForgePlayerSenderType());
+
+        if (playerManager != null) {
+            SenderTypeFactory.register(new ForgeEnvyPlayerSenderType(playerManager));
+        }
 
         this.registerInjector(ServerPlayer.class, (sender, args) -> ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByName(args[0]));
         this.registerInjector(int.class, (ICommandSource, args) -> {

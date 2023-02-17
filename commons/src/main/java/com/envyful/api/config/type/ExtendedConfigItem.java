@@ -231,6 +231,11 @@ public class ExtendedConfigItem {
             return this;
         }
 
+        public Builder nbt(String key, ConfigItem.NBTValue value) {
+            this.nbt.put(key, value);
+            return this;
+        }
+
         @SafeVarargs
         public final Builder positions(Pair<Integer, Integer>... positions) {
             for (Pair<Integer, Integer> position : positions) {

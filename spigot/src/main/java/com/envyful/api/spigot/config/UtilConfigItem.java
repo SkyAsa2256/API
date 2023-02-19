@@ -11,6 +11,7 @@ import com.envyful.api.type.UtilParse;
 import com.google.common.collect.Lists;
 import de.tr7zw.changeme.nbtapi.NBTCompound;
 import de.tr7zw.changeme.nbtapi.NBTItem;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -83,9 +84,9 @@ public class UtilConfigItem {
                 .type(Material.valueOf(configItem.getType()))
                 .amount(configItem.getAmount(placeholders));
 
-        itemBuilder.lore(PlaceholderFactory.handlePlaceholders(configItem.getLore(), MiniMessage.miniMessage()::deserialize, placeholders));
+        itemBuilder.lore(PlaceholderFactory.handlePlaceholders(configItem.getLore(), input -> MiniMessage.miniMessage().deserialize(input).decoration(TextDecoration.ITALIC, false), placeholders));
         itemBuilder.itemFlags(PlaceholderFactory.handlePlaceholders(configItem.getFlags(), s -> ItemFlag.valueOf(s.toUpperCase(Locale.ROOT)), placeholders).toArray(new ItemFlag[0]));
-        itemBuilder.name(PlaceholderFactory.handlePlaceholders(Collections.singletonList(name), MiniMessage.miniMessage()::deserialize, placeholders).get(0));
+        itemBuilder.name(PlaceholderFactory.handlePlaceholders(Collections.singletonList(name), input -> MiniMessage.miniMessage().deserialize(input).decoration(TextDecoration.ITALIC, false), placeholders).get(0));
 
         for (ConfigItem.EnchantData value : configItem.getEnchants().values()) {
             String enchantName = value.getEnchant();

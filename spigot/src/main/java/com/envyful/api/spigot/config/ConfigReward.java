@@ -2,6 +2,7 @@ package com.envyful.api.spigot.config;
 
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -32,7 +33,7 @@ public class ConfigReward {
 
         if (this.messages != null && !this.messages.isEmpty()) {
             for (String message : PlaceholderFactory.handlePlaceholders(this.messages, placeholders)) {
-                player.sendMessage(MiniMessage.miniMessage().deserialize(message));
+                player.sendMessage(MiniMessage.miniMessage().deserialize(message).decoration(TextDecoration.ITALIC, false));
             }
         }
     }

@@ -22,7 +22,9 @@ public interface Database {
      * @throws SQLException An error if there's no connections
      * @throws UnsupportedOperationException If this isn't an SQL database
      */
-    Connection getConnection() throws SQLException,UnsupportedOperationException;
+    default Connection getConnection() throws SQLException,UnsupportedOperationException {
+        throw new UnsupportedOperationException("Not an SQL database");
+    }
 
     /**
      *
@@ -31,7 +33,9 @@ public interface Database {
      * @return The jedis connection
      * @throws UnsupportedOperationException If this database isn't redis lol
      */
-    StatefulRedisConnection<String, String> getRedis() throws UnsupportedOperationException;
+    default StatefulRedisConnection<String, String> getRedis() throws UnsupportedOperationException {
+        throw new UnsupportedOperationException("Not a redis database");
+    }
 
     /**
      *
@@ -40,7 +44,9 @@ public interface Database {
      * @return The client
      * @throws UnsupportedOperationException If this database isn't redis
      */
-    RedisClient getClient() throws UnsupportedOperationException;
+    default RedisClient getClient() throws UnsupportedOperationException {
+        throw new UnsupportedOperationException("Not a redis database");
+    }
 
     /**
      *
@@ -49,16 +55,32 @@ public interface Database {
      * @return The URI
      * @throws UnsupportedOperationException If this database isn't redis
      */
-    RedisURI getURI() throws UnsupportedOperationException;
+    default RedisURI getURI() throws UnsupportedOperationException {
+        throw new UnsupportedOperationException("Not a redis database");
+    }
 
     /**
      *
+     * Subscribes the given object using the annotations
      *
-     *
-     * @param o
-     * @throws UnsupportedOperationException
+     * @param o The object
+     * @throws UnsupportedOperationException If this database isn't redis
      */
-    void subscribe(Object o) throws UnsupportedOperationException;
+    default void subscribe(Object o) throws UnsupportedOperationException {
+        throw new UnsupportedOperationException("Not a redis database");
+    }
+
+    /**
+     *
+     * Publishes a message to the redis over the specified channel
+     *
+     * @param channel The channel
+     * @param message The message
+     * @throws UnsupportedOperationException If this database isn't redis
+     */
+    default void publish(String channel, String message) throws UnsupportedOperationException {
+        throw new UnsupportedOperationException("Not a redis database");
+    }
 
     /**
      *

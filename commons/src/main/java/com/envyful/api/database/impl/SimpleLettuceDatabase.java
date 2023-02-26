@@ -32,7 +32,7 @@ public class SimpleLettuceDatabase implements Database {
     }
 
     public SimpleLettuceDatabase(String host, int port, String password) {
-        this.uri = RedisURI.create("redis://" + password + "@" + host + ":" + port);
+        this.uri = RedisURI.builder().withHost(host).withPort(port).withPassword(password).build();
         this.pool = RedisClient.create(this.uri);
         this.subscribeConnection = pool.connectPubSub();
         this.publishConnection = pool.connectPubSub();

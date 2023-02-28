@@ -23,6 +23,8 @@ public class PaginatedConfigInterface extends ConfigInterface {
 
     protected ExtendedConfigItem nextPageButton;
     protected ExtendedConfigItem previousPageButton;
+    protected boolean loopPages = true;
+    protected boolean displayPageButtonsAtLimits = true;
 
     public PaginatedConfigInterface() {
     }
@@ -37,6 +39,14 @@ public class PaginatedConfigInterface extends ConfigInterface {
 
     public ExtendedConfigItem getPreviousPageButton() {
         return this.previousPageButton;
+    }
+
+    public boolean isLoopPages() {
+        return this.loopPages;
+    }
+
+    public boolean isDisplayPageButtonsAtLimits() {
+        return this.displayPageButtonsAtLimits;
     }
 
     public static Builder builder() {
@@ -58,6 +68,8 @@ public class PaginatedConfigInterface extends ConfigInterface {
         );
         protected ExtendedConfigItem nextPageButton;
         protected ExtendedConfigItem previousPageButton;
+        protected boolean loopPages = true;
+        protected boolean displayPageButtonsAtLimits = true;
 
         private Builder() {
             // Internal constructor for the static factory method
@@ -98,6 +110,26 @@ public class PaginatedConfigInterface extends ConfigInterface {
             return this;
         }
 
+        public Builder loopPages() {
+            this.loopPages = true;
+            return this;
+        }
+
+        public Builder doNotLoop() {
+            this.loopPages = false;
+            return this;
+        }
+
+        public Builder displayPageButtonsAtLimits() {
+            this.displayPageButtonsAtLimits = true;
+            return this;
+        }
+
+        public Builder noPageButtonsAtLimits() {
+            this.displayPageButtonsAtLimits = false;
+            return this;
+        }
+
         public PaginatedConfigInterface build() {
             PaginatedConfigInterface configInterface = new PaginatedConfigInterface();
             configInterface.title = this.title;
@@ -107,6 +139,8 @@ public class PaginatedConfigInterface extends ConfigInterface {
             configInterface.positions = this.positions;
             configInterface.nextPageButton = this.nextPageButton;
             configInterface.previousPageButton = this.previousPageButton;
+            configInterface.loopPages = this.loopPages;
+            configInterface.displayPageButtonsAtLimits = this.displayPageButtonsAtLimits;
             return configInterface;
         }
     }

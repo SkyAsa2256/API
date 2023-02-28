@@ -62,7 +62,9 @@ public class BattleBuilderFactory {
                 ((PlayerParticipant)battleParticipant).getStorage().setInTemporaryMode(false, null);
 
                 for (PixelmonWrapper pixelmonWrapper : battleParticipant.controlledPokemon) {
-                    pixelmonWrapper.entity.kill();
+                    if (pixelmonWrapper.entity != null) {
+                        pixelmonWrapper.entity.kill();
+                    }
                 }
             }
         }

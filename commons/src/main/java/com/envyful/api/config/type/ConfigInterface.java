@@ -16,10 +16,10 @@ import java.util.Map;
 @ConfigSerializable
 public class ConfigInterface {
 
-    private String title = "";
-    private int height = 6;
-    private String fillType = FillType.BLOCK.name();
-    private Map<String, ConfigItem> fillerItems = Maps.newHashMap(ImmutableMap.of("one", new ConfigItem()));
+    protected String title = "";
+    protected int height = 6;
+    protected String fillType = FillType.BLOCK.name();
+    protected Map<String, ConfigItem> fillerItems = Maps.newHashMap(ImmutableMap.of("one", new ConfigItem()));
 
     public ConfigInterface() {}
 

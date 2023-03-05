@@ -105,7 +105,7 @@ public class UtilConfigInterface {
             open(player, 1, placeholders);
         }
 
-        private void open(ForgeEnvyPlayer player, int page, Placeholder... placeholders) {
+        public void open(ForgeEnvyPlayer player, int page, Placeholder... placeholders) {
             Pane pane = GuiFactory.paneBuilder()
                     .topLeftX(0)
                     .topLeftY(0)

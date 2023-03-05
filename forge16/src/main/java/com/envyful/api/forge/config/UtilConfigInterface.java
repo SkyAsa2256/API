@@ -17,7 +17,7 @@ import com.google.common.collect.Lists;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 public class UtilConfigInterface {
@@ -45,7 +45,7 @@ public class UtilConfigInterface {
         private ForgePlayerManager playerManager;
         private ForgeCloseConsumer closeConsumer = (ForgeCloseConsumer) GuiFactory.closeConsumerBuilder().build();
         private TriConsumer<ForgeEnvyPlayer, Displayable.ClickType, T> pageItemClickHandler = (forgeEnvyPlayer, clickType, t) -> {};
-        private List<Consumer<Pane>> extraItems = Lists.newArrayList();
+        private List<BiConsumer<Pane, Integer>> extraItems = Lists.newArrayList();
 
         private PaginatedBuilder() {
             // Private constructor for static factory method
@@ -91,12 +91,12 @@ public class UtilConfigInterface {
             return this;
         }
 
-        public PaginatedBuilder<T> extraItems(Collection<Consumer<Pane>> extraItems) {
+        public PaginatedBuilder<T> extraItems(Collection<BiConsumer<Pane, Integer>> extraItems) {
             this.extraItems.addAll(extraItems);
             return this;
         }
 
-        public PaginatedBuilder<T> extraItems(Consumer<Pane>... extraItems) {
+        public PaginatedBuilder<T> extraItems(BiConsumer<Pane, Integer>... extraItems) {
             this.extraItems.addAll(Arrays.asList(extraItems));
             return this;
         }
@@ -148,8 +148,8 @@ public class UtilConfigInterface {
                 pane.set(posX, posY, this.getDisplayable(player, item, placeholders));
             }
 
-            for (Consumer<Pane> extraItem : this.extraItems) {
-                extraItem.accept(pane);
+            for (BiConsumer<Pane, Integer> extraItem : this.extraItems) {
+                extraItem.accept(pane, page);
             }
 
             GuiFactory.guiBuilder()

@@ -130,7 +130,7 @@ public class UtilConfigInterface {
             for (int i = 0; i < this.configInterface.getPositions().size(); i++) {
                 int itemId = ((page - 1) * this.configInterface.getPositions().size()) + i;
 
-                if (itemId > (this.items.size())) {
+                if (itemId >= (this.items.size())) {
                     continue;
                 }
 

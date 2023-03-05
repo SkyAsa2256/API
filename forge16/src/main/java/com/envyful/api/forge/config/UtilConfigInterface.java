@@ -121,7 +121,7 @@ public class UtilConfigInterface {
                 UtilConfigItem.builder()
                         .clickHandler((envyPlayer, clickType) -> {
                             if (this.configInterface.isLoopPages()) {
-                                open(player, page == pages ? 1 : page + 1, placeholders);
+                                open(player, (page - 1) == pages ? 1 : page + 1, placeholders);
                             }
                         }).extendedConfigItem(player, pane, this.configInterface.getNextPageButton(), placeholders);
 

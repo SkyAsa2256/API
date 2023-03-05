@@ -40,7 +40,8 @@ public class UtilConfigInterface {
 
         private PaginatedConfigInterface configInterface;
         private List<T> items = Lists.newArrayList();
-        private Function<T, ConfigItem> itemDisplayableConversion;
+        private Function<T, ConfigItem> itemConfigItemConversion;
+        private Function<T, Displayable> itemDisplayableConversion;
         private ForgePlayerManager playerManager;
         private ForgeCloseConsumer closeConsumer = (ForgeCloseConsumer) GuiFactory.closeConsumerBuilder().build();
         private TriConsumer<ForgeEnvyPlayer, Displayable.ClickType, T> pageItemClickHandler = (forgeEnvyPlayer, clickType, t) -> {};
@@ -66,6 +67,11 @@ public class UtilConfigInterface {
         }
 
         public PaginatedBuilder<T> itemDisplayableConversion(Function<T, ConfigItem> itemDisplayableConversion) {
+            this.itemConfigItemConversion = itemDisplayableConversion;
+            return this;
+        }
+
+        public PaginatedBuilder<T> itemConversion(Function<T, Displayable> itemDisplayableConversion) {
             this.itemDisplayableConversion = itemDisplayableConversion;
             return this;
         }
@@ -139,13 +145,7 @@ public class UtilConfigInterface {
                 int posY = position % 9;
                 T item = this.items.get(itemId);
 
-
-                pane.set(posX, posY, GuiFactory.displayableBuilder(
-                                UtilConfigItem.fromConfigItem(this.itemDisplayableConversion.apply(item), placeholders))
-                        .singleClick()
-                        .asyncClick()
-                        .clickHandler((envyPlayer, clickType) -> this.pageItemClickHandler.execute(player, clickType, item))
-                        .build());
+                pane.set(posX, posY, this.getDisplayable(player, item, placeholders));
             }
 
             for (Consumer<Pane> extraItem : this.extraItems) {
@@ -167,6 +167,21 @@ public class UtilConfigInterface {
             }
 
             return page == pages || page == 1;
+        }
+
+        private Displayable getDisplayable(ForgeEnvyPlayer player, T item, Placeholder... placeholders) {
+            Displayable.Builder<?> displayable;
+
+            if (this.itemDisplayableConversion != null) {
+                return this.itemDisplayableConversion.apply(item);
+            }
+
+            return GuiFactory.displayableBuilder(
+                            UtilConfigItem.fromConfigItem(this.itemConfigItemConversion.apply(item), placeholders))
+                    .singleClick()
+                    .asyncClick()
+                    .clickHandler((envyPlayer, clickType) -> this.pageItemClickHandler.execute(player, clickType, item))
+                    .build();
         }
     }
 }

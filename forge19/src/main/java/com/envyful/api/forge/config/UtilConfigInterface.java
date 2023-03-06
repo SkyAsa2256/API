@@ -141,8 +141,8 @@ public class UtilConfigInterface {
                 }
 
                 int position = this.configInterface.getPositions().get(i);
-                int posX = position / 9;
-                int posY = position % 9;
+                int posX = position % 9;
+                int posY = position / 9;
                 T item = this.items.get(itemId);
 
                 pane.set(posX, posY, this.getDisplayable(player, item, placeholders));

@@ -3,6 +3,7 @@ package com.envyful.api.forge.chat;
 import com.envyful.api.config.Replacer;
 import com.envyful.api.config.UtilReplacer;
 import com.google.common.collect.Lists;
+import com.google.gson.JsonParseException;
 import net.minecraft.util.text.*;
 
 import javax.annotation.Nullable;
@@ -33,7 +34,9 @@ public class UtilChatColour {
      */
     public static ITextComponent colour(String text, Replacer... placeholders) {
         if (text.contains("{")) {
-            return ITextComponent.Serializer.fromJson(text);
+            try {
+                return ITextComponent.Serializer.fromJson(text);
+            } catch (JsonParseException ignored) {}
         }
 
         Matcher matcher = COLOUR_PATTERN.matcher(text);

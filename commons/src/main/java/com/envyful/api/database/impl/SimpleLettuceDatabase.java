@@ -37,7 +37,7 @@ public class SimpleLettuceDatabase implements Database {
         this.subscribeConnection = pool.connectPubSub();
         this.publishConnection = pool.connectPubSub();
 
-        subscribeConnection.addListener(new RedisPubSubAdapter<>() {
+        subscribeConnection.addListener(new RedisPubSubAdapter<String, String>() {
             @Override
             public void message(String channel, String message) {
                 for (BiConsumer<String, String> handler : subscriptions.getOrDefault(channel, Collections.emptyList())) {

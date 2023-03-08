@@ -14,6 +14,8 @@ public enum ItemFlag {
     HIDE_UNBREAKABLE(4),
     HIDE_CAN_DESTROY(8),
     HIDE_CAN_PLACE(16),
+    HIDE_EXTRA(32),
+    HIDE_DYE(64),
 
     ;
 

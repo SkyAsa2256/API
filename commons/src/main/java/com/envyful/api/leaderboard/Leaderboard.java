@@ -73,7 +73,7 @@ public class Leaderboard<A> {
     }
 
     private String getSQL() {
-        return "SELECT * FROM `" + this.table + "` WHERE " + this.extraClauses + this.order.getSqlText(this.orderColumn) + ";";
+        return "SELECT * FROM `" + this.table + "` " + ((this.extraClauses == null || this.extraClauses.isEmpty()) ? "" : "WHERE " + this.extraClauses) + this.order.getSqlText(this.orderColumn) + ";";
     }
 
     public static <A> Builder<A> builder(Class<A> a) {

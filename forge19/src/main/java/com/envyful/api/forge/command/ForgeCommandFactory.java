@@ -175,7 +175,7 @@ public class ForgeCommandFactory implements CommandFactory<CommandDispatcher<Com
         tabCompletions = command.getTabCompletions(context.getSource().getServer(),
                 context.getSource().getEntity(),
                 args.toArray(new String[0]),
-                new BlockPos(context.getSource().getPosition()));
+                new BlockPos((int) context.getSource().getPosition().x, (int) context.getSource().getPosition().y, (int) context.getSource().getPosition().z));
 
         if (args.size() > 0 && !args.get(args.size() - 1).trim().isEmpty()) {
             builder = builder.createOffset(context.getInput().length() - args.get(args.size() - 1).length());

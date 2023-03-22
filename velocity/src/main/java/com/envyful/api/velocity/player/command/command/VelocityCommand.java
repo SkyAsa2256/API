@@ -9,7 +9,6 @@ import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.event.ClickEvent;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
@@ -59,15 +58,15 @@ public class VelocityCommand {
             newDescription.add(Component.text(s));
         }
 
-        if (!this.child) {
-            newDescription.add(Component.text(""));
-            Component textComponent = Component.text("§eFor further support visit the §nEnvyWare Ltd§e discord: ");
-            textComponent = textComponent.style(textComponent.style().clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, "https://discord.envyware.co.uk")));
-            Component textComponent2 = Component.text("§e§nhttps://discord.envyware.co.uk§e");
-            textComponent2 = textComponent2.style(textComponent2.style().clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, "https://discord.envyware.co.uk")));
-            newDescription.add(textComponent);
-            newDescription.add(textComponent2);
-        }
+//        if (!this.child) {
+//            newDescription.add(Component.text(""));
+//            Component textComponent = Component.text("§eFor further support visit the §nEnvyWare Ltd§e discord: ");
+//            textComponent = textComponent.style(textComponent.style().clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, "https://discord.envyware.co.uk")));
+//            Component textComponent2 = Component.text("§e§nhttps://discord.envyware.co.uk§e");
+//            textComponent2 = textComponent2.style(textComponent2.style().clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, "https://discord.envyware.co.uk")));
+//            newDescription.add(textComponent);
+//            newDescription.add(textComponent2);
+//        }
 
         return newDescription;
     }

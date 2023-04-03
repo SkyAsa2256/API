@@ -8,14 +8,19 @@ import com.envyful.api.text.parse.SimplePlaceholder;
 import com.google.common.collect.Lists;
 import com.pixelmonmod.api.Flags;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
+import com.pixelmonmod.pixelmon.api.pokemon.PokemonBase;
 import com.pixelmonmod.pixelmon.api.pokemon.species.Species;
+import com.pixelmonmod.pixelmon.api.pokemon.species.Stats;
 import com.pixelmonmod.pixelmon.api.pokemon.species.gender.Gender;
+import com.pixelmonmod.pixelmon.api.pokemon.species.palette.PaletteProperties;
 import com.pixelmonmod.pixelmon.api.pokemon.stats.BattleStatsType;
 import com.pixelmonmod.pixelmon.api.pokemon.stats.ExtraStats;
 import com.pixelmonmod.pixelmon.api.pokemon.stats.IVStore;
 import com.pixelmonmod.pixelmon.api.pokemon.stats.extraStats.LakeTrioStats;
 import com.pixelmonmod.pixelmon.api.pokemon.stats.extraStats.MewStats;
 import com.pixelmonmod.pixelmon.api.registries.PixelmonItems;
+import com.pixelmonmod.pixelmon.api.registries.PixelmonSpecies;
+import com.pixelmonmod.pixelmon.api.storage.NbtKeys;
 import com.pixelmonmod.pixelmon.api.util.helpers.SpriteItemHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -203,5 +208,42 @@ public class UtilSprite {
         }
 
         return pokemon.getMoveset().attacks[pos].getActualMove().getLocalizedName();
+    }
+
+    public static Pokemon getPokemon(ItemStack stack) {
+        CompoundNBT tag = stack.getOrCreateTag();
+
+        if (!tag.contains(SpriteItemHelper.NDEX)) {
+            return null;
+        }
+
+        boolean isEgg = tag.contains(NbtKeys.EGG_CYCLES);
+        int eggCycles = isEgg ? tag.getInt(NbtKeys.EGG_CYCLES) : -1;
+        Species species = PixelmonSpecies.fromNationalDex((int) tag.getShort(SpriteItemHelper.NDEX));
+
+        if(species == null) {
+            return null;
+        }
+
+        Stats form = species.getForm(tag.getString(SpriteItemHelper.FORM));
+        Gender gender = Gender.values()[tag.getByte(SpriteItemHelper.GENDER)];
+
+        if(form == null || gender == null) {
+            return null;
+        }
+
+        PaletteProperties palette = form.getGenderProperties(gender).getPalette(tag.getString(SpriteItemHelper.PALETTE));
+
+        if(palette == null) {
+            return null;
+        }
+
+        PokemonBase base = new PokemonBase(species, form, palette, gender);
+
+        if(isEgg) {
+            base.setEggCycles(eggCycles);
+        }
+
+        return base.toPokemon();
     }
 }

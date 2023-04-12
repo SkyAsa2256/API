@@ -27,7 +27,7 @@ public class ConfigReward {
     public void execute(Player player, Placeholder... placeholders) {
         if (this.commands != null && !this.commands.isEmpty()) {
             for (String command : PlaceholderFactory.handlePlaceholders(this.commands, placeholders)) {
-                Bukkit.getServer().dispatchCommand(player, command.replace("%player%", player.getName()));
+                Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), command.replace("%player%", player.getName()));
             }
         }
 

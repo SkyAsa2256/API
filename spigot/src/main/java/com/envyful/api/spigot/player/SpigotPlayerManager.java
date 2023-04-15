@@ -131,7 +131,7 @@ public class SpigotPlayerManager implements PlayerManager<SpigotEnvyPlayer, Play
             this.manager.cachedPlayers.get(event.getPlayer().getUniqueId()).setPlayer(event.getPlayer());
         }
 
-        @EventHandler(priority = EventPriority.LOWEST)
+        @EventHandler(priority = EventPriority.HIGHEST)
         public void onPlayerQuit(PlayerQuitEvent event) {
             SpigotEnvyPlayer player = this.manager.cachedPlayers.remove(event.getPlayer().getUniqueId());
 

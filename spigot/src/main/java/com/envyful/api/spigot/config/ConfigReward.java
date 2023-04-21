@@ -13,8 +13,8 @@ import java.util.List;
 @ConfigSerializable
 public class ConfigReward {
 
-    private List<String> commands;
-    private List<String> messages;
+    protected List<String> commands;
+    protected List<String> messages;
 
     public ConfigReward(List<String> commands, List<String> messages) {
         this.commands = commands;

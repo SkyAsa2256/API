@@ -1,10 +1,10 @@
 package com.envyful.api.player.save.impl;
 
 import com.envyful.api.database.Database;
-import com.envyful.api.player.EnvyPlayer;
-import com.envyful.api.player.attribute.PlayerAttribute;
+import com.envyful.api.player.PlayerManager;
+import com.envyful.api.player.attribute.Attribute;
+import com.envyful.api.player.save.AbstractSaveManager;
 import com.envyful.api.player.save.SaveHandlerFactory;
-import com.envyful.api.player.save.SaveManager;
 import com.envyful.api.player.save.VariableSaveHandler;
 import com.envyful.api.player.save.attribute.ColumnData;
 import com.envyful.api.player.save.attribute.Queries;
@@ -13,9 +13,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -25,32 +23,33 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.BiFunction;
 
-public class SQLSaveManager<T> implements SaveManager<T> {
+public class SQLSaveManager<T> extends AbstractSaveManager<T> {
 
-    private final Map<Class<? extends PlayerAttribute<?>>, AttributeData> loadedAttributes = Maps.newConcurrentMap();
     private final Database database;
+    protected final Map<Class<? extends Attribute<?, ?>>, SQLAttributeData> registeredSqlAttributeData = Maps.newConcurrentMap();
 
-    public SQLSaveManager(Database database) {this.database = database;}
+    public SQLSaveManager(PlayerManager<?, ?> playerManager, Database database) {
+        super(playerManager);
+        this.database = database;
+    }
 
     @Override
-    public List<PlayerAttribute<?>> loadData(EnvyPlayer<T> player) {
-        if (this.loadedAttributes.isEmpty()) {
+    public List<Attribute<?, ?>> loadData(UUID uuid) {
+        if (this.registeredSqlAttributeData.isEmpty()) {
             return Collections.emptyList();
         }
 
-        List<PlayerAttribute<?>> attributes = Lists.newArrayList();
+        List<Attribute<?, ?>> attributes = Lists.newArrayList();
 
-        for (Map.Entry<Class<? extends PlayerAttribute<?>>, AttributeData> entry : this.loadedAttributes.entrySet()) {
+        for (Map.Entry<Class<? extends Attribute<?, ?>>, AttributeData> entry : this.registeredAttributes.entrySet()) {
             AttributeData value = entry.getValue();
-            PlayerAttribute<?> attribute = value.getConstructor().apply(player, value.getManager());
-
-            attribute.preLoad();
+            SQLAttributeData sqlAttributeData = this.registeredSqlAttributeData.get(entry.getKey());
+            Attribute<?, ?> attribute = value.getConstructor().apply(value.getManager());
 
             try (Connection connection = this.database.getConnection();
-                 PreparedStatement preparedStatement = connection.prepareStatement(value.getQueries().loadQuery())) {
-                Field[] fields = value.getFieldsPositions().get(value.getQueries().loadQuery());
+                 PreparedStatement preparedStatement = connection.prepareStatement(sqlAttributeData.getQueries().loadQuery())) {
+                Field[] fields = sqlAttributeData.getFieldsPositions().get(sqlAttributeData.getQueries().loadQuery());
 
                 for (int i = 0; i < fields.length; i++) {
                     preparedStatement.setObject(i, fields[i].get(attribute));
@@ -59,12 +58,11 @@ public class SQLSaveManager<T> implements SaveManager<T> {
                 ResultSet resultSet = preparedStatement.executeQuery();
 
                 if (!resultSet.next()) {
-                    attribute.postLoad();
                     attributes.add(attribute);
                     continue;
                 }
 
-                for (Map.Entry<Field, FieldData> fieldData : value.getFieldData().entrySet()) {
+                for (Map.Entry<Field, FieldData> fieldData : sqlAttributeData.getFieldData().entrySet()) {
                     FieldData data = fieldData.getValue();
 
                     if (data.getSaveHandler() != null) {
@@ -74,11 +72,9 @@ public class SQLSaveManager<T> implements SaveManager<T> {
                     }
                 }
             } catch (SQLException | IllegalAccessException e) {
-                attribute.load();
                 e.printStackTrace();
             }
 
-            attribute.postLoad();
             attributes.add(attribute);
         }
 
@@ -86,29 +82,17 @@ public class SQLSaveManager<T> implements SaveManager<T> {
     }
 
     @Override
-    public List<PlayerAttribute<?>> loadData(UUID uuid) {
-        return null;
-    }
-
-    @Override
-    public void saveData(EnvyPlayer<T> player, PlayerAttribute<?> attribute) {
-        AttributeData attributeData = this.loadedAttributes.get(attribute.getClass());
-
-        if (attributeData == null) {
-            attribute.save();
-            return;
-        }
-
-        attribute.preSave();
+    public void saveData(UUID player, Attribute<?, ?> attribute) {
+        SQLAttributeData sqlAttributeData = this.registeredSqlAttributeData.get(attribute.getClass());
 
         try (Connection connection = this.database.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(attributeData.getQueries().updateQuery())) {
-            Field[] fieldPositions = attributeData.getFieldsPositions().get(attributeData.getQueries().updateQuery());
+             PreparedStatement preparedStatement = connection.prepareStatement(sqlAttributeData.getQueries().updateQuery())) {
+            Field[] fieldPositions = sqlAttributeData.getFieldsPositions().get(sqlAttributeData.getQueries().updateQuery());
 
             for (int i = 0; i < fieldPositions.length; i++) {
                 Field fieldPosition = fieldPositions[i];
 
-                FieldData fieldData = attributeData.getFieldData().get(fieldPosition);
+                FieldData fieldData = sqlAttributeData.getFieldData().get(fieldPosition);
 
                 if (fieldData.getSaveHandler() != null) {
                     preparedStatement.setString(i, fieldData.getSaveHandler().convert(fieldPosition.get(attribute)));
@@ -121,17 +105,10 @@ public class SQLSaveManager<T> implements SaveManager<T> {
         } catch (SQLException | IllegalAccessException e) {
             e.printStackTrace();
         }
-
-        attribute.postSave();
     }
 
     @Override
-    public void saveData(UUID uuid, PlayerAttribute<?> attribute) {
-
-    }
-
-    @Override
-    public void registerAttribute(Object manager, Class<? extends PlayerAttribute<?>> attribute) {
+    public void registerAttribute(Object manager, Class<? extends Attribute<?, ?>> attribute) {
         Map<Field, FieldData> fieldData = this.getFieldData(attribute);
         Queries queries = attribute.getAnnotation(Queries.class);
 
@@ -144,12 +121,11 @@ public class SQLSaveManager<T> implements SaveManager<T> {
                 queries.updateQuery(), this.getFieldPositions(queries.updateQuery(), fieldData)
         );
 
-        BiFunction<EnvyPlayer<?>, Object, PlayerAttribute<?>> constructor = this.getConstructor(manager, attribute);
-
-        this.loadedAttributes.put(attribute, new AttributeData(manager, constructor, queries, fieldData, fieldsPositions));
+        super.registerAttribute(manager, attribute);
+        this.registeredSqlAttributeData.put(attribute, new SQLAttributeData(queries, fieldData, fieldsPositions));
     }
 
-    private Map<Field, FieldData> getFieldData(Class<? extends PlayerAttribute<?>> attribute) {
+    private Map<Field, FieldData> getFieldData(Class<? extends Attribute<?, ?>> attribute) {
         Map<Field, FieldData> fieldData = Maps.newHashMap();
 
         for (Field declaredField : attribute.getDeclaredFields()) {
@@ -195,29 +171,6 @@ public class SQLSaveManager<T> implements SaveManager<T> {
         return indexes.toArray(new Field[0]);
     }
 
-    private BiFunction<EnvyPlayer<?>, Object, PlayerAttribute<?>> getConstructor(Object manager, Class<? extends PlayerAttribute<?>> clazz) {
-        try {
-            Constructor<? extends PlayerAttribute<?>> constructor = clazz.getConstructor(
-                    manager.getClass(),
-                    EnvyPlayer.class
-            );
-
-            return (envyPlayer, o) -> {
-                try {
-                    return constructor.newInstance(o, envyPlayer);
-                } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                    e.printStackTrace();
-                }
-
-                return null;
-            };
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
     private String calculateColumnName(Field field) {
         String name = field.getName();
         StringBuilder newName = new StringBuilder();
@@ -235,28 +188,16 @@ public class SQLSaveManager<T> implements SaveManager<T> {
         return newName.toString();
     }
 
-    public static class AttributeData {
+    public static class SQLAttributeData {
 
-        private final Object manager;
-        private final BiFunction<EnvyPlayer<?>, Object, PlayerAttribute<?>> constructor;
         private final Queries queries;
         private final Map<Field, FieldData> fieldData;
         private final Map<String, Field[]> fieldsPositions;
 
-        public AttributeData(Object manager, BiFunction<EnvyPlayer<?>, Object, PlayerAttribute<?>> constructor, Queries queries, Map<Field, FieldData> fieldData, Map<String, Field[]> fieldsPositions) {
-            this.manager = manager;
-            this.constructor = constructor;
+        public SQLAttributeData(Queries queries, Map<Field, FieldData> fieldData, Map<String, Field[]> fieldsPositions) {
             this.queries = queries;
             this.fieldData = fieldData;
             this.fieldsPositions = fieldsPositions;
-        }
-
-        public Object getManager() {
-            return this.manager;
-        }
-
-        public BiFunction<EnvyPlayer<?>, Object, PlayerAttribute<?>> getConstructor() {
-            return this.constructor;
         }
 
         public Queries getQueries() {

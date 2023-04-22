@@ -1,7 +1,7 @@
 package com.envyful.api.player.attribute.data;
 
-import com.envyful.api.player.EnvyPlayer;
-import com.envyful.api.player.attribute.PlayerAttribute;
+import com.envyful.api.player.PlayerManager;
+import com.envyful.api.player.attribute.Attribute;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -9,18 +9,19 @@ import java.util.Map;
 
 /**
  *
- * A simple object used for efficiently instantiating the {@link PlayerAttribute} classes using reflection.
+ * A simple object used for efficiently instantiating the {@link Attribute} classes using reflection.
  *
- * The constructor of the {@link PlayerAttribute} is stored for future efficiency and thus allowing for easy attribute
+ * The constructor of the {@link Attribute} is stored for future efficiency and thus allowing for easy attribute
  * instantiation
  *
  */
 public class PlayerAttributeData {
 
+    private final PlayerManager<?, ?> playerManager;
     private final Object manager;
     private final Class<?> managerClass;
-    private final Class<? extends PlayerAttribute<?>> attributeClass;
-    private final Constructor<? extends PlayerAttribute<?>> constructor;
+    private final Class<? extends Attribute<?, ?>> attributeClass;
+    private final Constructor<? extends Attribute<?, ?>> constructor;
 
     /**
      *
@@ -30,20 +31,21 @@ public class PlayerAttributeData {
      * @param manager The manager object
      * @param attributeClass The class of the attribute being stored
      */
-    public PlayerAttributeData(Object manager, Class<? extends PlayerAttribute<?>> attributeClass) {
+    public PlayerAttributeData(Object manager, PlayerManager<?, ?> playerManager, Class<? extends Attribute<?, ?>> attributeClass) {
         this.manager = manager;
+        this.playerManager = playerManager;
         this.managerClass = this.manager.getClass();
         this.attributeClass = attributeClass;
         this.constructor = this.getConstructor();
     }
 
-    public Class<? extends PlayerAttribute<?>> getAttributeClass() {
+    public Class<? extends Attribute<?, ?>> getAttributeClass() {
         return this.attributeClass;
     }
 
-    private Constructor<? extends PlayerAttribute<?>> getConstructor() {
+    private Constructor<? extends Attribute<?, ?>> getConstructor() {
         try {
-            return attributeClass.getConstructor(this.managerClass, EnvyPlayer.class);
+            return attributeClass.getConstructor(this.managerClass, PlayerManager.class);
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         }
@@ -53,15 +55,14 @@ public class PlayerAttributeData {
 
     /**
      *
-     * Creates a new instanceof the {@link PlayerAttribute} for the {@link EnvyPlayer} passed
-     * {@link PlayerAttribute#load} not called here
+     * Creates a new instance of the {@link Attribute}
+     * {@link Attribute#load} not called here
      *
-     * @param player The parent of the new attribute
      * @return The new attribute
      */
-    public PlayerAttribute<?> getInstance(EnvyPlayer<?> player) {
+    public Attribute<?, ?> getInstance() {
         try {
-            return this.constructor.newInstance(this.manager, player);
+            return this.constructor.newInstance(this.manager, this.playerManager);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
@@ -76,7 +77,7 @@ public class PlayerAttributeData {
      * @param map The map being added to
      * @param instance The instance being added to the map using the manager class as a key
      */
-    public void addToMap(Map<Class<?>, PlayerAttribute<?>> map, PlayerAttribute<?> instance) {
+    public void addToMap(Map<Class<?>, Attribute<?, ?>> map, Attribute<?, ?> instance) {
         map.put(this.managerClass, instance);
     }
 }

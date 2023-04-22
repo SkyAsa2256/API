@@ -1,6 +1,6 @@
 package com.envyful.api.player;
 
-import com.envyful.api.player.attribute.PlayerAttribute;
+import com.envyful.api.player.attribute.Attribute;
 import com.envyful.api.player.save.SaveManager;
 
 import java.util.List;
@@ -81,7 +81,7 @@ public interface PlayerManager<A extends EnvyPlayer<B>, B> {
       * @param uuid The uuid of the target player
       * @return The attributes of said offline player
       */
-     List<PlayerAttribute<?>> getOfflineAttributes(UUID uuid);
+     List<Attribute<?, ?>> getOfflineAttributes(UUID uuid);
 
      /**
       *
@@ -94,7 +94,7 @@ public interface PlayerManager<A extends EnvyPlayer<B>, B> {
       * @param manager The manager object to be passed through the attribute constructor at instantiation
       * @param attribute The class of the attribute being registered
       */
-     void registerAttribute(Object manager, Class<? extends PlayerAttribute<?>> attribute);
+     void registerAttribute(Object manager, Class<? extends Attribute<?, ?>> attribute);
 
      /**
       *

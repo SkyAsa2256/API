@@ -2,7 +2,7 @@ package com.envyful.api.velocity.player;
 
 import com.envyful.api.concurrency.UtilConcurrency;
 import com.envyful.api.player.PlayerManager;
-import com.envyful.api.player.attribute.PlayerAttribute;
+import com.envyful.api.player.attribute.Attribute;
 import com.envyful.api.player.attribute.data.PlayerAttributeData;
 import com.envyful.api.player.save.SaveManager;
 import com.envyful.api.player.save.impl.EmptySaveManager;
@@ -15,10 +15,7 @@ import com.velocitypowered.api.event.connection.LoginEvent;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  *
@@ -33,7 +30,7 @@ public class VelocityPlayerManager implements PlayerManager<VelocityEnvyPlayer, 
     private final Map<UUID, VelocityEnvyPlayer> cachedPlayers = Maps.newHashMap();
     private final List<PlayerAttributeData> attributeData = Lists.newArrayList();
 
-    private SaveManager<Player> saveManager = new EmptySaveManager<>();
+    private SaveManager<Player> saveManager = new EmptySaveManager<>(this);
     private ProxyServer proxyServer;
 
     public VelocityPlayerManager(Object plugin, ProxyServer proxy) {
@@ -79,21 +76,17 @@ public class VelocityPlayerManager implements PlayerManager<VelocityEnvyPlayer, 
     }
 
     @Override
-    public List<PlayerAttribute<?>> getOfflineAttributes(UUID uuid) {
+    public List<Attribute<?, ?>> getOfflineAttributes(UUID uuid) {
         return this.saveManager.loadData(uuid);
     }
 
     @Override
-    public void registerAttribute(Object manager, Class<? extends PlayerAttribute<?>> attribute) {
-        this.attributeData.add(new PlayerAttributeData(manager, attribute));
+    public void registerAttribute(Object manager, Class<? extends Attribute<?, ?>> attribute) {
+        this.attributeData.add(new PlayerAttributeData(manager, this, attribute));
 
         if (this.saveManager != null) {
             this.saveManager.registerAttribute(manager, attribute);
         }
-    }
-
-    public ProxyServer getProxyServer() {
-        return this.proxyServer;
     }
 
     @Override
@@ -101,7 +94,7 @@ public class VelocityPlayerManager implements PlayerManager<VelocityEnvyPlayer, 
         this.saveManager = saveManager;
     }
 
-    private final class PlayerListener {
+    private static final class PlayerListener {
 
         private final VelocityPlayerManager manager;
 
@@ -116,17 +109,29 @@ public class VelocityPlayerManager implements PlayerManager<VelocityEnvyPlayer, 
             this.manager.cachedPlayers.put(event.getPlayer().getUniqueId(), player);
 
             UtilConcurrency.runAsync(() -> {
-                for (PlayerAttributeData attributeDatum : this.manager.attributeData) {
-                    PlayerAttribute<?> instance = attributeDatum.getInstance(player);
+                List<Attribute<?, ?>> playerAttributes = this.manager.saveManager.loadData(player);
 
-                    if (instance == null) {
+                for (PlayerAttributeData attributeDatum : this.manager.attributeData) {
+                    Attribute<?, ?> attribute = this.findAttribute(attributeDatum, playerAttributes);
+
+                    if (attribute == null) {
                         continue;
                     }
 
-                    instance.load();
-                    attributeDatum.addToMap(player.attributes, instance);
+                    attributeDatum.addToMap(player.attributes, attribute);
                 }
             });
+        }
+
+        private Attribute<?, ?> findAttribute(PlayerAttributeData attributeDatum,
+                                                 List<Attribute<?, ?>> playerAttributes) {
+            for (Attribute<?, ?> playerAttribute : playerAttributes) {
+                if (Objects.equals(attributeDatum.getAttributeClass(), playerAttribute.getClass())) {
+                    return playerAttribute;
+                }
+            }
+
+            return null;
         }
 
         @Subscribe(order = PostOrder.LAST)
@@ -137,13 +142,11 @@ public class VelocityPlayerManager implements PlayerManager<VelocityEnvyPlayer, 
                 return;
             }
 
-            UtilConcurrency.runAsync(() -> {
-                for (PlayerAttribute<?> value : player.attributes.values()) {
-                    if (value != null) {
-                        value.save();
-                    }
+            for (Attribute<?, ?> value : player.attributes.values()) {
+                if (value != null) {
+                    this.manager.saveManager.saveData(player, value);
                 }
-            });
+            }
         }
     }
 }

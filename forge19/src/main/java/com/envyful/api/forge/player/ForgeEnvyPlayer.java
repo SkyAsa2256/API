@@ -4,7 +4,7 @@ import com.envyful.api.config.ConfigLocation;
 import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.forge.world.UtilWorld;
 import com.envyful.api.player.EnvyPlayer;
-import com.envyful.api.player.attribute.PlayerAttribute;
+import com.envyful.api.player.attribute.Attribute;
 import com.google.common.collect.Maps;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -22,7 +22,7 @@ import java.util.UUID;
  */
 public class ForgeEnvyPlayer implements EnvyPlayer<ServerPlayer> {
 
-    protected final Map<Class<?>, PlayerAttribute<?>> attributes = Maps.newHashMap();
+    protected final Map<Class<?>, Attribute<?, ?>> attributes = Maps.newHashMap();
 
     private ServerPlayer player;
 
@@ -86,7 +86,7 @@ public class ForgeEnvyPlayer implements EnvyPlayer<ServerPlayer> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <A extends PlayerAttribute<B>, B> A getAttribute(Class<B> plugin) {
+    public <A extends Attribute<?, B>, B> A getAttribute(Class<B> plugin) {
         return (A) this.attributes.get(plugin);
     }
 }

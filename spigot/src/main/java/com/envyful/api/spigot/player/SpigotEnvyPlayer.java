@@ -2,7 +2,7 @@ package com.envyful.api.spigot.player;
 
 import com.envyful.api.config.ConfigLocation;
 import com.envyful.api.player.EnvyPlayer;
-import com.envyful.api.player.attribute.PlayerAttribute;
+import com.envyful.api.player.attribute.Attribute;
 import com.google.common.collect.Maps;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
@@ -17,7 +17,7 @@ import java.util.UUID;
  */
 public class SpigotEnvyPlayer implements EnvyPlayer<Player> {
 
-    protected final Map<Class<?>, PlayerAttribute<?>> attributes = Maps.newHashMap();
+    protected final Map<Class<?>, Attribute<?, ?>> attributes = Maps.newHashMap();
 
     private Player player;
     private UUID uuid;
@@ -75,7 +75,7 @@ public class SpigotEnvyPlayer implements EnvyPlayer<Player> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <A extends PlayerAttribute<B>, B> A getAttribute(Class<B> plugin) {
+    public <A extends Attribute<?, B>, B> A getAttribute(Class<B> plugin) {
         return (A) this.attributes.get(plugin);
     }
 }

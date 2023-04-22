@@ -2,7 +2,7 @@ package com.envyful.api.forge.player;
 
 import com.envyful.api.concurrency.UtilConcurrency;
 import com.envyful.api.player.PlayerManager;
-import com.envyful.api.player.attribute.PlayerAttribute;
+import com.envyful.api.player.attribute.Attribute;
 import com.envyful.api.player.attribute.data.PlayerAttributeData;
 import com.envyful.api.player.save.SaveManager;
 import com.envyful.api.player.save.impl.EmptySaveManager;
@@ -32,7 +32,7 @@ public class ForgePlayerManager implements PlayerManager<ForgeEnvyPlayer, Server
     private final Map<UUID, ForgeEnvyPlayer> cachedPlayers = Maps.newHashMap();
     private final List<PlayerAttributeData> attributeData = Lists.newArrayList();
 
-    private SaveManager<ServerPlayerEntity> saveManager = new EmptySaveManager<>();
+    private SaveManager<ServerPlayerEntity> saveManager = new EmptySaveManager<>(this);
 
     public ForgePlayerManager() {
         MinecraftForge.EVENT_BUS.register(new PlayerListener(this));
@@ -77,13 +77,13 @@ public class ForgePlayerManager implements PlayerManager<ForgeEnvyPlayer, Server
     }
 
     @Override
-    public List<PlayerAttribute<?>> getOfflineAttributes(UUID uuid) {
+    public List<Attribute<?, ?>> getOfflineAttributes(UUID uuid) {
         return this.saveManager.loadData(uuid);
     }
 
     @Override
-    public void registerAttribute(Object manager, Class<? extends PlayerAttribute<?>> attribute) {
-        this.attributeData.add(new PlayerAttributeData(manager, attribute));
+    public void registerAttribute(Object manager, Class<? extends Attribute<?, ?>> attribute) {
+        this.attributeData.add(new PlayerAttributeData(manager, this, attribute));
 
         if (this.saveManager != null) {
             this.saveManager.registerAttribute(manager, attribute);
@@ -110,9 +110,9 @@ public class ForgePlayerManager implements PlayerManager<ForgeEnvyPlayer, Server
             this.manager.cachedPlayers.put(event.getPlayer().getUUID(), player);
 
             UtilConcurrency.runAsync(() -> {
-                List<PlayerAttribute<?>> playerAttributes = this.manager.saveManager.loadData(player);
+                List<Attribute<?, ?>> playerAttributes = this.manager.saveManager.loadData(player);
                 for (PlayerAttributeData attributeDatum : this.manager.attributeData) {
-                    PlayerAttribute<?> attribute = this.findAttribute(attributeDatum, playerAttributes);
+                    Attribute<?, ?> attribute = this.findAttribute(attributeDatum, playerAttributes);
 
                     if (attribute == null) {
                         continue;
@@ -123,9 +123,9 @@ public class ForgePlayerManager implements PlayerManager<ForgeEnvyPlayer, Server
             });
         }
 
-        private PlayerAttribute<?> findAttribute(PlayerAttributeData attributeDatum,
-                                                 List<PlayerAttribute<?>> playerAttributes) {
-            for (PlayerAttribute<?> playerAttribute : playerAttributes) {
+        private Attribute<?, ?> findAttribute(PlayerAttributeData attributeDatum,
+                                                 List<Attribute<?, ?>> playerAttributes) {
+            for (Attribute<?, ?> playerAttribute : playerAttributes) {
                 if (Objects.equals(attributeDatum.getAttributeClass(), playerAttribute.getClass())) {
                     return playerAttribute;
                 }
@@ -143,7 +143,7 @@ public class ForgePlayerManager implements PlayerManager<ForgeEnvyPlayer, Server
             }
 
             UtilConcurrency.runAsync(() -> {
-                for (PlayerAttribute<?> value : player.attributes.values()) {
+                for (Attribute<?, ?> value : player.attributes.values()) {
                     if (value != null) {
                         this.manager.saveManager.saveData(player, value);
                     }
@@ -161,8 +161,10 @@ public class ForgePlayerManager implements PlayerManager<ForgeEnvyPlayer, Server
 
             UtilConcurrency.runAsync(() -> {
                 for (ForgeEnvyPlayer onlinePlayer : this.manager.getOnlinePlayers()) {
-                    for (PlayerAttribute<?> value : onlinePlayer.attributes.values()) {
-                        UtilConcurrency.runAsync(value::save);
+                    for (Attribute<?, ?> value : onlinePlayer.attributes.values()) {
+                        if (value != null) {
+                            this.manager.saveManager.saveData(onlinePlayer, value);
+                        }
                     }
                 }
             });
@@ -185,7 +187,7 @@ public class ForgePlayerManager implements PlayerManager<ForgeEnvyPlayer, Server
         public void onPreServerShutdown(FMLServerStoppingEvent event) {
             UtilConcurrency.runAsync(() -> {
                 for (ForgeEnvyPlayer player : this.manager.cachedPlayers.values()) {
-                    for (PlayerAttribute<?> value : player.attributes.values()) {
+                    for (Attribute<?, ?> value : player.attributes.values()) {
                         if (value != null) {
                             this.manager.saveManager.saveData(player, value);
                         }

@@ -1,7 +1,7 @@
 package com.envyful.api.player.save;
 
 import com.envyful.api.player.EnvyPlayer;
-import com.envyful.api.player.attribute.PlayerAttribute;
+import com.envyful.api.player.attribute.Attribute;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,21 +21,21 @@ public interface SaveManager<T> {
      * @param manager The manager object
      * @param attribute The class of the attribute being registered
      */
-    void registerAttribute(Object manager, Class<? extends PlayerAttribute<?>> attribute);
+    void registerAttribute(Object manager, Class<? extends Attribute<?, ?>> attribute);
 
     /**
      *
      * Saves the player's data from the given attribute
-     * This will call {@link PlayerAttribute#save()} if this class has not been registered using
+     * This will call {@link Attribute#saveWithGenericId(Object)}} if this class has not been registered using
      * {@link SaveManager#registerAttribute(Object, Class)}
      *
-     * This calls {@link PlayerAttribute#preSave()} before saving the data and {@link PlayerAttribute#postSave()}
-     * after saving the data
      *
-     * @param player The player who's data is being saved
+     * @param player The player whose data is being saved
      * @param attribute The attribute being saved
      */
-    void saveData(EnvyPlayer<T> player, PlayerAttribute<?> attribute);
+    default void saveData(EnvyPlayer<T> player, Attribute<?, ?> attribute) {
+        this.saveData(player.getUuid(), attribute);
+    }
 
     /**
      *
@@ -44,31 +44,27 @@ public interface SaveManager<T> {
      * @param uuid The offline UUID
      * @param attribute The attribute being saved
      */
-    void saveData(UUID uuid, PlayerAttribute<?> attribute);
+    void saveData(UUID uuid, Attribute<?, ?> attribute);
 
     /**
      *
-     * Load the player's data for all registered {@link PlayerAttribute} using
+     * Load the player's data for all registered {@link Attribute} using
      *{@link SaveManager#registerAttribute(Object, Class)}
      *
-     * This calls {@link PlayerAttribute#preLoad()} before loading the data and {@link PlayerAttribute#postLoad()}
-     * after loading the data
-     *
-     * @param player The player who's data is being loaded
+     * @param player The player whose data is being loaded
      * @return All successfully loaded attributes
      */
-    List<PlayerAttribute<?>> loadData(EnvyPlayer<T> player);
+    default List<Attribute<?, ?>> loadData(EnvyPlayer<T> player) {
+        return this.loadData(player.getUuid());
+    }
 
     /**
      *
-     * Load the offline player's data for all registerd {@link PlayerAttribute} using {@link SaveManager#registerAttribute(Object, Class)}
-     *
-     * This calls {@link PlayerAttribute#preLoad()} before loading the data and {@link PlayerAttribute#postLoad()}
-     * after loading the data
+     * Load the player's data for all registered {@link Attribute} using {@link SaveManager#registerAttribute(Object, Class)}
      *
      * @param uuid The offline player's UUID
      * @return All successfully loaded attributes
      */
-    List<PlayerAttribute<?>> loadData(UUID uuid);
+    List<Attribute<?, ?>> loadData(UUID uuid);
 
 }

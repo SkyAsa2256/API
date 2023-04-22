@@ -1,6 +1,7 @@
 package com.envyful.api.player.attribute;
 
 import com.envyful.api.player.EnvyPlayer;
+import com.envyful.api.player.PlayerManager;
 
 import java.util.UUID;
 
@@ -13,58 +14,39 @@ import java.util.UUID;
  *
  * @param <A> The manager class
  */
-public interface PlayerAttribute<A> {
+public abstract class PlayerAttribute<A> extends AbstractAttribute<UUID, A> {
+
+    protected final transient PlayerManager<?, ?> playerManager;
+
+    protected transient EnvyPlayer<?> parent;
+
+    protected PlayerAttribute(A manager, PlayerManager<?, ?> playerManager) {
+        super(manager);
+
+        this.playerManager = playerManager;
+    }
 
     /**
-     *
-     * Gets the attribute owner's UUID
-     *
-     * @return The owner's UUID
+     * @deprecated Use {@link Attribute#getId()}
      */
-    UUID getUuid();
+    @Deprecated
+    public UUID getUuid() {
+        return this.id;
+    }
 
-    /**
-     *
-     * Implementation for loading the data for the player attribute if no
-     * {@link com.envyful.api.player.save.SaveManager} is set
-     *
-     */
-    void load();
+    @Override
+    public void save(UUID id) {
+        this.id = id;
+        this.parent = this.playerManager.getPlayer(this.id);
 
-    /**
-     *
-     * Implementation for saving the data from the player attribute if no
-     * {@link com.envyful.api.player.save.SaveManager} is set
-     *
-     */
-    void save();
+        this.save(id);
+    }
 
-    /**
-     *
-     * Called before a {@link com.envyful.api.player.save.SaveManager} saves this class
-     *
-     */
-    default void preSave() {}
+    @Override
+    public void load(UUID id) {
+        this.id = id;
+        this.parent = this.playerManager.getPlayer(this.id);
 
-    /**
-     *
-     * Called after a {@link com.envyful.api.player.save.SaveManager} saves this class
-     *
-     */
-    default void postSave() {}
-
-    /**
-     *
-     * Called before a {@link com.envyful.api.player.save.SaveManager} loads this class
-     *
-     */
-    default void preLoad() {}
-
-    /**
-     *
-     * Called after a {@link com.envyful.api.player.save.SaveManager} loads this class
-     *
-     */
-    default void postLoad() {}
-
+        this.load(id);
+    }
 }

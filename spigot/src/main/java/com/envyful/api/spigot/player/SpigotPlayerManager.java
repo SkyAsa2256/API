@@ -3,7 +3,7 @@ package com.envyful.api.spigot.player;
 import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
 import com.envyful.api.concurrency.UtilConcurrency;
 import com.envyful.api.player.PlayerManager;
-import com.envyful.api.player.attribute.PlayerAttribute;
+import com.envyful.api.player.attribute.Attribute;
 import com.envyful.api.player.attribute.data.PlayerAttributeData;
 import com.envyful.api.player.save.SaveManager;
 import com.envyful.api.player.save.impl.EmptySaveManager;
@@ -19,10 +19,7 @@ import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  *
@@ -37,7 +34,7 @@ public class SpigotPlayerManager implements PlayerManager<SpigotEnvyPlayer, Play
     private final Map<UUID, SpigotEnvyPlayer> cachedPlayers = Maps.newHashMap();
     private final List<PlayerAttributeData> attributeData = Lists.newArrayList();
 
-    private SaveManager<Player> saveManager = new EmptySaveManager<>();
+    private SaveManager<Player> saveManager = new EmptySaveManager<>(this);
 
     public SpigotPlayerManager(Plugin plugin) {
         Bukkit.getPluginManager().registerEvents(new PlayerListener(this), plugin);
@@ -81,13 +78,13 @@ public class SpigotPlayerManager implements PlayerManager<SpigotEnvyPlayer, Play
     }
 
     @Override
-    public List<PlayerAttribute<?>> getOfflineAttributes(UUID uuid) {
+    public List<Attribute<?, ?>> getOfflineAttributes(UUID uuid) {
         return this.saveManager.loadData(uuid);
     }
 
     @Override
-    public void registerAttribute(Object manager, Class<? extends PlayerAttribute<?>> attribute) {
-        this.attributeData.add(new PlayerAttributeData(manager, attribute));
+    public void registerAttribute(Object manager, Class<? extends Attribute<?, ?>> attribute) {
+        this.attributeData.add(new PlayerAttributeData(manager, this, attribute));
 
         if (this.saveManager != null) {
             this.saveManager.registerAttribute(manager, attribute);
@@ -113,17 +110,29 @@ public class SpigotPlayerManager implements PlayerManager<SpigotEnvyPlayer, Play
             this.manager.cachedPlayers.put(event.getUniqueId(), player);
 
             UtilConcurrency.runAsync(() -> {
-                for (PlayerAttributeData attributeDatum : this.manager.attributeData) {
-                    PlayerAttribute<?> instance = attributeDatum.getInstance(player);
+                List<Attribute<?, ?>> playerAttributes = this.manager.saveManager.loadData(player);
 
-                    if (instance == null) {
+                for (PlayerAttributeData attributeDatum : this.manager.attributeData) {
+                    Attribute<?, ?> attribute = this.findAttribute(attributeDatum, playerAttributes);
+
+                    if (attribute == null) {
                         continue;
                     }
 
-                    instance.load();
-                    attributeDatum.addToMap(player.attributes, instance);
+                    attributeDatum.addToMap(player.attributes, attribute);
                 }
             });
+        }
+
+        private Attribute<?, ?> findAttribute(PlayerAttributeData attributeDatum,
+                                              List<Attribute<?, ?>> playerAttributes) {
+            for (Attribute<?, ?> playerAttribute : playerAttributes) {
+                if (Objects.equals(attributeDatum.getAttributeClass(), playerAttribute.getClass())) {
+                    return playerAttribute;
+                }
+            }
+
+            return null;
         }
 
         @EventHandler(priority = EventPriority.LOWEST)
@@ -140,9 +149,9 @@ public class SpigotPlayerManager implements PlayerManager<SpigotEnvyPlayer, Play
             }
 
             UtilConcurrency.runAsync(() -> {
-                for (PlayerAttribute<?> value : player.attributes.values()) {
+                for (Attribute<?, ?> value : player.attributes.values()) {
                     if (value != null) {
-                        value.save();
+                        this.manager.saveManager.saveData(player, value);
                     }
                 }
             });

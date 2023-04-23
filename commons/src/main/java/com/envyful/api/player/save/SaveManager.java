@@ -5,6 +5,7 @@ import com.envyful.api.player.attribute.Attribute;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 /**
  *
@@ -49,22 +50,23 @@ public interface SaveManager<T> {
     /**
      *
      * Load the player's data for all registered {@link Attribute} using
-     *{@link SaveManager#registerAttribute(Object, Class)}
+     * {@link SaveManager#registerAttribute(Object, Class)}
      *
      * @param player The player whose data is being loaded
      * @return All successfully loaded attributes
      */
-    default List<Attribute<?, ?>> loadData(EnvyPlayer<T> player) {
+    default CompletableFuture<List<Attribute<?, ?>>> loadData(EnvyPlayer<T> player) {
         return this.loadData(player.getUuid());
     }
 
     /**
      *
-     * Load the player's data for all registered {@link Attribute} using {@link SaveManager#registerAttribute(Object, Class)}
+     * Load the player's data for all registered {@link Attribute}
+     * using {@link SaveManager#registerAttribute(Object, Class)}
      *
      * @param uuid The offline player's UUID
      * @return All successfully loaded attributes
      */
-    List<Attribute<?, ?>> loadData(UUID uuid);
+    CompletableFuture<List<Attribute<?, ?>>> loadData(UUID uuid);
 
 }

@@ -19,9 +19,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class JsonSaveManager<T> extends AbstractSaveManager<T> {
 
@@ -45,31 +47,61 @@ public class JsonSaveManager<T> extends AbstractSaveManager<T> {
     }
 
     @Override
-    public List<Attribute<?, ?>> loadData(UUID uuid) {
+    public CompletableFuture<List<Attribute<?, ?>>> loadData(UUID uuid) {
+        if (this.registeredAttributes.isEmpty()) {
+            return CompletableFuture.completedFuture(Collections.emptyList());
+        }
+
         List<Attribute<?, ?>> attributes = Lists.newArrayList();
+        List<CompletableFuture<Attribute<?, ?>>> loadTasks = Lists.newArrayList();
 
         for (Map.Entry<Class<? extends Attribute<?, ?>>, AttributeData> entry : this.registeredAttributes.entrySet()) {
-            String dataDirectory = this.attributeDirectories.get(entry.getKey());
-            File file = Paths.get(dataDirectory, uuid.toString() + ".json").toFile();
+            AttributeData value = entry.getValue();
+            Attribute<?, ?> attribute = value.getConstructor().apply(uuid);
 
-            if (!file.exists()) {
-                try {
-                    file.getParentFile().mkdirs();
-                    Files.createFile(file.toPath());
-                } catch (IOException e) {
-                    e.printStackTrace();
+            loadTasks.add(attribute.getId(uuid).thenApply(o -> {
+                if (attribute.isShared()) {
+                    Attribute<?, ?> sharedAttribute = this.getSharedAttribute(o);
+
+                    if (sharedAttribute == null) {
+                        sharedAttribute = this.readData(entry.getKey(), attribute, o);
+                    }
+
+                    return sharedAttribute;
+                } else {
+                    return this.readData(entry.getKey(), attribute, o);
                 }
-                continue;
-            }
+            }).whenComplete((loaded, throwable) -> attributes.add(loaded)));
+        }
 
-            try (FileReader fileWriter = new FileReader(file)) {
-                attributes.add(getGson().fromJson(new JsonReader(fileWriter), entry.getKey()));
+        return CompletableFuture.allOf(loadTasks.toArray(new CompletableFuture[0])).thenApply(unused -> attributes);
+    }
+
+    protected Attribute<?, ?> readData(
+            Class<? extends Attribute<?, ?>> attributeClass,
+            Attribute<?, ?> original,
+            Object key
+    ) {
+        String dataDirectory = this.attributeDirectories.get(attributeClass);
+        File file = Paths.get(dataDirectory, key.toString() + ".json").toFile();
+
+        if (!file.exists()) {
+            try {
+                file.getParentFile().mkdirs();
+                Files.createFile(file.toPath());
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            return original;
         }
 
-        return attributes;
+        try (FileReader fileWriter = new FileReader(file)) {
+            return getGson().fromJson(new JsonReader(fileWriter), attributeClass);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return original;
     }
 
     @Override

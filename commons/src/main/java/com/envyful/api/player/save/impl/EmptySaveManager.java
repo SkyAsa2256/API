@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class EmptySaveManager<T> extends AbstractSaveManager<T> {
 
@@ -17,22 +18,36 @@ public class EmptySaveManager<T> extends AbstractSaveManager<T> {
     }
 
     @Override
-    public List<Attribute<?, ?>> loadData(UUID uuid) {
+    public CompletableFuture<List<Attribute<?, ?>>> loadData(UUID uuid) {
         if (this.registeredAttributes.isEmpty()) {
-            return Collections.emptyList();
+            return CompletableFuture.completedFuture(Collections.emptyList());
         }
 
         List<Attribute<?, ?>> attributes = Lists.newArrayList();
+        List<CompletableFuture<Attribute<?, ?>>> loadTasks = Lists.newArrayList();
 
         for (Map.Entry<Class<? extends Attribute<?, ?>>, AttributeData> entry : this.registeredAttributes.entrySet()) {
             AttributeData value = entry.getValue();
             Attribute<?, ?> attribute = value.getConstructor().apply(uuid);
 
-            attribute.getId(uuid).whenComplete((o, throwable) -> attribute.loadWithGenericId(o));
-            attributes.add(attribute);
+            loadTasks.add(attribute.getId(uuid).thenApply(o -> {
+                if (attribute.isShared()) {
+                    Attribute<?, ?> sharedAttribute = this.getSharedAttribute(o);
+
+                    if (sharedAttribute == null) {
+                        sharedAttribute = attribute;
+                        attribute.loadWithGenericId(o);
+                    }
+
+                    return sharedAttribute;
+                } else {
+                    attribute.loadWithGenericId(o);
+                    return attribute;
+                }
+            }).whenComplete((loaded, throwable) -> attributes.add(loaded)));
         }
 
-        return attributes;
+        return CompletableFuture.allOf(loadTasks.toArray(new CompletableFuture[0])).thenApply(unused -> attributes);
     }
 
     @Override

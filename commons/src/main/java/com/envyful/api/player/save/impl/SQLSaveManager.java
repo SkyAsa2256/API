@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class SQLSaveManager<T> extends AbstractSaveManager<T> {
 
@@ -35,50 +36,75 @@ public class SQLSaveManager<T> extends AbstractSaveManager<T> {
     }
 
     @Override
-    public List<Attribute<?, ?>> loadData(UUID uuid) {
-        if (this.registeredSqlAttributeData.isEmpty()) {
-            return Collections.emptyList();
+    public CompletableFuture<List<Attribute<?, ?>>> loadData(UUID uuid) {
+        if (this.registeredAttributes.isEmpty()) {
+            return CompletableFuture.completedFuture(Collections.emptyList());
         }
 
         List<Attribute<?, ?>> attributes = Lists.newArrayList();
+        List<CompletableFuture<Attribute<?, ?>>> loadTasks = Lists.newArrayList();
 
         for (Map.Entry<Class<? extends Attribute<?, ?>>, AttributeData> entry : this.registeredAttributes.entrySet()) {
             AttributeData value = entry.getValue();
-            SQLAttributeData sqlAttributeData = this.registeredSqlAttributeData.get(entry.getKey());
-            Attribute<?, ?> attribute = value.getConstructor().apply(value.getManager());
+            Attribute<?, ?> attribute = value.getConstructor().apply(uuid);
 
-            try (Connection connection = this.database.getConnection();
-                 PreparedStatement preparedStatement = connection.prepareStatement(sqlAttributeData.getQueries().loadQuery())) {
-                Field[] fields = sqlAttributeData.getFieldsPositions().get(sqlAttributeData.getQueries().loadQuery());
+            loadTasks.add(attribute.getId(uuid).thenApply(o -> {
+                if (attribute.isShared()) {
+                    Attribute<?, ?> sharedAttribute = this.getSharedAttribute(o);
 
-                for (int i = 0; i < fields.length; i++) {
-                    preparedStatement.setObject(i, fields[i].get(attribute));
-                }
-
-                ResultSet resultSet = preparedStatement.executeQuery();
-
-                if (!resultSet.next()) {
-                    attributes.add(attribute);
-                    continue;
-                }
-
-                for (Map.Entry<Field, FieldData> fieldData : sqlAttributeData.getFieldData().entrySet()) {
-                    FieldData data = fieldData.getValue();
-
-                    if (data.getSaveHandler() != null) {
-                        fieldData.getKey().set(attribute, data.getSaveHandler().invert(resultSet.getString(fieldData.getValue().getName())));
-                    } else {
-                        fieldData.getKey().set(attribute, resultSet.getObject(fieldData.getValue().getName()));
+                    if (sharedAttribute == null) {
+                        sharedAttribute = this.readData(entry.getKey(), attribute,
+                                this.registeredSqlAttributeData.get(entry.getKey()), o);
                     }
-                }
-            } catch (SQLException | IllegalAccessException e) {
-                e.printStackTrace();
-            }
 
-            attributes.add(attribute);
+                    return sharedAttribute;
+                } else {
+                    return this.readData(entry.getKey(), attribute,
+                            this.registeredSqlAttributeData.get(entry.getKey()), o);
+                }
+            }).whenComplete((loaded, throwable) -> attributes.add(loaded)));
         }
 
-        return attributes;
+        return CompletableFuture.allOf(loadTasks.toArray(new CompletableFuture[0])).thenApply(unused -> attributes);
+    }
+
+    protected Attribute<?, ?> readData(
+            Class<? extends Attribute<?, ?>> attributeClass,
+            Attribute<?, ?> original,
+            SQLAttributeData sqlAttributeData,
+            Object key
+    ) {
+        try (Connection connection = this.database.getConnection();
+             PreparedStatement preparedStatement =
+                     connection.prepareStatement(sqlAttributeData.getQueries().loadQuery())) {
+            Field[] fields = sqlAttributeData.getFieldsPositions().get(sqlAttributeData.getQueries().loadQuery());
+
+            for (int i = 0; i < fields.length; i++) {
+                preparedStatement.setObject(i, fields[i].get(original));
+            }
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (!resultSet.next()) {
+                return original;
+            }
+
+            for (Map.Entry<Field, FieldData> fieldData : sqlAttributeData.getFieldData().entrySet()) {
+                FieldData data = fieldData.getValue();
+
+                if (data.getSaveHandler() != null) {
+                    fieldData.getKey().set(original,
+                            data.getSaveHandler().invert(
+                                    resultSet.getString(fieldData.getValue().getName())));
+                } else {
+                    fieldData.getKey().set(original, resultSet.getObject(fieldData.getValue().getName()));
+                }
+            }
+        } catch (SQLException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        return original;
     }
 
     @Override

@@ -12,6 +12,7 @@ import java.util.function.Function;
 public abstract class AbstractSaveManager<T> implements SaveManager<T> {
 
     protected final Map<Class<? extends Attribute<?, ?>>, AttributeData> registeredAttributes = Maps.newConcurrentMap();
+    protected final Map<Object, Attribute<?, ?>> sharedAttributes = Maps.newConcurrentMap();
 
     protected final PlayerManager<?, ?> playerManager;
 
@@ -43,6 +44,14 @@ public abstract class AbstractSaveManager<T> implements SaveManager<T> {
         }
 
         return null;
+    }
+
+    protected Attribute<?, ?> getSharedAttribute(Object o) {
+        return this.sharedAttributes.get(o);
+    }
+
+    protected void addSharedAttribute(Object key, Attribute<?, ?> attribute) {
+        this.sharedAttributes.put(key, attribute);
     }
 
     public static class AttributeData {

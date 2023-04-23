@@ -10,6 +10,10 @@ public interface Attribute<IdType, Manager> {
 
     CompletableFuture<IdType> getId();
 
+    default boolean isShared() {
+        return false;
+    }
+
     default void loadWithGenericId(Object object) throws ClassCastException {
         this.load((IdType) object);
     }

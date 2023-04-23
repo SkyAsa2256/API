@@ -4,6 +4,7 @@ import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 /**
  *
@@ -25,6 +26,16 @@ public abstract class PlayerAttribute<A, B extends EnvyPlayer<C>, C>
         super(manager);
 
         this.playerManager = playerManager;
+    }
+
+    @Override
+    public CompletableFuture<UUID> getId(UUID playerUuid) {
+        return CompletableFuture.completedFuture(playerUuid);
+    }
+
+    @Override
+    public CompletableFuture<UUID> getId() {
+        return CompletableFuture.completedFuture(this.id);
     }
 
     /**

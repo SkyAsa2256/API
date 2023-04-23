@@ -34,14 +34,14 @@ public class ConfigRewardPool<T extends ConfigReward> {
             randomlySelectedRewards.add(this.rewards.getRandom());
         }
 
+        if (this.guaranteedReward != null) {
+            randomlySelectedRewards.add(guaranteedReward);
+        }
+
         return randomlySelectedRewards;
     }
 
     public void give(Player player, Placeholder... transformers) {
-        if (this.guaranteedReward != null) {
-            this.guaranteedReward.execute(player, transformers);
-        }
-
         for (ConfigReward randomReward : this.getRandomRewards()) {
             randomReward.execute(player, transformers);
         }

@@ -17,6 +17,7 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -78,7 +79,11 @@ public class ForgePlayerManager implements PlayerManager<ForgeEnvyPlayer, Server
 
     @Override
     public List<Attribute<?, ?>> getOfflineAttributes(UUID uuid) {
-        return this.saveManager.loadData(uuid);
+        try {
+            return this.saveManager.loadData(uuid).get();
+        } catch (InterruptedException | ExecutionException e) {
+            return Collections.emptyList();
+        }
     }
 
     @Override
@@ -110,16 +115,17 @@ public class ForgePlayerManager implements PlayerManager<ForgeEnvyPlayer, Server
             this.manager.cachedPlayers.put(event.getEntity().getUUID(), player);
 
             UtilConcurrency.runAsync(() -> {
-                List<Attribute<?, ?>> playerAttributes = this.manager.saveManager.loadData(player);
-                for (PlayerAttributeData attributeDatum : this.manager.attributeData) {
-                    Attribute<?, ?> attribute = this.findAttribute(attributeDatum, playerAttributes);
+                this.manager.saveManager.loadData(player).whenComplete((attributes, throwable) -> {
+                    for (PlayerAttributeData attributeDatum : this.manager.attributeData) {
+                        Attribute<?, ?> attribute = this.findAttribute(attributeDatum, attributes);
 
-                    if (attribute == null) {
-                        continue;
+                        if (attribute == null) {
+                            continue;
+                        }
+
+                        attributeDatum.addToMap(player.attributes, attribute);
                     }
-
-                    attributeDatum.addToMap(player.attributes, attribute);
-                }
+                });
             });
         }
 

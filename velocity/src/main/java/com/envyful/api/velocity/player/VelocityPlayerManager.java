@@ -16,6 +16,7 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 
 /**
  *
@@ -77,7 +78,11 @@ public class VelocityPlayerManager implements PlayerManager<VelocityEnvyPlayer, 
 
     @Override
     public List<Attribute<?, ?>> getOfflineAttributes(UUID uuid) {
-        return this.saveManager.loadData(uuid);
+        try {
+            return this.saveManager.loadData(uuid).get();
+        } catch (InterruptedException | ExecutionException e) {
+            return Collections.emptyList();
+        }
     }
 
     @Override
@@ -109,17 +114,17 @@ public class VelocityPlayerManager implements PlayerManager<VelocityEnvyPlayer, 
             this.manager.cachedPlayers.put(event.getPlayer().getUniqueId(), player);
 
             UtilConcurrency.runAsync(() -> {
-                List<Attribute<?, ?>> playerAttributes = this.manager.saveManager.loadData(player);
+                this.manager.saveManager.loadData(player).whenComplete((attributes, throwable) -> {
+                    for (PlayerAttributeData attributeDatum : this.manager.attributeData) {
+                        Attribute<?, ?> attribute = this.findAttribute(attributeDatum, attributes);
 
-                for (PlayerAttributeData attributeDatum : this.manager.attributeData) {
-                    Attribute<?, ?> attribute = this.findAttribute(attributeDatum, playerAttributes);
+                        if (attribute == null) {
+                            continue;
+                        }
 
-                    if (attribute == null) {
-                        continue;
+                        attributeDatum.addToMap(player.attributes, attribute);
                     }
-
-                    attributeDatum.addToMap(player.attributes, attribute);
-                }
+                });
             });
         }
 

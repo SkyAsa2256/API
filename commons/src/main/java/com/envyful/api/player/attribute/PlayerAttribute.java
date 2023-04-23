@@ -9,18 +9,18 @@ import java.util.UUID;
  *
  * An interface designed for storing specific data for each mod / plugin about a player.
  *
- * All implementations should stick to only keeping functions visible that operate on this object (i.e. no public getters
- * or setters) to follow SOLID rules.
  *
- * @param <A> The manager class
+ * @param <A> The manager type
+ * @param <B> The API's player type
+ * @param <C> The platform's player type
  */
-public abstract class PlayerAttribute<A> extends AbstractAttribute<UUID, A> {
+public abstract class PlayerAttribute<A, B extends EnvyPlayer<C>, C> extends AbstractAttribute<UUID, A> {
 
-    protected final transient PlayerManager<?, ?> playerManager;
+    protected final transient PlayerManager<B, C> playerManager;
 
-    protected transient EnvyPlayer<?> parent;
+    protected transient EnvyPlayer<C> parent;
 
-    protected PlayerAttribute(A manager, PlayerManager<?, ?> playerManager) {
+    protected PlayerAttribute(A manager, PlayerManager<B, C> playerManager) {
         super(manager);
 
         this.playerManager = playerManager;

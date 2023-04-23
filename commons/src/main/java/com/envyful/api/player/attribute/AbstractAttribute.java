@@ -1,12 +1,19 @@
 package com.envyful.api.player.attribute;
 
-public abstract class AbstractAttribute<IdType, Manager> implements Attribute<IdType, Manager> {
+/**
+ *
+ * Abstract implementation of the attribute class storing the manager, and id of the attribute
+ *
+ * @param <A> The attribute ID type
+ * @param <B> The manager instance for the attribute
+ */
+public abstract class AbstractAttribute<A, B> implements Attribute<A, B> {
 
-    protected final transient Manager manager;
+    protected final transient B manager;
 
-    protected IdType id;
+    protected transient A id;
 
-    protected AbstractAttribute(Manager manager) {
+    protected AbstractAttribute(B manager) {
         this.manager = manager;
     }
 

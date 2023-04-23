@@ -49,7 +49,7 @@ public class BattleParticipantBuilder {
         PartyStorage storage = StorageProxy.getParty(this.player.getUUID());
 
         if (this.player instanceof ServerPlayerEntity) {
-            return new PlayerParticipant((ServerPlayerEntity) this.player, storage.getAndSendOutFirstAblePokemon(this.player));
+            return new PlayerParticipant((ServerPlayerEntity) this.player, storage.getFirstAblePokemon());
         }
 
         return new TrainerParticipant((NPCTrainer) this.player, null, 1);

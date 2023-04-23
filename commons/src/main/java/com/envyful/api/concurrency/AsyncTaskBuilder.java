@@ -14,8 +14,6 @@ public class AsyncTaskBuilder {
 
     private Runnable task;
 
-    public AsyncTaskBuilder() {}
-
     /**
      *
      * The delay in millis before the task should begin
@@ -60,7 +58,7 @@ public class AsyncTaskBuilder {
      */
     public void start() {
         if (this.task == null) {
-            throw new RuntimeException("Task cannot be null");
+            throw new IllegalArgumentException("Task cannot be null");
         }
 
         UtilConcurrency.SCHEDULED_EXECUTOR_SERVICE.scheduleAtFixedRate

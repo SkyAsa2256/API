@@ -26,8 +26,8 @@ public class EmptySaveManager<T> extends AbstractSaveManager<T> {
         List<Attribute<?, ?>> attributes = Lists.newArrayList();
         List<CompletableFuture<Attribute<?, ?>>> loadTasks = Lists.newArrayList();
 
-        for (Map.Entry<Class<? extends Attribute<?, ?>>, AttributeData> entry : this.registeredAttributes.entrySet()) {
-            AttributeData value = entry.getValue();
+        for (Map.Entry<Class<? extends Attribute<?, ?>>, AttributeData<?, ?>> entry : this.registeredAttributes.entrySet()) {
+            AttributeData<?, ?> value = entry.getValue();
             Attribute<?, ?> attribute = value.getConstructor().apply(uuid);
 
             loadTasks.add(attribute.getId(uuid).thenApply(o -> {

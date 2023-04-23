@@ -14,7 +14,8 @@ import java.util.UUID;
  * @param <B> The API's player type
  * @param <C> The platform's player type
  */
-public abstract class PlayerAttribute<A, B extends EnvyPlayer<C>, C> extends AbstractAttribute<UUID, A> {
+public abstract class PlayerAttribute<A, B extends EnvyPlayer<C>, C>
+        extends AbstractAttribute<UUID, A> {
 
     protected final transient PlayerManager<B, C> playerManager;
 

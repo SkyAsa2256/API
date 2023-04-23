@@ -31,7 +31,10 @@ public class PlayerAttributeData {
      * @param manager The manager object
      * @param attributeClass The class of the attribute being stored
      */
-    public PlayerAttributeData(Object manager, PlayerManager<?, ?> playerManager, Class<? extends Attribute<?, ?>> attributeClass) {
+    public PlayerAttributeData(
+            Object manager, PlayerManager<?, ?> playerManager,
+            Class<? extends Attribute<?, ?>> attributeClass
+    ) {
         this.manager = manager;
         this.playerManager = playerManager;
         this.managerClass = this.manager.getClass();
@@ -45,7 +48,10 @@ public class PlayerAttributeData {
 
     private Constructor<? extends Attribute<?, ?>> getConstructor() {
         try {
-            return attributeClass.getConstructor(this.managerClass, PlayerManager.class);
+            return attributeClass.getConstructor(
+                    this.managerClass,
+                    PlayerManager.class
+            );
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         }
@@ -77,7 +83,9 @@ public class PlayerAttributeData {
      * @param map The map being added to
      * @param instance The instance being added to the map using the manager class as a key
      */
-    public void addToMap(Map<Class<?>, Attribute<?, ?>> map, Attribute<?, ?> instance) {
+    public void addToMap(
+            Map<Class<?>, Attribute<?, ?>> map, Attribute<?, ?> instance
+    ) {
         map.put(this.managerClass, instance);
     }
 }

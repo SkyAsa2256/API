@@ -5,9 +5,12 @@ import com.envyful.api.player.attribute.PlayerAttribute;
 import com.envyful.api.spigot.player.SpigotEnvyPlayer;
 import org.bukkit.entity.Player;
 
-public abstract class AbstractSpigotAttribute<A> extends PlayerAttribute<A, SpigotEnvyPlayer, Player> {
+public abstract class AbstractSpigotAttribute<A>
+        extends PlayerAttribute<A, SpigotEnvyPlayer, Player> {
 
-    protected AbstractSpigotAttribute(A manager, PlayerManager<SpigotEnvyPlayer, Player> playerManager) {
+    protected AbstractSpigotAttribute(
+            A manager, PlayerManager<SpigotEnvyPlayer, Player> playerManager
+    ) {
         super(manager, playerManager);
     }
 }

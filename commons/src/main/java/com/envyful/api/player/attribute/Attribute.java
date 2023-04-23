@@ -4,26 +4,33 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 
-public interface Attribute<IdType, Manager> {
+/**
+ *
+ * An interface representing data stored about something, typically a player
+ *
+ * @param <A> The unique identifier type
+ * @param <B> The manager type
+ */
+public interface Attribute<A, B> {
 
-    CompletableFuture<IdType> getId(UUID playerUuid);
+    CompletableFuture<A> getId(UUID playerUuid);
 
-    CompletableFuture<IdType> getId();
+    CompletableFuture<A> getId();
 
     default boolean isShared() {
         return false;
     }
 
     default void loadWithGenericId(Object object) throws ClassCastException {
-        this.load((IdType) object);
+        this.load((A) object);
     }
 
-    void load(IdType id);
+    void load(A id);
 
     default void saveWithGenericId(Object object) throws ClassCastException {
-        this.load((IdType) object);
+        this.load((A) object);
     }
 
-    void save(IdType id);
+    void save(A id);
 
 }

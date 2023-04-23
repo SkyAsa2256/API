@@ -7,6 +7,8 @@ import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.reference.ConfigurationReference;
 import org.spongepowered.configurate.reference.ValueReference;
 
+import java.io.Serializable;
+
 /**
  *
  * Abstract parent class to all YAML configuration files.
@@ -15,7 +17,7 @@ import org.spongepowered.configurate.reference.ValueReference;
  *
  */
 @ConfigSerializable
-public abstract class AbstractYamlConfig implements Config {
+public abstract class AbstractYamlConfig implements Config, Serializable {
 
     protected transient ConfigurationReference<CommentedConfigurationNode> base;
     protected transient ValueReference<?, CommentedConfigurationNode> config;

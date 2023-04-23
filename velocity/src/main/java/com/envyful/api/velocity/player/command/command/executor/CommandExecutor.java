@@ -17,9 +17,12 @@ import java.util.List;
 
 /**
  *
- * A simple data transfer object for the command methods obtained through reflection.
- * Ensures no laggy reflection during user use-age as the methods, object instances, and required injectors are cached at
- * server start for future use.
+ * A simple data transfer object for the command methods
+ * obtained through reflection.
+ *
+ * Ensures no laggy reflection during user use-age as the methods,
+ * object instances, and required injectors are cached
+ * at server start for future use.
  *
  */
 @SuppressWarnings("unchecked")
@@ -254,7 +257,7 @@ public class CommandExecutor {
     }
 
     public <A> List<String> tabComplete(CommandSource sender, String[] args) {
-        if (this.tabCompleters.isEmpty() || this.tabCompleters == null || this.requiredArgs == -1) {
+        if (this.tabCompleters == null || this.tabCompleters.isEmpty() || this.requiredArgs == -1) {
             return Collections.emptyList();
         }
 
@@ -270,8 +273,16 @@ public class CommandExecutor {
             return Collections.emptyList();
         }
 
+        SenderType<Object, Object> senderType = SenderTypeFactory
+                .getSenderType(completer.getSenderClass()).orElse(null);
+
+        if (senderType == null) {
+            return Collections.emptyList();
+        }
+
         return completer.getCompletions((A)
-                        SenderTypeFactory.getSenderType(completer.getSenderClass()).get().getInstance(sender),
-                args, this.extraTabData.get(pos));
+                        senderType.getInstance(sender),
+                args, this.extraTabData.get(pos)
+        );
     }
 }

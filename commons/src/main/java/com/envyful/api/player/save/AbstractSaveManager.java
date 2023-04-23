@@ -9,9 +9,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.function.Function;
 
+@SuppressWarnings("unchecked")
 public abstract class AbstractSaveManager<T> implements SaveManager<T> {
 
-    protected final Map<Class<? extends Attribute<?, ?>>, AttributeData> registeredAttributes = Maps.newConcurrentMap();
+    protected final Map<Class<? extends Attribute<?, ?>>, AttributeData<?, ?>> registeredAttributes = Maps.newConcurrentMap();
     protected final Map<Object, Attribute<?, ?>> sharedAttributes = Maps.newConcurrentMap();
 
     protected final PlayerManager<?, ?> playerManager;
@@ -23,7 +24,7 @@ public abstract class AbstractSaveManager<T> implements SaveManager<T> {
     @Override
     public void registerAttribute(Object manager, Class<? extends Attribute<?, ?>> attribute) {
         Function<Object, Attribute<?, ?>> constructor = this.getAttributeConstructor(manager, attribute);
-        this.registeredAttributes.put(attribute, new AttributeData(manager, constructor));
+        this.registeredAttributes.put(attribute, new AttributeData<>(manager, constructor));
     }
 
     private Function<Object, Attribute<?, ?>> getAttributeConstructor(Object manager, Class<? extends Attribute<?, ?>> clazz) {
@@ -46,29 +47,29 @@ public abstract class AbstractSaveManager<T> implements SaveManager<T> {
         return null;
     }
 
-    protected Attribute<?, ?> getSharedAttribute(Object o) {
-        return this.sharedAttributes.get(o);
+    protected <A, B> Attribute<A, B> getSharedAttribute(Object o) {
+        return (Attribute<A, B>) this.sharedAttributes.get(o);
     }
 
     protected void addSharedAttribute(Object key, Attribute<?, ?> attribute) {
         this.sharedAttributes.put(key, attribute);
     }
 
-    public static class AttributeData {
+    public static class AttributeData<A, B extends Attribute<?, A>> {
 
-        private final Object manager;
-        private final Function<Object, Attribute<?, ?>> constructor;
+        private final A manager;
+        private final Function<Object, B> constructor;
 
-        public AttributeData(Object manager, Function<Object, Attribute<?, ?>> constructor) {
+        public AttributeData(A manager, Function<Object, ?> constructor) {
             this.manager = manager;
-            this.constructor = constructor;
+            this.constructor = (Function<Object, B>) constructor;
         }
 
         public Object getManager() {
             return this.manager;
         }
 
-        public Function<Object, Attribute<?, ?>> getConstructor() {
+        public Function<Object, B> getConstructor() {
             return this.constructor;
         }
     }

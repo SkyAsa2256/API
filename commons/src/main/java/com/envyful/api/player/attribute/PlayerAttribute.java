@@ -30,6 +30,7 @@ public abstract class PlayerAttribute<A, B extends EnvyPlayer<C>, C>
 
     @Override
     public CompletableFuture<UUID> getId(UUID playerUuid) {
+        this.id = playerUuid;
         return CompletableFuture.completedFuture(playerUuid);
     }
 
@@ -51,7 +52,7 @@ public abstract class PlayerAttribute<A, B extends EnvyPlayer<C>, C>
         this.id = id;
         this.parent = this.playerManager.getPlayer(this.id);
 
-        this.save(id);
+        this.save();
     }
 
     @Override
@@ -59,6 +60,6 @@ public abstract class PlayerAttribute<A, B extends EnvyPlayer<C>, C>
         this.id = id;
         this.parent = this.playerManager.getPlayer(this.id);
 
-        this.load(id);
+        this.load();
     }
 }

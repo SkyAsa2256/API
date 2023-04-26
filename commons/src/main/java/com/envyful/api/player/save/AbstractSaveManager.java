@@ -29,12 +29,13 @@ public abstract class AbstractSaveManager<T> implements SaveManager<T> {
 
     private Function<Object, Attribute<?, ?>> getAttributeConstructor(Object manager, Class<? extends Attribute<?, ?>> clazz) {
         try {
-            Constructor<? extends Attribute<?, ?>> constructor = clazz.getConstructor(manager.getClass(), PlayerManager.class);
+            Constructor<? extends Attribute<?, ?>> constructor = clazz.getConstructor(manager.getClass(), this.playerManager.getClass());
 
             return o -> {
                 try {
-                    return constructor.newInstance(o, this.playerManager);
-                } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                    return constructor.newInstance(manager, this.playerManager);
+                } catch (InstantiationException | IllegalAccessException |
+                        IllegalArgumentException | InvocationTargetException e) {
                     e.printStackTrace();
                 }
 

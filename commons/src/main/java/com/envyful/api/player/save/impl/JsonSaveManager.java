@@ -65,6 +65,7 @@ public class JsonSaveManager<T> extends AbstractSaveManager<T> {
 
                     if (sharedAttribute == null) {
                         sharedAttribute = this.readData(entry.getKey(), attribute, o);
+                        this.addSharedAttribute(entry.getValue().getManager(), sharedAttribute);
                     }
 
                     return sharedAttribute;

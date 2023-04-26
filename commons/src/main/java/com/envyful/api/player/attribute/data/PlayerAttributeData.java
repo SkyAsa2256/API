@@ -50,7 +50,7 @@ public class PlayerAttributeData {
         try {
             return attributeClass.getConstructor(
                     this.managerClass,
-                    PlayerManager.class
+                   this.playerManager.getClass()
             );
         } catch (NoSuchMethodException e) {
             e.printStackTrace();

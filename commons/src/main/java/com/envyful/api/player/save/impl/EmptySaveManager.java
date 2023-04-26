@@ -37,6 +37,7 @@ public class EmptySaveManager<T> extends AbstractSaveManager<T> {
                     if (sharedAttribute == null) {
                         sharedAttribute = attribute;
                         attribute.loadWithGenericId(o);
+                        this.addSharedAttribute(entry.getValue().getManager(), sharedAttribute);
                     }
 
                     return sharedAttribute;

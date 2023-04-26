@@ -55,6 +55,7 @@ public class SQLSaveManager<T> extends AbstractSaveManager<T> {
                     if (sharedAttribute == null) {
                         sharedAttribute = this.readData(entry.getKey(), attribute,
                                 this.registeredSqlAttributeData.get(entry.getKey()), o);
+                        this.addSharedAttribute(entry.getValue().getManager(), sharedAttribute);
                     }
 
                     return sharedAttribute;

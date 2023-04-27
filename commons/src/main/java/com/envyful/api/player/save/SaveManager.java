@@ -61,6 +61,18 @@ public interface SaveManager<T> {
 
     /**
      *
+     * Loads the data for a single attribute using the given id
+     *
+     * @param attributeClass The class of the attribute
+     * @param id The id to load the data using
+     * @return The attribute instance
+     * @param <A> The attribute type
+     * @param <B> The id type
+     */
+    <A extends Attribute<B, ?>, B> A loadAttribute(Class<? extends A> attributeClass, B id);
+
+    /**
+     *
      * Load the player's data for all registered {@link Attribute}
      * using {@link SaveManager#registerAttribute(Object, Class)}
      *

@@ -28,7 +28,7 @@ public class EmptySaveManager<T> extends AbstractSaveManager<T> {
 
         for (Map.Entry<Class<? extends Attribute<?, ?>>, AttributeData<?, ?>> entry : this.registeredAttributes.entrySet()) {
             AttributeData<?, ?> value = entry.getValue();
-            Attribute<?, ?> attribute = value.getConstructor().apply(uuid);
+            Attribute<?, ?> attribute = value.getConstructor().get();
 
             loadTasks.add(attribute.getId(uuid).thenApply(o -> {
                 if (o == null) {
@@ -41,7 +41,7 @@ public class EmptySaveManager<T> extends AbstractSaveManager<T> {
                     if (sharedAttribute == null) {
                         sharedAttribute = attribute;
                         attribute.loadWithGenericId(o);
-                        this.addSharedAttribute(entry.getValue().getManager(), sharedAttribute);
+                        this.addSharedAttribute(o, sharedAttribute);
                     }
 
                     return sharedAttribute;
@@ -57,6 +57,31 @@ public class EmptySaveManager<T> extends AbstractSaveManager<T> {
         }
 
         return CompletableFuture.allOf(loadTasks.toArray(new CompletableFuture[0])).thenApply(unused -> attributes);
+    }
+
+    @Override
+    public <A extends Attribute<B, ?>, B> A loadAttribute(Class<? extends A> attributeClass, B id) {
+        if (id == null) {
+            return null;
+        }
+
+        AttributeData<?, A> attributeData = (AttributeData<?, A>) this.registeredAttributes.get(attributeClass);
+        A attribute = attributeData.getConstructor().get();
+
+        if (attribute.isShared()) {
+            A sharedAttribute = (A) this.getSharedAttribute(id);
+
+            if (sharedAttribute == null) {
+                sharedAttribute = attribute;
+                attribute.loadWithGenericId(id);
+                this.addSharedAttribute(id, sharedAttribute);
+            }
+
+            return sharedAttribute;
+        } else {
+            attribute.loadWithGenericId(id);
+            return attribute;
+        }
     }
 
     @Override

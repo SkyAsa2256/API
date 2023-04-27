@@ -57,7 +57,7 @@ public class JsonSaveManager<T> extends AbstractSaveManager<T> {
 
         for (Map.Entry<Class<? extends Attribute<?, ?>>, AttributeData<?, ?>> entry : this.registeredAttributes.entrySet()) {
             AttributeData<?, ?> value = entry.getValue();
-            Attribute<?, ?> attribute = value.getConstructor().apply(uuid);
+            Attribute<?, ?> attribute = value.getConstructor().get();
 
             loadTasks.add(attribute.getId(uuid).thenApply(o -> {
                 if (o == null) {
@@ -69,7 +69,7 @@ public class JsonSaveManager<T> extends AbstractSaveManager<T> {
 
                     if (sharedAttribute == null) {
                         sharedAttribute = this.readData(entry.getKey(), attribute, o);
-                        this.addSharedAttribute(entry.getValue().getManager(), sharedAttribute);
+                        this.addSharedAttribute(o, sharedAttribute);
                     }
 
                     return sharedAttribute;
@@ -111,6 +111,29 @@ public class JsonSaveManager<T> extends AbstractSaveManager<T> {
         }
 
         return original;
+    }
+
+    @Override
+    public <A extends Attribute<B, ?>, B> A loadAttribute(Class<? extends A> attributeClass, B id) {
+        if (id == null) {
+            return null;
+        }
+
+        AttributeData<?, A> attributeData = (AttributeData<?, A>) this.registeredAttributes.get(attributeClass);
+        A attribute = attributeData.getConstructor().get();
+
+        if (attribute.isShared()) {
+           A sharedAttribute = (A) this.getSharedAttribute(id);
+
+            if (sharedAttribute == null) {
+                sharedAttribute = (A) this.readData(attributeClass, attribute, id);
+                this.addSharedAttribute(id, sharedAttribute);
+            }
+
+            return sharedAttribute;
+        } else {
+            return (A) this.readData(attributeClass, attribute, id);
+        }
     }
 
     @Override

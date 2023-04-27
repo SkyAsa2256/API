@@ -46,7 +46,7 @@ public class SQLSaveManager<T> extends AbstractSaveManager<T> {
 
         for (Map.Entry<Class<? extends Attribute<?, ?>>, AttributeData<?, ?>> entry : this.registeredAttributes.entrySet()) {
             AttributeData<?, ?> value = entry.getValue();
-            Attribute<?, ?> attribute = value.getConstructor().apply(uuid);
+            Attribute<?, ?> attribute = value.getConstructor().get();
 
             loadTasks.add(attribute.getId(uuid).thenApply(o -> {
                 if (o == null) {
@@ -57,15 +57,15 @@ public class SQLSaveManager<T> extends AbstractSaveManager<T> {
                     Attribute<?, ?> sharedAttribute = this.getSharedAttribute(o);
 
                     if (sharedAttribute == null) {
-                        sharedAttribute = this.readData(entry.getKey(), attribute,
-                                this.registeredSqlAttributeData.get(entry.getKey()), o);
-                        this.addSharedAttribute(entry.getValue().getManager(), sharedAttribute);
+                        sharedAttribute = this.readData(attribute,
+                                this.registeredSqlAttributeData.get(entry.getKey()));
+                        this.addSharedAttribute(o, sharedAttribute);
                     }
 
                     return sharedAttribute;
                 } else {
-                    return this.readData(entry.getKey(), attribute,
-                            this.registeredSqlAttributeData.get(entry.getKey()), o);
+                    return this.readData(attribute,
+                            this.registeredSqlAttributeData.get(entry.getKey()));
                 }
             }).whenComplete((loaded, throwable) -> {
                 if (loaded != null) {
@@ -78,10 +78,8 @@ public class SQLSaveManager<T> extends AbstractSaveManager<T> {
     }
 
     protected Attribute<?, ?> readData(
-            Class<? extends Attribute<?, ?>> attributeClass,
             Attribute<?, ?> original,
-            SQLAttributeData sqlAttributeData,
-            Object key
+            SQLAttributeData sqlAttributeData
     ) {
         try (Connection connection = this.database.getConnection();
              PreparedStatement preparedStatement =
@@ -114,6 +112,31 @@ public class SQLSaveManager<T> extends AbstractSaveManager<T> {
         }
 
         return original;
+    }
+
+    @Override
+    public <A extends Attribute<B, ?>, B> A loadAttribute(Class<? extends A> attributeClass, B id) {
+        if (id == null) {
+            return null;
+        }
+
+        AttributeData<?, A> attributeData = (AttributeData<?, A>) this.registeredAttributes.get(attributeClass);
+        A attribute = attributeData.getConstructor().get();
+
+        if (attribute.isShared()) {
+            A sharedAttribute = (A) this.getSharedAttribute(id);
+
+            if (sharedAttribute == null) {
+                sharedAttribute = (A) this.readData(attribute,
+                        this.registeredSqlAttributeData.get(attributeClass));
+                this.addSharedAttribute(id, sharedAttribute);
+            }
+
+            return sharedAttribute;
+        } else {
+            return (A) this.readData(attribute,
+                    this.registeredSqlAttributeData.get(attributeClass));
+        }
     }
 
     @Override

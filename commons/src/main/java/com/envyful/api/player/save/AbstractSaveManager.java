@@ -7,7 +7,7 @@ import com.google.common.collect.Maps;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.function.Supplier;
 
 @SuppressWarnings("unchecked")
 public abstract class AbstractSaveManager<T> implements SaveManager<T> {
@@ -23,15 +23,15 @@ public abstract class AbstractSaveManager<T> implements SaveManager<T> {
 
     @Override
     public void registerAttribute(Object manager, Class<? extends Attribute<?, ?>> attribute) {
-        Function<Object, Attribute<?, ?>> constructor = this.getAttributeConstructor(manager, attribute);
+        Supplier<Attribute<?, ?>> constructor = this.getAttributeConstructor(manager, attribute);
         this.registeredAttributes.put(attribute, new AttributeData<>(manager, constructor));
     }
 
-    private Function<Object, Attribute<?, ?>> getAttributeConstructor(Object manager, Class<? extends Attribute<?, ?>> clazz) {
+    private Supplier<Attribute<?, ?>> getAttributeConstructor(Object manager, Class<? extends Attribute<?, ?>> clazz) {
         try {
             Constructor<? extends Attribute<?, ?>> constructor = clazz.getConstructor(manager.getClass(), this.playerManager.getClass());
 
-            return o -> {
+            return () -> {
                 try {
                     return constructor.newInstance(manager, this.playerManager);
                 } catch (InstantiationException | IllegalAccessException |
@@ -59,18 +59,18 @@ public abstract class AbstractSaveManager<T> implements SaveManager<T> {
     public static class AttributeData<A, B extends Attribute<?, A>> {
 
         private final A manager;
-        private final Function<Object, B> constructor;
+        private final Supplier<B> constructor;
 
-        public AttributeData(A manager, Function<Object, ?> constructor) {
+        public AttributeData(A manager, Supplier<?> constructor) {
             this.manager = manager;
-            this.constructor = (Function<Object, B>) constructor;
+            this.constructor = (Supplier<B>) constructor;
         }
 
         public Object getManager() {
             return this.manager;
         }
 
-        public Function<Object, B> getConstructor() {
+        public Supplier<B> getConstructor() {
             return this.constructor;
         }
     }

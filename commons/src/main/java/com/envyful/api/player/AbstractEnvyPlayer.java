@@ -3,8 +3,10 @@ package com.envyful.api.player;
 import com.envyful.api.player.attribute.Attribute;
 import com.envyful.api.player.attribute.PlayerAttribute;
 import com.envyful.api.player.save.SaveManager;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -57,5 +59,15 @@ public abstract class AbstractEnvyPlayer<T> implements EnvyPlayer<T> {
 
         this.attributes.put(loadedAttribute.getClass(), loadedAttribute);
         return loadedAttribute;
+    }
+
+    @Override
+    public <A extends Attribute<?, ?>> void setAttribute(A attribute) {
+        this.attributes.put(attribute.getClass(), attribute);
+    }
+
+    @Override
+    public List<Attribute<?, ?>> getAttributes() {
+        return Lists.newArrayList(this.attributes.values());
     }
 }

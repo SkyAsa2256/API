@@ -109,8 +109,9 @@ public class VelocityPlayerManager implements PlayerManager<VelocityEnvyPlayer, 
 
         @Subscribe(order = PostOrder.LAST)
         public void onAsyncPrePlayerLogin(LoginEvent event) {
-            VelocityEnvyPlayer player = new VelocityEnvyPlayer(this.manager.proxyServer, event.getPlayer().getUniqueId());
-            player.setPlayer(event.getPlayer());
+            VelocityEnvyPlayer player = new VelocityEnvyPlayer(this.manager.saveManager,
+                    this.manager.proxyServer, event.getPlayer().getUniqueId());
+            player.setParent(event.getPlayer());
             this.manager.cachedPlayers.put(event.getPlayer().getUniqueId(), player);
 
             UtilConcurrency.runAsync(() -> {
@@ -122,7 +123,7 @@ public class VelocityPlayerManager implements PlayerManager<VelocityEnvyPlayer, 
                             continue;
                         }
 
-                        attributeDatum.addToMap(player.attributes, attribute);
+                        player.setAttribute(attribute);
                     }
                 });
             });
@@ -147,7 +148,7 @@ public class VelocityPlayerManager implements PlayerManager<VelocityEnvyPlayer, 
                 return;
             }
 
-            for (Attribute<?, ?> value : player.attributes.values()) {
+            for (Attribute<?, ?> value : player.getAttributes()) {
                 if (value != null) {
                     this.manager.saveManager.saveData(player, value);
                 }

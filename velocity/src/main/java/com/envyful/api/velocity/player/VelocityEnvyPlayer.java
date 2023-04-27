@@ -1,14 +1,13 @@
 package com.envyful.api.velocity.player;
 
 import com.envyful.api.config.ConfigLocation;
+import com.envyful.api.player.AbstractEnvyPlayer;
 import com.envyful.api.player.EnvyPlayer;
-import com.envyful.api.player.attribute.Attribute;
-import com.google.common.collect.Maps;
+import com.envyful.api.player.save.SaveManager;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import net.kyori.adventure.text.Component;
 
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -16,15 +15,14 @@ import java.util.UUID;
  * Velocity implementation of the {@link EnvyPlayer} interface
  *
  */
-public class VelocityEnvyPlayer implements EnvyPlayer<Player> {
+public class VelocityEnvyPlayer extends AbstractEnvyPlayer<Player> {
 
-    protected final Map<Class<?>, Attribute<?, ?>> attributes = Maps.newHashMap();
+    private final ProxyServer proxy;
+    private final UUID uuid;
 
-    private ProxyServer proxy;
-    private Player player;
-    private UUID uuid;
+    protected VelocityEnvyPlayer(SaveManager<Player> saveManager, ProxyServer proxy, UUID uuid) {
+        super(saveManager);
 
-    protected VelocityEnvyPlayer(ProxyServer proxy, UUID uuid) {
         this.proxy = proxy;
         this.uuid = uuid;
     }
@@ -36,16 +34,7 @@ public class VelocityEnvyPlayer implements EnvyPlayer<Player> {
 
     @Override
     public String getName() {
-        return this.player.getUsername();
-    }
-
-    @Override
-    public Player getParent() {
-        return this.player;
-    }
-
-    public void setPlayer(Player player) {
-        this.player = player;
+        return this.parent.getUsername();
     }
 
     @Override
@@ -74,11 +63,5 @@ public class VelocityEnvyPlayer implements EnvyPlayer<Player> {
     @Override
     public void teleport(ConfigLocation location) {
         throw new UnsupportedOperationException("Cannot teleport players on the proxy!");
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <A extends Attribute<?, B>, B> A getAttribute(Class<B> plugin) {
-        return (A) this.attributes.get(plugin);
     }
 }

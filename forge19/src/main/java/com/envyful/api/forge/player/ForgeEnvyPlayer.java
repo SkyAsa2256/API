@@ -3,16 +3,15 @@ package com.envyful.api.forge.player;
 import com.envyful.api.config.ConfigLocation;
 import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.forge.world.UtilWorld;
+import com.envyful.api.player.AbstractEnvyPlayer;
 import com.envyful.api.player.EnvyPlayer;
-import com.envyful.api.player.attribute.Attribute;
-import com.google.common.collect.Maps;
+import com.envyful.api.player.save.SaveManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -20,33 +19,22 @@ import java.util.UUID;
  * Forge implementation of the {@link EnvyPlayer} interface
  *
  */
-public class ForgeEnvyPlayer implements EnvyPlayer<ServerPlayer> {
+public class ForgeEnvyPlayer extends AbstractEnvyPlayer<ServerPlayer> {
 
-    protected final Map<Class<?>, Attribute<?, ?>> attributes = Maps.newHashMap();
+    protected ForgeEnvyPlayer(SaveManager<ServerPlayer> saveManager, ServerPlayer player) {
+        super(saveManager);
 
-    private ServerPlayer player;
-
-    protected ForgeEnvyPlayer(ServerPlayer player) {
-        this.player = player;
+        this.parent = player;
     }
 
     @Override
     public UUID getUuid() {
-        return this.player.getUUID();
+        return this.parent.getUUID();
     }
 
     @Override
     public String getName() {
-        return this.player.getName().getString();
-    }
-
-    @Override
-    public ServerPlayer getParent() {
-        return this.player;
-    }
-
-    public void setPlayer(ServerPlayer player) {
-        this.player = player;
+        return this.parent.getName().getString();
     }
 
     @Override
@@ -75,18 +63,12 @@ public class ForgeEnvyPlayer implements EnvyPlayer<ServerPlayer> {
 
     @Override
     public void executeCommand(String command) {
-        ServerLifecycleHooks.getCurrentServer().getCommands().performPrefixedCommand(this.player.createCommandSourceStack(), command);
+        ServerLifecycleHooks.getCurrentServer().getCommands().performPrefixedCommand(this.parent.createCommandSourceStack(), command);
     }
 
     @Override
     public void teleport(ConfigLocation location) {
         this.getParent().teleportTo((ServerLevel) UtilWorld.findWorld(location.getWorldName()),
                 location.getPosX(), location.getPosY(), location.getPosZ(), (float)location.getPitch(), (float)location.getYaw());
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <A extends Attribute<?, B>, B> A getAttribute(Class<B> plugin) {
-        return (A) this.attributes.get(plugin);
     }
 }

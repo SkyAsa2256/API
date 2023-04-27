@@ -111,7 +111,8 @@ public class ForgePlayerManager implements PlayerManager<ForgeEnvyPlayer, Server
 
         @SubscribeEvent(priority = EventPriority.LOWEST)
         public void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
-            ForgeEnvyPlayer player = new ForgeEnvyPlayer((ServerPlayerEntity) event.getPlayer());
+            ForgeEnvyPlayer player = new ForgeEnvyPlayer(this.manager.saveManager,
+                    (ServerPlayerEntity) event.getPlayer());
             this.manager.cachedPlayers.put(event.getPlayer().getUUID(), player);
 
             UtilConcurrency.runAsync(() -> {
@@ -123,7 +124,7 @@ public class ForgePlayerManager implements PlayerManager<ForgeEnvyPlayer, Server
                             continue;
                         }
 
-                        attributeDatum.addToMap(player.attributes, attribute);
+                        player.setAttribute(attribute);
                     }
                 });
             });
@@ -149,7 +150,7 @@ public class ForgePlayerManager implements PlayerManager<ForgeEnvyPlayer, Server
             }
 
             UtilConcurrency.runAsync(() -> {
-                for (Attribute<?, ?> value : player.attributes.values()) {
+                for (Attribute<?, ?> value : player.getAttributes()) {
                     if (value != null) {
                         this.manager.saveManager.saveData(player, value);
                     }
@@ -167,7 +168,7 @@ public class ForgePlayerManager implements PlayerManager<ForgeEnvyPlayer, Server
 
             UtilConcurrency.runAsync(() -> {
                 for (ForgeEnvyPlayer onlinePlayer : this.manager.getOnlinePlayers()) {
-                    for (Attribute<?, ?> value : onlinePlayer.attributes.values()) {
+                    for (Attribute<?, ?> value : onlinePlayer.getAttributes()) {
                         if (value != null) {
                             this.manager.saveManager.saveData(onlinePlayer, value);
                         }
@@ -185,7 +186,7 @@ public class ForgePlayerManager implements PlayerManager<ForgeEnvyPlayer, Server
             UtilConcurrency.runLater(() -> {
                 ForgeEnvyPlayer player = this.manager.cachedPlayers.get(event.getPlayer().getUUID());
 
-                player.setPlayer((ServerPlayerEntity) event.getPlayer());
+                player.setParent((ServerPlayerEntity) event.getPlayer());
             }, 5L);
         }
 
@@ -193,7 +194,7 @@ public class ForgePlayerManager implements PlayerManager<ForgeEnvyPlayer, Server
         public void onPreServerShutdown(FMLServerStoppingEvent event) {
             UtilConcurrency.runAsync(() -> {
                 for (ForgeEnvyPlayer player : this.manager.cachedPlayers.values()) {
-                    for (Attribute<?, ?> value : player.attributes.values()) {
+                    for (Attribute<?, ?> value : player.getAttributes()) {
                         if (value != null) {
                             this.manager.saveManager.saveData(player, value);
                         }

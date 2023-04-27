@@ -111,7 +111,8 @@ public class ForgePlayerManager implements PlayerManager<ForgeEnvyPlayer, Server
 
         @SubscribeEvent(priority = EventPriority.LOWEST)
         public void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
-            ForgeEnvyPlayer player = new ForgeEnvyPlayer(this.manager.saveManager, (ServerPlayer) event.getEntity());
+            ForgeEnvyPlayer player = new ForgeEnvyPlayer(this.manager.saveManager,
+                    (ServerPlayer) event.getEntity());
             this.manager.cachedPlayers.put(event.getEntity().getUUID(), player);
 
             UtilConcurrency.runAsync(() -> {

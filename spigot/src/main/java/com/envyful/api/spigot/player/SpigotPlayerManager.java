@@ -111,7 +111,7 @@ public class SpigotPlayerManager implements PlayerManager<SpigotEnvyPlayer, Play
 
         @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
         public void onAsyncPrePlayerLogin(AsyncPlayerPreLoginEvent event) {
-            SpigotEnvyPlayer player = new SpigotEnvyPlayer(event.getUniqueId());
+            SpigotEnvyPlayer player = new SpigotEnvyPlayer(this.manager.saveManager,event.getUniqueId());
             this.manager.cachedPlayers.put(event.getUniqueId(), player);
 
             UtilConcurrency.runAsync(() -> {
@@ -123,7 +123,7 @@ public class SpigotPlayerManager implements PlayerManager<SpigotEnvyPlayer, Play
                             continue;
                         }
 
-                        attributeDatum.addToMap(player.attributes, attribute);
+                        player.setAttribute(attribute);
                     }
                 });
             });
@@ -142,7 +142,7 @@ public class SpigotPlayerManager implements PlayerManager<SpigotEnvyPlayer, Play
 
         @EventHandler(priority = EventPriority.LOWEST)
         public void onPlayerJoin(PlayerLoginEvent event) {
-            this.manager.cachedPlayers.get(event.getPlayer().getUniqueId()).setPlayer(event.getPlayer());
+            this.manager.cachedPlayers.get(event.getPlayer().getUniqueId()).setParent(event.getPlayer());
         }
 
         @EventHandler(priority = EventPriority.HIGHEST)
@@ -154,7 +154,7 @@ public class SpigotPlayerManager implements PlayerManager<SpigotEnvyPlayer, Play
             }
 
             UtilConcurrency.runAsync(() -> {
-                for (Attribute<?, ?> value : player.attributes.values()) {
+                for (Attribute<?, ?> value : player.getAttributes()) {
                     if (value != null) {
                         this.manager.saveManager.saveData(player, value);
                     }
@@ -167,7 +167,7 @@ public class SpigotPlayerManager implements PlayerManager<SpigotEnvyPlayer, Play
             UtilConcurrency.runLater(() -> {
                 SpigotEnvyPlayer player = this.manager.cachedPlayers.get(event.getPlayer().getUniqueId());
 
-                player.setPlayer(event.getPlayer());
+                player.setParent(event.getPlayer());
             }, 5L);
         }
     }

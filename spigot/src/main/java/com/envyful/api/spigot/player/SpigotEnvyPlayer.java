@@ -1,13 +1,12 @@
 package com.envyful.api.spigot.player;
 
 import com.envyful.api.config.ConfigLocation;
+import com.envyful.api.player.AbstractEnvyPlayer;
 import com.envyful.api.player.EnvyPlayer;
-import com.envyful.api.player.attribute.Attribute;
-import com.google.common.collect.Maps;
+import com.envyful.api.player.save.SaveManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -15,14 +14,13 @@ import java.util.UUID;
  * Spigot implementation of the {@link EnvyPlayer} interface
  *
  */
-public class SpigotEnvyPlayer implements EnvyPlayer<Player> {
+public class SpigotEnvyPlayer extends AbstractEnvyPlayer<Player> {
 
-    protected final Map<Class<?>, Attribute<?, ?>> attributes = Maps.newHashMap();
+    protected final UUID uuid;
 
-    private Player player;
-    private UUID uuid;
+    protected SpigotEnvyPlayer(SaveManager<Player> saveManager, UUID uuid) {
+        super(saveManager);
 
-    protected SpigotEnvyPlayer(UUID uuid) {
         this.uuid = uuid;
     }
 
@@ -33,16 +31,7 @@ public class SpigotEnvyPlayer implements EnvyPlayer<Player> {
 
     @Override
     public String getName() {
-        return this.player.getName();
-    }
-
-    @Override
-    public Player getParent() {
-        return this.player;
-    }
-
-    public void setPlayer(Player player) {
-        this.player = player;
+        return this.parent.getName();
     }
 
     @Override
@@ -71,11 +60,5 @@ public class SpigotEnvyPlayer implements EnvyPlayer<Player> {
     @Override
     public void teleport(ConfigLocation location) {
         //TODO:
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <A extends Attribute<?, B>, B> A getAttribute(Class<B> plugin) {
-        return (A) this.attributes.get(plugin);
     }
 }

@@ -36,4 +36,8 @@ public interface EnvyPlayer<T> {
 
     <A extends Attribute<?, B>, B> A getAttribute(Class<B> plugin);
 
+    void invalidateAttribute(Attribute<?, ?> attribute);
+
+    <A extends Attribute<B, ?>, B> A loadAttribute(Class<? extends A> attributeClass, B id);
+
 }

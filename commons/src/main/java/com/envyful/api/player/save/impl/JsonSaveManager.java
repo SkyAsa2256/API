@@ -60,6 +60,10 @@ public class JsonSaveManager<T> extends AbstractSaveManager<T> {
             Attribute<?, ?> attribute = value.getConstructor().apply(uuid);
 
             loadTasks.add(attribute.getId(uuid).thenApply(o -> {
+                if (o == null) {
+                    return null;
+                }
+
                 if (attribute.isShared()) {
                     Attribute<?, ?> sharedAttribute = this.getSharedAttribute(o);
 
@@ -72,7 +76,11 @@ public class JsonSaveManager<T> extends AbstractSaveManager<T> {
                 } else {
                     return this.readData(entry.getKey(), attribute, o);
                 }
-            }).whenComplete((loaded, throwable) -> attributes.add(loaded)));
+            }).whenComplete((loaded, throwable) -> {
+                if (loaded != null) {
+                    attributes.add(loaded);
+                }
+            }));
         }
 
         return CompletableFuture.allOf(loadTasks.toArray(new CompletableFuture[0])).thenApply(unused -> attributes);

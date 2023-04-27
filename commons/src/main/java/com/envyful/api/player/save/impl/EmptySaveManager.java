@@ -31,6 +31,10 @@ public class EmptySaveManager<T> extends AbstractSaveManager<T> {
             Attribute<?, ?> attribute = value.getConstructor().apply(uuid);
 
             loadTasks.add(attribute.getId(uuid).thenApply(o -> {
+                if (o == null) {
+                    return null;
+                }
+
                 if (attribute.isShared()) {
                     Attribute<?, ?> sharedAttribute = this.getSharedAttribute(o);
 
@@ -45,7 +49,11 @@ public class EmptySaveManager<T> extends AbstractSaveManager<T> {
                     attribute.loadWithGenericId(o);
                     return attribute;
                 }
-            }).whenComplete((loaded, throwable) -> attributes.add(loaded)));
+            }).whenComplete((loaded, throwable) -> {
+                if (loaded != null) {
+                    attributes.add(loaded);
+                }
+            }));
         }
 
         return CompletableFuture.allOf(loadTasks.toArray(new CompletableFuture[0])).thenApply(unused -> attributes);

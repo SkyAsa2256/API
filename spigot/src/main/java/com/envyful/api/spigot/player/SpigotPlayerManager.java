@@ -101,6 +101,11 @@ public class SpigotPlayerManager implements PlayerManager<SpigotEnvyPlayer, Play
         this.saveManager = saveManager;
     }
 
+    @Override
+    public <A extends Attribute<B, ?>, B> A loadAttribute(Class<? extends A> attributeClass, B id) {
+        return this.saveManager.loadAttribute(attributeClass, id);
+    }
+
     private final class PlayerListener implements Listener {
 
         private final SpigotPlayerManager manager;

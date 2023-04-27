@@ -99,6 +99,11 @@ public class VelocityPlayerManager implements PlayerManager<VelocityEnvyPlayer, 
         this.saveManager = saveManager;
     }
 
+    @Override
+    public <A extends Attribute<B, ?>, B> A loadAttribute(Class<? extends A> attributeClass, B id) {
+        return this.saveManager.loadAttribute(attributeClass, id);
+    }
+
     private static final class PlayerListener {
 
         private final VelocityPlayerManager manager;

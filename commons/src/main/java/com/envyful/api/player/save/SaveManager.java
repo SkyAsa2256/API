@@ -49,6 +49,16 @@ public interface SaveManager<T> {
 
     /**
      *
+     * Gets the stored manager for the attribute
+     *
+     * @param attribute The attribute
+     * @return The manager instance
+     * @param <B> The manager type
+     */
+    <B> B getManager(Attribute<?, ?> attribute);
+
+    /**
+     *
      * Load the player's data for all registered {@link Attribute} using
      * {@link SaveManager#registerAttribute(Object, Class)}
      *

@@ -50,20 +50,20 @@ public abstract class AbstractEnvyPlayer<T> implements EnvyPlayer<T> {
 
     @Override
     public void invalidateAttribute(Attribute<?, ?> attribute) {
-        this.attributes.remove(attribute.getClass());
+        this.attributes.remove(this.saveManager.getManager(attribute).getClass());
     }
 
     @Override
     public <A extends Attribute<B, ?>, B> A loadAttribute(Class<? extends A> attributeClass, B id) {
         A loadedAttribute = this.saveManager.loadAttribute(attributeClass, id);
 
-        this.attributes.put(loadedAttribute.getClass(), loadedAttribute);
+        this.attributes.put(this.saveManager.getManager(loadedAttribute).getClass(), loadedAttribute);
         return loadedAttribute;
     }
 
     @Override
     public <A extends Attribute<?, ?>> void setAttribute(A attribute) {
-        this.attributes.put(attribute.getClass(), attribute);
+        this.attributes.put(this.saveManager.getManager(attribute).getClass(), attribute);
     }
 
     @Override

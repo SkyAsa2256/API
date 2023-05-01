@@ -121,9 +121,13 @@ public class SpigotPlayerManager implements PlayerManager<SpigotEnvyPlayer, Play
 
             UtilConcurrency.runAsync(() -> {
                 this.manager.saveManager.loadData(player).whenComplete((attributes, throwable) -> {
+                    if (throwable != null) {
+                        throwable.printStackTrace();
+                        return;
+                    }
+
                     for (PlayerAttributeData attributeDatum : this.manager.attributeData) {
                         Attribute<?, ?> attribute = this.findAttribute(attributeDatum, attributes);
-
                         if (attribute == null) {
                             continue;
                         }

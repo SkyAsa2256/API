@@ -27,6 +27,11 @@ public abstract class AbstractSaveManager<T> implements SaveManager<T> {
         this.registeredAttributes.put(attribute, new AttributeData<>(manager, constructor));
     }
 
+    @Override
+    public <B> B getManager(Attribute<?, ?> attribute) {
+        return (B) this.registeredAttributes.get(attribute.getClass()).getManager();
+    }
+
     private Supplier<Attribute<?, ?>> getAttributeConstructor(Object manager, Class<? extends Attribute<?, ?>> clazz) {
         try {
             Constructor<? extends Attribute<?, ?>> constructor = clazz.getConstructor(manager.getClass(), this.playerManager.getClass());

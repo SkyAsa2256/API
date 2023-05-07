@@ -65,7 +65,9 @@ public class UtilItemStack {
 
         for (INBT nbtBase : currentLore) {
             if (nbtBase instanceof StringNBT) {
-                lore.add(ITextComponent.Serializer.fromJson(nbtBase.getAsString()));
+                try {
+                    lore.add(ITextComponent.Serializer.fromJson(nbtBase.getAsString()));
+                } catch (Exception ignored) {}
             }
         }
 

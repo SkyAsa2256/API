@@ -2,6 +2,8 @@ package com.envyful.api.player.attribute;
 
 import com.envyful.api.player.PlayerManager;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  *
  * Abstract implementation of the attribute class storing the manager
@@ -15,6 +17,7 @@ public abstract class SharedAttribute<A, B> extends AbstractAttribute<A, B> {
     protected final transient PlayerManager<?, ?> playerManager;
 
     protected A id;
+    protected long lastSave = -1L;
 
     protected SharedAttribute(B manager, PlayerManager<?, ?> playerManager) {
         super(manager);
@@ -42,6 +45,17 @@ public abstract class SharedAttribute<A, B> extends AbstractAttribute<A, B> {
             return;
         }
 
+        this.lastSave = System.currentTimeMillis();
+
         this.save();
+    }
+
+    @Override
+    public boolean shouldSave() {
+        if (this.lastSave == -1L) {
+            return true;
+        }
+
+        return super.shouldSave() && (System.currentTimeMillis() - this.lastSave) >= TimeUnit.MINUTES.toMillis(1);
     }
 }

@@ -28,7 +28,7 @@ public interface Attribute<A, B> {
     void load(A id);
 
     default void saveWithGenericId(Object object) throws ClassCastException {
-        this.load((A) object);
+        this.save((A) object);
     }
 
     void save(A id);

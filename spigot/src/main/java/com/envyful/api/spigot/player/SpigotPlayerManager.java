@@ -162,13 +162,19 @@ public class SpigotPlayerManager implements PlayerManager<SpigotEnvyPlayer, Play
                 return;
             }
 
-            UtilConcurrency.runAsync(() -> {
-                for (Attribute<?, ?> value : player.getAttributes()) {
-                    if (value != null) {
-                        this.manager.saveManager.saveData(player, value);
-                    }
+            if (Bukkit.isStopping()) {
+                this.saveData(player);
+            } else {
+                UtilConcurrency.runAsync(() -> this.saveData(player));
+            }
+        }
+
+        private void saveData(SpigotEnvyPlayer player) {
+            for (Attribute<?, ?> value : player.getAttributes()) {
+                if (value != null) {
+                    this.manager.saveManager.saveData(player, value);
                 }
-            });
+            }
         }
 
         @EventHandler(priority = EventPriority.LOWEST)

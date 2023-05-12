@@ -21,6 +21,10 @@ public interface Attribute<A, B> {
         return false;
     }
 
+    default boolean shouldSave() {
+        return true;
+    }
+
     default void loadWithGenericId(Object object) throws ClassCastException {
         this.load((A) object);
     }

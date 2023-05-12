@@ -52,6 +52,10 @@ public abstract class PlayerAttribute<A, B extends EnvyPlayer<C>, C>
         this.id = id;
         this.parent = this.playerManager.getPlayer(this.id);
 
+        if (!this.shouldSave()) {
+            return;
+        }
+
         this.save();
     }
 

@@ -58,7 +58,7 @@ public class AsyncTaskBuilder {
 
     /**
      *
-     * Will fire when the task is canceled, but only if {@link this#cancelCondition(Supplier)} is set
+     * Will fire when the task is canceled, but only if {@link AsyncTaskBuilder#cancelCondition(Supplier)} is set
      *
      * @param cancelTask The task to run when the cancel condition is met
      * @return The builder

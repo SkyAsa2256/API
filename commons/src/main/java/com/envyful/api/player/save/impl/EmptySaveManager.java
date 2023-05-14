@@ -52,7 +52,7 @@ public class EmptySaveManager<T> extends AbstractSaveManager<T> {
             }).whenComplete((loaded, throwable) -> {
                 if (loaded != null) {
                     attributes.add(loaded);
-                } else {
+                } else if (throwable != null) {
                     throwable.printStackTrace();
                 }
             }));

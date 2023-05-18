@@ -21,18 +21,17 @@ public class Leaderboard<A> {
     private final Order order;
     private final String orderColumn;
     private final int perPage;
-    private final long cacheDuration;
     private final String extraClauses;
     private final SQLFunction<ResultSet, A> formatter;
     private final Map<Integer, List<A>> cachedEntries;
 
-    private Leaderboard(Database database, String table, Order order, String orderColumn, int perPage, long cacheDuration, String extraClauses, SQLFunction<ResultSet, A> formatter) {
+    private Leaderboard(Database database, String table, Order order, String orderColumn,
+                        int perPage, long cacheDuration, String extraClauses, SQLFunction<ResultSet, A> formatter) {
         this.database = database;
         this.table = table;
         this.order = order;
         this.orderColumn = orderColumn;
         this.perPage = perPage;
-        this.cacheDuration = cacheDuration;
         this.extraClauses = extraClauses;
         this.formatter = formatter;
         this.cachedEntries = new TimeOutHashMap<>(cacheDuration);
@@ -76,7 +75,8 @@ public class Leaderboard<A> {
         return "SELECT * FROM `" + this.table + "` " + ((this.extraClauses == null || this.extraClauses.isEmpty()) ? "" : "WHERE " + this.extraClauses) + this.order.getSqlText(this.orderColumn) + ";";
     }
 
-    public static <A> Builder<A> builder(Class<A> a) {
+    @SuppressWarnings("unused")
+    public static <A> Builder<A> builder(Class<A> ignoredType) {
         return new Builder<>();
     }
 

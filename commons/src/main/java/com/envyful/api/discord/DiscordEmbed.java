@@ -1,6 +1,6 @@
 package com.envyful.api.discord;
 
-import com.envyful.api.json.UtilGson;
+import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -10,18 +10,22 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
-public class EmbedObject {
+@SuppressWarnings({"unused", "UnusedReturnValue"})
+public class DiscordEmbed {
+
     private String title;
     private String description;
     private String url;
     private Color color;
-
     private Footer footer;
     private Thumbnail thumbnail;
     private Image image;
     private Author author;
-    private List<Field> fields = new ArrayList<>();
+
+    private final List<Field> fields = Lists.newArrayList();
 
     public String getTitle() {
         return title;
@@ -59,69 +63,74 @@ public class EmbedObject {
         return fields;
     }
 
-    public EmbedObject setTitle(String title) {
+    public DiscordEmbed setTitle(String title) {
         this.title = title;
         return this;
     }
 
-    public EmbedObject setDescription(String description) {
+    public DiscordEmbed setDescription(String description) {
         this.description = description;
         return this;
     }
 
-    public EmbedObject setUrl(String url) {
+    public DiscordEmbed setUrl(String url) {
         this.url = url;
         return this;
     }
 
-    public EmbedObject setColor(Color color) {
+    public DiscordEmbed setColor(Color color) {
         this.color = color;
         return this;
     }
 
-    public EmbedObject setFooter(String text, String icon) {
+    public DiscordEmbed setFooter(String text, String icon) {
         this.footer = new Footer(text, icon);
         return this;
     }
 
-    public void setFooter(Footer footer) {
+    public DiscordEmbed setFooter(Footer footer) {
         this.footer = footer;
+        return this;
     }
 
-    public EmbedObject setThumbnail(String url) {
+    public DiscordEmbed setThumbnail(String url) {
         this.thumbnail = new Thumbnail(url);
         return this;
     }
 
-    public void setThumbnail(Thumbnail thumbnail) {
+    public DiscordEmbed setThumbnail(Thumbnail thumbnail) {
         this.thumbnail = thumbnail;
+        return this;
     }
 
-    public EmbedObject setImage(String url) {
+    public DiscordEmbed setImage(String url) {
         this.image = new Image(url);
         return this;
     }
 
-    public void setImage(Image image) {
+    public DiscordEmbed setImage(Image image) {
         this.image = image;
+        return this;
     }
 
-    public EmbedObject setAuthor(String name, String url, String icon) {
+    public DiscordEmbed setAuthor(String name, String url, String icon) {
         this.author = new Author(name, url, icon);
         return this;
     }
 
-    public void setAuthor(Author author) {
+    public DiscordEmbed setAuthor(Author author) {
         this.author = author;
+        return this;
     }
 
-    public EmbedObject addField(String name, String value, boolean inline) {
+    public DiscordEmbed addField(String name, String value, boolean inline) {
         this.fields.add(new Field(name, value, inline));
         return this;
     }
 
-    public void addField(Field field) {
+    public DiscordEmbed addField(Field field) {
         this.fields.add(field);
+        return this;
     }
 
     public static Builder builder() {
@@ -130,9 +139,9 @@ public class EmbedObject {
 
     /**
      *
-     * Converts the {@link EmbedObject} to a {@link JSONObject}
+     * Converts the {@link DiscordEmbed} to a {@link JSONObject}
      *
-     * @return the JSONified version of the embed
+     * @return the JSON version of the embed
      */
     public JSONObject toJson() {
         JSONObject jsonEmbed = new JSONObject();
@@ -141,54 +150,54 @@ public class EmbedObject {
         jsonEmbed.put("description", this.getDescription());
         jsonEmbed.put("url", this.getUrl());
 
-        if (this.getColor() != null) {
-            Color color = this.getColor();
-            int rgb = color.getRed();
-            rgb = (rgb << 8) + color.getGreen();
-            rgb = (rgb << 8) + color.getBlue();
+        DiscordEmbed.Footer writtenFooter = this.getFooter();
+        DiscordEmbed.Image writtenImage = this.getImage();
+        DiscordEmbed.Thumbnail writtenThumbnail = this.getThumbnail();
+        DiscordEmbed.Author writtenAuthor = this.getAuthor();
+        List<DiscordEmbed.Field> writtenFields = this.getFields();
+        Color writtenColor = this.getColor();
+
+        if (writtenColor != null) {
+            int rgb = writtenColor.getRed();
+            rgb = (rgb << 8) + writtenColor.getGreen();
+            rgb = (rgb << 8) + writtenColor.getBlue();
 
             jsonEmbed.put("color", rgb);
         }
 
-        EmbedObject.Footer footer = this.getFooter();
-        EmbedObject.Image image = this.getImage();
-        EmbedObject.Thumbnail thumbnail = this.getThumbnail();
-        EmbedObject.Author author = this.getAuthor();
-        List<EmbedObject.Field> fields = this.getFields();
-
-        if (footer != null) {
+        if (writtenFooter != null) {
             JSONObject jsonFooter = new JSONObject();
 
-            jsonFooter.put("text", footer.getText());
-            jsonFooter.put("icon_url", footer.getIconUrl());
+            jsonFooter.put("text", writtenFooter.getText());
+            jsonFooter.put("icon_url", writtenFooter.getIconUrl());
             jsonEmbed.put("footer", jsonFooter);
         }
 
-        if (image != null) {
+        if (writtenImage != null) {
             JSONObject jsonImage = new JSONObject();
 
-            jsonImage.put("url", image.getUrl());
+            jsonImage.put("url", writtenImage.getUrl());
             jsonEmbed.put("image", jsonImage);
         }
 
-        if (thumbnail != null) {
+        if (writtenThumbnail != null) {
             JSONObject jsonThumbnail = new JSONObject();
 
-            jsonThumbnail.put("url", thumbnail.getUrl());
+            jsonThumbnail.put("url", writtenThumbnail.getUrl());
             jsonEmbed.put("thumbnail", jsonThumbnail);
         }
 
-        if (author != null) {
+        if (writtenAuthor != null) {
             JSONObject jsonAuthor = new JSONObject();
 
-            jsonAuthor.put("name", author.getName());
-            jsonAuthor.put("url", author.getUrl());
-            jsonAuthor.put("icon_url", author.getIconUrl());
+            jsonAuthor.put("name", writtenAuthor.getName());
+            jsonAuthor.put("url", writtenAuthor.getUrl());
+            jsonAuthor.put("icon_url", writtenAuthor.getIconUrl());
             jsonEmbed.put("author", jsonAuthor);
         }
 
         List<JSONObject> jsonFields = new ArrayList<>();
-        for (EmbedObject.Field field : fields) {
+        for (DiscordEmbed.Field field : writtenFields) {
             JSONObject jsonField = new JSONObject();
 
             jsonField.put("name", field.getName());
@@ -209,48 +218,40 @@ public class EmbedObject {
      * @param json The json being converted
      * @return The new embed
      */
-    public static EmbedObject fromJson(String json) {
+    public static DiscordEmbed fromJson(String json) {
         JsonObject jsonElement = JsonParser.parseString(json).getAsJsonObject();
-        EmbedObject embedObject = new EmbedObject();
+        DiscordEmbed discordEmbed = new DiscordEmbed();
 
-        if (jsonElement.has("title")) {
-            embedObject.setTitle(jsonElement.get("title").getAsString());
-        }
-
-        if (jsonElement.has("description")) {
-            embedObject.setDescription(jsonElement.get("description").getAsString());
-        }
-
-        if (jsonElement.has("url")) {
-            embedObject.setUrl(jsonElement.get("url").getAsString());
-        }
+        checkExistsMapThenApply(jsonElement, "title", JsonElement::getAsString, discordEmbed::setTitle);
+        checkExistsMapThenApply(jsonElement, "description", JsonElement::getAsString, discordEmbed::setDescription);
+        checkExistsMapThenApply(jsonElement, "url", JsonElement::getAsString, discordEmbed::setUrl);
 
         if (jsonElement.has("color")) {
             int rgb = jsonElement.get("color").getAsInt();
             int red = (rgb >> 16) & 0xFF;
             int green = (rgb >> 8) & 0xFF;
             int blue = rgb & 0xFF;
-            embedObject.setColor(new Color(red, green, blue));
+            discordEmbed.setColor(new Color(red, green, blue));
         }
 
         if (jsonElement.has("footer")) {
             JsonObject footer = jsonElement.get("footer").getAsJsonObject();
-            embedObject.setFooter(footer.get("text").getAsString(), footer.get("icon_url").getAsString());
+            discordEmbed.setFooter(footer.get("text").getAsString(), footer.get("icon_url").getAsString());
         }
 
         if (jsonElement.has("image")) {
             JsonObject image = jsonElement.get("image").getAsJsonObject();
-            embedObject.setImage(image.get("url").getAsString());
+            discordEmbed.setImage(image.get("url").getAsString());
         }
 
         if (jsonElement.has("thumbnail")) {
             JsonObject thumbnail = jsonElement.get("thumbnail").getAsJsonObject();
-            embedObject.setThumbnail(thumbnail.get("url").getAsString());
+            discordEmbed.setThumbnail(thumbnail.get("url").getAsString());
         }
 
         if (jsonElement.has("author")) {
             JsonObject author = jsonElement.get("author").getAsJsonObject();
-            embedObject.setAuthor(author.get("name").getAsString(), author.get("url").getAsString(), author.get(
+            discordEmbed.setAuthor(author.get("name").getAsString(), author.get("url").getAsString(), author.get(
                     "icon_url").getAsString());
         }
 
@@ -259,12 +260,22 @@ public class EmbedObject {
 
             for (JsonElement field : fields) {
                 JsonObject fieldObject = field.getAsJsonObject();
-                embedObject.addField(fieldObject.get("name").getAsString(), fieldObject.get("value").getAsString(),
+                discordEmbed.addField(fieldObject.get("name").getAsString(), fieldObject.get("value").getAsString(),
                                      fieldObject.get("inline").getAsBoolean());
             }
         }
 
-        return embedObject;
+        return discordEmbed;
+    }
+
+    private static <T> void checkExistsMapThenApply(JsonObject json, String key,
+                                             Function<JsonElement, T> mapper, Consumer<T> application) {
+        if (!json.has(key)) {
+            return;
+        }
+
+        T apply = mapper.apply(json.get(key));
+        application.accept(apply);
     }
 
     public static class Footer {
@@ -287,6 +298,10 @@ public class EmbedObject {
         public void setText(String text) {
             this.text = text;
         }
+
+        public void setIconUrl(String iconUrl) {
+            this.iconUrl = iconUrl;
+        }
     }
 
     public static class Thumbnail {
@@ -299,6 +314,10 @@ public class EmbedObject {
         public String getUrl() {
             return url;
         }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
     }
 
     public static class Image {
@@ -310,6 +329,10 @@ public class EmbedObject {
 
         public String getUrl() {
             return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
         }
     }
 
@@ -338,6 +361,14 @@ public class EmbedObject {
 
         public void setName(String name) {
             this.name = name;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+
+        public void setIconUrl(String iconUrl) {
+            this.iconUrl = iconUrl;
         }
     }
 
@@ -371,6 +402,10 @@ public class EmbedObject {
         public void setValue(String value) {
             this.value = value;
         }
+
+        public void setInline(boolean inline) {
+            this.inline = inline;
+        }
     }
 
     public static class Builder {
@@ -379,14 +414,16 @@ public class EmbedObject {
         private String description;
         private String url;
         private Color color;
-
         private Footer footer;
         private Thumbnail thumbnail;
         private Image image;
         private Author author;
-        private List<Field> fields = new ArrayList<>();
 
-        public Builder() {}
+        private final List<Field> fields = Lists.newArrayList();
+
+        protected Builder() {
+            // Reduce access to static method
+        }
 
         public Builder title(String title) {
             this.title = title;
@@ -433,40 +470,40 @@ public class EmbedObject {
             return this;
         }
 
-        public EmbedObject build() {
-            EmbedObject embedObject = new EmbedObject();
+        public DiscordEmbed build() {
+            DiscordEmbed discordEmbed = new DiscordEmbed();
 
-            embedObject.setTitle(this.title);
-            embedObject.setDescription(this.description);
-            embedObject.setUrl(this.url);
+            discordEmbed.setTitle(this.title);
+            discordEmbed.setDescription(this.description);
+            discordEmbed.setUrl(this.url);
 
             if (this.color != null) {
-                embedObject.setColor(this.color);
+                discordEmbed.setColor(this.color);
             }
 
             if (this.footer != null) {
-                embedObject.setFooter(this.footer);
+                discordEmbed.setFooter(this.footer);
             }
 
             if (this.thumbnail != null) {
-                embedObject.setThumbnail(this.thumbnail);
+                discordEmbed.setThumbnail(this.thumbnail);
             }
 
             if (this.image != null) {
-                embedObject.setImage(this.image);
+                discordEmbed.setImage(this.image);
             }
 
             if (this.author != null) {
-                embedObject.setAuthor(this.author);
+                discordEmbed.setAuthor(this.author);
             }
 
             if (!this.fields.isEmpty()) {
                 for (Field field : this.fields) {
-                    embedObject.addField(field);
+                    discordEmbed.addField(field);
                 }
             }
 
-            return embedObject;
+            return discordEmbed;
         }
     }
 }

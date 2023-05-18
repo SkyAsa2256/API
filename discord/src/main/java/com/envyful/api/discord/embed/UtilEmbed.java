@@ -2,7 +2,7 @@ package com.envyful.api.discord.embed;
 
 import com.envyful.api.config.Replacer;
 import com.envyful.api.config.UtilReplacer;
-import com.envyful.api.discord.EmbedObject;
+import com.envyful.api.discord.DiscordEmbed;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
@@ -21,7 +21,7 @@ public class UtilEmbed {
      * @param replacers Replacers for handling any configurable placeholders
      * @return The original embed
      */
-    public static MessageEmbed fromAPI(EmbedObject object, Replacer... replacers) {
+    public static MessageEmbed fromAPI(DiscordEmbed object, Replacer... replacers) {
         EmbedBuilder builder = new EmbedBuilder()
                 .setTitle(UtilReplacer.getReplacedText(object.getTitle(), replacers))
                 .setColor(object.getColor());
@@ -49,7 +49,7 @@ public class UtilEmbed {
             builder.setFooter(UtilReplacer.getReplacedText(object.getFooter().getText(), replacers), UtilReplacer.getReplacedText(object.getFooter().getIconUrl(), replacers));
         }
 
-        for (EmbedObject.Field field : object.getFields()) {
+        for (DiscordEmbed.Field field : object.getFields()) {
             builder.addField(UtilReplacer.getReplacedText(field.getName(), replacers),
                     UtilReplacer.getReplacedText(field.getValue(), replacers),
                     field.isInline());

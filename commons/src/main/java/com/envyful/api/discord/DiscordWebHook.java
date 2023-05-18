@@ -27,7 +27,7 @@ public class DiscordWebHook {
     private String username;
     private String avatarUrl;
     private boolean tts;
-    private List<EmbedObject> embeds = new ArrayList<>();
+    private List<DiscordEmbed> embeds = new ArrayList<>();
 
     /**
      * Constructs a new DiscordWebhook instance
@@ -84,7 +84,7 @@ public class DiscordWebHook {
      *
      * @param embed The embed being added
      */
-    public void addEmbed(EmbedObject embed) {
+    public void addEmbed(DiscordEmbed embed) {
         this.embeds.add(embed);
     }
 
@@ -112,7 +112,7 @@ public class DiscordWebHook {
         webHook.setAvatarUrl(this.avatarUrl);
         webHook.setTts(this.tts);
 
-        for (EmbedObject embed : this.embeds) {
+        for (DiscordEmbed embed : this.embeds) {
             webHook.addEmbed(embed);
         }
 
@@ -159,7 +159,7 @@ public class DiscordWebHook {
         if (!this.embeds.isEmpty()) {
             List<JSONObject> embedObjects = new ArrayList<>();
 
-            for (EmbedObject embed : this.embeds) {
+            for (DiscordEmbed embed : this.embeds) {
                 embedObjects.add(embed.toJson());
             }
 
@@ -203,7 +203,7 @@ public class DiscordWebHook {
         if (jsonElement.has("embeds")) {
             for (JsonElement embeds : jsonElement.get("embeds").getAsJsonArray()) {
                 JsonObject asJsonObject = embeds.getAsJsonObject();
-                builder.embeds(EmbedObject.fromJson(asJsonObject.toString()));
+                builder.embeds(DiscordEmbed.fromJson(asJsonObject.toString()));
             }
         }
 
@@ -222,7 +222,7 @@ public class DiscordWebHook {
         private String username;
         private String avatarUrl;
         private boolean tts;
-        private List<EmbedObject> embeds = new ArrayList<>();
+        private List<DiscordEmbed> embeds = new ArrayList<>();
 
         Builder() {}
 
@@ -251,7 +251,7 @@ public class DiscordWebHook {
             return this;
         }
 
-        public Builder embeds(EmbedObject... embeds) {
+        public Builder embeds(DiscordEmbed... embeds) {
             this.embeds.addAll(Arrays.asList(embeds));
             return this;
         }
@@ -263,7 +263,7 @@ public class DiscordWebHook {
             webHook.setAvatarUrl(this.avatarUrl);
             webHook.setTts(this.tts);
 
-            for (EmbedObject embed : this.embeds) {
+            for (DiscordEmbed embed : this.embeds) {
                 webHook.addEmbed(embed);
             }
 

@@ -31,13 +31,15 @@ public class UtilReplacer {
      */
     public static String getReplacedText(String original, Replacer... replacers) {
         if (original == null) {
-            return original;
+            return null;
         }
+
+        String updatedText = original;
 
         for (Replacer replacer : replacers) {
-            original = replacer.replaceText(original);
+            updatedText = replacer.replaceText(original);
         }
 
-        return original;
+        return updatedText;
     }
 }

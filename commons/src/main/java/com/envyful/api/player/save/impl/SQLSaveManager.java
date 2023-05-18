@@ -193,7 +193,6 @@ public class SQLSaveManager<T> extends AbstractSaveManager<T> {
                 continue;
             }
 
-            declaredField.setAccessible(true);
             ColumnData columnData = declaredField.getAnnotation(ColumnData.class);
             SaveHandler saveHandler = declaredField.getAnnotation(SaveHandler.class);
             String name;

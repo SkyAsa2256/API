@@ -7,7 +7,8 @@ import java.lang.annotation.Target;
 
 /**
  *
- * Flags a command class as a "child" (sub-command) class so that when registering classes it's not attempted to be
+ * Flags a command class as a "child" (sub-command)
+ * class so that when registering classes it's not attempted to be
  * registered as a main command.
  *
  */

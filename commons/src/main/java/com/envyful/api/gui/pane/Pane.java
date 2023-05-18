@@ -6,7 +6,8 @@ import javax.annotation.Nullable;
 
 /**
  *
- * An interface representing a section of the {@link com.envyful.api.gui.Gui} where {@link Displayable}s can be placed.
+ * An interface representing a section
+ * of the {@link com.envyful.api.gui.Gui} where {@link Displayable}s can be placed.
  *
  */
 public interface Pane {
@@ -14,7 +15,8 @@ public interface Pane {
     /**
      *
      * Adds the displayable item to a slot in the GUI.
-     * The position of the item varies depending on the implementation of the Pane
+     * The position of the item varies depending
+     * on the implementation of the Pane
      *
      * @param displayable The displayable to add
      */
@@ -33,7 +35,8 @@ public interface Pane {
     /**
      *
      * Sets the displayable at the position to the new displayable provided.
-     * The meaning of the pos value varies depending on the implementation of the pane
+     * The meaning of the pos value varies
+     * depending on the implementation of the pane
      *
      * @param pos the new position
      * @param displayable The item to display at X and Y

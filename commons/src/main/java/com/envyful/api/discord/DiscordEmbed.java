@@ -222,9 +222,12 @@ public class DiscordEmbed {
         JsonObject jsonElement = JsonParser.parseString(json).getAsJsonObject();
         DiscordEmbed discordEmbed = new DiscordEmbed();
 
-        checkExistsMapThenApply(jsonElement, "title", JsonElement::getAsString, discordEmbed::setTitle);
-        checkExistsMapThenApply(jsonElement, "description", JsonElement::getAsString, discordEmbed::setDescription);
-        checkExistsMapThenApply(jsonElement, "url", JsonElement::getAsString, discordEmbed::setUrl);
+        checkExistsMapThenApply(jsonElement, "title",
+                JsonElement::getAsString, discordEmbed::setTitle);
+        checkExistsMapThenApply(jsonElement, "description",
+                JsonElement::getAsString, discordEmbed::setDescription);
+        checkExistsMapThenApply(jsonElement, "url",
+                JsonElement::getAsString, discordEmbed::setUrl);
 
         if (jsonElement.has("color")) {
             int rgb = jsonElement.get("color").getAsInt();
@@ -269,7 +272,8 @@ public class DiscordEmbed {
     }
 
     private static <T> void checkExistsMapThenApply(JsonObject json, String key,
-                                             Function<JsonElement, T> mapper, Consumer<T> application) {
+                                             Function<JsonElement, T> mapper,
+                                                    Consumer<T> application) {
         if (!json.has(key)) {
             return;
         }

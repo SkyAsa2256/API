@@ -11,19 +11,24 @@ import java.util.Map;
 
 /**
  *
- * This interface is designed to provide basic useful methods for all the different player implementations independent
- * of the platform details (i.e. auto-translates all text sent to the player, and makes it less complicated to do
+ * This interface is designed to provide basic useful
+ * methods for all the different player implementations independent
+ * of the platform details (i.e. auto-translates all text sent
+ * to the player, and makes it less complicated to do
  * different functions such as sending titles etc.).
- *
- * It also stores {@link PlayerAttribute} from the plugin implementation that will include specific data from the
- * plugin / mod. The attributes stored by the plugin's / manager's class as to allow each mod / plugin to have multiple
+ * <br>
+ * It also stores {@link PlayerAttribute} from the plugin implementation
+ * that will include specific data from the
+ * plugin / mod. The attributes stored by the plugin's / manager's
+ * class as to allow each mod / plugin to have multiple
  * attributes for storing different sets of data.
  *
  * @param <T> The specific platform implementation of the player object.
  */
 public abstract class AbstractEnvyPlayer<T> implements EnvyPlayer<T> {
 
-    protected final Map<Class<?>, Attribute<?, ?>> attributes = Maps.newHashMap();
+    protected final Map<Class<?>, Attribute<?, ?>> attributes =
+            Maps.newHashMap();
 
     protected final SaveManager<T> saveManager;
 
@@ -50,20 +55,28 @@ public abstract class AbstractEnvyPlayer<T> implements EnvyPlayer<T> {
 
     @Override
     public void invalidateAttribute(Attribute<?, ?> attribute) {
-        this.attributes.remove(this.saveManager.getManager(attribute).getClass());
+        this.attributes.remove(
+                this.saveManager.getManager(attribute).getClass()
+        );
     }
 
     @Override
-    public <A extends Attribute<B, ?>, B> A loadAttribute(Class<? extends A> attributeClass, B id) {
+    public <A extends Attribute<B, ?>, B> A loadAttribute(
+            Class<? extends A> attributeClass, B id) {
         A loadedAttribute = this.saveManager.loadAttribute(attributeClass, id);
 
-        this.attributes.put(this.saveManager.getManager(loadedAttribute).getClass(), loadedAttribute);
+        this.attributes.put(
+                this.saveManager.getManager(loadedAttribute).getClass(),
+                loadedAttribute
+        );
         return loadedAttribute;
     }
 
     @Override
     public <A extends Attribute<?, ?>> void setAttribute(A attribute) {
-        this.attributes.put(this.saveManager.getManager(attribute).getClass(), attribute);
+        this.attributes.put(
+                this.saveManager.getManager(attribute).getClass(), attribute
+        );
     }
 
     @Override

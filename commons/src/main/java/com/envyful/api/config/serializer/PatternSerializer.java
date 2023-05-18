@@ -14,12 +14,14 @@ public class PatternSerializer extends ScalarSerializer<Pattern> {
     }
 
     @Override
-    public Pattern deserialize(Type type, Object obj) throws SerializationException {
+    public Pattern deserialize(Type type, Object obj)
+            throws SerializationException {
         return Pattern.compile((String) obj);
     }
 
     @Override
-    protected Object serialize(Pattern item, Predicate<Class<?>> typeSupported) {
+    protected Object serialize(
+            Pattern item, Predicate<Class<?>> typeSupported) {
         return item.pattern();
     }
 }

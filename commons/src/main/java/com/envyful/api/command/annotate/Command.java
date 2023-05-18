@@ -7,7 +7,8 @@ import java.lang.annotation.Target;
 
 /**
  *
- * Main command annotation for specifying a command class. Specified the name, aliases, and description of the command.
+ * Main command annotation for specifying a command class.
+ * Specified the name, aliases, and description of the command.
  *
  */
 @Retention(RetentionPolicy.RUNTIME)

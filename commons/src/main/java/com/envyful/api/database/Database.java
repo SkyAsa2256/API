@@ -22,7 +22,8 @@ public interface Database {
      * @throws SQLException An error if there's no connections
      * @throws UnsupportedOperationException If this isn't an SQL database
      */
-    default Connection getConnection() throws SQLException,UnsupportedOperationException {
+    default Connection getConnection()
+            throws SQLException,UnsupportedOperationException {
         throw new UnsupportedOperationException("Not an SQL database");
     }
 
@@ -33,7 +34,8 @@ public interface Database {
      * @return The jedis connection
      * @throws UnsupportedOperationException If this database isn't redis lol
      */
-    default StatefulRedisConnection<String, String> getRedis() throws UnsupportedOperationException {
+    default StatefulRedisConnection<String, String> getRedis()
+            throws UnsupportedOperationException {
         throw new UnsupportedOperationException("Not a redis database");
     }
 
@@ -78,7 +80,8 @@ public interface Database {
      * @param message The message
      * @throws UnsupportedOperationException If this database isn't redis
      */
-    default void publish(String channel, String message) throws UnsupportedOperationException {
+    default void publish(String channel, String message)
+            throws UnsupportedOperationException {
         throw new UnsupportedOperationException("Not a redis database");
     }
 

@@ -8,7 +8,8 @@ import java.util.concurrent.CompletableFuture;
 
 /**
  *
- * An interface designed for storing specific data for each mod / plugin about a player.
+ * An interface designed for storing specific
+ * data for each mod / plugin about a player.
  *
  *
  * @param <A> The manager type
@@ -39,10 +40,6 @@ public abstract class PlayerAttribute<A, B extends EnvyPlayer<C>, C>
         return CompletableFuture.completedFuture(this.id);
     }
 
-    /**
-     * @deprecated Use {@link Attribute#getId()}
-     */
-    @Deprecated
     public UUID getUuid() {
         return this.id;
     }

@@ -4,7 +4,8 @@ import javax.annotation.Nonnull;
 
 /**
  *
- * A high level interface for replacing text in a String, or collection of Strings
+ * A high level interface for replacing text in a
+ * String, or collection of Strings
  *
  */
 public interface Placeholder {

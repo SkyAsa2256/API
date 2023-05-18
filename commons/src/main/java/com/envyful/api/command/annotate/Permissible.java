@@ -7,7 +7,8 @@ import java.lang.annotation.Target;
 
 /**
  *
- * Annotation for specifying the permission required for the whole command, or the specific sub-command given by a method
+ * Annotation for specifying the permission required for
+ * the whole command, or the specific sub-command given by a method
  *
  */
 @Retention(RetentionPolicy.RUNTIME)

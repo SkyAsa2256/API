@@ -25,7 +25,9 @@ public enum DatabaseType {
             String password = node.node("password").getString();
             String databaseName = node.node("database").getString();
 
-            return new SimpleHikariDatabase(id, ip, port, username, password, databaseName);
+            return new SimpleHikariDatabase(
+                    id, ip, port, username, password, databaseName
+            );
         }
     },
     REDIS("redis") {

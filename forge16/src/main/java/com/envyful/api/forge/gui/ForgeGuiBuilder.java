@@ -23,9 +23,11 @@ public class ForgeGuiBuilder implements Gui.Builder {
 
     private ITextComponent title;
     private int height = 5;
-    private List<Pane> panes = Lists.newArrayList();
     private PlayerManager<ForgeEnvyPlayer, ServerPlayerEntity> playerManager;
-    private ForgeCloseConsumer closeConsumer = (ForgeCloseConsumer) GuiFactory.closeConsumerBuilder().build();
+    private ForgeCloseConsumer closeConsumer =
+            (ForgeCloseConsumer) GuiFactory.empty();
+
+    private final List<Pane> panes = Lists.newArrayList();
 
     @Override
     public Gui.Builder title(Object title) {
@@ -52,9 +54,12 @@ public class ForgeGuiBuilder implements Gui.Builder {
         return this;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Gui.Builder setPlayerManager(PlayerManager<?, ?> playerManager) {
-        this.playerManager = (PlayerManager<ForgeEnvyPlayer, ServerPlayerEntity>) playerManager;
+        this.playerManager =
+                (PlayerManager<ForgeEnvyPlayer, ServerPlayerEntity>)
+                        playerManager;
         return this;
     }
 
@@ -67,9 +72,14 @@ public class ForgeGuiBuilder implements Gui.Builder {
     @Override
     public Gui build() {
         if (this.playerManager == null) {
-            throw new IllegalArgumentException("Cannot build GUI without PlayerManager being set");
+            throw new IllegalArgumentException(
+                    "Cannot build GUI without PlayerManager being set"
+            );
         }
 
-        return new ForgeGui(this.title, this.height, this.playerManager, this.closeConsumer, this.panes.toArray(new Pane[0]));
+        return new ForgeGui(
+                this.title, this.height, this.playerManager,
+                this.closeConsumer, this.panes.toArray(new Pane[0])
+        );
     }
 }

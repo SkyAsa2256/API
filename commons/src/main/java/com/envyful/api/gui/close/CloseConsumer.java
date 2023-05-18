@@ -63,7 +63,8 @@ public interface CloseConsumer<A extends EnvyPlayer<B>, B> {
 
         /**
          *
-         * Sets if the close consumer should handle the task synchronously, or asyncrhonously
+         * Sets if the close consumer should handle
+         * the task synchronously, or asynchronously
          *
          * @param async If the task is async
          * @return The builder

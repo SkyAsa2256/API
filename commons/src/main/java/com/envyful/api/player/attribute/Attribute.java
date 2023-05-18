@@ -11,6 +11,7 @@ import java.util.concurrent.CompletableFuture;
  * @param <A> The unique identifier type
  * @param <B> The manager type
  */
+@SuppressWarnings({"unused", "unchecked"})
 public interface Attribute<A, B> {
 
     CompletableFuture<A> getId(UUID playerUuid);

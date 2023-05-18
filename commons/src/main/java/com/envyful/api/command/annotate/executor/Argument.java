@@ -7,7 +7,8 @@ import java.lang.annotation.Target;
 
 /**
  *
- * Annotation to be used on parameters for specifying particular argument types for injection purposes.
+ * Annotation to be used on parameters for
+ * specifying particular argument types for injection purposes.
  *
  */
 @Retention(RetentionPolicy.RUNTIME)

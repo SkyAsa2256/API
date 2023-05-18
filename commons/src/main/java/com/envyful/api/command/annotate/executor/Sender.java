@@ -7,7 +7,8 @@ import java.lang.annotation.Target;
 
 /**
  *
- * The annotation for specifying that the parameter after this annotation represents the Sender's class type (for
+ * The annotation for specifying that the
+ * parameter after this annotation represents the Sender's class type (for
  * injectors to then parse if non-typical platform type)
  *
  */

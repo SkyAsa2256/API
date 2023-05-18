@@ -12,9 +12,15 @@ import com.envyful.api.gui.pane.type.PagedPane;
  * A static proxy class for an easy way to get new builder instances
  *
  */
+@SuppressWarnings("unchecked")
 public class GuiFactory {
 
     private static PlatformGuiFactory<?> platformFactory = null;
+    private static CloseConsumer<?, ?> empty = null;
+
+    private GuiFactory() {
+        throw new UnsupportedOperationException("Static factory");
+    }
 
     /**
      *
@@ -32,7 +38,8 @@ public class GuiFactory {
      *
      * @param platformFactory The platform factory instance
      */
-    public static void setPlatformFactory(PlatformGuiFactory<?> platformFactory) {
+    public static void setPlatformFactory(
+            PlatformGuiFactory<?> platformFactory) {
         GuiFactory.platformFactory = platformFactory;
     }
 
@@ -45,28 +52,25 @@ public class GuiFactory {
      * @return The displayable
      */
     public static <T> Displayable displayable(T t) {
-        if (platformFactory == null) {
-            throw new RuntimeException("Platform's factory hasn't been set yet!");
-        }
-
-        return ((Displayable.Builder<T>) platformFactory.displayableBuilder()).itemStack(t).build();
+        checkThenThrowSetupException();
+        return ((Displayable.Builder<T>) platformFactory.displayableBuilder())
+                .itemStack(t).build();
     }
 
 
     /**
      *
-     * Gets a new instance of the playform's displayable builder with the given item
+     * Gets a new instance of the playform's displayable
+     * builder with the given item
      *
      * @param t The item provided
      * @param <T> The type for the displayable
      * @return The builder
      */
     public static <T> Displayable.Builder<T> displayableBuilder(T t) {
-        if (platformFactory == null) {
-            throw new RuntimeException("Platform's factory hasn't been set yet!");
-        }
-
-        return ((Displayable.Builder<T>) platformFactory.displayableBuilder()).itemStack(t);
+        checkThenThrowSetupException();
+        return ((Displayable.Builder<T>) platformFactory.displayableBuilder())
+                .itemStack(t);
     }
 
     /**
@@ -77,12 +81,10 @@ public class GuiFactory {
      * @return The new displayable builder
      * @param <T> The type for the displayable
      */
-    @SuppressWarnings("unchecked")
-    public static <T> Displayable.Builder<T> displayableBuilder(Class<T> unused) {
-        if (platformFactory == null) {
-            throw new RuntimeException("Platform's factory hasn't been set yet!");
-        }
-
+    @SuppressWarnings({"unchecked", "unused"})
+    public static <T> Displayable.Builder<T> displayableBuilder(
+            Class<T> unused) {
+        checkThenThrowSetupException();
         return (Displayable.Builder<T>) platformFactory.displayableBuilder();
     }
 
@@ -93,10 +95,7 @@ public class GuiFactory {
      * @return The new pane builder
      */
     public static Pane.Builder paneBuilder() {
-        if (platformFactory == null) {
-            throw new RuntimeException("Platform's factory hasn't been set yet!");
-        }
-
+        checkThenThrowSetupException();
         return platformFactory.paneBuilder();
     }
 
@@ -107,10 +106,7 @@ public class GuiFactory {
      * @return The new paged pane builder
      */
     public static PagedPane.Builder pagedPaneBuilder() {
-        if (platformFactory == null) {
-            throw new RuntimeException("Platform's factory hasn't been set yet!");
-        }
-
+        checkThenThrowSetupException();
         return platformFactory.pagedPaneBuilder();
     }
 
@@ -121,10 +117,7 @@ public class GuiFactory {
      * @return The new GUI builder
      */
     public static Gui.Builder guiBuilder() {
-        if (platformFactory == null) {
-            throw new RuntimeException("Platform's factory hasn't been set yet!");
-        }
-
+        checkThenThrowSetupException();
         return platformFactory.guiBuilder();
     }
 
@@ -135,10 +128,7 @@ public class GuiFactory {
      * @return The builder
      */
     public static TickHandler.Builder tickBuilder() {
-        if (platformFactory == null) {
-            throw new RuntimeException("Platform's factory hasn't been set yet!");
-        }
-
+        checkThenThrowSetupException();
         return platformFactory.tickBuilder();
     }
 
@@ -149,10 +139,33 @@ public class GuiFactory {
      * @return The builder instance
      */
     public static CloseConsumer.Builder<?, ?> closeConsumerBuilder() {
-        if (platformFactory == null) {
-            throw new RuntimeException("Platform's factory hasn't been set yet!");
+        checkThenThrowSetupException();
+        return platformFactory.closeConsumerBuilder();
+    }
+
+    /**
+     *
+     * Gets a cached empty instance
+     *
+     * @return The empty instance
+     */
+    public static CloseConsumer<?, ?> empty() {
+        checkThenThrowSetupException();
+
+        if (empty == null) {
+            empty = closeConsumerBuilder().build();
         }
 
-        return platformFactory.closeConsumerBuilder();
+        return empty;
+    }
+
+    private static void checkThenThrowSetupException() {
+        if (platformFactory != null) {
+            return;
+        }
+
+        throw new UnsupportedOperationException(
+                "Platform's factory hasn't been set yet!"
+        );
     }
 }

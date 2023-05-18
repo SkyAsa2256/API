@@ -74,7 +74,7 @@ public class ForgeTaskBuilder {
      */
     public void start() {
         if (this.task == null) {
-            throw new RuntimeException("Task cannot be null");
+            throw new IllegalArgumentException("Task cannot be null");
         }
 
         if (this.started) {
@@ -87,7 +87,7 @@ public class ForgeTaskBuilder {
         UtilConcurrency.runRepeatingTask(runnable, 50L, 50L);
     }
 
-    private final class RepeatedRunnable implements Runnable {
+    private static final class RepeatedRunnable implements Runnable {
 
         private final ForgeTaskBuilder taskBuilder;
 

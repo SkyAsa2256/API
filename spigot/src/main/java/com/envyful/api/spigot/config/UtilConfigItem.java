@@ -98,7 +98,7 @@ public class UtilConfigItem {
             }
 
             Enchantment enchantment = Enchantment.getByKey(NamespacedKey.fromString(enchantName));
-            int parsedLevel = UtilParse.parseInteger(level).orElse(1);
+            int parsedLevel = UtilParse.parseInt(level).orElse(1);
 
             if (enchantment == null) {
                 continue;

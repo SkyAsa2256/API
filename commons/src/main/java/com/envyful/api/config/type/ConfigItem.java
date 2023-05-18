@@ -53,11 +53,11 @@ public class ConfigItem {
     }
 
     public int getAmount() {
-        return UtilParse.parseInteger(this.amount).orElse(0);
+        return UtilParse.parseInt(this.amount).orElse(0);
     }
 
     public int getAmount(List<Placeholder> placeholders) {
-        List<Integer> integers = PlaceholderFactory.handlePlaceholders(Collections.singletonList(amount), s -> UtilParse.parseInteger(s).orElse(0), placeholders);
+        List<Integer> integers = PlaceholderFactory.handlePlaceholders(Collections.singletonList(amount), s -> UtilParse.parseInt(s).orElse(0), placeholders);
 
         if (integers.isEmpty()) {
             return 0;
@@ -67,11 +67,11 @@ public class ConfigItem {
     }
 
     public byte getDamage() {
-        return (byte) (int) UtilParse.parseInteger(this.damage).orElse(0);
+        return (byte) (int) UtilParse.parseInt(this.damage).orElse(0);
     }
 
     public byte getDamage(List<Placeholder> placeholders) {
-        List<Integer> integers = PlaceholderFactory.handlePlaceholders(Collections.singletonList(damage), s -> UtilParse.parseInteger(s).orElse(0), placeholders);
+        List<Integer> integers = PlaceholderFactory.handlePlaceholders(Collections.singletonList(damage), s -> UtilParse.parseInt(s).orElse(0), placeholders);
 
         if (integers.isEmpty()) {
             return 0;

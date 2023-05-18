@@ -101,7 +101,7 @@ public class UtilConfigItem {
             }
 
             Enchantment enchantment = Registry.ENCHANTMENT.getOptional(new ResourceLocation(enchantName.toLowerCase())).orElse(null);
-            int parsedLevel = UtilParse.parseInteger(level).orElse(1);
+            int parsedLevel = UtilParse.parseInt(level).orElse(1);
 
             if (enchantment == null) {
                 continue;
@@ -201,7 +201,7 @@ public class UtilConfigItem {
                 return item;
             }
 
-            int integer = UtilParse.parseInteger(data).orElse(-1);
+            int integer = UtilParse.parseInt(data).orElse(-1);
 
             if (integer == -1) {
                 return null;

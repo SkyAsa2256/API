@@ -24,7 +24,7 @@ public class Leaderboard<A> {
     private final long cacheDuration;
     private final String extraClauses;
     private final SQLFunction<ResultSet, A> formatter;
-    private final Map<Integer, List<A>> cachedEntries;
+    private final Map<Integer, CachedEntry<A>> cachedEntries;
 
     private Leaderboard(Database database, String table, Order order, String orderColumn, int perPage, long cacheDuration, String extraClauses, SQLFunction<ResultSet, A> formatter) {
         this.database = database;
@@ -39,13 +39,17 @@ public class Leaderboard<A> {
     }
 
     public List<A> getPage(int page) {
-        List<A> cachedPage = this.cachedEntries.get(page);
+        CachedEntry<A> cachedPage = this.cachedEntries.get(page);
 
         if (cachedPage != null) {
-            return cachedPage;
+            if ((System.currentTimeMillis() - cachedPage.getCreatedTime()) <= this.cacheDuration) {
+                return cachedPage.getElements();
+            }
         }
 
-        return this.loadPage(page);
+        List<A> entries = this.loadPage(page);
+        this.cachedEntries.put(page, new CachedEntry<>(entries, System.currentTimeMillis()));
+        return entries;
     }
 
     public List<A> loadPage(int page) {
@@ -63,7 +67,6 @@ public class Leaderboard<A> {
                 ++counter;
             }
 
-            this.cachedEntries.put(page, data);
             return data;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -136,6 +139,25 @@ public class Leaderboard<A> {
         public Leaderboard<A> build() {
             return new Leaderboard<>(this.database, this.table, this.order, this.orderColumn, this.perPage,
                     this.cacheDuration, extraClauses, this.formatter);
+        }
+    }
+
+    public static class CachedEntry<A> {
+
+        private final List<A> elements;
+        private final long createdTime;
+
+        public CachedEntry(List<A> elements, long createdTime) {
+            this.elements = elements;
+            this.createdTime = createdTime;
+        }
+
+        public List<A> getElements() {
+            return this.elements;
+        }
+
+        public long getCreatedTime() {
+            return this.createdTime;
         }
     }
 }

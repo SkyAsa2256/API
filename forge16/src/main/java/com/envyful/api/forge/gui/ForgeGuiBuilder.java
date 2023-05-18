@@ -34,7 +34,7 @@ public class ForgeGuiBuilder implements Gui.Builder {
         } else if (title instanceof String) {
             this.title = UtilChatColour.colour((String) title);
         } else {
-            throw new RuntimeException("Unsupported title type given");
+            throw new IllegalArgumentException("Unsupported title type given");
         }
 
         return this;
@@ -67,7 +67,7 @@ public class ForgeGuiBuilder implements Gui.Builder {
     @Override
     public Gui build() {
         if (this.playerManager == null) {
-            throw new RuntimeException("Cannot build GUI without PlayerManager being set");
+            throw new IllegalArgumentException("Cannot build GUI without PlayerManager being set");
         }
 
         return new ForgeGui(this.title, this.height, this.playerManager, this.closeConsumer, this.panes.toArray(new Pane[0]));

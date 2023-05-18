@@ -18,7 +18,6 @@ public class UtilParse {
     private static final Pattern LONG_PATTERN = Pattern.compile("^[-+]?\\d+$\n");
     private static final Pattern DOUBLE_PATTERN = Pattern.compile("^[-+]?\\d+(\\.\\d+)?$");
 
-
     /**
      *
      * Parses the arg to an integer
@@ -27,6 +26,7 @@ public class UtilParse {
      * @return The potential parsed integer
      * @deprecated Use {@link UtilParse#parseInt(String)}
      */
+    @Deprecated
     public static Optional<Integer> parseInteger(String arg) {
         if (arg == null) {
             return Optional.empty();

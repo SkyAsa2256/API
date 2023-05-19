@@ -127,7 +127,9 @@ public class DiscordWebHook {
      */
     public void execute() throws IOException {
         if (this.content == null && this.embeds.isEmpty()) {
-            throw new IllegalArgumentException("Set content or add at least one EmbedObject");
+            throw new IllegalArgumentException(
+                    "Set content or add at least one EmbedObject"
+            );
         }
 
         JSONObject json = this.toJson();
@@ -144,7 +146,7 @@ public class DiscordWebHook {
         stream.flush();
         stream.close();
 
-        connection.getInputStream().close(); //I'm not sure why but it doesn't work without getting the InputStream
+        connection.getInputStream().close();
         connection.disconnect();
     }
 

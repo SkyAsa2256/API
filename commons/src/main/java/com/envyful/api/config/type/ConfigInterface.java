@@ -19,11 +19,14 @@ public class ConfigInterface {
     protected String title = "";
     protected int height = 6;
     protected String fillType = FillType.BLOCK.name();
-    protected Map<String, ConfigItem> fillerItems = Maps.newHashMap(ImmutableMap.of("one", new ConfigItem()));
+    protected Map<String, ConfigItem> fillerItems = Maps.newHashMap(
+            ImmutableMap.of("one", new ConfigItem()));
 
     public ConfigInterface() {}
 
-    public ConfigInterface(String title, int height, String fillType, Map<String, ConfigItem> fillerItems) {
+    public ConfigInterface(String title, int height,
+                           String fillType,
+                           Map<String, ConfigItem> fillerItems) {
         this.title = title;
         this.height = height;
         this.fillType = fillType;
@@ -43,14 +46,17 @@ public class ConfigInterface {
     }
 
     public List<ConfigItem> getFillerItems() {
-        return this.getFillType().convert(Lists.newArrayList(this.fillerItems.values()), this.getHeight());
+        return this.getFillType().convert(
+                Lists.newArrayList(this.fillerItems.values()),
+                this.getHeight());
     }
 
     public enum FillType {
 
         BLOCK() {
             @Override
-            public List<ConfigItem> convert(List<ConfigItem> conversion, int height) {
+            public List<ConfigItem> convert(List<ConfigItem> conversion,
+                                            int height) {
                 List<ConfigItem> configItems = Lists.newArrayList();
                 ConfigItem primary = conversion.get(0);
 
@@ -65,13 +71,15 @@ public class ConfigInterface {
         },
         CUSTOM() {
             @Override
-            public List<ConfigItem> convert(List<ConfigItem> conversion, int height) {
+            public List<ConfigItem> convert(List<ConfigItem> conversion,
+                                            int height) {
                 return conversion;
             }
         },
         ALTERNATING() {
             @Override
-            public List<ConfigItem> convert(List<ConfigItem> conversion, int height) {
+            public List<ConfigItem> convert(List<ConfigItem> conversion,
+                                            int height) {
                 List<ConfigItem> configItems = Lists.newArrayList();
                 ConfigItem primary = conversion.get(0);
                 ConfigItem secondary = conversion.get(1);
@@ -91,7 +99,8 @@ public class ConfigInterface {
         },
         CHECKERED() {
             @Override
-            public List<ConfigItem> convert(List<ConfigItem> conversion, int height) {
+            public List<ConfigItem> convert(List<ConfigItem> conversion,
+                                            int height) {
                 List<ConfigItem> configItems = Lists.newArrayList();
                 ConfigItem primary = conversion.get(0);
                 ConfigItem secondary = conversion.get(1);
@@ -112,6 +121,7 @@ public class ConfigInterface {
 
         ;
 
-        public abstract List<ConfigItem> convert(List<ConfigItem> conversion, int height);
+        public abstract List<ConfigItem> convert(List<ConfigItem> conversion,
+                                                 int height);
     }
 }

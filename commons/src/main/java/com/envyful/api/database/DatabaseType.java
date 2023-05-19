@@ -43,10 +43,12 @@ public enum DatabaseType {
 
     ;
 
-    private static final Map<String, DatabaseType> DATABASES = Maps.newHashMap();
+    private static final Map<String, DatabaseType> DATABASES =
+            Maps.newHashMap();
 
     static {
-        Arrays.stream(values()).forEach(type -> DATABASES.put(type.getConfigId().toLowerCase(), type));
+        Arrays.stream(values()).forEach(type ->
+                DATABASES.put(type.getConfigId().toLowerCase(), type));
     }
 
     private final String configId;

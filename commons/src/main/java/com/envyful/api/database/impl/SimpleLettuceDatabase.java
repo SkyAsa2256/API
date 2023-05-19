@@ -23,24 +23,33 @@ public class SimpleLettuceDatabase implements Database {
 
     private final RedisClient pool;
     private final RedisURI uri;
-    private final StatefulRedisPubSubConnection<String, String> subscribeConnection;
-    private final StatefulRedisPubSubConnection<String, String> publishConnection;
-    private final Map<String, List<BiConsumer<String, String>>> subscriptions = Maps.newConcurrentMap();
+    private final StatefulRedisPubSubConnection<String, String>
+            subscribeConnection;
+    private final StatefulRedisPubSubConnection<String, String>
+            publishConnection;
+    private final Map<String, List<BiConsumer<String, String>>>
+            subscriptions = Maps.newConcurrentMap();
 
     public SimpleLettuceDatabase(RedisDatabaseDetails details) {
         this(details.getIp(), details.getPort(), details.getPassword());
     }
 
     public SimpleLettuceDatabase(String host, int port, String password) {
-        this.uri = RedisURI.builder().withHost(host).withPort(port).withPassword(password).build();
+        this.uri = RedisURI.builder()
+                .withHost(host)
+                .withPort(port)
+                .withPassword(password)
+                .build();
         this.pool = RedisClient.create(this.uri);
         this.subscribeConnection = pool.connectPubSub();
         this.publishConnection = pool.connectPubSub();
 
-        subscribeConnection.addListener(new RedisPubSubAdapter<String, String>() {
+        subscribeConnection.addListener(new RedisPubSubAdapter<>() {
             @Override
             public void message(String channel, String message) {
-                for (BiConsumer<String, String> handler : subscriptions.getOrDefault(channel, Collections.emptyList())) {
+                for (BiConsumer<String, String> handler :
+                        subscriptions.getOrDefault(channel,
+                                Collections.emptyList())) {
                     handler.accept(channel, message);
                 }
             }
@@ -48,7 +57,8 @@ public class SimpleLettuceDatabase implements Database {
     }
 
     @Override
-    public StatefulRedisConnection<String, String> getRedis() throws UnsupportedOperationException {
+    public StatefulRedisConnection<String, String> getRedis()
+            throws UnsupportedOperationException {
         return this.pool.connect();
     }
 
@@ -63,7 +73,8 @@ public class SimpleLettuceDatabase implements Database {
     }
 
     @Override
-    public void publish(String channel, String message) throws UnsupportedOperationException {
+    public void publish(String channel, String message)
+            throws UnsupportedOperationException {
         this.publishConnection.async().publish(channel, message);
     }
 
@@ -84,12 +95,17 @@ public class SimpleLettuceDatabase implements Database {
             this.subscribeConnection.async().subscribe(subscribe.value());
 
             for (String s : subscribe.value()) {
-                this.subscriptions.computeIfAbsent(s, ___ -> Lists.newArrayList())
+                this.subscriptions.computeIfAbsent(s,
+                                unused -> Lists.newArrayList())
                         .add((channel, message) -> {
                             try {
                                 declaredMethod.invoke(o, channel, message);
-                            } catch (InvocationTargetException | IllegalAccessException e) {
-                                UtilLogger.getLogger().error("Jedis error in '{}' for '{}'", channel, message);
+                            } catch (InvocationTargetException |
+                                     IllegalAccessException e) {
+                                UtilLogger.getLogger().error(
+                                        "Jedis error in '{}' for '{}'",
+                                        channel, message
+                                );
                                 e.printStackTrace();
                             }
                         });

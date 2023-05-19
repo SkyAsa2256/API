@@ -12,16 +12,20 @@ import java.util.concurrent.TimeUnit;
 
 public class UtilTimeFormat {
 
-    private static final DateFormat DATE_FORMATTER = new SimpleDateFormat("dd/MM/yyyy");
+    private static final DateFormat DATE_FORMATTER =
+            new SimpleDateFormat("dd/MM/yyyy");
     private static final long SECONDS_PER_MINUTE = 60;
     private static final long MINUTES_PER_HOUR = 60;
-    private static final long SECONDS_PER_HOUR = SECONDS_PER_MINUTE * MINUTES_PER_HOUR;
+    private static final long SECONDS_PER_HOUR =
+            SECONDS_PER_MINUTE * MINUTES_PER_HOUR;
     private static final long SECONDS_PER_DAY = SECONDS_PER_HOUR * 24;
 
-    private static final Map<String, DateFormat> DATE_FORMATS = Maps.newHashMap();
+    private static final Map<String, DateFormat> DATE_FORMATS =
+            Maps.newHashMap();
 
     public static String format(Date date, String format) {
-        return DATE_FORMATS.computeIfAbsent(format, unused -> new SimpleDateFormat(format)).format(date);
+        return DATE_FORMATS.computeIfAbsent(format,
+                unused -> new SimpleDateFormat(format)).format(date);
     }
 
     public static String format(Date date) {

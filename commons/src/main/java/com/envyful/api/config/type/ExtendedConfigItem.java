@@ -31,10 +31,13 @@ public class ExtendedConfigItem {
     private boolean closeOnClick;
     private List<String> commandsExecuted;
 
-    public ExtendedConfigItem() {}
+    public ExtendedConfigItem() {
+    }
 
     @Deprecated
-    public ExtendedConfigItem(String type, int amount, byte damage, String name, List<String> lore, int xPos,
+    public ExtendedConfigItem(String type, int amount,
+                              byte damage, String name,
+                              List<String> lore, int xPos,
                               int yPos, Map<String, ConfigItem.NBTValue> nbt) {
 
         this.type = type;
@@ -49,15 +52,21 @@ public class ExtendedConfigItem {
         this.commandsExecuted = Lists.newArrayList();
     }
 
-    private ExtendedConfigItem(boolean enabled, String type, String amount, String name, List<String> flags,
-                              List<String> lore, Map<String, ConfigItem.EnchantData> enchants, Map<String, ConfigItem.NBTValue> nbt,
-                              Map<String, Pair<Integer, Integer>> positions, boolean requiresPermission,
-                              String permission, ConfigItem elseItem, boolean closeOnClick,
-                              List<String> commandsExecuted) {
+    private ExtendedConfigItem(boolean enabled, String type,
+                               String amount, String name, List<String> flags,
+                               List<String> lore,
+                               Map<String, ConfigItem.EnchantData> enchants,
+                               Map<String, ConfigItem.NBTValue> nbt,
+                               Map<String, Pair<Integer, Integer>> positions,
+                               boolean requiresPermission,
+                               String permission, ConfigItem elseItem,
+                               boolean closeOnClick,
+                               List<String> commandsExecuted) {
         this.enabled = enabled;
         this.type = type;
         this.amount = String.valueOf(amount);
         this.name = name;
+        this.flags = flags;
         this.lore = lore;
         this.enchants = enchants;
         this.nbt = nbt;
@@ -82,7 +91,10 @@ public class ExtendedConfigItem {
     }
 
     public int getAmount(List<Placeholder> placeholders) {
-        List<Integer> integers = PlaceholderFactory.handlePlaceholders(Collections.singletonList(amount), s -> UtilParse.parseInt(s).orElse(0), placeholders);
+        List<Integer> integers = PlaceholderFactory.handlePlaceholders(
+                Collections.singletonList(amount),
+                s -> UtilParse.parseInt(s).orElse(0),
+                placeholders);
 
         if (integers.isEmpty()) {
             return 0;
@@ -92,11 +104,14 @@ public class ExtendedConfigItem {
     }
 
     public byte getDamage() {
-        return (byte) (int) UtilParse.parseInt(this.damage).orElse(0);
+        return (byte) UtilParse.parseInt(this.damage).orElse(0);
     }
 
     public byte getDamage(List<Placeholder> placeholders) {
-        List<Integer> integers = PlaceholderFactory.handlePlaceholders(Collections.singletonList(damage), s -> UtilParse.parseInt(s).orElse(0), placeholders);
+        List<Integer> integers = PlaceholderFactory.handlePlaceholders(
+                Collections.singletonList(damage),
+                s -> UtilParse.parseInt(s).orElse(0),
+                placeholders);
 
         if (integers.isEmpty()) {
             return 0;
@@ -150,7 +165,9 @@ public class ExtendedConfigItem {
     }
 
     public ConfigItem asConfigItem() {
-        return new ConfigItem(enabled, type, amount, damage, name, flags, lore, enchants, nbt);
+        return new ConfigItem(enabled, type,
+                amount, damage, name,
+                flags, lore, enchants, nbt);
     }
 
     public static Builder builder() {
@@ -163,18 +180,22 @@ public class ExtendedConfigItem {
         private String type = "minecraft:stained_glass_pane";
         private String amount = "1";
         private String name = " ";
-        private List<String> flags = Lists.newArrayList();
-        private List<String> lore = Lists.newArrayList();
-        private Map<String, ConfigItem.EnchantData> enchants = Maps.newHashMap();
-        private Map<String, ConfigItem.NBTValue> nbt = Maps.newHashMap();
-        private Map<String, Pair<Integer, Integer>> positions = Maps.newHashMap();
         private boolean requiresPermission = false;
         private String permission;
         private ConfigItem elseItem;
         private boolean closeOnClick = false;
-        private List<String> commandsExecuted = Lists.newArrayList();
 
-        protected Builder() {}
+        private final Map<String, ConfigItem.EnchantData> enchants =
+                Maps.newHashMap();
+        private final List<String> commandsExecuted = Lists.newArrayList();
+        private final List<String> flags = Lists.newArrayList();
+        private final List<String> lore = Lists.newArrayList();
+        private final Map<String, ConfigItem.NBTValue> nbt = Maps.newHashMap();
+        private final Map<String, Pair<Integer, Integer>> positions =
+                Maps.newHashMap();
+
+        protected Builder() {
+        }
 
         public Builder enable() {
             this.enabled = true;
@@ -250,7 +271,9 @@ public class ExtendedConfigItem {
             return this;
         }
 
-        public Builder requiresPermission(String permission, ConfigItem elseItem) {
+        public Builder requiresPermission(
+                String permission,
+                ConfigItem elseItem) {
             this.requiresPermission = true;
             this.permission = permission;
             this.elseItem = elseItem;
@@ -273,8 +296,11 @@ public class ExtendedConfigItem {
         }
 
         public ExtendedConfigItem build() {
-            return new ExtendedConfigItem(this.enabled, this.type, this.amount, this.name, this.flags, this.lore, this.enchants,
-                    this.nbt, this.positions, this.requiresPermission, this.permission, this.elseItem, this.closeOnClick,
+            return new ExtendedConfigItem(
+                    this.enabled, this.type, this.amount,
+                    this.name, this.flags, this.lore, this.enchants,
+                    this.nbt, this.positions, this.requiresPermission,
+                    this.permission, this.elseItem, this.closeOnClick,
                     this.commandsExecuted);
         }
     }

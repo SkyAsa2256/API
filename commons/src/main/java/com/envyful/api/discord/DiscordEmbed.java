@@ -239,7 +239,9 @@ public class DiscordEmbed {
 
         if (jsonElement.has("footer")) {
             JsonObject footer = jsonElement.get("footer").getAsJsonObject();
-            discordEmbed.setFooter(footer.get("text").getAsString(), footer.get("icon_url").getAsString());
+            discordEmbed.setFooter(
+                    footer.get("text").getAsString(),
+                    footer.get("icon_url").getAsString());
         }
 
         if (jsonElement.has("image")) {
@@ -248,14 +250,17 @@ public class DiscordEmbed {
         }
 
         if (jsonElement.has("thumbnail")) {
-            JsonObject thumbnail = jsonElement.get("thumbnail").getAsJsonObject();
+            JsonObject thumbnail = jsonElement.get("thumbnail")
+                    .getAsJsonObject();
             discordEmbed.setThumbnail(thumbnail.get("url").getAsString());
         }
 
         if (jsonElement.has("author")) {
             JsonObject author = jsonElement.get("author").getAsJsonObject();
-            discordEmbed.setAuthor(author.get("name").getAsString(), author.get("url").getAsString(), author.get(
-                    "icon_url").getAsString());
+            discordEmbed.setAuthor(
+                    author.get("name").getAsString(),
+                    author.get("url").getAsString(),
+                    author.get("icon_url").getAsString());
         }
 
         if (jsonElement.has("fields")) {
@@ -263,8 +268,10 @@ public class DiscordEmbed {
 
             for (JsonElement field : fields) {
                 JsonObject fieldObject = field.getAsJsonObject();
-                discordEmbed.addField(fieldObject.get("name").getAsString(), fieldObject.get("value").getAsString(),
-                                     fieldObject.get("inline").getAsBoolean());
+                discordEmbed.addField(
+                        fieldObject.get("name").getAsString(),
+                        fieldObject.get("value").getAsString(),
+                        fieldObject.get("inline").getAsBoolean());
             }
         }
 

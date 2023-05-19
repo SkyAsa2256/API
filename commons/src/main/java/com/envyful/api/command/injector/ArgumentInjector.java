@@ -2,8 +2,10 @@ package com.envyful.api.command.injector;
 
 /**
  *
- * An interface for handling when the parameters of the command are non-regular minecraft classes.
- * For example, passing {@link com.envyful.api.player.EnvyPlayer} as a parameter for a command would require an argument
+ * An interface for handling when the parameters of
+ * the command are non-regular minecraft classes.
+ * For example, passing {@link com.envyful.api.player.EnvyPlayer}
+ * as a parameter for a command would require an argument
  * injector to convert the normal sender class to that.
  *
  * @param <A> The converted class type
@@ -22,8 +24,10 @@ public interface ArgumentInjector<A, B> {
     /**
      *
      * If the argument injector requires multiple arguments to instantiate.
-     * For example, if you needed a reason as a String (i.e. it goes from argument 1 to the last argument [varying arg
-     * length]) then this would be true. This can only be true for the LAST arguments of the command
+     * For example, if you needed a reason as a
+     * String (i.e. it goes from argument 1 to the last argument [varying arg
+     * length]) then this would be true.
+     * This can only be true for the LAST arguments of the command
      *
      * @return True if multiple arguments are supplied, false otherwise
      */

@@ -76,7 +76,8 @@ public class AsyncTaskBuilder {
      * @param cancelCondition The cancel condition
      * @return The builder
      */
-    public AsyncTaskBuilder cancelCondition(@Nullable Supplier<Boolean> cancelCondition) {
+    public AsyncTaskBuilder cancelCondition(
+            @Nullable Supplier<Boolean> cancelCondition) {
         this.cancelCondition = cancelCondition;
         return this;
     }
@@ -91,8 +92,11 @@ public class AsyncTaskBuilder {
             throw new IllegalArgumentException("Task cannot be null");
         }
 
-        AtomicReference<ScheduledFuture<?>> runningTask = new AtomicReference<>();
-        ScheduledFuture<?> scheduledFuture = UtilConcurrency.SCHEDULED_EXECUTOR_SERVICE.scheduleAtFixedRate(new CancelableRunnable(
+        AtomicReference<ScheduledFuture<?>> runningTask =
+                new AtomicReference<>();
+        ScheduledFuture<?> scheduledFuture =
+                UtilConcurrency.SCHEDULED_EXECUTOR_SERVICE
+                        .scheduleAtFixedRate(new CancelableRunnable(
                 task, this.cancelTask, runningTask, cancelCondition
         ), this.delayMillis, this.intervalMillis, TimeUnit.MILLISECONDS);
         runningTask.set(scheduledFuture);
@@ -106,7 +110,9 @@ public class AsyncTaskBuilder {
         private final Supplier<Boolean> cancelCondition;
 
         public CancelableRunnable(Runnable task, Runnable cancelTask,
-                                  AtomicReference<ScheduledFuture<?>> runningTask, Supplier<Boolean> cancelCondition) {
+                                  AtomicReference<ScheduledFuture<?>>
+                                          runningTask,
+                                  Supplier<Boolean> cancelCondition) {
             this.task = task;
             this.cancelTask = cancelTask;
             this.runningTask = runningTask;

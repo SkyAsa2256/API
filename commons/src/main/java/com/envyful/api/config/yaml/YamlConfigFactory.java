@@ -42,18 +42,24 @@ public class YamlConfigFactory {
 
     /**
      *
-     * Gets the instance of the given config from the class using Sponge's Configurate
+     * Gets the instance of the given config from
+     * the class using Sponge's Configurate
      *
      * @param clazz The class that represents a config file
      * @param <T> The type of the class
      * @return The config instance
      * @throws IOException If an error occurs whilst loading the file
      */
-    public static <T extends AbstractYamlConfig> T getInstance(Class<T> clazz) throws IOException {
+    public static <T extends AbstractYamlConfig> T
+    getInstance(Class<T> clazz) throws IOException {
         ConfigPath annotation = clazz.getAnnotation(ConfigPath.class);
 
         if (annotation == null) {
-            throw new IOException("Cannot load config " + clazz.getSimpleName() + " as it's missing @ConfigPath annotation");
+            throw new IOException(
+                    "Cannot load config "
+                            + clazz.getSimpleName() +
+                            " as it's missing @ConfigPath annotation"
+            );
         }
 
         NodeStyle style = getNodeStyle(clazz);
@@ -64,7 +70,8 @@ public class YamlConfigFactory {
             configFile.toFile().createNewFile();
         }
 
-        List<Class<? extends ScalarSerializer<?>>> serializers = Lists.newArrayList();
+        List<Class<? extends ScalarSerializer<?>>> serializers =
+                Lists.newArrayList();
         Serializers serializedData = clazz.getAnnotation(Serializers.class);
 
         if (serializedData != null) {
@@ -75,13 +82,15 @@ public class YamlConfigFactory {
             throw new IOException("Failed to get watch service for configs");
         }
 
-        ConfigurationReference<CommentedConfigurationNode> base = listenToConfig(WATCH_SERVICE, configFile, serializers, style);
+        ConfigurationReference<CommentedConfigurationNode> base =
+                listenToConfig(WATCH_SERVICE, configFile, serializers, style);
 
         if (base == null) {
             throw new IOException("Error config loaded as null");
         }
 
-        ValueReference<T, CommentedConfigurationNode> reference = base.referenceTo(clazz);
+        ValueReference<T, CommentedConfigurationNode> reference =
+                base.referenceTo(clazz);
         T instance = reference.get();
 
         if (instance == null) {
@@ -105,23 +114,30 @@ public class YamlConfigFactory {
         return annotation.value();
     }
 
-    private static ConfigurationReference<CommentedConfigurationNode> listenToConfig(WatchServiceListener listener,
-                                                                                     Path configFile,
-                                                                                     List<Class<? extends ScalarSerializer<?>>> serializers,
-                                                                                     NodeStyle style) {
+    private static ConfigurationReference<CommentedConfigurationNode>
+    listenToConfig(WatchServiceListener listener,
+                   Path configFile,
+                   List<Class<? extends ScalarSerializer<?>>> serializers,
+                   NodeStyle style) {
         try {
-            return listener.listenToConfiguration(file -> YamlConfigurationLoader.builder()
+            return listener
+                    .listenToConfiguration(file ->
+                            YamlConfigurationLoader.builder()
                     .headerMode(HeaderMode.PRESERVE)
                     .nodeStyle(style)
                     .defaultOptions(ConfigurationOptions.defaults().header(
-                            "© EnvyWare Ltd Software 2022" + System.lineSeparator() +
-                            "For assistance visit https://discord.envyware.co.uk"
+                            "© EnvyWare Ltd Software 2022"
+                                    + System.lineSeparator() +
+                            "For assistance visit" +
+                                    " https://discord.envyware.co.uk"
                     ).serializers(builder -> {
                         try {
-                            for (Class<? extends ScalarSerializer<?>> serializer : serializers) {
+                            for (Class<? extends ScalarSerializer<?>>
+                                    serializer : serializers) {
                                 builder.register(serializer.newInstance());
                             }
-                        } catch (InstantiationException | IllegalAccessException e) {
+                        } catch (InstantiationException
+                                 | IllegalAccessException e) {
                             e.printStackTrace();
                         }
                     }).nativeTypes(

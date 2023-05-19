@@ -12,8 +12,10 @@ import java.util.function.Supplier;
 @SuppressWarnings("unchecked")
 public abstract class AbstractSaveManager<T> implements SaveManager<T> {
 
-    protected final Map<Class<? extends Attribute<?, ?>>, AttributeData<?, ?>> registeredAttributes = Maps.newConcurrentMap();
-    protected final Map<Object, Attribute<?, ?>> sharedAttributes = Maps.newConcurrentMap();
+    protected final Map<Class<? extends Attribute<?, ?>>, AttributeData<?, ?>>
+            registeredAttributes = Maps.newConcurrentMap();
+    protected final Map<Object, Attribute<?, ?>> sharedAttributes
+            = Maps.newConcurrentMap();
 
     protected final PlayerManager<?, ?> playerManager;
 
@@ -22,25 +24,34 @@ public abstract class AbstractSaveManager<T> implements SaveManager<T> {
     }
 
     @Override
-    public void registerAttribute(Object manager, Class<? extends Attribute<?, ?>> attribute) {
-        Supplier<Attribute<?, ?>> constructor = this.getAttributeConstructor(manager, attribute);
-        this.registeredAttributes.put(attribute, new AttributeData<>(manager, constructor));
+    public void registerAttribute(
+            Object manager, Class<? extends Attribute<?, ?>> attribute) {
+        Supplier<Attribute<?, ?>> constructor =
+                this.getAttributeConstructor(manager, attribute);
+        this.registeredAttributes.put(attribute,
+                new AttributeData<>(manager, constructor));
     }
 
     @Override
     public <B> B getManager(Attribute<?, ?> attribute) {
-        return (B) this.registeredAttributes.get(attribute.getClass()).getManager();
+        return (B) this.registeredAttributes.get(attribute.getClass())
+                .getManager();
     }
 
-    private Supplier<Attribute<?, ?>> getAttributeConstructor(Object manager, Class<? extends Attribute<?, ?>> clazz) {
+    private Supplier<Attribute<?, ?>> getAttributeConstructor(
+            Object manager, Class<? extends Attribute<?, ?>> clazz) {
         try {
-            Constructor<? extends Attribute<?, ?>> constructor = clazz.getConstructor(manager.getClass(), this.playerManager.getClass());
+            Constructor<? extends Attribute<?, ?>> constructor =
+                    clazz.getConstructor(manager.getClass(),
+                            this.playerManager.getClass());
 
             return () -> {
                 try {
                     return constructor.newInstance(manager, this.playerManager);
-                } catch (InstantiationException | IllegalAccessException |
-                        IllegalArgumentException | InvocationTargetException e) {
+                } catch (InstantiationException |
+                         IllegalAccessException |
+                        IllegalArgumentException |
+                         InvocationTargetException e) {
                     e.printStackTrace();
                 }
 

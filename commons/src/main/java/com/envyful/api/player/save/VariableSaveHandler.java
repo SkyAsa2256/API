@@ -33,7 +33,8 @@ public interface VariableSaveHandler<A> {
      * @param o The object
      * @return The converted String
      */
+    @SuppressWarnings("unchecked")
     default String convert(Object o) {
-        return this.convert((A) o);
+        return this.convertCasted((A) o);
     }
 }

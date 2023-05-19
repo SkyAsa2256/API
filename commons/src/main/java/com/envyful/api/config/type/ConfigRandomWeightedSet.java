@@ -4,10 +4,11 @@ import com.envyful.api.math.RandomWeightedSet;
 import com.google.common.collect.Maps;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
+import java.io.Serializable;
 import java.util.Map;
 
 @ConfigSerializable
-public class ConfigRandomWeightedSet<A> {
+public class ConfigRandomWeightedSet<A> implements Serializable {
 
     private Map<String, WeightedObject<A>> entries;
     private transient RandomWeightedSet<A> weightedSet = null;

@@ -12,7 +12,8 @@ public class ConfigLocation {
     private double pitch;
     private double yaw;
 
-    public ConfigLocation(String worldName, double posX, double posY, double posZ, double pitch, double yaw) {
+    public ConfigLocation(String worldName, double posX,
+                          double posY, double posZ, double pitch, double yaw) {
         this.worldName = worldName;
         this.posX = posX;
         this.posY = posY;
@@ -21,7 +22,8 @@ public class ConfigLocation {
         this.yaw = yaw;
     }
 
-    public ConfigLocation(String worldName, double posX, double posY, double posZ) {
+    public ConfigLocation(String worldName,
+                          double posX, double posY, double posZ) {
         this(worldName, posX, posY, posZ, 0.0F, 0.0F);
     }
 

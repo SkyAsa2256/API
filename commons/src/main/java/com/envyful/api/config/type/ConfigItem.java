@@ -32,7 +32,10 @@ public class ConfigItem {
 
     public ConfigItem() {}
 
-    ConfigItem(boolean enabled, String type, String amount, String damage, String name, List<String> flags, List<String> lore, Map<String, EnchantData> enchants, Map<String, NBTValue> nbt) {
+    ConfigItem(boolean enabled, String type, String amount,
+               String damage, String name, List<String> flags,
+               List<String> lore, Map<String, EnchantData> enchants,
+               Map<String, NBTValue> nbt) {
         this.enabled = enabled;
         this.type = type;
         this.amount = amount;
@@ -57,7 +60,10 @@ public class ConfigItem {
     }
 
     public int getAmount(List<Placeholder> placeholders) {
-        List<Integer> integers = PlaceholderFactory.handlePlaceholders(Collections.singletonList(amount), s -> UtilParse.parseInt(s).orElse(0), placeholders);
+        List<Integer> integers = PlaceholderFactory.handlePlaceholders(
+                Collections.singletonList(amount),
+                s -> UtilParse.parseInt(s).orElse(0),
+                placeholders);
 
         if (integers.isEmpty()) {
             return 0;
@@ -67,11 +73,14 @@ public class ConfigItem {
     }
 
     public byte getDamage() {
-        return (byte) (int) UtilParse.parseInt(this.damage).orElse(0);
+        return (byte) UtilParse.parseInt(this.damage).orElse(0);
     }
 
     public byte getDamage(List<Placeholder> placeholders) {
-        List<Integer> integers = PlaceholderFactory.handlePlaceholders(Collections.singletonList(damage), s -> UtilParse.parseInt(s).orElse(0), placeholders);
+        List<Integer> integers = PlaceholderFactory.handlePlaceholders(
+                Collections.singletonList(damage),
+                s -> UtilParse.parseInt(s).orElse(0),
+                placeholders);
 
         if (integers.isEmpty()) {
             return 0;
@@ -226,7 +235,10 @@ public class ConfigItem {
         }
 
         public ConfigItem build() {
-            return new ConfigItem(this.enabled, this.type, this.amount, this.damage, this.name, this.flags, this.lore, this.enchants, this.nbt);
+            return new ConfigItem(this.enabled, this.type,
+                    this.amount, this.damage, this.name,
+                    this.flags, this.lore, this.enchants,
+                    this.nbt);
         }
     }
 }

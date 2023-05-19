@@ -12,7 +12,8 @@ import java.io.Serializable;
 /**
  *
  * Abstract parent class to all YAML configuration files.
- * Allows all child files to be serializable and when initialised using the {@link YamlConfigFactory} will auto-fill
+ * Allows all child files to be serializable and
+ * when initialised using the {@link YamlConfigFactory} will autofill
  * the values from the object to the config file.
  *
  */

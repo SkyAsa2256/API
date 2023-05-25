@@ -101,6 +101,6 @@ public class UtilParse {
             return OptionalDouble.empty();
         }
 
-        return OptionalDouble.of(Long.parseLong(arg));
+        return OptionalDouble.of(Double.parseDouble(arg));
     }
 }

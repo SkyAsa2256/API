@@ -36,7 +36,7 @@ public interface Transformer extends SimplePlaceholder {
      * @return The transformed lore
      */
     default List<String> transformLore(List<String> lore) {
-        List<String> newLore = Lists.newArrayList();
+        List<String> newLore = Lists.newArrayListWithCapacity(lore.size());
 
         for (String s : lore) {
             newLore.add(this.transformName(s));

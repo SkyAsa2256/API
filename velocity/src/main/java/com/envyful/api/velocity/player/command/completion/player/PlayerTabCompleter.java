@@ -6,6 +6,7 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 
 import java.lang.annotation.Annotation;
+import java.util.Collection;
 import java.util.List;
 
 public class PlayerTabCompleter implements TabCompleter<String, Player> {
@@ -27,11 +28,14 @@ public class PlayerTabCompleter implements TabCompleter<String, Player> {
     }
 
     @Override
-    public List<String> getCompletions(Player sender, String[] currentData, Annotation... completionData) {
-        List<String> playerNames = Lists.newArrayList();
+    public List<String> getCompletions(
+            Player sender, String[] currentData, Annotation... completionData) {
+        Collection<Player> allPlayers = this.proxy.getAllPlayers();
+        List<String> playerNames = Lists.newArrayListWithCapacity(allPlayers.size());
 
-        for (Player player : this.proxy.getAllPlayers()) {
-            if (completionData.length < 1 || completionData[0] instanceof ExcludeSelfCompletion) {
+        for (Player player : allPlayers) {
+            if (completionData.length < 1 ||
+                    completionData[0] instanceof ExcludeSelfCompletion) {
                 if (player.getUsername().equals(sender.getUsername())) {
                     continue;
                 }

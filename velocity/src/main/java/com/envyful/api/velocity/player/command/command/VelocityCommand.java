@@ -52,7 +52,7 @@ public class VelocityCommand {
     }
 
     private List<Component> initializeDescription(String[] description) {
-        List<Component> newDescription = Lists.newArrayList();
+        List<Component> newDescription = Lists.newArrayListWithCapacity(description.length);
 
         for (String s : description) {
             newDescription.add(Component.text(s));
@@ -259,7 +259,7 @@ public class VelocityCommand {
     }
 
     protected List<String> getMatching(String arg, List<String> potential) {
-        List<String> args = Lists.newArrayList();
+        List<String> args = Lists.newArrayListWithCapacity(potential.size());
 
         for (String s : potential) {
             if (s.toLowerCase().startsWith(arg.toLowerCase())) {

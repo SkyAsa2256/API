@@ -5,34 +5,35 @@ import com.pixelmonmod.pixelmon.api.pokemon.species.Stats;
 import com.pixelmonmod.pixelmon.api.spawning.SpawnInfo;
 import com.pixelmonmod.pixelmon.api.spawning.SpawnSet;
 import com.pixelmonmod.pixelmon.api.spawning.archetypes.entities.pokemon.SpawnInfoPokemon;
+import com.pixelmonmod.pixelmon.api.util.helpers.BiomeHelper;
 import com.pixelmonmod.pixelmon.api.world.WorldTime;
 import com.pixelmonmod.pixelmon.spawning.PixelmonSpawning;
 import net.minecraft.util.ResourceLocation;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class UtilPokemonInfo {
 
     public static List<String> getSpawnBiomes(Stats pokemon) {
         List<String> names = Lists.newArrayList();
 
-        for (SpawnSet next : PixelmonSpawning.getAll().values().stream().flatMap(Collection::stream).collect(Collectors.toList())) {
-            for (SpawnInfo spawnInfo : next.spawnInfos) {
-                if (!(spawnInfo instanceof SpawnInfoPokemon)) {
-                    continue;
-                }
+        for (List<SpawnSet> spawnSet : PixelmonSpawning.getAll().values()) {
+            for (SpawnSet set : spawnSet) {
+                for (SpawnInfo spawnInfo : set.spawnInfos) {
+                    if (!(spawnInfo instanceof SpawnInfoPokemon)) {
+                        continue;
+                    }
 
-                SpawnInfoPokemon spawnInfoPokemon = (SpawnInfoPokemon)spawnInfo;
+                    SpawnInfoPokemon spawnInfoPokemon = (SpawnInfoPokemon)spawnInfo;
 
-                if (!spawnInfoPokemon.getSpecies().equals(pokemon.getParentSpecies()) || spawnInfoPokemon.spawnSpecificBossRate != null) {
-                    continue;
-                }
+                    if (!spawnInfoPokemon.getSpecies().equals(pokemon.getParentSpecies()) || spawnInfoPokemon.spawnSpecificBossRate != null) {
+                        continue;
+                    }
 
-                for (ResourceLocation biome : spawnInfoPokemon.condition.biomes) {
-                    names.add(biome.toString());
+                    for (ResourceLocation biome : spawnInfoPokemon.condition.biomes) {
+                        names.add(BiomeHelper.getLocalizedBiomeName(biome).getString());
+                    }
                 }
             }
         }
@@ -43,24 +44,26 @@ public class UtilPokemonInfo {
     public static List<String> getSpawnTimes(Stats pokemon) {
         List<String> names = Lists.newArrayList();
 
-        for (SpawnSet next : PixelmonSpawning.getAll().values().stream().flatMap(Collection::stream).collect(Collectors.toList())) {
-            for (SpawnInfo spawnInfo : next.spawnInfos) {
-                if (!(spawnInfo instanceof SpawnInfoPokemon)) {
-                    continue;
-                }
-
-                SpawnInfoPokemon spawnInfoPokemon = (SpawnInfoPokemon) spawnInfo;
-
-                if (!spawnInfoPokemon.getSpecies().equals(pokemon.getParentSpecies()) || spawnInfoPokemon.condition.times == null) {
-                    continue;
-                }
-
-                for (WorldTime time : spawnInfoPokemon.condition.times) {
-                    if (time == null || names.contains(time.getLocalizedName())) {
+        for (List<SpawnSet> spawnSet : PixelmonSpawning.getAll().values()) {
+            for (SpawnSet set : spawnSet) {
+                for (SpawnInfo spawnInfo : set.spawnInfos) {
+                    if (!(spawnInfo instanceof SpawnInfoPokemon)) {
                         continue;
                     }
 
-                    names.add(time.getLocalizedName());
+                    SpawnInfoPokemon spawnInfoPokemon = (SpawnInfoPokemon)spawnInfo;
+
+                    if (!spawnInfoPokemon.getSpecies().equals(pokemon.getParentSpecies()) || spawnInfoPokemon.condition.times == null) {
+                        continue;
+                    }
+
+                    for (WorldTime time : spawnInfoPokemon.condition.times) {
+                        if (time == null || names.contains(time.getLocalizedName())) {
+                            continue;
+                        }
+
+                        names.add(time.getLocalizedName());
+                    }
                 }
             }
         }

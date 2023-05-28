@@ -32,7 +32,11 @@ public class UtilPokemonInfo {
                     }
 
                     for (ResourceLocation biome : spawnInfoPokemon.condition.biomes) {
-                        names.add(BiomeHelper.getLocalizedBiomeName(biome).getString());
+                        String name = BiomeHelper.getLocalizedBiomeName(biome).getString();
+
+                        if (!names.contains(name)) {
+                            names.add(name);
+                        }
                     }
                 }
             }
@@ -62,7 +66,11 @@ public class UtilPokemonInfo {
                             continue;
                         }
 
-                        names.add(time.getLocalizedName());
+                        String name = time.getLocalizedName();
+
+                        if (!names.contains(name)) {
+                            names.add(name);
+                        }
                     }
                 }
             }

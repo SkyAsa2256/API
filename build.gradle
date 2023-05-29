@@ -18,7 +18,7 @@ subprojects {
     apply plugin: 'maven-publish'
 
     group = 'com.envyful.api'
-    version = '4.6.5'
+    version = '4.6.6'
 
     tasks.withType(JavaCompile) {
         options.encoding = 'UTF-8'
@@ -29,16 +29,6 @@ subprojects {
     }
 
     afterEvaluate {
-        task sourcesJar(type: Jar, dependsOn: classes) {
-            classifier = 'sources'
-            from sourceSets.main.allSource
-        }
-
-        task javadocJar(type: Jar, dependsOn: javadoc) {
-            classifier = 'javadoc'
-            from javadoc.destinationDir
-        }
-
         publishing {
             repositories {
                 maven {
@@ -56,8 +46,6 @@ subprojects {
                     artifactId = project.name
                     version = project.version
                     from components.java
-                    artifact sourcesJar
-                    artifact javadocJar
                 }
             }
         }

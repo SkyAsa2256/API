@@ -1,17 +1,6 @@
-buildscript {
-    repositories {
-        jcenter()
-        maven { url = 'https://maven.minecraftforge.net' }
-        maven {
-            url = 'https://plugins.gradle.org/m2/'
-        }
-    }
-    dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.+', changing: true
-    }
+plugins {
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
 }
-
-apply plugin: 'net.minecraftforge.gradle'
 
 minecraft {
     mappings channel: 'official', version: '1.16.5'
@@ -36,7 +25,7 @@ dependencies {
 
 shadowJar {
     configurations = [project.configurations.shadow]
-    archiveName = rootProject.name + '-Forge.jar'
+    setArchivesBaseName(rootProject.name + '-Forge.jar')
 
     relocate('org.spongepowered.configurate', 'com.envyful.api.commons.shade.configurate')
     relocate('org.yaml.snakeyaml', 'com.envyful.api.commons.shade.snakeyaml')

@@ -3,6 +3,10 @@ pluginManagement {
         mavenCentral()
         gradlePluginPortal()
         maven { url = 'https://maven.minecraftforge.net/' }
+        maven {
+            name = 'Fabric'
+            url = 'https://maven.fabricmc.net/'
+        }
     }
 }
 
@@ -20,6 +24,7 @@ include 'reforged16'
 include 'discord'
 include 'spigot'
 include 'velocity'
+//include 'fabric'
 
 // Mods
 // include 'pixelmod16'

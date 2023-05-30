@@ -1,9 +1,6 @@
 package com.envyful.api.type;
 
-import java.util.Optional;
-import java.util.OptionalDouble;
-import java.util.OptionalInt;
-import java.util.OptionalLong;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,6 +14,7 @@ public class UtilParse {
     private static final Pattern INT_PATTERN = Pattern.compile("^[-+]?\\d+$");
     private static final Pattern LONG_PATTERN = Pattern.compile("^[-+]?\\d+$\n");
     private static final Pattern DOUBLE_PATTERN = Pattern.compile("^[-+]?\\d+(\\.\\d+)?$");
+    private static final Pattern UUID_PATTERN = Pattern.compile("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
 
     /**
      *
@@ -102,5 +100,26 @@ public class UtilParse {
         }
 
         return OptionalDouble.of(Double.parseDouble(arg));
+    }
+
+    /**
+     *
+     * Parses the arg to a {@link UUID}
+     *
+     * @param arg The arg to parse
+     * @return The potential uuid
+     */
+    public static Optional<UUID> parseUuid(String arg) {
+        if (arg == null) {
+            return Optional.empty();
+        }
+
+        Matcher matcher = UUID_PATTERN.matcher(arg);
+
+        if (!matcher.matches()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(UUID.fromString(arg));
     }
 }

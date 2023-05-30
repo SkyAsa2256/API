@@ -2,11 +2,9 @@ package com.envyful.api.concurrency;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 /**
  *
@@ -37,11 +35,32 @@ public class UtilConcurrency {
      *
      * Takes the runnable and passes it to the {@link UtilConcurrency#SCHEDULED_EXECUTOR_SERVICE} to be executed using one of the
      * cached threads. (typically minimal [or no set] delay)
+     * <br>
+     * Returning the completable future that will be completed when the t
+     * ask is done
      *
      * @param runnable The runnable to execute asynchronously
      */
-    public static void runAsync(Runnable runnable) {
-        SCHEDULED_EXECUTOR_SERVICE.execute(runnable);
+    public static CompletableFuture<Void> runAsync(Runnable runnable) {
+        return CompletableFuture.runAsync(runnable,
+                SCHEDULED_EXECUTOR_SERVICE);
+    }
+
+    /**
+     *
+     * Takes the supplier and passes it to the {@link UtilConcurrency#SCHEDULED_EXECUTOR_SERVICE} to be executed using one of the
+     * cached threads. (typically minimal [or no set] delay)
+     * <br>
+     * Returning the completable future that will be completed when
+     * the task is done
+     *
+     * @param supplier The supplier
+     * @return The future
+     * @param <T> The type to return
+     */
+    public static <T> CompletableFuture<T> supplyAsync(Supplier<T> supplier) {
+        return CompletableFuture.supplyAsync(supplier,
+                SCHEDULED_EXECUTOR_SERVICE);
     }
 
     /**

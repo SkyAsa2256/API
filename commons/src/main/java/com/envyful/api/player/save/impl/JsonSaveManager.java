@@ -3,6 +3,7 @@ package com.envyful.api.player.save.impl;
 import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.player.attribute.Attribute;
+import com.envyful.api.player.attribute.PlayerAttribute;
 import com.envyful.api.player.save.AbstractSaveManager;
 import com.envyful.api.player.save.attribute.DataDirectory;
 import com.envyful.api.player.save.attribute.TypeAdapter;
@@ -74,7 +75,13 @@ public class JsonSaveManager<T> extends AbstractSaveManager<T> {
 
                     return sharedAttribute;
                 } else {
-                    return this.readData(entry.getKey(), attribute, o);
+                    Attribute<?, ?> loaded = this.readData(entry.getKey(), attribute, o);
+
+                    if (loaded instanceof PlayerAttribute) {
+                        ((PlayerAttribute) loaded).setParent(this.playerManager.getPlayer(uuid));
+                    }
+
+                    return loaded;
                 }
             }).whenComplete((loaded, throwable) -> {
                 if (loaded != null) {
@@ -180,5 +187,6 @@ public class JsonSaveManager<T> extends AbstractSaveManager<T> {
         }
 
         this.attributeDirectories.put(attribute, dataDirectory.value());
+        super.registerAttribute(manager, attribute);
     }
 }

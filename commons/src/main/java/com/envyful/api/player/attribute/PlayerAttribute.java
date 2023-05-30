@@ -29,6 +29,10 @@ public abstract class PlayerAttribute<A, B extends EnvyPlayer<C>, C>
         this.playerManager = playerManager;
     }
 
+    public void setParent(EnvyPlayer<C> parent) {
+        this.parent = parent;
+    }
+
     @Override
     public CompletableFuture<UUID> getId(UUID playerUuid) {
         this.id = playerUuid;

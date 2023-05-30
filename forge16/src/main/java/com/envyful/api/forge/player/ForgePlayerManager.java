@@ -105,7 +105,7 @@ public class ForgePlayerManager implements PlayerManager<ForgeEnvyPlayer, Server
         return this.saveManager.loadAttribute(attributeClass, id);
     }
 
-    private final class PlayerListener {
+    private static final class PlayerListener {
 
         private final ForgePlayerManager manager;
         private long lastSave = -1L;

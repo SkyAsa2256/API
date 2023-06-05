@@ -1,5 +1,6 @@
 package com.envyful.api.text;
 
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
 
 /**
@@ -36,5 +37,25 @@ public class UtilString {
         }
 
         return builder.substring(delimiter.length());
+    }
+
+    /**
+     *
+     * Takes the original String and shuffles the characters
+     * creating a randomly ordered new String
+     *
+     * @param originalString The original String
+     * @return The shuffled String
+     */
+    public static String shuffle(String originalString) {
+        char[] chars = originalString.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            int j = ThreadLocalRandom.current().nextInt(chars.length);
+            char temp = chars[i];
+            chars[i] = chars[j];
+            chars[j] = temp;
+        }
+
+       return new String(chars);
     }
 }

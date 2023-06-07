@@ -139,10 +139,8 @@ public class ForgeGui implements Gui {
         private ForgeGui gui;
         private final ServerPlayerEntity player;
         private final List<EmptySlot> emptySlots = Lists.newArrayList();
-        private final NonNullList<ItemStack> inventoryItemStacks = NonNullList.create();
 
         private boolean closed = false;
-        private boolean locked = false;
         private boolean init = false;
 
         public ForgeGuiContainer(ForgeGui gui, ServerPlayerEntity player) {
@@ -182,7 +180,6 @@ public class ForgeGui implements Gui {
 
         public void update(ForgeSimplePane[] panes, boolean force) {
             this.slots.clear();
-            this.inventoryItemStacks.clear();
             boolean createEmptySlots = this.emptySlots.isEmpty();
 
             if (!createEmptySlots) {
@@ -198,8 +195,6 @@ public class ForgeGui implements Gui {
                     this.emptySlots.add(emptySlot);
                     this.slots.add(emptySlot);
                 }
-
-                this.inventoryItemStacks.add(ItemStack.EMPTY);
             }
 
             for (ForgeSimplePane pane : panes) {
@@ -222,7 +217,6 @@ public class ForgeGui implements Gui {
                         int index = pane.updateIndex((9 * y) + x);
 
                         this.slots.set(index, item);
-                        this.inventoryItemStacks.set(index, item.getItem());
                     }
                 }
             }
@@ -232,13 +226,11 @@ public class ForgeGui implements Gui {
             for (int i = 9; i < 36; i++) {
                 ItemStack itemStack = player.inventory.items.get(i);
                 slots.add(new Slot(player.inventory, i, 0, 0));
-                inventoryItemStacks.add(itemStack);
             }
             // Sets the slots for the hotbar.
             for (int i = 0; i < 9; i++) {
                 ItemStack itemStack = player.inventory.items.get(i);
                 slots.add(new Slot(player.inventory, i, 0, 0));
-                inventoryItemStacks.add(itemStack);
             }
 
             if (force || ForgeGuiTracker.requiresUpdate(this.player)) {
@@ -250,7 +242,6 @@ public class ForgeGui implements Gui {
         protected Slot addSlot(Slot slotIn) {
             slotIn.index = this.slots.size();
             this.slots.add(slotIn);
-            this.inventoryItemStacks.add(ItemStack.EMPTY);
             return slotIn;
         }
 
@@ -290,7 +281,7 @@ public class ForgeGui implements Gui {
 
         @Override
         public ItemStack clicked(int slot, int dragType, ClickType clickTypeIn, PlayerEntity player) {
-            if (slot <= -1 || locked) {
+            if (slot <= -1) {
                 return ItemStack.EMPTY;
             }
 

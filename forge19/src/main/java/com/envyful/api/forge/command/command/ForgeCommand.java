@@ -229,9 +229,11 @@ public class ForgeCommand {
 
         List<String> values = Lists.newArrayList();
 
-        for (ForgeCommand subCommand : this.subCommands) {
-            if (args[0].equalsIgnoreCase(subCommand.getName()) || subCommand.getAliases().contains(args[0])) {
-                values.addAll(subCommand.getTabCompletions(server, sender, Arrays.copyOfRange(args, 1, args.length), pos));
+        if (args.length > 0) {
+            for (ForgeCommand subCommand : this.subCommands) {
+                if (args[0].equalsIgnoreCase(subCommand.getName()) || subCommand.getAliases().contains(args[0])) {
+                    values.addAll(subCommand.getTabCompletions(server, sender, Arrays.copyOfRange(args, 1, args.length), pos));
+                }
             }
         }
 

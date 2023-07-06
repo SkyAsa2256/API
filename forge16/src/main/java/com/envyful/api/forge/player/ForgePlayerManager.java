@@ -146,7 +146,7 @@ public class ForgePlayerManager implements PlayerManager<ForgeEnvyPlayer, Server
             return null;
         }
 
-        @SubscribeEvent(priority = EventPriority.LOWEST)
+        @SubscribeEvent(priority = EventPriority.HIGHEST)
         public void onPlayerQuit(PlayerEvent.PlayerLoggedOutEvent event) {
             ForgeEnvyPlayer player = this.manager.cachedPlayers.remove(event.getPlayer().getUUID());
 

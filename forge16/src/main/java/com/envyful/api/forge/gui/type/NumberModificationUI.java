@@ -248,9 +248,8 @@ public class NumberModificationUI {
             this.guiSettings = new ConfigInterface(
                     title, height, "BLOCK",
                     ImmutableMap.of("one", ConfigItem.builder()
-                            .type("minecraft:stained_glass_pane")
+                            .type("minecraft:black_stained_glass_pane")
                             .amount(1)
-                            .damage(15)
                             .name(" ")
                             .build())
             );

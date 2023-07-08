@@ -209,9 +209,9 @@ public class TrueFalseSelectionUI {
         private ConfigInterface guiSettings = new ConfigInterface(
                 "True or False", 3, "BLOCK",
                 ImmutableMap.of("one", ConfigItem.builder()
-                        .type("minecraft:stained_glass_pane")
+                        .type("minecraft:black_stained_glass_pane")
                         .amount(1)
-                        .damage(15)
+                        .damage(0)
                         .name(" ")
                         .build())
         );
@@ -220,7 +220,7 @@ public class TrueFalseSelectionUI {
         private ExtendedConfigItem falseItem;
 
         private ExtendedConfigItem acceptItem = new ExtendedConfigItem(
-                "minecraft:stained_glass_pane", 1, (byte) 5, "&a&lCONFIRM",
+                "minecraft:lime_stained_glass_pane", 1, (byte) 0, "&a&lCONFIRM",
                 Lists.newArrayList(), 6, 1, Maps.newHashMap()
         );
 

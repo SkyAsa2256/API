@@ -3,10 +3,7 @@ package com.envyful.api.reforged.battle;
 import com.google.common.collect.Maps;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.enums.ExperienceGainType;
-import com.pixelmonmod.pixelmon.api.events.BattleStartedEvent;
-import com.pixelmonmod.pixelmon.api.events.ExperienceGainEvent;
-import com.pixelmonmod.pixelmon.api.events.PixelmonFaintEvent;
-import com.pixelmonmod.pixelmon.api.events.SpectateEvent;
+import com.pixelmonmod.pixelmon.api.events.*;
 import com.pixelmonmod.pixelmon.api.events.battles.BattleEndEvent;
 import com.pixelmonmod.pixelmon.battles.controller.BattleController;
 import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
@@ -26,6 +23,19 @@ public class BattleBuilderFactory {
 
     public static void registerBattleBuilder(BattleController battleController, BattleBuilder battleBuilder) {
         LISTENED_CONTROLLERS.put(battleController.battleIndex, battleBuilder);
+    }
+
+    @SubscribeEvent
+    public void onBattleSpawnEntity(SpawnPixelmonEntityForBattleEvent.Pre event) {
+        event.getPokemon().getPixelmonEntity().ifPresent(pixelmon -> {
+            BattleBuilder battleBuilder = LISTENED_CONTROLLERS.get(pixelmon.battleController.battleIndex);
+
+            if (battleBuilder == null || battleBuilder.startConsumer == null) {
+                return;
+            }
+
+            battleBuilder.spawnConsumer.accept(event);
+        });
     }
 
     @SubscribeEvent

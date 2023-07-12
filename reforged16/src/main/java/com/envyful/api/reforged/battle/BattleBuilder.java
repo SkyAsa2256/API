@@ -4,6 +4,7 @@ import com.envyful.api.concurrency.UtilConcurrency;
 import com.envyful.api.forge.concurrency.UtilForgeConcurrency;
 import com.pixelmonmod.pixelmon.api.events.BattleStartedEvent;
 import com.pixelmonmod.pixelmon.api.events.PixelmonFaintEvent;
+import com.pixelmonmod.pixelmon.api.events.SpawnPixelmonEntityForBattleEvent;
 import com.pixelmonmod.pixelmon.api.events.battles.BattleEndEvent;
 import com.pixelmonmod.pixelmon.battles.BattleRegistry;
 import com.pixelmonmod.pixelmon.battles.api.rules.BattleRules;
@@ -21,6 +22,7 @@ public class BattleBuilder {
     protected Consumer<BattleEndEvent> endConsumer;
     protected Consumer<BattleStartedEvent> startConsumer;
     protected Consumer<PixelmonFaintEvent.Pre> faintConsumer;
+    protected Consumer<SpawnPixelmonEntityForBattleEvent.Pre> spawnConsumer;
     protected boolean disableExp = false;
     protected boolean allowSpectators = true;
     protected boolean teamSelection = false;
@@ -59,6 +61,11 @@ public class BattleBuilder {
 
     public BattleBuilder faintHandler(Consumer<PixelmonFaintEvent.Pre> faintConsumer) {
         this.faintConsumer = faintConsumer;
+        return this;
+    }
+
+    public BattleBuilder entitySpawnHandler(Consumer<SpawnPixelmonEntityForBattleEvent.Pre> spawnConsumer) {
+        this.spawnConsumer = spawnConsumer;
         return this;
     }
 

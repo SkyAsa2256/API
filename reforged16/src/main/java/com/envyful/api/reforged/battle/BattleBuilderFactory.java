@@ -28,6 +28,10 @@ public class BattleBuilderFactory {
     @SubscribeEvent
     public void onBattleSpawnEntity(SpawnPixelmonEntityForBattleEvent.Pre event) {
         event.getPokemon().getPixelmonEntity().ifPresent(pixelmon -> {
+            if (pixelmon.battleController == null) {
+                return;
+            }
+
             BattleBuilder battleBuilder = LISTENED_CONTROLLERS.get(pixelmon.battleController.battleIndex);
 
             if (battleBuilder == null || battleBuilder.startConsumer == null) {

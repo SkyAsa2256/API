@@ -13,6 +13,7 @@ import java.util.List;
 @ConfigSerializable
 public class ConfigReward {
 
+    private String displayName = "Example Display Name";
     private List<String> commands;
     private List<String> messages;
 
@@ -22,6 +23,10 @@ public class ConfigReward {
     }
 
     public ConfigReward() {
+    }
+
+    public String getDisplayName() {
+        return this.displayName;
     }
 
     public void execute(ServerPlayerEntity player, Placeholder... placeholders) {

@@ -3,6 +3,8 @@ package com.envyful.api.config.yaml;
 import com.envyful.api.config.data.ConfigPath;
 import com.envyful.api.config.data.Serializers;
 import com.envyful.api.config.yaml.data.YamlConfigStyle;
+import com.envyful.api.text.Placeholder;
+import com.envyful.api.text.PlaceholderFactory;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.spongepowered.configurate.CommentedConfigurationNode;
@@ -20,6 +22,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -46,12 +49,13 @@ public class YamlConfigFactory {
      * the class using Sponge's Configurate
      *
      * @param clazz The class that represents a config file
+     * @param placeholders The placeholders used for handling placeholders in the config path
      * @param <T> The type of the class
      * @return The config instance
      * @throws IOException If an error occurs whilst loading the file
      */
     public static <T extends AbstractYamlConfig> T
-    getInstance(Class<T> clazz) throws IOException {
+    getInstance(Class<T> clazz, Placeholder... placeholders) throws IOException {
         ConfigPath annotation = clazz.getAnnotation(ConfigPath.class);
 
         if (annotation == null) {
@@ -63,7 +67,14 @@ public class YamlConfigFactory {
         }
 
         NodeStyle style = getNodeStyle(clazz);
-        Path configFile = Paths.get(annotation.value());
+
+        List<String> configDir = PlaceholderFactory.handlePlaceholders(Collections.singletonList(annotation.value()), placeholders);
+
+        if (configDir.isEmpty()) {
+            throw new IOException("Config directory is empty (usually a placeholder error)");
+        }
+
+        Path configFile = Paths.get(configDir.get(0));
 
         if (!configFile.toFile().exists()) {
             configFile.getParent().toFile().mkdirs();

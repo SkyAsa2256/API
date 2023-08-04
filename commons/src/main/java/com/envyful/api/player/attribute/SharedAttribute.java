@@ -2,6 +2,7 @@ package com.envyful.api.player.attribute;
 
 import com.envyful.api.player.PlayerManager;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -57,5 +58,10 @@ public abstract class SharedAttribute<A, B> extends AbstractAttribute<A, B> {
         }
 
         return super.shouldSave() && (System.currentTimeMillis() - this.lastSave) >= TimeUnit.MINUTES.toMillis(1);
+    }
+
+    @Override
+    public CompletableFuture<A> getId() {
+        return CompletableFuture.completedFuture(this.id);
     }
 }

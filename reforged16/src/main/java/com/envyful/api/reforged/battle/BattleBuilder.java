@@ -2,10 +2,10 @@ package com.envyful.api.reforged.battle;
 
 import com.envyful.api.concurrency.UtilConcurrency;
 import com.envyful.api.forge.concurrency.UtilForgeConcurrency;
-import com.pixelmonmod.pixelmon.api.events.BattleStartedEvent;
 import com.pixelmonmod.pixelmon.api.events.PixelmonFaintEvent;
 import com.pixelmonmod.pixelmon.api.events.SpawnPixelmonEntityForBattleEvent;
 import com.pixelmonmod.pixelmon.api.events.battles.BattleEndEvent;
+import com.pixelmonmod.pixelmon.api.events.battles.BattleStartedEvent;
 import com.pixelmonmod.pixelmon.battles.BattleRegistry;
 import com.pixelmonmod.pixelmon.battles.api.rules.BattleRules;
 import com.pixelmonmod.pixelmon.battles.api.rules.teamselection.TeamSelectionRegistry;

@@ -3,8 +3,12 @@ package com.envyful.api.reforged.battle;
 import com.google.common.collect.Maps;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.enums.ExperienceGainType;
-import com.pixelmonmod.pixelmon.api.events.*;
+import com.pixelmonmod.pixelmon.api.events.ExperienceGainEvent;
+import com.pixelmonmod.pixelmon.api.events.PixelmonFaintEvent;
+import com.pixelmonmod.pixelmon.api.events.SpawnPixelmonEntityForBattleEvent;
 import com.pixelmonmod.pixelmon.api.events.battles.BattleEndEvent;
+import com.pixelmonmod.pixelmon.api.events.battles.BattleStartedEvent;
+import com.pixelmonmod.pixelmon.api.events.battles.SpectateEvent;
 import com.pixelmonmod.pixelmon.battles.controller.BattleController;
 import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PixelmonWrapper;
@@ -44,7 +48,7 @@ public class BattleBuilderFactory {
 
     @SubscribeEvent
     public void onBattleEvent(BattleStartedEvent event) {
-        BattleBuilder battleBuilder = LISTENED_CONTROLLERS.get(event.bc.battleIndex);
+        BattleBuilder battleBuilder = LISTENED_CONTROLLERS.get(event.getBattleController().battleIndex);
 
         if (battleBuilder == null || battleBuilder.startConsumer == null) {
             return;
@@ -125,7 +129,7 @@ public class BattleBuilderFactory {
 
     @SubscribeEvent
     public void onSpectateAttempt(SpectateEvent.StartSpectate event) {
-        BattleBuilder battleBuilder = LISTENED_CONTROLLERS.get(event.battleController.battleIndex);
+        BattleBuilder battleBuilder = LISTENED_CONTROLLERS.get(event.getBattleController().battleIndex);
 
         if (battleBuilder != null && battleBuilder.allowSpectators) {
             event.setCanceled(true);

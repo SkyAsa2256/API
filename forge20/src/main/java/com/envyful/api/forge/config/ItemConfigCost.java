@@ -5,14 +5,14 @@ import net.minecraft.server.level.ServerPlayer;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 @ConfigSerializable
-public class ItemCost implements ConfigCost {
+public class ItemConfigCost implements ConfigCost {
 
     private ConfigItem configItem;
 
-    public ItemCost() {
+    public ItemConfigCost() {
     }
 
-    public ItemCost(ConfigItem configItem) {
+    public ItemConfigCost(ConfigItem configItem) {
         this.configItem = configItem;
     }
 

@@ -149,7 +149,7 @@ public class ForgeGui implements Gui {
             this.gui = gui;
             this.player = player;
 
-            this.update(this.gui.panes, true);
+            this.update(this.gui.panes, false);
         }
 
         public void setGui(ForgeGui gui) {

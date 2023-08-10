@@ -100,8 +100,9 @@ public class DialogueInputRegistry {
             return this;
         }
 
-        public void applySettings(InputableDialogueConfig settings) {
+        public Builder applySettings(InputableDialogueConfig settings) {
             settings.apply(this);
+            return this;
         }
 
         public void open(ServerPlayerEntity player) {

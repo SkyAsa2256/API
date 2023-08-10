@@ -1,5 +1,6 @@
 package com.envyful.api.forge.config;
 
+import com.envyful.api.text.Placeholder;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
@@ -27,6 +28,14 @@ public interface ConfigCost {
      *
      * @param player The player
      */
-    void take(ServerPlayerEntity player);
+    void take(ServerPlayerEntity player, Placeholder... placeholders);
+
+    /**
+     *
+     * The message to send the player when they don't have the ability to pay cost
+     *
+     * @return The message
+     */
+    String getFailureMessage();
 
 }

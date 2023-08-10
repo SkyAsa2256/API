@@ -1,5 +1,6 @@
 package com.envyful.api.reforged.dialogue;
 
+import com.envyful.api.reforged.config.InputableDialogueConfig;
 import com.google.common.collect.Maps;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.events.dialogue.DialogueInputEvent;
@@ -97,6 +98,10 @@ public class DialogueInputRegistry {
         public Builder defaultInputValue(String defaultInputValue) {
             this.defaultInputValue = defaultInputValue;
             return this;
+        }
+
+        public void applySettings(InputableDialogueConfig settings) {
+            settings.apply(this);
         }
 
         public void open(ServerPlayerEntity player) {

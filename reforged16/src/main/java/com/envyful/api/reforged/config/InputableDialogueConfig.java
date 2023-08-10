@@ -1,6 +1,7 @@
 package com.envyful.api.reforged.config;
 
 import com.envyful.api.forge.chat.UtilChatColour;
+import com.envyful.api.reforged.dialogue.DialogueInputRegistry;
 import com.pixelmonmod.pixelmon.api.dialogue.DialogueInputScreen;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
@@ -28,5 +29,18 @@ public class InputableDialogueConfig {
                 .setText(UtilChatColour.colour(this.text))
                 .setDefaultText(this.defaultInput)
                 .setShouldCloseOnEsc(this.shouldCloseOnEscape);
+    }
+
+    public void apply(DialogueInputRegistry.Builder builder) {
+        builder
+                .title(UtilChatColour.colour(this.title))
+                .text(UtilChatColour.colour(this.text))
+                .defaultInputValue(this.defaultInput);
+
+        if (this.shouldCloseOnEscape) {
+            builder.closeOnEscape();
+        } else {
+            builder.notCloseable();
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.envyful.api.reforged.dialogue;
 
 import com.envyful.api.reforged.config.InputableDialogueConfig;
+import com.envyful.api.text.Placeholder;
 import com.google.common.collect.Maps;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.events.dialogue.DialogueInputEvent;
@@ -100,8 +101,8 @@ public class DialogueInputRegistry {
             return this;
         }
 
-        public Builder applySettings(InputableDialogueConfig settings) {
-            settings.apply(this);
+        public Builder applySettings(InputableDialogueConfig settings, Placeholder... placeholders) {
+            settings.apply(this, placeholders);
             return this;
         }
 

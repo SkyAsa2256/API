@@ -67,12 +67,12 @@ public class YamlConfigFactory {
 
         File configFiles = Paths.get(configDirectory).toFile();
 
-        if (!configFiles.isDirectory()) {
-            throw new IOException("Invalid path provided - must be a directory");
-        }
-
         if (!configFiles.exists()) {
             configFiles.mkdir();
+        }
+
+        if (!configFiles.isDirectory()) {
+            throw new IOException("Invalid path provided - must be a directory");
         }
 
         NodeStyle style = getNodeStyle(configClass);
@@ -124,7 +124,7 @@ public class YamlConfigFactory {
             }
 
             ConfigurationReference<CommentedConfigurationNode> base =
-                    listenToConfig(WATCH_SERVICE, file.toPath(), serializers, style);
+                    listenToConfig(WATCH_SERVICE, listFile.toPath(), serializers, style);
 
             if (base == null) {
                 throw new IOException("Error config loaded as null");

@@ -59,7 +59,8 @@ public class YamlConfigFactory {
      * @throws IOException Thrown if there is an error loading any of the configs
      */
     public static <T extends AbstractYamlConfig> List<T>
-    getInstances(Class<T> configClass, String configDirectory) throws IOException {
+    getInstances(Class<T> configClass, String configDirectory,
+                 DefaultConfig... defaults) throws IOException {
         if (WATCH_SERVICE == null) {
             throw new IOException("Failed to get watch service for configs");
         }
@@ -83,9 +84,20 @@ public class YamlConfigFactory {
             serializers.addAll(Arrays.asList(serializedData.value()));
         }
 
+        return loadDirectory(configFiles, serializers, style, configClass);
+    }
+
+    private static <T extends AbstractYamlConfig> List<T>
+    loadDirectory(File file, List<Class<? extends ScalarSerializer<?>>> serializers,
+                  NodeStyle style, Class<T> configClass) throws IOException {
         List<T> loadedConfigs = Lists.newArrayList();
 
-        for (File file : configFiles.listFiles()) {
+        for (File listFile : file.listFiles()) {
+            if (listFile.isDirectory()) {
+                loadedConfigs.addAll(loadDirectory(listFile, serializers, style, configClass));
+                continue;
+            }
+
             ConfigurationReference<CommentedConfigurationNode> base =
                     listenToConfig(WATCH_SERVICE, file.toPath(), serializers, style);
 

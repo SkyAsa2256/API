@@ -18,6 +18,7 @@ import org.spongepowered.configurate.serialize.ScalarSerializer;
 import org.spongepowered.configurate.yaml.NodeStyle;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -41,6 +42,72 @@ public class YamlConfigFactory {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     *
+     * Loads all files as an instance of the class provided from the directory given
+     * <br>
+     * Note:
+     * if a single file in there errors then an exception will be thrown preventing
+     * any of the list from being lodaed
+     *
+     * @param configClass The class to load the files as
+     * @param configDirectory The directory to load the files from
+     * @return The files loaded
+     * @param <T> The class type
+     * @throws IOException Thrown if there is an error loading any of the configs
+     */
+    public static <T extends AbstractYamlConfig> List<T>
+    getInstances(Class<T> configClass, String configDirectory) throws IOException {
+        if (WATCH_SERVICE == null) {
+            throw new IOException("Failed to get watch service for configs");
+        }
+
+        File configFiles = Paths.get(configDirectory).toFile();
+
+        if (!configFiles.isDirectory()) {
+            throw new IOException("Invalid path provided - must be a directory");
+        }
+
+        if (!configFiles.exists()) {
+            configFiles.mkdir();
+        }
+
+        NodeStyle style = getNodeStyle(configClass);
+        List<Class<? extends ScalarSerializer<?>>> serializers =
+                Lists.newArrayList();
+        Serializers serializedData = configClass.getAnnotation(Serializers.class);
+
+        if (serializedData != null) {
+            serializers.addAll(Arrays.asList(serializedData.value()));
+        }
+
+        List<T> loadedConfigs = Lists.newArrayList();
+
+        for (File file : configFiles.listFiles()) {
+            ConfigurationReference<CommentedConfigurationNode> base =
+                    listenToConfig(WATCH_SERVICE, file.toPath(), serializers, style);
+
+            if (base == null) {
+                throw new IOException("Error config loaded as null");
+            }
+
+            ValueReference<T, CommentedConfigurationNode> reference =
+                    base.referenceTo(configClass);
+            T instance = reference.get();
+
+            if (instance == null) {
+                throw new IOException("Error config loaded as null");
+            }
+
+            instance.base = base;
+            instance.config = reference;
+            instance.save();
+            loadedConfigs.add(instance);
+        }
+
+        return loadedConfigs;
     }
 
     /**

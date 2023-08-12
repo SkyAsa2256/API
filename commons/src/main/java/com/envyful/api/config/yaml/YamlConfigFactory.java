@@ -60,7 +60,7 @@ public class YamlConfigFactory {
      */
     public static <T extends AbstractYamlConfig> List<T>
     getInstances(Class<T> configClass, String configDirectory,
-                 DefaultConfig... defaults) throws IOException {
+                 DefaultConfig<T>... defaults) throws IOException {
         if (WATCH_SERVICE == null) {
             throw new IOException("Failed to get watch service for configs");
         }
@@ -82,6 +82,31 @@ public class YamlConfigFactory {
 
         if (serializedData != null) {
             serializers.addAll(Arrays.asList(serializedData.value()));
+        }
+
+        for (DefaultConfig<T> defaultConfig : defaults) {
+            File file = new File(configDirectory, defaultConfig.getFileName());
+
+            if (!file.exists()) {
+                if (!file.getParentFile().exists()) {
+                    file.getParentFile().mkdirs();
+                }
+                file.createNewFile();
+            }
+
+            ConfigurationReference<CommentedConfigurationNode> base =
+                    listenToConfig(WATCH_SERVICE, file.toPath(), serializers, style);
+            ValueReference<T, CommentedConfigurationNode> reference =
+                    base.referenceTo(configClass);
+            T instance = reference.get();
+
+            if (instance == null) {
+                throw new IOException("Error config loaded as null");
+            }
+
+            defaultConfig.getInstance().base = base;
+            defaultConfig.getInstance().config = reference;
+            defaultConfig.getInstance().save();
         }
 
         return loadDirectory(configFiles, serializers, style, configClass);
@@ -208,7 +233,7 @@ public class YamlConfigFactory {
     listenToConfig(WatchServiceListener listener,
                    Path configFile,
                    List<Class<? extends ScalarSerializer<?>>> serializers,
-                   NodeStyle style) {
+                   NodeStyle style) throws IOException {
         try {
             return listener
                     .listenToConfiguration(file ->
@@ -245,9 +270,7 @@ public class YamlConfigFactory {
                     .defaultOptions(opts -> opts.shouldCopyDefaults(true))
                     .path(file).build(), configFile);
         } catch (ConfigurateException e) {
-            e.printStackTrace();
+            throw new IOException(e);
         }
-
-        return null;
     }
 }

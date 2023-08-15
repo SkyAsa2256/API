@@ -101,6 +101,11 @@ public class ForgePlayerManager implements PlayerManager<ForgeEnvyPlayer, Server
     }
 
     @Override
+    public SaveManager<ServerPlayerEntity> getSaveManager() {
+        return this.saveManager;
+    }
+
+    @Override
     public <A extends Attribute<B, ?>, B> A loadAttribute(Class<? extends A> attributeClass, B id) {
         return this.saveManager.loadAttribute(attributeClass, id);
     }

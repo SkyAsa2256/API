@@ -104,6 +104,14 @@ public interface PlayerManager<A extends EnvyPlayer<B>, B> {
       */
      void setSaveManager(SaveManager<B> saveManager);
 
+     /**
+      *
+      * Gets the backing save manager
+      *
+      * @return The save manager
+      */
+     SaveManager<B> getSaveManager();
+
      <A extends Attribute<B, ?>, B> A loadAttribute(Class<? extends A> attributeClass, B id);
 
 }

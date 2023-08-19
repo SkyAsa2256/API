@@ -23,6 +23,10 @@ public class ConfigItemBuilder extends ForgeSimpleDisplayable.Builder {
     }
 
     public Displayable extendedConfigItem(ForgeEnvyPlayer player, Pane pane, ExtendedConfigItem configItem, Placeholder... placeholders) {
+        if (!UtilConfigItem.hasPermission(player.getParent(), configItem)) {
+            this.clickHandler((a, b) -> {});
+        }
+
         return this.extendedConfigItem(pane, UtilConfigItem.fromPermissibleItem(player.getParent(), configItem, placeholders), configItem);
     }
 

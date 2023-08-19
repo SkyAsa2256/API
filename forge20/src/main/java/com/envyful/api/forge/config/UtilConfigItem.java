@@ -50,9 +50,7 @@ public class UtilConfigItem {
             return null;
         }
 
-        if (!permissibleConfigItem.requiresPermission() || permissibleConfigItem.getPermission().isEmpty() || permissibleConfigItem.getPermission() == null ||
-                permissibleConfigItem.getPermission().equalsIgnoreCase("none") ||
-                UtilPlayer.hasPermission(player, permissibleConfigItem.getPermission())) {
+        if (hasPermission(player, permissibleConfigItem)) {
             return fromConfigItem(permissibleConfigItem, transformers);
         }
 
@@ -61,6 +59,14 @@ public class UtilConfigItem {
         }
 
         return fromConfigItem(permissibleConfigItem.getElseItem(), transformers);
+    }
+
+    public static boolean hasPermission(ServerPlayer player, ExtendedConfigItem permissibleConfigItem) {
+        return !permissibleConfigItem.requiresPermission() ||
+                permissibleConfigItem.getPermission().isEmpty() ||
+                permissibleConfigItem.getPermission() == null ||
+                permissibleConfigItem.getPermission().equalsIgnoreCase("none") ||
+                UtilPlayer.hasPermission(player, permissibleConfigItem.getPermission());
     }
 
     public static ItemStack fromConfigItem(ExtendedConfigItem configItem, Placeholder... transformers) {

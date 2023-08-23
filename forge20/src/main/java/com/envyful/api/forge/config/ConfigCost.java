@@ -1,5 +1,6 @@
 package com.envyful.api.forge.config;
 
+import com.envyful.api.text.Placeholder;
 import net.minecraft.server.level.ServerPlayer;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
@@ -27,6 +28,8 @@ public interface ConfigCost {
      *
      * @param player The player
      */
-    void take(ServerPlayer player);
+    void take(ServerPlayer player, Placeholder... placeholders);
+
+    String getFailureMessage();
 
 }

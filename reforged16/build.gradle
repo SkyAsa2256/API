@@ -35,7 +35,7 @@ dependencies {
         transitive = false
     }
 
-    implementation 'pixelmon:Pixelmon-1.16.5-9.1.6-server:9.1.6'
+    implementation 'pixelmon:Pixelmon-1.16.5-9.1.7-server:9.1.7'
 }
 
 shadowJar {

@@ -349,7 +349,7 @@ public class ForgeCommandFactory implements CommandFactory<CommandDispatcher<Com
             return "";
         }
 
-        UtilPlayer.registerPermission("EnvyAPI", permissible.value());
+        UtilPlayer.registerPermission(permissible.value());
         return permissible.value();
     }
 
@@ -397,7 +397,7 @@ public class ForgeCommandFactory implements CommandFactory<CommandDispatcher<Com
             return "";
         }
 
-        UtilPlayer.registerPermission("EnvyAPI", permissible.value());
+        UtilPlayer.registerPermission(permissible.value());
         return permissible.value();
     }
 

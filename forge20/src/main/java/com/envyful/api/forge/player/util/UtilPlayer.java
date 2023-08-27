@@ -65,12 +65,11 @@ public class UtilPlayer {
      *
      * Registers a permission node with this class
      *
-     * @param modId The mod registering the node
      * @param permissionNode The node
      * @return The permission
      */
-    public static PermissionNode<?> registerPermission(String modId, String permissionNode) {
-        var registeredPermission = new PermissionNode<>(modId, permissionNode,
+    public static PermissionNode<?> registerPermission(String permissionNode) {
+        var registeredPermission = new PermissionNode<>("envyapi", permissionNode,
                 PermissionTypes.BOOLEAN,
                 (player, uuid, contexts) -> false);
 

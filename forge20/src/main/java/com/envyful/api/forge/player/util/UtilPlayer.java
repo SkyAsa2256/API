@@ -1,10 +1,19 @@
 package com.envyful.api.forge.player.util;
 
+import com.envyful.api.concurrency.UtilLogger;
+import com.google.common.collect.Maps;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.ServerOpListEntry;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.server.ServerLifecycleHooks;
+import net.minecraftforge.server.permission.PermissionAPI;
+import net.minecraftforge.server.permission.events.PermissionGatherEvent;
+import net.minecraftforge.server.permission.nodes.PermissionNode;
+import net.minecraftforge.server.permission.nodes.PermissionTypes;
 
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -14,6 +23,17 @@ import java.util.UUID;
  */
 public class UtilPlayer {
 
+    private static final Map<String, PermissionNode<Boolean>> PERMISSION_NODES = Maps.newConcurrentMap();
+
+    static {
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false,
+                PermissionGatherEvent.Nodes.class, event -> {
+            for (var node : PERMISSION_NODES.values()) {
+                event.addNodes(node);
+            }
+        });
+    }
+
     public static String getName(CommandSource source) {
         if (source instanceof ServerPlayer) {
             return ((ServerPlayer) source).getName().getString();
@@ -22,8 +42,40 @@ public class UtilPlayer {
         return "CONSOLE";
     }
 
+    /**
+     *
+     * Used for checking if a player has a permisson
+     *
+     * @param player The player
+     * @param permission The permission
+     * @return true if they have access to said permission
+     */
     public static boolean hasPermission(ServerPlayer player, String permission) {
-        return (/*PermissionAPI.getPermission(player, permission) || */player.hasPermissions(4) || isOP(player)); //TODO:
+        var permissionNode = PERMISSION_NODES.get(permission);
+
+        if (permissionNode == null) {
+            UtilLogger.getLogger().error("Unregistered permission node is attempted to be used: {}", permission);
+            return false;
+        }
+
+        return (PermissionAPI.getPermission(player, permissionNode) || player.hasPermissions(4) || isOP(player));
+    }
+
+    /**
+     *
+     * Registers a permission node with this class
+     *
+     * @param modId The mod registering the node
+     * @param permissionNode The node
+     * @return The permission
+     */
+    public static PermissionNode<?> registerPermission(String modId, String permissionNode) {
+        var registeredPermission = new PermissionNode<>(modId, permissionNode,
+                PermissionTypes.BOOLEAN,
+                (player, uuid, contexts) -> false);
+
+        PERMISSION_NODES.put(permissionNode, registeredPermission);
+        return registeredPermission;
     }
 
     public static boolean isOP(ServerPlayer player) {

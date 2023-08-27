@@ -17,6 +17,7 @@ import com.envyful.api.forge.command.completion.number.IntegerTabCompleter;
 import com.envyful.api.forge.command.completion.player.PlayerTabCompleter;
 import com.envyful.api.forge.command.injector.ForgeFunctionInjector;
 import com.envyful.api.forge.player.ForgePlayerManager;
+import com.envyful.api.forge.player.util.UtilPlayer;
 import com.envyful.api.type.Pair;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -348,6 +349,7 @@ public class ForgeCommandFactory implements CommandFactory<CommandDispatcher<Com
             return "";
         }
 
+        UtilPlayer.registerPermission("EnvyAPI", permissible.value());
         return permissible.value();
     }
 
@@ -395,6 +397,7 @@ public class ForgeCommandFactory implements CommandFactory<CommandDispatcher<Com
             return "";
         }
 
+        UtilPlayer.registerPermission("EnvyAPI", permissible.value());
         return permissible.value();
     }
 

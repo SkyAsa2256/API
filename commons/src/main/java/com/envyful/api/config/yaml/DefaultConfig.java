@@ -60,7 +60,7 @@ public class DefaultConfig<T extends AbstractYamlConfig> {
      */
     @Deprecated
     public static <T extends AbstractYamlConfig> DefaultConfig<T> of(String fileName, T instance) {
-        return new DefaultConfig<>(fileName, instance, false);
+        return new DefaultConfig<>(fileName, instance, true);
     }
 
     /**

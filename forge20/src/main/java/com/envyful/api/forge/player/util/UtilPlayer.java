@@ -1,7 +1,5 @@
 package com.envyful.api.forge.player.util;
 
-import com.envyful.api.forge.player.ForgeEnvyPlayer;
-import com.google.common.collect.Sets;
 import io.netty.util.AttributeKey;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.server.level.ServerPlayer;
@@ -11,8 +9,6 @@ import net.minecraftforge.network.NetworkConstants;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
 import java.lang.reflect.Field;
-import java.util.Collections;
-import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -83,37 +79,5 @@ public class UtilPlayer {
      */
     public static ServerPlayer getOnlinePlayer(UUID uuid) {
         return ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(uuid);
-    }
-
-    /**
-     *
-     * Gets the player's client side mods
-     *
-     * @param player The player
-     * @return The mod names/ids
-     */
-    public static Set<String> getMods(ForgeEnvyPlayer player) {
-        if (player == null) {
-            return Collections.emptySet();
-        }
-
-        return getMods(player.getParent());
-    }
-
-    /**
-     *
-     * Gets the player's client side mods
-     *
-     * @param player The player
-     * @return The mod names/ids
-     */
-    public static Set<String> getMods(ServerPlayer player) {
-        if (player == null || player.connection == null || player.connection.connection == null ||
-                player.connection.connection.channel() == null) {
-            return Collections.emptySet();
-        }
-
-        ConnectionData networkDispatcher = player.connection.connection.channel().attr(ATTRIBUTE).get();
-        return Sets.newHashSet(networkDispatcher.getModList());
     }
 }

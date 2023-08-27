@@ -87,6 +87,10 @@ public class YamlConfigFactory {
         for (DefaultConfig<T> defaultConfig : defaults) {
             File file = new File(configDirectory, defaultConfig.getFileName());
 
+            if (file.exists() && !defaultConfig.shouldReplaceExisting()) {
+                continue;
+            }
+
             if (!file.exists()) {
                 if (!file.getParentFile().exists()) {
                     file.getParentFile().mkdirs();

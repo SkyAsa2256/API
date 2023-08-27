@@ -1,14 +1,10 @@
 package com.envyful.api.forge.player.util;
 
-import io.netty.util.AttributeKey;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.ServerOpListEntry;
-import net.minecraftforge.network.ConnectionData;
-import net.minecraftforge.network.NetworkConstants;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
-import java.lang.reflect.Field;
 import java.util.UUID;
 
 /**
@@ -17,17 +13,6 @@ import java.util.UUID;
  *
  */
 public class UtilPlayer {
-
-    private static AttributeKey<ConnectionData> ATTRIBUTE;
-
-    static {
-        try {
-            Field connectionData = NetworkConstants.class.getDeclaredField("FML_CONNECTION_DATA");
-            ATTRIBUTE = (AttributeKey<ConnectionData>) connectionData.get(null);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-    }
 
     public static String getName(CommandSource source) {
         if (source instanceof ServerPlayer) {

@@ -29,11 +29,6 @@ public class UtilTimeFormat {
     private static final Map<String, DateFormat> DATE_FORMATS =
             Maps.newHashMap();
 
-
-    public static void main(String[] args) {
-        System.out.println(format(10_000_000L, new TimeFormatConfig()));
-    }
-
     public static String format(Duration duration, TimeFormatConfig config) {
         return format(duration.toMillis(), config);
     }

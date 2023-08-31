@@ -1,5 +1,7 @@
 package com.envyful.api.time;
 
+import com.envyful.api.concurrency.UtilLogger;
+import com.envyful.api.config.type.TimeFormatConfig;
 import com.google.common.collect.Maps;
 
 import java.text.DateFormat;
@@ -8,7 +10,10 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class UtilTimeFormat {
 
@@ -19,9 +24,87 @@ public class UtilTimeFormat {
     private static final long SECONDS_PER_HOUR =
             SECONDS_PER_MINUTE * MINUTES_PER_HOUR;
     private static final long SECONDS_PER_DAY = SECONDS_PER_HOUR * 24;
+    private static final Pattern PLACEHOLDER_PATTERN = Pattern.compile("\\%([a-z]+)\\%");
 
     private static final Map<String, DateFormat> DATE_FORMATS =
             Maps.newHashMap();
+
+
+    public static void main(String[] args) {
+        System.out.println(format(10_000_000L, new TimeFormatConfig()));
+    }
+
+    public static String format(Duration duration, TimeFormatConfig config) {
+        return format(duration.toMillis(), config);
+    }
+
+    public static String format(long time, TimeUnit timeUnit, TimeFormatConfig config) {
+        return format(timeUnit.toMillis(time), config);
+    }
+
+    /**
+     *
+     * Formats the duration, in milliseconds, to the specified format in the
+     * {@link TimeFormatConfig} provided.
+     * <br>
+     * For details on how that config section works pleased read the JavaDocs
+     * found in the {@link TimeFormatConfig} class.
+     * <br>
+     * The time provided <b>MUST</b> be in milliseconds
+     *
+     * @param time The time duration in milliseconds
+     * @param config The formatting config
+     * @return The formatted duration
+     */
+    public static String format(long time, TimeFormatConfig config) {
+        if (containsInvalidPlaceholders(config.getPlaceholders().keySet())) {
+            UtilLogger.logger().ifPresent(logger ->
+                    logger.error("Invalid placeholders found in TimeFormatConfig - please avoid using %seconds_value%, %minutes_value%, %hours_value%, %days_value% as placeholder keys"));
+            return "";
+        }
+
+        long seconds = TimeUnit.SECONDS.convert(time, TimeUnit.MILLISECONDS);
+
+        long daysPart = (seconds / SECONDS_PER_DAY);
+        long hoursPart = (seconds / SECONDS_PER_HOUR) % 24;
+        long minutesPart = (seconds / SECONDS_PER_MINUTE) % MINUTES_PER_HOUR;
+        long secondsPart = (seconds) % SECONDS_PER_MINUTE;
+
+        String format = config.getFormat();
+        Matcher matcher = PLACEHOLDER_PATTERN.matcher(format);
+
+        while (matcher.find()) {
+            String replacement = config.getPlaceholders().getOrDefault(matcher.group(1), "");
+
+            if (shouldClearReplacement(replacement, "seconds", secondsPart) ||
+                    shouldClearReplacement(replacement, "minutes", minutesPart) ||
+                    shouldClearReplacement(replacement, "hours", hoursPart) ||
+                    shouldClearReplacement(replacement, "days", daysPart)) {
+                replacement = "";
+            }
+
+            format = matcher.replaceFirst(replacement);
+            matcher = PLACEHOLDER_PATTERN.matcher(format);
+        }
+
+        return format
+                .replace("%seconds_value%", String.valueOf(secondsPart))
+                .replace("%minutes_value%", String.valueOf(minutesPart))
+                .replace("%hours_value%", String.valueOf(hoursPart))
+                .replace("%days_value%", String.valueOf(daysPart))
+                .trim();
+    }
+
+    private static boolean containsInvalidPlaceholders(Set<String> keySet) {
+        return keySet.contains("seconds_value") ||
+                keySet.contains("minutes_value") ||
+                keySet.contains("hours_value") ||
+                keySet.contains("days_value");
+    }
+
+    private static boolean shouldClearReplacement(String originalText, String placeholder, long duration) {
+        return originalText.contains("%" + placeholder + "_value%") && duration <= 0;
+    }
 
     public static String format(Date date, String format) {
         return DATE_FORMATS.computeIfAbsent(format,

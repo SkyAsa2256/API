@@ -21,6 +21,9 @@ import java.util.Map;
  * <br>
  * Notably do not use "%seconds_value%" (etc) as placeholder entries otherwise
  * the program (server) will crash!
+ * <br>
+ * For the standard implementation of the handling of this config section look at the
+ * function {@link com.envyful.api.time.UtilTimeFormat#format(long, TimeFormatConfig)}
  *
  */
 @ConfigSerializable

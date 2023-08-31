@@ -229,7 +229,7 @@ public class CommandExecutor {
 
 
         if (!((SenderType<ICommandSource, ?>) this.sender).isAccepted(sender)) {
-            UtilLogger.getLogger().error("You cannot use this command from this source (player only).");
+            UtilLogger.logger().ifPresent(logger -> logger.error("You cannot use this command from this source (player only)."));
             return false;
         }
 
@@ -251,7 +251,7 @@ public class CommandExecutor {
             this.executor.invoke(this.commandClass, args);
             return true;
         } catch (Exception e) {
-            UtilLogger.getLogger().catching(Level.FATAL, e);
+            UtilLogger.logger().ifPresent(logger -> logger.catching(Level.FATAL, e));
         }
 
         return false;

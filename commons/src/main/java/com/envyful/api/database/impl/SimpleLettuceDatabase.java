@@ -102,10 +102,10 @@ public class SimpleLettuceDatabase implements Database {
                                 declaredMethod.invoke(o, channel, message);
                             } catch (InvocationTargetException |
                                      IllegalAccessException e) {
-                                UtilLogger.getLogger().error(
+                                UtilLogger.logger().ifPresent(logger -> logger.error(
                                         "Jedis error in '{}' for '{}'",
                                         channel, message
-                                );
+                                ));
                                 e.printStackTrace();
                             }
                         });

@@ -54,7 +54,7 @@ public class UtilPlayer {
         var permissionNode = PERMISSION_NODES.get(permission);
 
         if (permissionNode == null) {
-            UtilLogger.getLogger().error("Unregistered permission node is attempted to be used: {}", permission);
+            UtilLogger.logger().ifPresent(logger -> logger.error("Unregistered permission node is attempted to be used: {}", permission));
             return false;
         }
 

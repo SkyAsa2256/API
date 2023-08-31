@@ -155,16 +155,14 @@ public class JsonSaveManager<T> extends AbstractSaveManager<T> {
                 file.getParentFile().mkdirs();
                 Files.createFile(file.toPath());
             } catch (IOException e) {
-                UtilLogger.getLogger().error("There was an error creating the file");
-                UtilLogger.getLogger().catching(e);
+                UtilLogger.logger().ifPresent(logger -> logger.error("There was an error creating the file", e));
             }
         }
 
         try (FileWriter fileWriter = new FileWriter(file)) {
             getGson().toJson(attribute, attribute.getClass(), new JsonWriter(fileWriter));
         } catch (IOException e) {
-            UtilLogger.getLogger().error("There was an error writing to the file");
-            UtilLogger.getLogger().catching(e);
+            UtilLogger.logger().ifPresent(logger -> logger.error("There was an error writing to the file", e));
         }
     }
 
@@ -182,7 +180,9 @@ public class JsonSaveManager<T> extends AbstractSaveManager<T> {
             try {
                 GSON_BUILDER.registerTypeAdapter(attribute, typeAdapter.value().newInstance());
             } catch (InstantiationException | IllegalAccessException e) {
-                UtilLogger.getLogger().catching(e);
+                UtilLogger.logger()
+                        .ifPresent(logger -> logger.error(
+                                "Error registering type adapter for: " + attribute.getSimpleName(), e));
             }
         }
 

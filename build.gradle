@@ -25,6 +25,8 @@ subprojects {
         options.encoding = 'UTF-8'
     }
 
+    publish.dependsOn(':commons:test')
+
     afterEvaluate {
         publishing {
             repositories {

@@ -63,7 +63,7 @@ public class VelocityCommandFactory implements CommandFactory<CommandManager, Co
 
         SenderTypeFactory.register(new ConsoleSenderType(), new VelocityPlayerSenderType());
 
-        this.registerInjector(Player.class, (sender, args) -> this.proxy.getPlayer(args[0]));
+        this.registerInjector(Player.class, (sender, args) -> this.proxy.getPlayer(args[0]).orElse(null));
         this.registerInjector(int.class, (ICommandSource, args) -> {
             try {
                 return Integer.parseInt(args[0]);
@@ -400,8 +400,8 @@ public class VelocityCommandFactory implements CommandFactory<CommandManager, Co
     }
 
     @Override
-    public void registerInjector(Class<?> parentClass, boolean multipleArgs, BiFunction<CommandSource, String[], ?> function) {
-        this.registeredInjectors.add(new VelocityFunctionInjector(parentClass, multipleArgs, function));
+    public <C> void registerInjector(Class<C> parentClass, boolean multipleArgs, BiFunction<CommandSource, String[], C> function) {
+        this.registeredInjectors.add(new VelocityFunctionInjector<>(parentClass, multipleArgs, function));
     }
 
     @Override

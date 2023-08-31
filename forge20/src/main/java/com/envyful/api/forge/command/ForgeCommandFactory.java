@@ -433,8 +433,8 @@ public class ForgeCommandFactory implements CommandFactory<CommandDispatcher<Com
     }
 
     @Override
-    public void registerInjector(Class<?> parentClass, boolean multipleArgs, BiFunction<CommandSource, String[], ?> function) {
-        this.registeredInjectors.add(new ForgeFunctionInjector(parentClass, multipleArgs, function));
+    public <C> void registerInjector(Class<C> parentClass, boolean multipleArgs, BiFunction<CommandSource, String[], C> function) {
+        this.registeredInjectors.add(new ForgeFunctionInjector<>(parentClass, multipleArgs, function));
     }
 
     @Override

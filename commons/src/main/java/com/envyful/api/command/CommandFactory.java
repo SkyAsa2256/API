@@ -52,8 +52,8 @@ public interface CommandFactory<A, B> {
      * @param function The function converting
      *                 the sender and args to the parentClass
      */
-    default void registerInjector(Class<?> parentClass,
-                                  BiFunction<B, String[], ?> function
+    default <C> void registerInjector(Class<C> parentClass,
+                                  BiFunction<B, String[], C> function
     ) {
         this.registerInjector(parentClass, false, function);
     }
@@ -69,9 +69,9 @@ public interface CommandFactory<A, B> {
      * @param function The function converting
      *                 the sender and args to the parentClass
      */
-    void registerInjector(Class<?> parentClass,
+    <C> void registerInjector(Class<C> parentClass,
                           boolean multipleArgs,
-                          BiFunction<B, String[], ?> function);
+                          BiFunction<B, String[], C> function);
 
     /**
      *

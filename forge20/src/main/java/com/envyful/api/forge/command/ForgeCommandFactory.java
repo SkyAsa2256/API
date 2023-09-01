@@ -284,7 +284,7 @@ public class ForgeCommandFactory implements CommandFactory<CommandDispatcher<Com
                     senderType = SenderTypeFactory.getSenderType(parameterTypes[i]).orElse(null);
 
                     if (senderType == null) {
-                        throw new RuntimeException("Unregistered sender type " + parameterTypes[i].getSimpleName());
+                        throw new CommandLoadException(clazz.getSimpleName(), "Unregistered sender type " + parameterTypes[i].getSimpleName());
                     }
 
                     senderPosition = i;
@@ -322,7 +322,13 @@ public class ForgeCommandFactory implements CommandFactory<CommandDispatcher<Com
                         }
                     }
 
-                    arguments.add(Pair.of(this.getInjectorFor(parameterTypes[i]), defaultValue));
+                    ArgumentInjector<?, CommandSource> injector = this.getInjectorFor(parameterTypes[i]);
+
+                    if (injector == null) {
+                        throw new CommandLoadException(clazz.getSimpleName(), "Unregistered argument type " + parameterTypes[i].getSimpleName());
+                    }
+
+                    arguments.add(Pair.of(injector, defaultValue));
                 }
             }
 

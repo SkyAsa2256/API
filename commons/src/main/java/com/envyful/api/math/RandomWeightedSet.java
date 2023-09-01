@@ -21,6 +21,12 @@ public class RandomWeightedSet<A> extends HashMap<A, Double> {
         super();
     }
 
+    public RandomWeightedSet(A a, double weight) {
+        this();
+
+        this.add(a, weight);
+    }
+
     public RandomWeightedSet<A> add(A a, double weight) {
         super.put(a, weight);
         this.totalWeight += weight;

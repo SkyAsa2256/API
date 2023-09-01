@@ -27,7 +27,7 @@ import java.util.Map;
  */
 public abstract class AbstractEnvyPlayer<T> implements EnvyPlayer<T> {
 
-    protected final Map<Class<?>, Attribute<?, ?>> attributes =
+    protected final Map<Class<?>, Attribute<?>> attributes =
             Maps.newHashMap();
 
     protected final SaveManager<T> saveManager;
@@ -49,38 +49,35 @@ public abstract class AbstractEnvyPlayer<T> implements EnvyPlayer<T> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <A extends Attribute<?, B>, B> A getAttribute(Class<B> plugin) {
-        return (A) this.attributes.get(plugin);
+    public <A extends Attribute<B>, B> A getAttribute(Class<A> attributeClass) {
+        return (A) this.attributes.get(attributeClass);
     }
 
     @Override
-    public void invalidateAttribute(Attribute<?, ?> attribute) {
-        this.attributes.remove(
-                this.saveManager.getManager(attribute).getClass()
-        );
+    public void invalidateAttribute(Attribute<?> attribute) {
+        this.attributes.remove(attribute.getClass());
     }
 
     @Override
-    public <A extends Attribute<B, ?>, B> A loadAttribute(
+    public <A extends Attribute<B>, B> A loadAttribute(
             Class<? extends A> attributeClass, B id) {
         A loadedAttribute = this.saveManager.loadAttribute(attributeClass, id);
 
         this.attributes.put(
-                this.saveManager.getManager(loadedAttribute).getClass(),
+                attributeClass,
                 loadedAttribute
         );
+
         return loadedAttribute;
     }
 
     @Override
-    public <A extends Attribute<?, ?>> void setAttribute(A attribute) {
-        this.attributes.put(
-                this.saveManager.getManager(attribute).getClass(), attribute
-        );
+    public <A extends Attribute<?>> void setAttribute(A attribute) {
+        this.attributes.put(attribute.getClass(), attribute);
     }
 
     @Override
-    public List<Attribute<?, ?>> getAttributes() {
+    public List<Attribute<?>> getAttributes() {
         return Lists.newArrayList(this.attributes.values());
     }
 }

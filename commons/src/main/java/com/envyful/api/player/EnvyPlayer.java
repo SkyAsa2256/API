@@ -39,15 +39,15 @@ public interface EnvyPlayer<T> {
 
     void teleport(ConfigLocation location);
 
-    List<Attribute<?, ?>> getAttributes();
+    List<Attribute<?>> getAttributes();
 
-    <A extends Attribute<?, B>, B> A getAttribute(Class<B> plugin);
+    <A extends Attribute<B>, B> A getAttribute(Class<A> attributeClass);
 
-    void invalidateAttribute(Attribute<?, ?> attribute);
+    void invalidateAttribute(Attribute<?> attribute);
 
-    <A extends Attribute<B, ?>, B> A loadAttribute(
+    <A extends Attribute<B>, B> A loadAttribute(
             Class<? extends A> attributeClass, B id);
 
-    <A extends Attribute<?, ?>> void setAttribute(A attribute);
+    <A extends Attribute<?>> void setAttribute(A attribute);
 
 }

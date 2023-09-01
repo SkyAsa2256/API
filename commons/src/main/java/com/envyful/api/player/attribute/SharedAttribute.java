@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
  * @param <A> The attribute ID type
  * @param <B> The manager instance for the attribute
  */
-public abstract class SharedAttribute<A, B> extends AbstractAttribute<A, B> {
+public abstract class SharedAttribute<A, B> extends ManagedAttribute<A, B> {
 
     protected final transient PlayerManager<?, ?> playerManager;
 

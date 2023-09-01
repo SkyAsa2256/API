@@ -12,9 +12,9 @@ import java.util.function.Supplier;
 @SuppressWarnings("unchecked")
 public abstract class AbstractSaveManager<T> implements SaveManager<T> {
 
-    protected final Map<Class<? extends Attribute<?, ?>>, AttributeData<?, ?>>
+    protected final Map<Class<? extends Attribute<?>>, AttributeData<?, ?>>
             registeredAttributes = Maps.newConcurrentMap();
-    protected final Map<Object, Attribute<?, ?>> sharedAttributes
+    protected final Map<Object, Attribute<?>> sharedAttributes
             = Maps.newConcurrentMap();
 
     protected final PlayerManager<?, ?> playerManager;
@@ -24,30 +24,19 @@ public abstract class AbstractSaveManager<T> implements SaveManager<T> {
     }
 
     @Override
-    public void registerAttribute(
-            Object manager, Class<? extends Attribute<?, ?>> attribute) {
-        Supplier<Attribute<?, ?>> constructor =
-                this.getAttributeConstructor(manager, attribute);
-        this.registeredAttributes.put(attribute,
-                new AttributeData<>(manager, constructor));
+    public void registerAttribute(Class<? extends Attribute<?>> attribute) {
+        Supplier<Attribute<?>> constructor =
+                this.getAttributeConstructor(attribute);
+        this.registeredAttributes.put(attribute, new AttributeData<>(constructor));
     }
 
-    @Override
-    public <B> B getManager(Attribute<?, ?> attribute) {
-        return (B) this.registeredAttributes.get(attribute.getClass())
-                .getManager();
-    }
-
-    private Supplier<Attribute<?, ?>> getAttributeConstructor(
-            Object manager, Class<? extends Attribute<?, ?>> clazz) {
+    private Supplier<Attribute<?>> getAttributeConstructor(Class<? extends Attribute<?>> clazz) {
         try {
-            Constructor<? extends Attribute<?, ?>> constructor =
-                    clazz.getConstructor(manager.getClass(),
-                            this.playerManager.getClass());
+            Constructor<? extends Attribute<?>> constructor = clazz.getConstructor(this.playerManager.getClass());
 
             return () -> {
                 try {
-                    return constructor.newInstance(manager, this.playerManager);
+                    return constructor.newInstance(this.playerManager);
                 } catch (InstantiationException |
                          IllegalAccessException |
                         IllegalArgumentException |
@@ -64,26 +53,20 @@ public abstract class AbstractSaveManager<T> implements SaveManager<T> {
         return null;
     }
 
-    protected <A, B> Attribute<A, B> getSharedAttribute(Object o) {
-        return (Attribute<A, B>) this.sharedAttributes.get(o);
+    protected <A> Attribute<A> getSharedAttribute(Object o) {
+        return (Attribute<A>) this.sharedAttributes.get(o);
     }
 
-    protected void addSharedAttribute(Object key, Attribute<?, ?> attribute) {
+    protected void addSharedAttribute(Object key, Attribute<?> attribute) {
         this.sharedAttributes.put(key, attribute);
     }
 
-    public static class AttributeData<A, B extends Attribute<?, A>> {
+    public static class AttributeData<A, B extends Attribute<A>> {
 
-        private final A manager;
         private final Supplier<B> constructor;
 
-        public AttributeData(A manager, Supplier<?> constructor) {
-            this.manager = manager;
+        public AttributeData(Supplier<?> constructor) {
             this.constructor = (Supplier<B>) constructor;
-        }
-
-        public Object getManager() {
-            return this.manager;
         }
 
         public Supplier<B> getConstructor() {

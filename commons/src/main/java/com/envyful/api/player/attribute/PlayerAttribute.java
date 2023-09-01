@@ -15,21 +15,22 @@ import java.util.concurrent.CompletableFuture;
  * @param <A> The manager type
  * @param <B> The API's player type
  * @param <C> The platform's player type
+ * @param <D> The player manager's type
  */
-public abstract class PlayerAttribute<A, B extends EnvyPlayer<C>, C>
-        extends AbstractAttribute<UUID, A> {
+public abstract class PlayerAttribute<A, B extends EnvyPlayer<C>, C, D extends PlayerManager<B, C>>
+        extends ManagedAttribute<UUID, A> {
 
-    protected final transient PlayerManager<B, C> playerManager;
+    protected final transient D playerManager;
 
-    protected transient EnvyPlayer<C> parent;
+    protected transient B parent;
 
-    protected PlayerAttribute(A manager, PlayerManager<B, C> playerManager) {
+    protected PlayerAttribute(A manager, D playerManager) {
         super(manager);
 
         this.playerManager = playerManager;
     }
 
-    public void setParent(EnvyPlayer<C> parent) {
+    public void setParent(B parent) {
         this.parent = parent;
     }
 

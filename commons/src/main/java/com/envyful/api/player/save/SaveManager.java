@@ -19,22 +19,21 @@ public interface SaveManager<T> {
      *
      * Registers an attribute for how this class should handle saving and loading
      *
-     * @param manager The manager object
      * @param attribute The class of the attribute being registered
      */
-    void registerAttribute(Object manager, Class<? extends Attribute<?, ?>> attribute);
+    void registerAttribute(Class<? extends Attribute<?>> attribute);
 
     /**
      *
      * Saves the player's data from the given attribute
      * This will call {@link Attribute#saveWithGenericId(Object)}} if this class has not been registered using
-     * {@link SaveManager#registerAttribute(Object, Class)}
+     * {@link SaveManager#registerAttribute(Class)}
      *
      *
      * @param player The player whose data is being saved
      * @param attribute The attribute being saved
      */
-    default void saveData(EnvyPlayer<T> player, Attribute<?, ?> attribute) {
+    default void saveData(EnvyPlayer<T> player, Attribute<?> attribute) {
         this.saveData(player.getUuid(), attribute);
     }
 
@@ -45,27 +44,17 @@ public interface SaveManager<T> {
      * @param uuid The offline UUID
      * @param attribute The attribute being saved
      */
-    void saveData(UUID uuid, Attribute<?, ?> attribute);
-
-    /**
-     *
-     * Gets the stored manager for the attribute
-     *
-     * @param attribute The attribute
-     * @return The manager instance
-     * @param <B> The manager type
-     */
-    <B> B getManager(Attribute<?, ?> attribute);
+    void saveData(UUID uuid, Attribute<?> attribute);
 
     /**
      *
      * Load the player's data for all registered {@link Attribute} using
-     * {@link SaveManager#registerAttribute(Object, Class)}
+     * {@link SaveManager#registerAttribute(Class)}
      *
      * @param player The player whose data is being loaded
      * @return All successfully loaded attributes
      */
-    default CompletableFuture<List<Attribute<?, ?>>> loadData(EnvyPlayer<T> player) {
+    default CompletableFuture<List<Attribute<?>>> loadData(EnvyPlayer<T> player) {
         return this.loadData(player.getUuid());
     }
 
@@ -79,16 +68,16 @@ public interface SaveManager<T> {
      * @param <A> The attribute type
      * @param <B> The id type
      */
-    <A extends Attribute<B, ?>, B> A loadAttribute(Class<? extends A> attributeClass, B id);
+    <A extends Attribute<?>, B> A loadAttribute(Class<? extends A> attributeClass, B id);
 
     /**
      *
      * Load the player's data for all registered {@link Attribute}
-     * using {@link SaveManager#registerAttribute(Object, Class)}
+     * using {@link SaveManager#registerAttribute(Class)}
      *
      * @param uuid The offline player's UUID
      * @return All successfully loaded attributes
      */
-    CompletableFuture<List<Attribute<?, ?>>> loadData(UUID uuid);
+    CompletableFuture<List<Attribute<?>>> loadData(UUID uuid);
 
 }

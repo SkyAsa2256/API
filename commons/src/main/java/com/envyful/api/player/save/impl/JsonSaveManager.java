@@ -33,7 +33,7 @@ public class JsonSaveManager<T> extends AbstractSaveManager<T> {
 
     private static Gson gson = null;
 
-    protected final Map<Class<? extends Attribute<?, ?>>, String> attributeDirectories = Maps.newHashMap();
+    protected final Map<Class<? extends Attribute<?>>, String> attributeDirectories = Maps.newHashMap();
 
     public JsonSaveManager(PlayerManager<?, ?> playerManager) {
         super(playerManager);
@@ -48,17 +48,17 @@ public class JsonSaveManager<T> extends AbstractSaveManager<T> {
     }
 
     @Override
-    public CompletableFuture<List<Attribute<?, ?>>> loadData(UUID uuid) {
+    public CompletableFuture<List<Attribute<?>>> loadData(UUID uuid) {
         if (this.registeredAttributes.isEmpty()) {
             return CompletableFuture.completedFuture(Collections.emptyList());
         }
 
-        List<Attribute<?, ?>> attributes = Lists.newArrayList();
-        List<CompletableFuture<Attribute<?, ?>>> loadTasks = Lists.newArrayList();
+        List<Attribute<?>> attributes = Lists.newArrayList();
+        List<CompletableFuture<Attribute<?>>> loadTasks = Lists.newArrayList();
 
-        for (Map.Entry<Class<? extends Attribute<?, ?>>, AttributeData<?, ?>> entry : this.registeredAttributes.entrySet()) {
+        for (Map.Entry<Class<? extends Attribute<?>>, AttributeData<?, ?>> entry : this.registeredAttributes.entrySet()) {
             AttributeData<?, ?> value = entry.getValue();
-            Attribute<?, ?> attribute = value.getConstructor().get();
+            Attribute<?> attribute = value.getConstructor().get();
 
             loadTasks.add(attribute.getId(uuid).thenApply(o -> {
                 if (o == null) {
@@ -66,7 +66,7 @@ public class JsonSaveManager<T> extends AbstractSaveManager<T> {
                 }
 
                 if (attribute.isShared()) {
-                    Attribute<?, ?> sharedAttribute = this.getSharedAttribute(o);
+                    Attribute<?> sharedAttribute = this.getSharedAttribute(o);
 
                     if (sharedAttribute == null) {
                         sharedAttribute = this.readData(entry.getKey(), attribute, o);
@@ -75,7 +75,7 @@ public class JsonSaveManager<T> extends AbstractSaveManager<T> {
 
                     return sharedAttribute;
                 } else {
-                    Attribute<?, ?> loaded = this.readData(entry.getKey(), attribute, o);
+                    Attribute<?> loaded = this.readData(entry.getKey(), attribute, o);
 
                     if (loaded instanceof PlayerAttribute) {
                         ((PlayerAttribute) loaded).setParent(this.playerManager.getPlayer(uuid));
@@ -95,9 +95,9 @@ public class JsonSaveManager<T> extends AbstractSaveManager<T> {
         return CompletableFuture.allOf(loadTasks.toArray(new CompletableFuture[0])).thenApply(unused -> attributes);
     }
 
-    protected Attribute<?, ?> readData(
-            Class<? extends Attribute<?, ?>> attributeClass,
-            Attribute<?, ?> original,
+    protected Attribute<?> readData(
+            Class<? extends Attribute<?>> attributeClass,
+            Attribute<?> original,
             Object key
     ) {
         String dataDirectory = this.attributeDirectories.get(attributeClass);
@@ -123,7 +123,7 @@ public class JsonSaveManager<T> extends AbstractSaveManager<T> {
     }
 
     @Override
-    public <A extends Attribute<B, ?>, B> A loadAttribute(Class<? extends A> attributeClass, B id) {
+    public <A extends Attribute<?>, B> A loadAttribute(Class<? extends A> attributeClass, B id) {
         if (id == null) {
             return null;
         }
@@ -146,7 +146,7 @@ public class JsonSaveManager<T> extends AbstractSaveManager<T> {
     }
 
     @Override
-    public void saveData(UUID uuid, Attribute<?, ?> attribute) {
+    public void saveData(UUID uuid, Attribute<?> attribute) {
         String dataDirectory = this.attributeDirectories.get(attribute.getClass());
         File file = Paths.get(dataDirectory, uuid.toString() + ".json").toFile();
 
@@ -167,7 +167,7 @@ public class JsonSaveManager<T> extends AbstractSaveManager<T> {
     }
 
     @Override
-    public void registerAttribute(Object manager, Class<? extends Attribute<?, ?>> attribute) {
+    public void registerAttribute(Class<? extends Attribute<?>> attribute) {
         DataDirectory dataDirectory = attribute.getAnnotation(DataDirectory.class);
 
         if (dataDirectory == null) {
@@ -187,6 +187,6 @@ public class JsonSaveManager<T> extends AbstractSaveManager<T> {
         }
 
         this.attributeDirectories.put(attribute, dataDirectory.value());
-        super.registerAttribute(manager, attribute);
+        super.registerAttribute(attribute);
     }
 }

@@ -1,11 +1,11 @@
 package com.envyful.api.player.attribute.data;
 
+import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.player.attribute.Attribute;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
 
 /**
  *
@@ -18,42 +18,36 @@ import java.util.Map;
 public class PlayerAttributeData {
 
     private final PlayerManager<?, ?> playerManager;
-    private final Object manager;
-    private final Class<?> managerClass;
-    private final Class<? extends Attribute<?, ?>> attributeClass;
-    private final Constructor<? extends Attribute<?, ?>> constructor;
+    private final Class<? extends Attribute<?>> attributeClass;
+    private final Constructor<? extends Attribute<?>> constructor;
 
     /**
      *
      * Passing the manager and attribute class allows for the object to get the necessary classes, and constructors
      * using this information for later instantiation
      *
-     * @param manager The manager object
      * @param attributeClass The class of the attribute being stored
      */
     public PlayerAttributeData(
-            Object manager, PlayerManager<?, ?> playerManager,
-            Class<? extends Attribute<?, ?>> attributeClass
+            PlayerManager<?, ?> playerManager,
+            Class<? extends Attribute<?>> attributeClass
     ) {
-        this.manager = manager;
         this.playerManager = playerManager;
-        this.managerClass = this.manager.getClass();
         this.attributeClass = attributeClass;
         this.constructor = this.getConstructor();
     }
 
-    public Class<? extends Attribute<?, ?>> getAttributeClass() {
+    public Class<? extends Attribute<?>> getAttributeClass() {
         return this.attributeClass;
     }
 
-    private Constructor<? extends Attribute<?, ?>> getConstructor() {
+    private Constructor<? extends Attribute<?>> getConstructor() {
         try {
             return attributeClass.getConstructor(
-                    this.managerClass,
                    this.playerManager.getClass()
             );
         } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+            UtilLogger.logger().ifPresent(logger -> logger.error("No valid constructor found for " + attributeClass.getSimpleName() + ".", e));
         }
 
         return null;
@@ -66,26 +60,13 @@ public class PlayerAttributeData {
      *
      * @return The new attribute
      */
-    public Attribute<?, ?> getInstance() {
+    public Attribute<?> getInstance() {
         try {
-            return this.constructor.newInstance(this.manager, this.playerManager);
+            return this.constructor.newInstance(this.playerManager);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
+            UtilLogger.logger().ifPresent(logger -> logger.error("No valid constructor found for " + attributeClass.getSimpleName() + ".", e));
         }
 
         return null;
-    }
-
-    /**
-     *
-     * Adds the instance to the given map to ensure encapsulation is followed.
-     *
-     * @param map The map being added to
-     * @param instance The instance being added to the map using the manager class as a key
-     */
-    public void addToMap(
-            Map<Class<?>, Attribute<?, ?>> map, Attribute<?, ?> instance
-    ) {
-        map.put(this.managerClass, instance);
     }
 }

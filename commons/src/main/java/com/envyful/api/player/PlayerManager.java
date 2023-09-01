@@ -11,7 +11,7 @@ import java.util.UUID;
  * An interface designed to store local user objects for the plugin using it.
  * Should handle all login and logout logic (reducing boilerplate / duplicate code) allowing for easy caching
  * with minimal code at the implementation level.
- *
+ * <br>
  * Check the implementation level module (i.e. forge module) for details on how to create an instance of this interface.
  *
  * @param <A> The generic for the API's player object
@@ -22,7 +22,7 @@ public interface PlayerManager<A extends EnvyPlayer<B>, B> {
      /**
       *
       * Get the {@link EnvyPlayer} implementation from the platform's player implementation
-      *
+      * <br>
       * Will return null if the player is not online
       *
       * @param player The platform's player object
@@ -33,7 +33,7 @@ public interface PlayerManager<A extends EnvyPlayer<B>, B> {
      /**
       *
       * Get the {@link EnvyPlayer} implementation from the minecraft player's UUID
-      *
+      * <br>
       * Will return null if the player is not online
       *
       * @param uuid The minecraft player's UUID
@@ -44,7 +44,7 @@ public interface PlayerManager<A extends EnvyPlayer<B>, B> {
      /**
       *
       * Gets the {@link EnvyPlayer} implementation from the player's username (if they are online)
-      *
+      * <br>
       * Will return null if the player is not online
       *
       * @param username The username of the minecraft player
@@ -56,7 +56,7 @@ public interface PlayerManager<A extends EnvyPlayer<B>, B> {
      /**
       *
       * Gets the {@link EnvyPlayer} implementation from the player's username (if they are online) (case insensitive)
-      *
+      * <br>
       * Will return null if the player is not online
       *
       * @param username The username of the minecraft player
@@ -81,7 +81,7 @@ public interface PlayerManager<A extends EnvyPlayer<B>, B> {
       * @param uuid The uuid of the target player
       * @return The attributes of said offline player
       */
-     List<Attribute<?, ?>> getOfflineAttributes(UUID uuid);
+     List<Attribute<?>> getOfflineAttributes(UUID uuid);
 
      /**
       *
@@ -89,12 +89,11 @@ public interface PlayerManager<A extends EnvyPlayer<B>, B> {
       * instantiated it can be created (using reflection) from the registry in the PlayerManager implementation.
       *
       * If {@link PlayerManager#setSaveManager(SaveManager)} has been called then it will call
-      * {@link SaveManager#registerAttribute(Object, Class)} on the given class
+      * {@link SaveManager#registerAttribute(Class)} on the given class
       *
-      * @param manager The manager object to be passed through the attribute constructor at instantiation
       * @param attribute The class of the attribute being registered
       */
-     void registerAttribute(Object manager, Class<? extends Attribute<?, ?>> attribute);
+     void registerAttribute(Class<? extends Attribute<?>> attribute);
 
      /**
       *
@@ -112,6 +111,16 @@ public interface PlayerManager<A extends EnvyPlayer<B>, B> {
       */
      SaveManager<B> getSaveManager();
 
-     <A extends Attribute<B, ?>, B> A loadAttribute(Class<? extends A> attributeClass, B id);
+     /**
+      *
+      * Loads attribute data for a given ID
+      *
+      * @param attributeClass The class being loaded
+      * @param id The ID for which the data is being loaded
+      * @return The loaded data
+      * @param <A> The attribute type
+      * @param <B> The
+      */
+     <A extends Attribute<B>, B> A loadAttribute(Class<? extends A> attributeClass, B id);
 
 }

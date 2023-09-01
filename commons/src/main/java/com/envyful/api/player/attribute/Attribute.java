@@ -9,10 +9,9 @@ import java.util.concurrent.CompletableFuture;
  * An interface representing data stored about something, typically a player
  *
  * @param <A> The unique identifier type
- * @param <B> The manager type
  */
 @SuppressWarnings({"unused", "unchecked"})
-public interface Attribute<A, B> {
+public interface Attribute<A> {
 
     CompletableFuture<A> getId(UUID playerUuid);
 

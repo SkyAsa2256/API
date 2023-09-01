@@ -10,14 +10,14 @@ import java.io.Serializable;
  * @param <A> The attribute ID type
  * @param <B> The manager instance for the attribute
  */
-public abstract class AbstractAttribute<A, B>
-        implements Attribute<A, B>, Serializable {
+public abstract class ManagedAttribute<A, B>
+        implements Attribute<A>, Serializable {
 
     protected final transient B manager;
 
     protected transient A id;
 
-    protected AbstractAttribute(B manager) {
+    protected ManagedAttribute(B manager) {
         this.manager = manager;
     }
 

@@ -28,7 +28,7 @@ import java.util.concurrent.CompletableFuture;
 public class SQLSaveManager<T> extends AbstractSaveManager<T> {
 
     private final Database database;
-    protected final Map<Class<? extends Attribute<?, ?>>, SQLAttributeData> registeredSqlAttributeData = Maps.newConcurrentMap();
+    protected final Map<Class<? extends Attribute<?>>, SQLAttributeData> registeredSqlAttributeData = Maps.newConcurrentMap();
 
     public SQLSaveManager(PlayerManager<?, ?> playerManager, Database database) {
         super(playerManager);
@@ -36,17 +36,17 @@ public class SQLSaveManager<T> extends AbstractSaveManager<T> {
     }
 
     @Override
-    public CompletableFuture<List<Attribute<?, ?>>> loadData(UUID uuid) {
+    public CompletableFuture<List<Attribute<?>>> loadData(UUID uuid) {
         if (this.registeredAttributes.isEmpty()) {
             return CompletableFuture.completedFuture(Collections.emptyList());
         }
 
-        List<Attribute<?, ?>> attributes = Lists.newArrayList();
-        List<CompletableFuture<Attribute<?, ?>>> loadTasks = Lists.newArrayList();
+        List<Attribute<?>> attributes = Lists.newArrayList();
+        List<CompletableFuture<Attribute<?>>> loadTasks = Lists.newArrayList();
 
-        for (Map.Entry<Class<? extends Attribute<?, ?>>, AttributeData<?, ?>> entry : this.registeredAttributes.entrySet()) {
+        for (Map.Entry<Class<? extends Attribute<?>>, AttributeData<?, ?>> entry : this.registeredAttributes.entrySet()) {
             AttributeData<?, ?> value = entry.getValue();
-            Attribute<?, ?> attribute = value.getConstructor().get();
+            Attribute<?> attribute = value.getConstructor().get();
 
             loadTasks.add(attribute.getId(uuid).thenApply(o -> {
                 if (o == null) {
@@ -54,7 +54,7 @@ public class SQLSaveManager<T> extends AbstractSaveManager<T> {
                 }
 
                 if (attribute.isShared()) {
-                    Attribute<?, ?> sharedAttribute = this.getSharedAttribute(o);
+                    Attribute<?> sharedAttribute = this.getSharedAttribute(o);
 
                     if (sharedAttribute == null) {
                         sharedAttribute = this.readData(attribute,
@@ -79,8 +79,8 @@ public class SQLSaveManager<T> extends AbstractSaveManager<T> {
         return CompletableFuture.allOf(loadTasks.toArray(new CompletableFuture[0])).thenApply(unused -> attributes);
     }
 
-    protected Attribute<?, ?> readData(
-            Attribute<?, ?> original,
+    protected Attribute<?> readData(
+            Attribute<?> original,
             SQLAttributeData sqlAttributeData
     ) {
         try (Connection connection = this.database.getConnection();
@@ -117,7 +117,7 @@ public class SQLSaveManager<T> extends AbstractSaveManager<T> {
     }
 
     @Override
-    public <A extends Attribute<B, ?>, B> A loadAttribute(Class<? extends A> attributeClass, B id) {
+    public <A extends Attribute<?>, B> A loadAttribute(Class<? extends A> attributeClass, B id) {
         if (id == null) {
             return null;
         }
@@ -142,7 +142,7 @@ public class SQLSaveManager<T> extends AbstractSaveManager<T> {
     }
 
     @Override
-    public void saveData(UUID player, Attribute<?, ?> attribute) {
+    public void saveData(UUID player, Attribute<?> attribute) {
         SQLAttributeData sqlAttributeData = this.registeredSqlAttributeData.get(attribute.getClass());
 
         try (Connection connection = this.database.getConnection();
@@ -168,7 +168,7 @@ public class SQLSaveManager<T> extends AbstractSaveManager<T> {
     }
 
     @Override
-    public void registerAttribute(Object manager, Class<? extends Attribute<?, ?>> attribute) {
+    public void registerAttribute(Class<? extends Attribute<?>> attribute) {
         Map<Field, FieldData> fieldData = this.getFieldData(attribute);
         Queries queries = attribute.getAnnotation(Queries.class);
 
@@ -181,11 +181,11 @@ public class SQLSaveManager<T> extends AbstractSaveManager<T> {
                 queries.updateQuery(), this.getFieldPositions(queries.updateQuery(), fieldData)
         );
 
-        super.registerAttribute(manager, attribute);
+        super.registerAttribute(attribute);
         this.registeredSqlAttributeData.put(attribute, new SQLAttributeData(queries, fieldData, fieldsPositions));
     }
 
-    private Map<Field, FieldData> getFieldData(Class<? extends Attribute<?, ?>> attribute) {
+    private Map<Field, FieldData> getFieldData(Class<? extends Attribute<?>> attribute) {
         Map<Field, FieldData> fieldData = Maps.newHashMap();
 
         for (Field declaredField : attribute.getDeclaredFields()) {

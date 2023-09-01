@@ -77,7 +77,7 @@ public class VelocityPlayerManager implements PlayerManager<VelocityEnvyPlayer, 
     }
 
     @Override
-    public List<Attribute<?, ?>> getOfflineAttributes(UUID uuid) {
+    public List<Attribute<?>> getOfflineAttributes(UUID uuid) {
         try {
             return this.saveManager.loadData(uuid).get();
         } catch (InterruptedException | ExecutionException e) {
@@ -86,11 +86,11 @@ public class VelocityPlayerManager implements PlayerManager<VelocityEnvyPlayer, 
     }
 
     @Override
-    public void registerAttribute(Object manager, Class<? extends Attribute<?, ?>> attribute) {
-        this.attributeData.add(new PlayerAttributeData(manager, this, attribute));
+    public void registerAttribute(Class<? extends Attribute<?>> attribute) {
+        this.attributeData.add(new PlayerAttributeData(this, attribute));
 
         if (this.saveManager != null) {
-            this.saveManager.registerAttribute(manager, attribute);
+            this.saveManager.registerAttribute(attribute);
         }
     }
 
@@ -105,7 +105,7 @@ public class VelocityPlayerManager implements PlayerManager<VelocityEnvyPlayer, 
     }
 
     @Override
-    public <A extends Attribute<B, ?>, B> A loadAttribute(Class<? extends A> attributeClass, B id) {
+    public <A extends Attribute<B>, B> A loadAttribute(Class<? extends A> attributeClass, B id) {
         return this.saveManager.loadAttribute(attributeClass, id);
     }
 
@@ -127,7 +127,7 @@ public class VelocityPlayerManager implements PlayerManager<VelocityEnvyPlayer, 
             UtilConcurrency.runAsync(() -> {
                 this.manager.saveManager.loadData(player).whenComplete((attributes, throwable) -> {
                     for (PlayerAttributeData attributeDatum : this.manager.attributeData) {
-                        Attribute<?, ?> attribute = this.findAttribute(attributeDatum, attributes);
+                        Attribute<?> attribute = this.findAttribute(attributeDatum, attributes);
 
                         if (attribute == null) {
                             continue;
@@ -139,9 +139,9 @@ public class VelocityPlayerManager implements PlayerManager<VelocityEnvyPlayer, 
             });
         }
 
-        private Attribute<?, ?> findAttribute(PlayerAttributeData attributeDatum,
-                                                 List<Attribute<?, ?>> playerAttributes) {
-            for (Attribute<?, ?> playerAttribute : playerAttributes) {
+        private Attribute<?> findAttribute(PlayerAttributeData attributeDatum,
+                                                 List<Attribute<?>> playerAttributes) {
+            for (Attribute<?> playerAttribute : playerAttributes) {
                 if (Objects.equals(attributeDatum.getAttributeClass(), playerAttribute.getClass())) {
                     return playerAttribute;
                 }
@@ -158,7 +158,7 @@ public class VelocityPlayerManager implements PlayerManager<VelocityEnvyPlayer, 
                 return;
             }
 
-            for (Attribute<?, ?> value : player.getAttributes()) {
+            for (Attribute<?> value : player.getAttributes()) {
                 if (value != null) {
                     this.manager.saveManager.saveData(player, value);
                 }

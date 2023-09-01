@@ -55,7 +55,7 @@ public class SQLSaveManager<T> extends AbstractSaveManager<T> {
                 }
 
                 if (attribute.isShared()) {
-                    Attribute<?> sharedAttribute = this.getSharedAttribute(o);
+                    Attribute<?> sharedAttribute = this.getSharedAttribute((Class<? extends Attribute<?>>) attribute.getClass(), o);
 
                     if (sharedAttribute == null) {
                         sharedAttribute = this.readData(attribute,
@@ -128,7 +128,7 @@ public class SQLSaveManager<T> extends AbstractSaveManager<T> {
             A attribute = attributeData.getConstructor().get();
 
             if (attribute.isShared()) {
-                A sharedAttribute = (A) this.getSharedAttribute(id);
+                A sharedAttribute = (A) this.getSharedAttribute(attributeClass, id);
 
                 if (sharedAttribute == null) {
                     sharedAttribute = (A) this.readData(attribute,

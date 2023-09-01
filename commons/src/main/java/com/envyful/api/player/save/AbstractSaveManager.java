@@ -14,7 +14,7 @@ public abstract class AbstractSaveManager<T> implements SaveManager<T> {
 
     protected final Map<Class<? extends Attribute<?>>, AttributeData<?, ?>>
             registeredAttributes = Maps.newConcurrentMap();
-    protected final Map<Object, Attribute<?>> sharedAttributes
+    protected final Map<Class<? extends Attribute<?>>, Map<Object, Attribute<?>>> sharedAttributes
             = Maps.newConcurrentMap();
 
     protected final PlayerManager<?, ?> playerManager;
@@ -53,12 +53,12 @@ public abstract class AbstractSaveManager<T> implements SaveManager<T> {
         return null;
     }
 
-    protected <A> Attribute<A> getSharedAttribute(Object o) {
-        return (Attribute<A>) this.sharedAttributes.get(o);
+    protected <A> Attribute<A> getSharedAttribute(Class<? extends Attribute<?>> attributeClass, Object o) {
+        return (Attribute<A>) this.sharedAttributes.computeIfAbsent(attributeClass, ___ -> Maps.newHashMap()).get(o);
     }
 
     protected void addSharedAttribute(Object key, Attribute<?> attribute) {
-        this.sharedAttributes.put(key, attribute);
+        this.sharedAttributes.computeIfAbsent((Class<? extends Attribute<?>>) attribute.getClass(), ___ -> Maps.newHashMap()).put(key, attribute);
     }
 
     public static class AttributeData<A, B extends Attribute<A>> {

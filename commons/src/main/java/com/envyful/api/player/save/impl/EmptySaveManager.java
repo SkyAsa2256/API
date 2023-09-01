@@ -37,7 +37,7 @@ public class EmptySaveManager<T> extends AbstractSaveManager<T> {
                 }
 
                 if (attribute.isShared()) {
-                    Attribute<?> sharedAttribute = this.getSharedAttribute(o);
+                    Attribute<?> sharedAttribute = this.getSharedAttribute((Class<? extends Attribute<?>>) attribute.getClass(),  o);
 
                     if (sharedAttribute == null) {
                         sharedAttribute = attribute;
@@ -68,13 +68,12 @@ public class EmptySaveManager<T> extends AbstractSaveManager<T> {
             return CompletableFuture.completedFuture(null);
         }
 
-
         return CompletableFuture.supplyAsync(() -> {
             AttributeData<?, A> attributeData = (AttributeData<?, A>) this.registeredAttributes.get(attributeClass);
             A attribute = attributeData.getConstructor().get();
 
             if (attribute.isShared()) {
-                A sharedAttribute = (A) this.getSharedAttribute(id);
+                A sharedAttribute = (A) this.getSharedAttribute(attributeClass, id);
 
                 if (sharedAttribute == null) {
                     sharedAttribute = attribute;

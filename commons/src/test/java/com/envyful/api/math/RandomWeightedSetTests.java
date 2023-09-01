@@ -2,7 +2,7 @@ package com.envyful.api.math;
 
 import org.junit.jupiter.api.Test;
 
-public class RandomWeightedSetTest {
+public class RandomWeightedSetTests {
 
     // Checks that the weights are working correctly - roughly close to 1,000 (1% of 100,000)
     @Test

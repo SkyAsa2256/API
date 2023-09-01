@@ -20,6 +20,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -107,7 +108,7 @@ public class SpigotPlayerManager implements PlayerManager<SpigotEnvyPlayer, Play
     }
 
     @Override
-    public <A extends Attribute<B>, B> A loadAttribute(Class<? extends A> attributeClass, B id) {
+    public <A extends Attribute<B>, B> CompletableFuture<A> loadAttribute(Class<? extends A> attributeClass, B id) {
         return this.saveManager.loadAttribute(attributeClass, id);
     }
 

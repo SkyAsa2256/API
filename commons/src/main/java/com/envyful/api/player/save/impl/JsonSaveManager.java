@@ -1,5 +1,6 @@
 package com.envyful.api.player.save.impl;
 
+import com.envyful.api.concurrency.UtilConcurrency;
 import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.player.attribute.Attribute;
@@ -123,26 +124,28 @@ public class JsonSaveManager<T> extends AbstractSaveManager<T> {
     }
 
     @Override
-    public <A extends Attribute<?>, B> A loadAttribute(Class<? extends A> attributeClass, B id) {
+    public <A extends Attribute<?>, B> CompletableFuture<A> loadAttribute(Class<? extends A> attributeClass, B id) {
         if (id == null) {
-            return null;
+            return CompletableFuture.completedFuture(null);
         }
 
-        AttributeData<?, A> attributeData = (AttributeData<?, A>) this.registeredAttributes.get(attributeClass);
-        A attribute = attributeData.getConstructor().get();
+        return CompletableFuture.supplyAsync(() -> {
+            AttributeData<?, A> attributeData = (AttributeData<?, A>) this.registeredAttributes.get(attributeClass);
+            A attribute = attributeData.getConstructor().get();
 
-        if (attribute.isShared()) {
-           A sharedAttribute = (A) this.getSharedAttribute(id);
+            if (attribute.isShared()) {
+                A sharedAttribute = (A) this.getSharedAttribute(id);
 
-            if (sharedAttribute == null) {
-                sharedAttribute = (A) this.readData(attributeClass, attribute, id);
-                this.addSharedAttribute(id, sharedAttribute);
+                if (sharedAttribute == null) {
+                    sharedAttribute = (A) this.readData(attributeClass, attribute, id);
+                    this.addSharedAttribute(id, sharedAttribute);
+                }
+
+                return sharedAttribute;
+            } else {
+                return (A) this.readData(attributeClass, attribute, id);
             }
-
-            return sharedAttribute;
-        } else {
-            return (A) this.readData(attributeClass, attribute, id);
-        }
+        }, UtilConcurrency.SCHEDULED_EXECUTOR_SERVICE);
     }
 
     @Override

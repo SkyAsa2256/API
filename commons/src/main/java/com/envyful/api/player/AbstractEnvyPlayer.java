@@ -8,6 +8,7 @@ import com.google.common.collect.Maps;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 /**
  *
@@ -59,16 +60,12 @@ public abstract class AbstractEnvyPlayer<T> implements EnvyPlayer<T> {
     }
 
     @Override
-    public <A extends Attribute<B>, B> A loadAttribute(
+    public <A extends Attribute<B>, B> CompletableFuture<A> loadAttribute(
             Class<? extends A> attributeClass, B id) {
-        A loadedAttribute = this.saveManager.loadAttribute(attributeClass, id);
-
-        this.attributes.put(
-                attributeClass,
-                loadedAttribute
-        );
-
-        return loadedAttribute;
+        return this.saveManager.loadAttribute(attributeClass, id).thenApply(a -> {
+            this.attributes.put(attributeClass, a);
+            return a;
+        });
     }
 
     @Override

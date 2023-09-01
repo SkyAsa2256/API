@@ -68,7 +68,7 @@ public interface SaveManager<T> {
      * @param <A> The attribute type
      * @param <B> The id type
      */
-    <A extends Attribute<?>, B> A loadAttribute(Class<? extends A> attributeClass, B id);
+    <A extends Attribute<?>, B> CompletableFuture<A> loadAttribute(Class<? extends A> attributeClass, B id);
 
     /**
      *

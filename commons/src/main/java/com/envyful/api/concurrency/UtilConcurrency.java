@@ -20,7 +20,7 @@ import java.util.function.Supplier;
 public class UtilConcurrency {
 
     public static final ScheduledExecutorService SCHEDULED_EXECUTOR_SERVICE =
-            Executors.newScheduledThreadPool(5,
+            Executors.newScheduledThreadPool(10,
             new ThreadFactoryBuilder()
                     .setDaemon(true)
                     .setNameFormat("envyware_concurrency_%d")

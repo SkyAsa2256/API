@@ -5,6 +5,7 @@ import com.envyful.api.player.save.SaveManager;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 /**
  *
@@ -121,6 +122,6 @@ public interface PlayerManager<A extends EnvyPlayer<B>, B> {
       * @param <A> The attribute type
       * @param <B> The
       */
-     <A extends Attribute<B>, B> A loadAttribute(Class<? extends A> attributeClass, B id);
+     <A extends Attribute<B>, B> CompletableFuture<A> loadAttribute(Class<? extends A> attributeClass, B id);
 
 }

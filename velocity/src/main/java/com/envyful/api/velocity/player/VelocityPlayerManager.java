@@ -16,6 +16,7 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -105,7 +106,7 @@ public class VelocityPlayerManager implements PlayerManager<VelocityEnvyPlayer, 
     }
 
     @Override
-    public <A extends Attribute<B>, B> A loadAttribute(Class<? extends A> attributeClass, B id) {
+    public <A extends Attribute<B>, B> CompletableFuture<A> loadAttribute(Class<? extends A> attributeClass, B id) {
         return this.saveManager.loadAttribute(attributeClass, id);
     }
 

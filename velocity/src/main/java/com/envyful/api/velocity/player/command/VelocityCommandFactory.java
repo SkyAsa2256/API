@@ -368,7 +368,7 @@ public class VelocityCommandFactory implements CommandFactory<CommandManager, Co
         return permissible.value();
     }
 
-    private List<VelocityCommand> getSubCommands(Class<?> clazz) {
+    private List<VelocityCommand> getSubCommands(Class<?> clazz) throws CommandLoadException {
         SubCommands subCommands = clazz.getAnnotation(SubCommands.class);
 
         if (subCommands == null) {

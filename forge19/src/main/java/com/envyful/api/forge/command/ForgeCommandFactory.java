@@ -404,7 +404,7 @@ public class ForgeCommandFactory implements CommandFactory<CommandDispatcher<Com
         return permissible.value();
     }
 
-    private List<ForgeCommand> getSubCommands(Class<?> clazz) {
+    private List<ForgeCommand> getSubCommands(Class<?> clazz) throws CommandLoadException {
         SubCommands subCommands = clazz.getAnnotation(SubCommands.class);
 
         if (subCommands == null) {

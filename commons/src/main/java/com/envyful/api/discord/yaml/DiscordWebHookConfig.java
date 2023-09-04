@@ -1,10 +1,11 @@
 package com.envyful.api.discord.yaml;
 
 import com.envyful.api.config.yaml.AbstractYamlConfig;
-import com.envyful.api.discord.JSONObject;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
 import com.google.common.collect.Maps;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -59,13 +60,14 @@ public class DiscordWebHookConfig extends AbstractYamlConfig {
             );
         }
 
-        JSONObject json = this.toJson();
+        JsonObject json = this.toJson();
         String text = PlaceholderFactory.handlePlaceholders(Collections.singletonList(json.toString()), placeholders).get(0);
 
+        System.out.println("Sending text: " + text);
         URL url = new URL(this.url);
         HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
         connection.addRequestProperty("Content-Type", "application/json");
-        connection.addRequestProperty("User-Agent", "Java-DiscordWebhook-BY-Gelox_");
+        connection.addRequestProperty("User-Agent", "EnvyWare");
         connection.setDoOutput(true);
         connection.setRequestMethod("POST");
 
@@ -78,22 +80,23 @@ public class DiscordWebHookConfig extends AbstractYamlConfig {
         connection.disconnect();
     }
 
-    public JSONObject toJson() {
-        JSONObject json = new JSONObject();
+    public JsonObject toJson() {
+        JsonObject json = new JsonObject();
 
-        json.put("content", this.content);
-        json.put("username", this.username);
-        json.put("avatar_url", this.avatarUrl);
-        json.put("tts", this.tts);
+        json.addProperty("url", this.url);
+        json.addProperty("content", this.content);
+        json.addProperty("username", this.username);
+        json.addProperty("avatar_url", this.avatarUrl);
+        json.addProperty("tts", this.tts);
 
         if (!this.embeds.isEmpty()) {
-            List<JSONObject> embedObjects = new ArrayList<>();
+            JsonArray embedObjects = new JsonArray();
 
             for (DiscordEmbedConfig embed : this.embeds.values()) {
                 embedObjects.add(embed.toJson());
             }
 
-            json.put("embeds", embedObjects.toArray());
+            json.add("embeds", embedObjects);
         }
 
         return json;

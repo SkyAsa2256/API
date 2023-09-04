@@ -42,7 +42,7 @@ public class DiscordEmbedConfig extends AbstractYamlConfig {
         this.fields = Maps.newHashMap();
 
         for (Field field : builder.fields) {
-            fields.put("exmaple-" + builder.fields.size(), field);
+            this.fields.put("example-" + (this.fields.size() + 1), field);
         }
     }
 

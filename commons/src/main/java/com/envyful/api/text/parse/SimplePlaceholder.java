@@ -13,6 +13,7 @@ import java.util.List;
  * Lower level interface for lambda usage of simply replacing text and returning the updated line
  *
  */
+@FunctionalInterface
 public interface SimplePlaceholder extends Placeholder {
 
     @Nonnull

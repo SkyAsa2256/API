@@ -63,7 +63,6 @@ public class DiscordWebHookConfig extends AbstractYamlConfig {
         JsonObject json = this.toJson();
         String text = PlaceholderFactory.handlePlaceholders(Collections.singletonList(json.toString()), placeholders).get(0);
 
-        System.out.println("Sending text: " + text);
         URL url = new URL(this.url);
         HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
         connection.addRequestProperty("Content-Type", "application/json");

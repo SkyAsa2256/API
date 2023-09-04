@@ -1,5 +1,6 @@
 package com.envyful.api.discord;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -132,7 +133,7 @@ public class DiscordWebHook {
             );
         }
 
-        JSONObject json = this.toJson();
+        var json = this.toJson();
 
         URL url = new URL(this.url);
         HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
@@ -150,22 +151,22 @@ public class DiscordWebHook {
         connection.disconnect();
     }
 
-    public JSONObject toJson() {
-        JSONObject json = new JSONObject();
+    public JsonObject toJson() {
+        JsonObject json = new JsonObject();
 
-        json.put("content", this.content);
-        json.put("username", this.username);
-        json.put("avatar_url", this.avatarUrl);
-        json.put("tts", this.tts);
+        json.addProperty("content", this.content);
+        json.addProperty("username", this.username);
+        json.addProperty("avatar_url", this.avatarUrl);
+        json.addProperty("tts", this.tts);
 
         if (!this.embeds.isEmpty()) {
-            List<JSONObject> embedObjects = new ArrayList<>();
+            JsonArray embedObjects = new JsonArray();
 
             for (DiscordEmbed embed : this.embeds) {
                 embedObjects.add(embed.toJson());
             }
 
-            json.put("embeds", embedObjects.toArray());
+            json.add("embeds", embedObjects);
         }
 
         return json;

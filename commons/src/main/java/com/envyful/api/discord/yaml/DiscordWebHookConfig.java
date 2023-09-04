@@ -2,6 +2,8 @@ package com.envyful.api.discord.yaml;
 
 import com.envyful.api.config.yaml.AbstractYamlConfig;
 import com.envyful.api.discord.JSONObject;
+import com.envyful.api.text.Placeholder;
+import com.envyful.api.text.PlaceholderFactory;
 import com.google.common.collect.Maps;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
@@ -10,10 +12,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @ConfigSerializable
 public class DiscordWebHookConfig extends AbstractYamlConfig {
@@ -46,7 +45,7 @@ public class DiscordWebHookConfig extends AbstractYamlConfig {
      *
      * @throws IOException Exception when something is incorrect or goes wrong
      */
-    public void execute() throws IOException {
+    public void execute(Placeholder... placeholders) throws IOException {
         if (!this.enabled) {
             return;
         }
@@ -58,6 +57,7 @@ public class DiscordWebHookConfig extends AbstractYamlConfig {
         }
 
         JSONObject json = this.toJson();
+        String text = PlaceholderFactory.handlePlaceholders(Collections.singletonList(json.toString()), placeholders).get(0);
 
         URL url = new URL(this.url);
         HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
@@ -67,7 +67,7 @@ public class DiscordWebHookConfig extends AbstractYamlConfig {
         connection.setRequestMethod("POST");
 
         OutputStream stream = connection.getOutputStream();
-        stream.write(json.toString().getBytes(StandardCharsets.UTF_8));
+        stream.write(text.getBytes(StandardCharsets.UTF_8));
         stream.flush();
         stream.close();
 

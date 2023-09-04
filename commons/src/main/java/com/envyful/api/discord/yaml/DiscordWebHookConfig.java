@@ -39,6 +39,9 @@ public class DiscordWebHookConfig extends AbstractYamlConfig {
         }
     }
 
+    public DiscordWebHookConfig() {
+    }
+
     /**
      *
      * Executes the message and sends it to the web hook URL

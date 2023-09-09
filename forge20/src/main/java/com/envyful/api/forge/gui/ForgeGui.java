@@ -14,9 +14,9 @@ import com.envyful.api.type.Pair;
 import com.google.common.collect.Lists;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundContainerClosePacket;
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
 import net.minecraft.network.protocol.game.ClientboundOpenScreenPacket;
-import net.minecraft.network.protocol.game.ServerboundContainerClosePacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -360,7 +360,7 @@ public class ForgeGui implements Gui {
 
             int windowId = sender.containerMenu.containerId;
 
-            ServerboundContainerClosePacket closeWindowServer = new ServerboundContainerClosePacket(windowId);
+            ClientboundContainerClosePacket closeWindowServer = new ClientboundContainerClosePacket(windowId);
 
             sender.connection.send(closeWindowServer);
 

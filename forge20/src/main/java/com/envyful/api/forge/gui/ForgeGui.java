@@ -195,7 +195,6 @@ public class ForgeGui implements Gui {
                     this.addSlot(emptySlot);
 
                     this.emptySlots.add(emptySlot);
-                    this.slots.add(emptySlot);
                 }
 
                 this.inventoryItemStacks.add(ItemStack.EMPTY);
@@ -222,14 +221,12 @@ public class ForgeGui implements Gui {
 
             for (int i = 9; i < 36; i++) {
                 ItemStack itemStack = player.getInventory().items.get(i);
-                slots.add(new Slot(player.getInventory(), i, 0, 0));
-                inventoryItemStacks.add(itemStack);
+                this.addSlot(new Slot(player.getInventory(), i, 0, 0), itemStack);
             }
             // Sets the slots for the hotbar.
             for (int i = 0; i < 9; i++) {
                 ItemStack itemStack = player.getInventory().items.get(i);
-                slots.add(new Slot(player.getInventory(), i, 0, 0));
-                inventoryItemStacks.add(itemStack);
+                this.addSlot(new Slot(player.getInventory(), i, 0, 0), itemStack);
             }
 
             if (force || ForgeGuiTracker.requiresUpdate(this.player)) {
@@ -237,10 +234,15 @@ public class ForgeGui implements Gui {
             }
         }
 
+        private Slot addSlot(Slot slotIn, ItemStack itemStack) {
+            super.addSlot(slotIn);
+            this.inventoryItemStacks.add(itemStack);
+            return slotIn;
+        }
+
         @Override
         protected Slot addSlot(Slot slotIn) {
-            slotIn.index = this.slots.size();
-            this.slots.add(slotIn);
+            super.addSlot(slotIn);
             this.inventoryItemStacks.add(ItemStack.EMPTY);
             return slotIn;
         }
@@ -286,11 +288,7 @@ public class ForgeGui implements Gui {
             }
 
             this.refreshPlayerContents();
-
-            if ((clickTypeIn == ClickType.CLONE && player.isCreative()) || clickTypeIn == ClickType.QUICK_CRAFT) {
-                this.clearPlayerCursor();
-                return;
-            }
+            this.clearPlayerCursor();
 
             Displayable.ClickType clickType = this.convertClickType(dragType, clickTypeIn);
 
@@ -318,8 +316,6 @@ public class ForgeGui implements Gui {
                 simpleDisplayableSlot.getDisplayable().onClick(envyPlayer, clickType);
                 ForgeGuiTracker.enqueueUpdate(envyPlayer);
             }
-
-            return;
         }
 
         private Displayable.ClickType convertClickType(int id, ClickType clickType) {

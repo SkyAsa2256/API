@@ -1,12 +1,16 @@
 package com.envyful.api.forge.server;
 
 import com.envyful.api.forge.chat.UtilChatColour;
+import com.envyful.api.text.Placeholder;
+import com.envyful.api.text.PlaceholderFactory;
 import com.google.common.collect.Lists;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  *
@@ -56,12 +60,17 @@ public class UtilForgeServer {
      * Broadcast the messages to all players online
      *
      * @param messages The messages
+     * @param placeholders Placeholders
      */
-    public static void broadcast(Collection<String> messages) {
+    public static void broadcast(Collection<String> messages, Placeholder... placeholders) {
         for (String message : messages) {
-            ServerLifecycleHooks.getCurrentServer().getPlayerList().broadcastSystemMessage(
-                    UtilChatColour.colour(message), true
-            );
+            List<String> parsedMessage = PlaceholderFactory.handlePlaceholders(Collections.singletonList(message), placeholders);
+
+            for (String parsed : parsedMessage) {
+                ServerLifecycleHooks.getCurrentServer().getPlayerList().broadcastSystemMessage(
+                        UtilChatColour.colour(parsed), true
+                );
+            }
         }
     }
 

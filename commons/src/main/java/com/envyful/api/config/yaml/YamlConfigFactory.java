@@ -58,6 +58,7 @@ public class YamlConfigFactory {
      * @param <T> The class type
      * @throws IOException Thrown if there is an error loading any of the configs
      */
+    @SafeVarargs
     public static <T extends AbstractYamlConfig> List<T>
     getInstances(Class<T> configClass, String configDirectory,
                  DefaultConfig<T>... defaults) throws IOException {

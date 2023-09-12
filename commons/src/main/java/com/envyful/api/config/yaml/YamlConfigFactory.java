@@ -46,6 +46,56 @@ public class YamlConfigFactory {
 
     /**
      *
+     * Attempts to save the instance of the Config at the specified location
+     * <br>
+     * This method should not be used for saving standard configs loaded using either of
+     * {@link YamlConfigFactory#getInstances(Class, String, DefaultConfig[])} or
+     * {@link YamlConfigFactory#getInstance(Class, Placeholder...)} and
+     * should only be used for saving new configs that are created
+     * via code.
+     *
+     * @param config The config instance
+     * @param path The path to save the file to
+     * @return The file created
+     * @param <T> The type being saved
+     * @throws IOException Occurs if an error happens when creating the file
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends AbstractYamlConfig> File save(T config, Path path) throws IOException {
+        File file = path.toFile();
+
+        if (!file.exists()) {
+            if (!file.getParentFile().exists()) {
+                file.getParentFile().mkdirs();
+            }
+            file.createNewFile();
+        }
+
+        Class<T> configClass = (Class<T>) config.getClass();
+        NodeStyle style = getNodeStyle(configClass);
+        List<Class<? extends ScalarSerializer<?>>> serializers =
+                Lists.newArrayList();
+        Serializers serializedData = configClass.getAnnotation(Serializers.class);
+
+        if (serializedData != null) {
+            serializers.addAll(Arrays.asList(serializedData.value()));
+        }
+
+        ConfigurationReference<CommentedConfigurationNode> base =
+                listenToConfig(WATCH_SERVICE, file.toPath(), serializers, style);
+        ValueReference<T, CommentedConfigurationNode> reference =
+                base.referenceTo(configClass);
+
+        config.base = base;
+        config.config = reference;
+        config.save();
+
+        return file;
+    }
+
+
+    /**
+     *
      * Loads all files as an instance of the class provided from the directory given
      * <br>
      * Note:

@@ -29,6 +29,13 @@ import java.util.Map;
 @ConfigSerializable
 public class TimeFormatConfig {
 
+    public static final transient TimeFormatConfig DEFAULT = TimeFormatConfig.builder()
+            .placeholder("days", "%days_value% days ")
+            .placeholder("hours", "%hours_value% hours ")
+            .placeholder("minutes", "%minutes_value% minutes ")
+            .placeholder("seconds", "%seconds_value% seconds")
+            .build();
+
     private String format = "%days%%hours%%minutes%%seconds%";
     private Map<String, String> placeholders = ImmutableMap.of(
             "days", "%days_value% days ",
@@ -51,6 +58,10 @@ public class TimeFormatConfig {
 
     public Map<String, String> getPlaceholders() {
         return this.placeholders;
+    }
+
+    public static TimeFormatConfig getDefault() {
+        return DEFAULT;
     }
 
     public static Builder builder() {

@@ -39,6 +39,34 @@ public class UtilTimeFormat {
 
     /**
      *
+     * Formats the duration between {@link System#currentTimeMillis()} and the provided
+     * time using the {@link TimeFormatConfig} provided.
+     *
+     * @param time A timestamp in the future
+     * @param config The config
+     * @return The formatted time
+     */
+    public static String getTimeUntil(long time, TimeFormatConfig config) {
+        return format(time - System.currentTimeMillis(), config);
+    }
+
+
+    /**
+     *
+     * Formats the duration, converting it into milliseconds from the specified
+     * unit, to the specified format in the {@link TimeFormatConfig} provided.
+     *
+     * @param duration The duration
+     * @param unit The time unit
+     * @param config The format config
+     * @return The formatted duration
+     */
+    public static String formatWithUnit(long duration, TimeUnit unit, TimeFormatConfig config) {
+        return format(unit.toMillis(duration), config);
+    }
+
+    /**
+     *
      * Formats the duration, in milliseconds, to the specified format in the
      * {@link TimeFormatConfig} provided.
      * <br>

@@ -24,6 +24,10 @@ public class UtilPlayer {
     }
 
     public static boolean hasPermission(ServerPlayerEntity player, String permission) {
+        if (player == null || permission == null) {
+            return false;
+        }
+
         return (PermissionAPI.hasPermission(player, permission) || isOP(player));
     }
 

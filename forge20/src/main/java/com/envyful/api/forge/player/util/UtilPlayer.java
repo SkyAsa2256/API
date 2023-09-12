@@ -51,6 +51,10 @@ public class UtilPlayer {
      * @return true if they have access to said permission
      */
     public static boolean hasPermission(ServerPlayer player, String permission) {
+        if (player == null || permission == null) {
+            return false;
+        }
+
         var permissionNode = PERMISSION_NODES.get(permission);
 
         if (permissionNode == null) {

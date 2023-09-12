@@ -48,7 +48,7 @@ public class SimpleHikariDatabase implements Database {
 
         if (connectionUrl == null) {
             config.setJdbcUrl(
-                    "jdbc:mysql://" + ip + ":" + port + "/" + database);
+                    "jdbc:mysql://" + ip + ":" + port + "/" + database + "?noAccessToProcedureBodies=true");
         } else {
             config.setJdbcUrl(connectionUrl);
         }

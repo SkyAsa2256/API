@@ -61,7 +61,7 @@ public class YamlConfigFactory {
      * @throws IOException Occurs if an error happens when creating the file
      */
     @SuppressWarnings("unchecked")
-    public static <T extends AbstractYamlConfig> File save(T config, Path path) throws IOException {
+    public static <T extends AbstractYamlConfig> File save(Path path, T config) throws IOException {
         File file = path.toFile();
 
         if (!file.exists()) {

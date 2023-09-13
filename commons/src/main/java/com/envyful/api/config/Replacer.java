@@ -1,11 +1,14 @@
 package com.envyful.api.config;
 
+import com.envyful.api.text.parse.SimplePlaceholder;
+
 /**
  *
  * Simple interface for replacing text in a string in an abstract fashion
  *
  */
-public interface Replacer {
+@Deprecated
+public interface Replacer extends SimplePlaceholder {
 
     /**
      *
@@ -15,5 +18,10 @@ public interface Replacer {
      * @return The updated text
      */
     String replaceText(String text);
+
+    @Override
+    default String replace(String line) {
+        return replaceText(line);
+    }
 
 }

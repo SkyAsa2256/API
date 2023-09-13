@@ -1,5 +1,9 @@
 package com.envyful.api.text;
 
+import com.google.common.collect.Lists;
+
+import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
 
@@ -12,6 +16,29 @@ public class UtilString {
 
     private UtilString() {
         throw new UnsupportedOperationException("Static utility");
+    }
+
+    /**
+     *
+     * Goes through the potential matches list and finds any values that
+     * start with the provided text.
+     * <br>
+     * This is a case-insensitive check
+     *
+     * @param text The text to check for
+     * @param potentialMatches The potential matches
+     * @return The matches found
+     */
+    public static List<String> getMatching(String text, List<String> potentialMatches) {
+        List<String> args = Lists.newArrayList();
+
+        for (String s : potentialMatches) {
+            if (s.toLowerCase(Locale.ROOT).startsWith(text.toLowerCase(Locale.ROOT))) {
+                args.add(s);
+            }
+        }
+
+        return args;
     }
 
     /**

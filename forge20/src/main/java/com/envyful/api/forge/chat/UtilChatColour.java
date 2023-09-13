@@ -1,7 +1,7 @@
 package com.envyful.api.forge.chat;
 
-import com.envyful.api.config.Replacer;
-import com.envyful.api.config.UtilReplacer;
+import com.envyful.api.text.Placeholder;
+import com.envyful.api.text.PlaceholderFactory;
 import com.google.common.collect.Lists;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -23,10 +23,18 @@ import java.util.regex.Pattern;
  */
 public class UtilChatColour {
 
-    private static final char COLOUR_CHAR = '§';
-    private static final String CHARACTERS = "0123456789AaBbCcDdEeFfKkLlMmNnOoRrXx";
     private static final Pattern COLOUR_PATTERN = Pattern.compile("&(#\\w{6}|[\\da-zA-Z])");
     private static final Pattern STRIP_PATTERN = Pattern.compile("(?i)&([0-9A-FK-ORX]|#([A-F0-9]{6}|[A-F0-9]{3}))");
+
+    public static List<Component> colour(List<String> text, Placeholder... placeholders) {
+        List<Component> components = Lists.newArrayList();
+
+        for (String line : text) {
+            components.add(colour(line, placeholders));
+        }
+
+        return components;
+    }
 
     /**
      *
@@ -35,7 +43,7 @@ public class UtilChatColour {
      * @param text The unformatted text
      * @return The newly formatted text
      */
-    public static Component colour(String text, Replacer... placeholders) {
+    public static Component colour(String text, Placeholder... placeholders) {
         if (text.contains("{")) {
             try {
                 return Component.Serializer.fromJson(text);
@@ -49,9 +57,9 @@ public class UtilChatColour {
         TextColor lastColor = null;
 
         while (matcher.find()) {
-            int start = matcher.start();
-            String segment = text.substring(lastEnd, start);
-            MutableComponent iFormattableTextComponent = attemptAppend(textComponent, segment, lastColor, placeholders);
+            var start = matcher.start();
+            var segment = text.substring(lastEnd, start);
+            var iFormattableTextComponent = attemptAppend(textComponent, segment, lastColor, placeholders);
 
             if (nextApply != null && iFormattableTextComponent != null) {
                 iFormattableTextComponent.withStyle(nextApply);
@@ -59,13 +67,13 @@ public class UtilChatColour {
 
             lastEnd = matcher.end();
             String colourCode = matcher.group(1);
-            Optional<TextColor> colour = parseColour(colourCode);
+            var colour = parseColour(colourCode);
 
             if (colour.isPresent()) {
                 lastColor = colour.get();
                 nextApply = null;
             } else {
-                ChatFormatting byCode = ChatFormatting.getByCode(colourCode.toCharArray()[0]);
+                var byCode = ChatFormatting.getByCode(colourCode.toCharArray()[0]);
 
                 if (byCode != null) {
                     nextApply = byCode;
@@ -75,8 +83,8 @@ public class UtilChatColour {
             }
         }
 
-        String segment = text.substring(lastEnd);
-        MutableComponent iFormattableTextComponent = attemptAppend(textComponent, segment, lastColor, placeholders);
+        var segment = text.substring(lastEnd);
+        var iFormattableTextComponent = attemptAppend(textComponent, segment, lastColor, placeholders);
 
         if (nextApply != null && iFormattableTextComponent != null) {
             iFormattableTextComponent.withStyle(nextApply);
@@ -93,16 +101,21 @@ public class UtilChatColour {
      * @param segment The segment
      * @param lastColour The colour
      */
-    public static MutableComponent attemptAppend(MutableComponent textComponent, String segment, TextColor lastColour, Replacer... placeholers) {
+    public static MutableComponent attemptAppend(MutableComponent textComponent, String segment, TextColor lastColour, Placeholder... placeholders) {
         if (segment.isEmpty()) {
             return null;
         }
 
-        segment = UtilReplacer.getReplacedText(segment, placeholers);
-        MutableComponent appended = Component.literal(segment);
+        var appended = Component.empty();
 
-        if (lastColour != null) {
-            appended.setStyle(Style.EMPTY.withColor(lastColour));
+        for (var text : PlaceholderFactory.handlePlaceholders(segment, placeholders)) {
+            var literalText = Component.literal(text);
+
+            if (lastColour != null) {
+                literalText.setStyle(Style.EMPTY.withColor(lastColour));
+            }
+
+            appended.append(literalText);
         }
 
         textComponent.append(appended);
@@ -165,49 +178,6 @@ public class UtilChatColour {
         }
 
         return null;
-    }
-
-    /**
-     *
-     * Translates the text to coloured text.
-     * Reference: https://hub.spigotmc.org/stash/projects/SPIGOT/repos/bukkit/browse/src/main/java/org/bukkit/ChatColor.java#216
-     *
-     * @param altColorChar The character
-     * @param textToTranslate The text
-     * @return The coloured text
-     * @deprecated Use {@link UtilChatColour#colour(String, Replacer...)}
-     */
-    @Deprecated
-    public static String translateColourCodes(char altColorChar, String textToTranslate) {
-        char[] b = textToTranslate.toCharArray();
-
-        for (int i = 0; i < b.length - 1; i++) {
-            if (b[i] == altColorChar && CHARACTERS.indexOf(b[i + 1]) > -1) {
-                b[i] = COLOUR_CHAR;
-                b[i + 1] = Character.toLowerCase(b[i + 1]);
-            }
-        }
-
-        return new String(b);
-    }
-
-    /**
-     *
-     * Translates each line in the list to coloured text.
-     * Using {@link UtilChatColour#translateColourCodes(char, String)}
-     *
-     * @param altColorChar The character
-     * @param lines The lines of text
-     * @return The coloured text
-     */
-    public static List<String> translateColourCodes(char altColorChar, List<String> lines) {
-        List<String> newLines = Lists.newArrayList();
-
-        for (String line : lines) {
-            newLines.add(translateColourCodes('&', line));
-        }
-
-        return newLines;
     }
 
     /**

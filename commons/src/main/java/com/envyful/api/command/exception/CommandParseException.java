@@ -6,7 +6,7 @@ package com.envyful.api.command.exception;
  * For easier debugging to console for developers.
  *
  */
-public class CommandLoadException extends RuntimeException {
+public class CommandParseException extends RuntimeException {
 
     /**
      *
@@ -18,7 +18,11 @@ public class CommandLoadException extends RuntimeException {
      * @param className The name of the class that had an erroneous value
      * @param reason The details of the error
      */
-    public CommandLoadException(String className, String reason) {
-        super("Failed to load command " + className + " for reason: " + reason);
+    public CommandParseException(String className, String reason) {
+        super("Failed to parse command " + className + " for reason: " + reason);
+    }
+
+    public CommandParseException(String reason) {
+        super(reason);
     }
 }

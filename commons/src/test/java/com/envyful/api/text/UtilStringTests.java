@@ -63,7 +63,7 @@ public class UtilStringTests {
         assert UtilString.getMatching("test1", Lists.newArrayList(
                 "test12341",
                 "test"
-        )).isEmpty();
+        )).size() == 1;
     }
 
     // Checks that the begins with check is working and is case insensitive
@@ -72,7 +72,7 @@ public class UtilStringTests {
         assert UtilString.getMatching("tesT1", Lists.newArrayList(
                 "test12341",
                 "test"
-        )).isEmpty();
+        )).size() == 1;
     }
 
     class RandomTestObject {

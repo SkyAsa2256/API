@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
@@ -43,6 +44,16 @@ public class PlaceholderFactory {
     @Nonnull
     public static List<Placeholder> getGlobalPlaceholders() {
         return GLOBAL_PLACEHOLDERS;
+    }
+
+    @Nonnull
+    public static List<String> handlePlaceholders(String text, Placeholder... placeholders) {
+        return handlePlaceholders(Collections.singletonList(text), placeholders);
+    }
+
+    @Nonnull
+    public static List<String> handlePlaceholders(String text, Collection<Placeholder> placeholders) {
+        return handlePlaceholders(Collections.singletonList(text), placeholders);
     }
 
     @Nonnull

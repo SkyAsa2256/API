@@ -30,6 +30,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
@@ -48,7 +49,7 @@ public class ForgeCommandFactory extends InjectedCommandFactory<CommandDispatche
     }
 
     public ForgeCommandFactory(
-            Function<InjectedCommandFactory<CommandDispatcher<CommandSourceStack>, CommandSource>, CommandParser<PlatformCommand<CommandSource>, CommandSource>> commandParser,
+            Function<InjectedCommandFactory<CommandDispatcher<CommandSourceStack>, CommandSource>, ? extends CommandParser<? extends PlatformCommand<CommandSource>, CommandSource>> commandParser,
             @Nullable ForgePlayerManager playerManager) {
         super(commandParser);
 
@@ -134,7 +135,8 @@ public class ForgeCommandFactory extends InjectedCommandFactory<CommandDispatche
     }
 
     private String[] getArgs(CommandContext<CommandSourceStack> context) {
-        return context.getInput().split(" ");
+        String[] args = context.getInput().split(" ");
+        return Arrays.copyOfRange(args, 1, args.length);
     }
 
     private CompletableFuture<Suggestions> buildSuggestions(ForgePlatformCommand command, CommandContext<CommandSourceStack> context, SuggestionsBuilder builder) {

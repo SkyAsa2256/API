@@ -15,9 +15,9 @@ public abstract class InjectedCommandFactory<A, B> implements CommandFactory<A, 
 
     protected final List<ArgumentInjector<?, B>> registeredInjectors = Lists.newArrayList();
     protected final Map<Class<?>, TabCompleter<?, ?>> registeredCompleters = Maps.newConcurrentMap();
-    protected final CommandParser<PlatformCommand<B>, B> commandParser;
+    protected final CommandParser<? extends PlatformCommand<B>, B> commandParser;
 
-    protected InjectedCommandFactory(Function<InjectedCommandFactory<A, B>, CommandParser<PlatformCommand<B>, B>> commandParser) {
+    protected InjectedCommandFactory(Function<InjectedCommandFactory<A, B>, ? extends CommandParser<? extends PlatformCommand<B>, B>> commandParser) {
         this.commandParser = commandParser.apply(this);
 
         this.registerInjector(int.class, (ICommandSource, args) -> {

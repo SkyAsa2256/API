@@ -20,7 +20,9 @@ import com.envyful.api.type.BooleanBiFunction;
 import com.google.common.collect.Lists;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.BiFunction;
@@ -42,6 +44,7 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
         BooleanBiFunction<B, List<String>> permissionCheck = this.getPermissionCheck(o);
         BiFunction<B, List<String>, List<String>> descriptionProvider = this.getDescriptionProvider(o);
         PlatformCommandExecutor<B> commandExecutor = this.getCommandExecutor(o);
+        List<PlatformCommand<B>> subCommands = this.getSubCommands(o);
 
 
         return (A) this.commandFactory.commandBuilder()
@@ -51,6 +54,7 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
                 .descriptionProvider(descriptionProvider)
                 .noPermissionProvider(b -> Collections.singletonList("&c&l(!) &cYou do not have permission to use this command!"))
                 .executor(commandExecutor) //TODO: tab completion
+                .subCommands(subCommands)
                 .build();
     }
 
@@ -164,7 +168,7 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
         }
 
         boolean argsCapture = this.shouldCaptureArgs(commandObject, commandProcessor, parameterAnnotations, parameterTypes);
-        List<AnnotationPlatformCommandExecutor.Argument<B>> arguments = this.buildArguments(commandObject, commandProcessor, parameterAnnotations, parameterTypes);
+        List<AnnotationPlatformCommandExecutor.Argument<B>> arguments = this.buildArguments(commandObject, commandProcessor, parameterAnnotations, parameterTypes, argsCapture);
 
         return AnnotationPlatformCommandExecutor.builder(senderType)
                 .instance(commandObject)
@@ -183,7 +187,7 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
                 continue;
             }
 
-            if (declaredMethod.canAccess(this)) {
+            if (!Modifier.isPublic(declaredMethod.getModifiers())) {
                 throw new CommandParseException("Method " + declaredMethod.getName() + " in class " + o.getClass().getName() + " is flagged as a command processor but is not public");
             }
 
@@ -225,10 +229,10 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
         return false;
     }
 
-    protected List<AnnotationPlatformCommandExecutor.Argument<B>> buildArguments(Object commandInstance, Method method, Annotation[][] parameterAnnotations, Class<?>[] parameterTypes) {
+    protected List<AnnotationPlatformCommandExecutor.Argument<B>> buildArguments(Object commandInstance, Method method, Annotation[][] parameterAnnotations, Class<?>[] parameterTypes, boolean captureArgs) {
         List<AnnotationPlatformCommandExecutor.Argument<B>> arguments = Lists.newArrayList();
 
-        for (int i = 1; i < parameterTypes.length; ++i) {
+        for (int i = 1; i < parameterTypes.length - (captureArgs ? 1 : 0); ++i) {
             ArgumentInjector<?, B> registeredInjector = this.commandFactory.getRegisteredInjector(parameterTypes[i]);
 
             if (registeredInjector == null) {
@@ -267,5 +271,31 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
         }
 
         return !(annotations[0][0] instanceof Sender);
+    }
+
+    protected List<PlatformCommand<B>> getSubCommands(Object commandInstance) {
+        SubCommands subCommands = commandInstance.getClass().getAnnotation(SubCommands.class);
+
+        if (subCommands == null) {
+            return Collections.emptyList();
+        }
+
+        List<PlatformCommand<B>> platformCommands = Lists.newArrayList();
+
+        for (Class<?> subCommandClass : subCommands.value()) {
+            Object instance = getSubCommandInstance(subCommandClass);
+            platformCommands.add(this.parseCommand(instance));
+        }
+
+        return platformCommands;
+    }
+
+    protected Object getSubCommandInstance(Class<?> subCommandClass) {
+        try {
+            Constructor<?> constructor = subCommandClass.getConstructor();
+            return constructor.newInstance();
+        } catch (Exception e) {
+            throw new CommandParseException("No public constructor with no parameters found for sub command class " + subCommandClass.getName());
+        }
     }
 }

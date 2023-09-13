@@ -3,6 +3,7 @@ package com.envyful.api.text;
 import com.google.common.collect.Lists;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collections;
 import java.util.List;
 
 public class UtilStringTests {
@@ -48,6 +49,30 @@ public class UtilStringTests {
         );
 
         assert UtilString.join(objects, ",", RandomTestObject::toString).equalsIgnoreCase("a,b,c,d,e");
+    }
+
+    // Checks that when provided an empty list the matching list is also empty
+    @Test
+    void checkEmptyList() {
+        assert UtilString.getMatching("test1", Collections.emptyList()).isEmpty();
+    }
+
+    // Checks that the begins with check is working
+    @Test
+    void checkOneEntry() {
+        assert UtilString.getMatching("test1", Lists.newArrayList(
+                "test12341",
+                "test"
+        )).isEmpty();
+    }
+
+    // Checks that the begins with check is working and is case insensitive
+    @Test
+    void checkCaseInsensitive() {
+        assert UtilString.getMatching("tesT1", Lists.newArrayList(
+                "test12341",
+                "test"
+        )).isEmpty();
     }
 
     class RandomTestObject {

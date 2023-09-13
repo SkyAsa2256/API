@@ -45,8 +45,8 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
 
 
         return (A) this.commandFactory.commandBuilder()
-                .name(commandData.aliases()[0])
-                .aliases(Lists.newArrayList(commandData.aliases()))
+                .name(commandData.value()[0])
+                .aliases(Lists.newArrayList(commandData.value()))
                 .permissionCheck(permissionCheck)
                 .descriptionProvider(descriptionProvider)
                 .noPermissionProvider(b -> Collections.singletonList("&c&l(!) &cYou do not have permission to use this command!"))
@@ -61,7 +61,7 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
             throw new CommandParseException("Class " + o.getClass().getName() + " is not annotated with @Command");
         }
 
-        if (annotation.aliases().length == 0) {
+        if (annotation.value().length == 0) {
             throw new CommandParseException("Class " + o.getClass().getName() + " has no aliases");
         }
 

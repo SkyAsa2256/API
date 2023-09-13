@@ -1,9 +1,12 @@
 package com.envyful.api.velocity.player.command;
 
 import com.envyful.api.command.CommandFactory;
-import com.envyful.api.command.annotate.*;
+import com.envyful.api.command.annotate.Command;
+import com.envyful.api.command.annotate.SubCommands;
+import com.envyful.api.command.annotate.TabCompletions;
 import com.envyful.api.command.annotate.executor.*;
-import com.envyful.api.command.exception.CommandLoadException;
+import com.envyful.api.command.annotate.permission.Permissible;
+import com.envyful.api.command.exception.CommandParseException;
 import com.envyful.api.command.injector.ArgumentInjector;
 import com.envyful.api.command.injector.TabCompleter;
 import com.envyful.api.command.sender.SenderType;
@@ -95,7 +98,7 @@ public class VelocityCommandFactory implements CommandFactory<CommandManager, Co
     }
 
     @Override
-    public boolean registerCommand(CommandManager dispatcher, Object o) throws CommandLoadException {
+    public boolean registerCommand(CommandManager dispatcher, Object o) throws CommandParseException {
         VelocityCommand command = this.createCommand(o.getClass(), o);
 
         BrigadierCommand brigadierCommand = new BrigadierCommand(LiteralArgumentBuilder.<CommandSource>literal(command.getName())
@@ -176,17 +179,17 @@ public class VelocityCommandFactory implements CommandFactory<CommandManager, Co
         return builder.buildFuture();
     }
 
-    private VelocityCommand createCommand(Class<?> clazz) throws CommandLoadException {
+    private VelocityCommand createCommand(Class<?> clazz) throws CommandParseException {
         return this.createCommand(clazz, null);
     }
 
     @SuppressWarnings("SuspiciousToArrayCall")
-    private VelocityCommand createCommand(Class<?> clazz, Object instance) throws CommandLoadException {
+    private VelocityCommand createCommand(Class<?> clazz, Object instance) throws CommandParseException {
         List<VelocityCommand> subCommands = this.getSubCommands(clazz);
         Command commandData = clazz.getAnnotation(Command.class);
 
         if (commandData == null) {
-            throw new CommandLoadException(clazz.getSimpleName(), "missing @Command annotation on class!");
+            throw new CommandParseException(clazz.getSimpleName(), "missing @Command annotation on class!");
         }
 
         String defaultPermission = this.getDefaultPermission(clazz);
@@ -195,7 +198,7 @@ public class VelocityCommandFactory implements CommandFactory<CommandManager, Co
             instance = this.createInstance(clazz);
 
             if (instance == null) {
-                throw new CommandLoadException(clazz.getSimpleName(), "cannot instantiate sub-command as there's no public constructor");
+                throw new CommandParseException(clazz.getSimpleName(), "cannot instantiate sub-command as there's no public constructor");
             }
         }
 
@@ -296,7 +299,7 @@ public class VelocityCommandFactory implements CommandFactory<CommandManager, Co
             }
 
             if (senderType == null) {
-                throw new CommandLoadException(clazz.getSimpleName(), "Command must have a sender!");
+                throw new CommandParseException(clazz.getSimpleName(), "Command must have a sender!");
             }
 
             subExecutors.add(new CommandExecutor(processorData.value(), senderType, senderPosition, instance, declaredMethod,
@@ -368,7 +371,7 @@ public class VelocityCommandFactory implements CommandFactory<CommandManager, Co
         return permissible.value();
     }
 
-    private List<VelocityCommand> getSubCommands(Class<?> clazz) throws CommandLoadException {
+    private List<VelocityCommand> getSubCommands(Class<?> clazz) throws CommandParseException {
         SubCommands subCommands = clazz.getAnnotation(SubCommands.class);
 
         if (subCommands == null) {

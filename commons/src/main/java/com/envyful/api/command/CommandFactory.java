@@ -1,6 +1,7 @@
 package com.envyful.api.command;
 
-import com.envyful.api.command.exception.CommandLoadException;
+import com.envyful.api.command.exception.CommandParseException;
+import com.envyful.api.command.injector.ArgumentInjector;
 import com.envyful.api.command.injector.TabCompleter;
 
 import java.util.function.BiFunction;
@@ -19,27 +20,40 @@ public interface CommandFactory<A, B> {
     /**
      *
      * Registers the command with the command registrar
-     * for that platform. Also handles all reflection methods for
-     * determining annotation values, child classes,
-     * permissions required, injectors required (etc).
+     * for that platform.
      *
-     * @param server The command registrar for that platform
-     * @param o The object of the command being registered
-     * @return False only if the registry failed
-     * @throws CommandLoadException Thrown if something
-     * went wrong when loading the command using reflection
+     * @param registrar The command registrar for that platform
+     * @param command The command being registered
      */
-    boolean registerCommand(A server, Object o) throws CommandLoadException;
+    void registerCommand(A registrar, PlatformCommand<B> command);
 
     /**
      *
-     * Unregisters the specified command from the platform's command registry
+     * Gets an instance of the command builder for the platform
      *
-     * @param server The command registrar for the platform
-     * @param o The command to be unregistered
-     * @return False only if unregistering fails
+     * @return The command builder instance
      */
-    boolean unregisterCommand(A server, Object o);
+    PlatformCommand.Builder<B> commandBuilder();
+
+    /**
+     *
+     * Parses a command using the defined {@link CommandParser}
+     *
+     * @param o The object being parsed
+     * @return The parsed command
+     * @throws CommandParseException Thrown if there is an error parsing the object
+     */
+    PlatformCommand<B> parseCommand(Object o) throws CommandParseException;
+
+    /**
+     *
+     * Method for checking if the sender has the permission node
+     *
+     * @param sender The sender
+     * @param permission The node being checked
+     * @return True if they have access to that permission
+     */
+    boolean hasPermission(B sender, String permission);
 
     /**
      *
@@ -57,6 +71,8 @@ public interface CommandFactory<A, B> {
     ) {
         this.registerInjector(parentClass, false, function);
     }
+
+    ArgumentInjector<?, B> getRegisteredInjector(Class<?> parentClass);
 
     /**
      *

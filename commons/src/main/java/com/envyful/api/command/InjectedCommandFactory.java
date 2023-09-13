@@ -9,15 +9,16 @@ import com.google.common.collect.Maps;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 
 public abstract class InjectedCommandFactory<A, B> implements CommandFactory<A, B> {
 
-    private final List<ArgumentInjector<?, B>> registeredInjectors = Lists.newArrayList();
-    private final Map<Class<?>, TabCompleter<?, ?>> registeredCompleters = Maps.newConcurrentMap();
-    private final CommandParser<PlatformCommand<B>, B> commandParser;
+    protected final List<ArgumentInjector<?, B>> registeredInjectors = Lists.newArrayList();
+    protected final Map<Class<?>, TabCompleter<?, ?>> registeredCompleters = Maps.newConcurrentMap();
+    protected final CommandParser<PlatformCommand<B>, B> commandParser;
 
-    protected InjectedCommandFactory(CommandParser<PlatformCommand<B>, B> commandParser) {
-        this.commandParser = commandParser;
+    protected InjectedCommandFactory(Function<InjectedCommandFactory<A, B>, CommandParser<PlatformCommand<B>, B>> commandParser) {
+        this.commandParser = commandParser.apply(this);
 
         this.registerInjector(int.class, (ICommandSource, args) -> {
             try {

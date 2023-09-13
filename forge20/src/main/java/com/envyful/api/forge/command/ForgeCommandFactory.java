@@ -2,10 +2,9 @@ package com.envyful.api.forge.command;
 
 import com.envyful.api.command.CommandFactory;
 import com.envyful.api.command.CommandParser;
+import com.envyful.api.command.InjectedCommandFactory;
 import com.envyful.api.command.PlatformCommand;
 import com.envyful.api.command.exception.CommandParseException;
-import com.envyful.api.command.injector.ArgumentInjector;
-import com.envyful.api.command.injector.TabCompleter;
 import com.envyful.api.command.sender.SenderTypeFactory;
 import com.envyful.api.forge.command.command.ForgePlatformCommand;
 import com.envyful.api.forge.command.command.sender.ConsoleSenderType;
@@ -15,8 +14,6 @@ import com.envyful.api.forge.command.completion.player.PlayerTabCompleter;
 import com.envyful.api.forge.command.injector.ForgeFunctionInjector;
 import com.envyful.api.forge.player.ForgePlayerManager;
 import com.envyful.api.forge.player.util.UtilPlayer;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -33,10 +30,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
 import javax.annotation.Nullable;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -46,18 +40,18 @@ import java.util.function.Function;
  * Forge implementation of the {@link CommandFactory} interface
  *
  */
-public class ForgeCommandFactory implements CommandFactory<CommandDispatcher<CommandSourceStack>, CommandSource> {
+public class ForgeCommandFactory extends InjectedCommandFactory<CommandDispatcher<CommandSourceStack>, CommandSource> {
 
-    private final List<ArgumentInjector<?, CommandSource>> registeredInjectors = Lists.newArrayList();
-    private final Map<Class<?>, TabCompleter<?, ?>> registeredCompleters = Maps.newConcurrentMap();
-    private final CommandParser<ForgePlatformCommand, CommandSource> commandParser;
-
-    public ForgeCommandFactory(Function<ForgeCommandFactory, CommandParser<ForgePlatformCommand, CommandSource>> commandParser) {
+    public ForgeCommandFactory(
+            Function<InjectedCommandFactory<CommandDispatcher<CommandSourceStack>, CommandSource>, CommandParser<PlatformCommand<CommandSource>, CommandSource>> commandParser) {
         this(commandParser, null);
     }
 
-    public ForgeCommandFactory(Function<ForgeCommandFactory, CommandParser<ForgePlatformCommand, CommandSource>> commandParser, @Nullable ForgePlayerManager playerManager) {
-        this.commandParser = commandParser.apply(this);
+    public ForgeCommandFactory(
+            Function<InjectedCommandFactory<CommandDispatcher<CommandSourceStack>, CommandSource>, CommandParser<PlatformCommand<CommandSource>, CommandSource>> commandParser,
+            @Nullable ForgePlayerManager playerManager) {
+        super(commandParser);
+
         SenderTypeFactory.register(new ConsoleSenderType(), new ForgePlayerSenderType());
 
         if (playerManager != null) {
@@ -65,28 +59,6 @@ public class ForgeCommandFactory implements CommandFactory<CommandDispatcher<Com
         }
 
         this.registerInjector(ServerPlayer.class, (sender, args) -> ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByName(args[0]));
-        this.registerInjector(int.class, (ICommandSource, args) -> {
-            try {
-                return Integer.parseInt(args[0]);
-            } catch (NumberFormatException e) {
-                return null;
-            }
-        });
-        this.registerInjector(String.class, (ICommandSource, args) -> args[0]);
-        this.registerInjector(double.class, ((ICommandSource, args) -> {
-            try {
-                return Double.parseDouble(args[0]);
-            } catch (NumberFormatException e) {
-                return null;
-            }
-        }));
-        this.registerInjector(long.class, ((ICommandSource, args) -> {
-            try {
-                return Long.parseLong(args[0]);
-            } catch (NumberFormatException e) {
-                return null;
-            }
-        }));
         this.registerCompleter(new IntegerTabCompleter());
         this.registerCompleter(new PlayerTabCompleter());
     }
@@ -221,26 +193,5 @@ public class ForgeCommandFactory implements CommandFactory<CommandDispatcher<Com
     @Override
     public <C> void registerInjector(Class<C> parentClass, boolean multipleArgs, BiFunction<CommandSource, String[], C> function) {
         this.registeredInjectors.add(new ForgeFunctionInjector<>(parentClass, multipleArgs, function));
-    }
-
-    @Override
-    public ArgumentInjector<?, CommandSource> getRegisteredInjector(Class<?> parentClass) {
-        for (ArgumentInjector<?, CommandSource> registeredInjector : this.registeredInjectors) {
-            if (registeredInjector.getConvertedClass().equals(parentClass)) {
-                return registeredInjector;
-            }
-        }
-
-        return null;
-    }
-
-    @Override
-    public void unregisterInjector(Class<?> parentClass) {
-        this.registeredInjectors.removeIf(next -> Objects.equals(parentClass, next.getConvertedClass()));
-    }
-
-    @Override
-    public void registerCompleter(TabCompleter<?, ?> tabCompleter) {
-        this.registeredCompleters.put(tabCompleter.getClass(), tabCompleter);
     }
 }

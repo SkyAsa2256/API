@@ -25,4 +25,8 @@ public class CommandParseException extends RuntimeException {
     public CommandParseException(String reason) {
         super(reason);
     }
+
+    public CommandParseException(String reason, Throwable throwable) {
+        super(reason, throwable);
+    }
 }

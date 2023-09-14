@@ -19,7 +19,7 @@ public class DisplayableConfigReward extends ConfigReward {
     public DisplayableConfigReward() {
     }
 
-    public ConfigItem getDisplayItem() {
+    public ConfigItem getDisplayableItem() {
         return this.displayItem;
     }
 }

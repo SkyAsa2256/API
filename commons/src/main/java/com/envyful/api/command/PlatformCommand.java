@@ -152,12 +152,14 @@ public abstract class PlatformCommand<C> {
 
                     return CompletableFuture.completedFuture(Lists.newArrayList());
                 }).thenApply(tabCompletions -> {
-                    tabCompletions.addAll(this.getAccessibleSubCommands(sender, Lists.newArrayList(args)));
+                    if (tabCompletions.isEmpty()) {
+                        tabCompletions.addAll(this.getAccessibleSubCommands(sender, Lists.newArrayList(args)));
 
-                    if (args.length == 0) {
-                        tabCompletions.addAll(this.getOnlinePlayerNames());
-                    } else {
-                        tabCompletions.addAll(this.getPlayers(args[0]));
+                        if (args.length == 0) {
+                            tabCompletions.addAll(this.getOnlinePlayerNames());
+                        } else {
+                            tabCompletions.addAll(this.getPlayers(args[0]));
+                        }
                     }
 
                     return tabCompletions;
@@ -179,7 +181,6 @@ public abstract class PlatformCommand<C> {
 
         for (PlatformCommand<C> subCommand : this.subCommands) {
             if (subCommand.checkPermission(sender, args)) {
-                subCommands.add(subCommand.name);
                 subCommands.addAll(subCommand.aliases);
             }
         }

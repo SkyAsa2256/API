@@ -308,15 +308,17 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
         Method commandProcessor = this.findCommandProcessor(commandInstance);
         boolean argCapture = this.shouldCaptureArgs(commandInstance, commandProcessor, commandProcessor.getParameterAnnotations(), commandProcessor.getParameterTypes());
         boolean[] hasTabCompleter = this.getHasTabCompleter(commandProcessor, argCapture);
-        List<TabCompleter<?, B>> tabCompleter = this.getParameterTabCompleters(commandInstance, commandProcessor, hasTabCompleter);
+        List<TabCompleteAnnotations> tabCompleter = this.getParameterTabCompleters(commandInstance, commandProcessor, hasTabCompleter);
         Method tabHandlerMethod = this.findTabHandlerMethod(commandInstance);
 
         return (sender, args) -> {
             int currentPosition = args.length;
 
             if (currentPosition < hasTabCompleter.length && hasTabCompleter[currentPosition]) {
+                TabCompleteAnnotations data = tabCompleter.get(currentPosition);
+
                 return CompletableFuture.supplyAsync(() ->
-                                        tabCompleter.get(currentPosition).getCompletions(sender, args),
+                                        data.completer.getCompletions(sender, args, data.annotations.toArray(new Annotation[0])),
                                 UtilConcurrency.SCHEDULED_EXECUTOR_SERVICE)
                         .exceptionally(throwable -> {
                             UtilLogger.logger().ifPresent(logger -> logger.error("Error when handling tab completions", throwable));
@@ -359,19 +361,25 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
         return hasTabCompleter;
     }
 
-    protected List<TabCompleter<?, B>> getParameterTabCompleters(Object commandInstance, Method commandProcessor, boolean[] hasTabCompleter) {
+    protected List<TabCompleteAnnotations> getParameterTabCompleters(Object commandInstance, Method commandProcessor, boolean[] hasTabCompleter) {
         Annotation[][] parameterAnnotations = commandProcessor.getParameterAnnotations();
-        List<TabCompleter<?, B>> tabCompleters = Lists.newArrayList();
+        List<TabCompleteAnnotations> tabCompleters = Lists.newArrayList();
 
         for (int i = 1; i < parameterAnnotations.length; i++) {
             if (hasTabCompleter[i - 1]) {
+                List<Annotation> annotations = Lists.newArrayList();
+                TabCompleter<?, B> completable = null;
+
                 for (Annotation annotation : parameterAnnotations[i]) {
                     if (!(annotation instanceof Completable)) {
+                        annotations.add(annotation);
                         continue;
                     }
 
-                    tabCompleters.add(this.getCompleterInstance(commandInstance, commandProcessor, (Completable) annotation));
+                    completable = this.getCompleterInstance(commandInstance, commandProcessor, (Completable) annotation);
                 }
+
+                tabCompleters.add(new TabCompleteAnnotations(completable, annotations));
             } else {
                 tabCompleters.add(null);
             }
@@ -406,5 +414,16 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
         }
 
         return null;
+    }
+
+    public class TabCompleteAnnotations {
+
+        protected final TabCompleter<?, B> completer;
+        protected final List<Annotation> annotations;
+
+        public TabCompleteAnnotations(TabCompleter<?, B> completer, List<Annotation> annotations) {
+            this.completer = completer;
+            this.annotations = annotations;
+        }
     }
 }

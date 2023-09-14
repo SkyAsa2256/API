@@ -1,6 +1,7 @@
 package com.envyful.api.spigot.config;
 
 import com.envyful.api.config.type.ConfigRandomWeightedSet;
+import com.envyful.api.config.yaml.AbstractYamlConfig;
 import com.envyful.api.math.UtilRandom;
 import com.envyful.api.text.Placeholder;
 import com.google.common.collect.Lists;
@@ -10,7 +11,7 @@ import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import java.util.List;
 
 @ConfigSerializable
-public class ConfigRewardPool<T extends ConfigReward> {
+public class ConfigRewardPool<T extends ConfigReward> extends AbstractYamlConfig {
 
     private T guaranteedReward;
     private int rewardRollsMin;

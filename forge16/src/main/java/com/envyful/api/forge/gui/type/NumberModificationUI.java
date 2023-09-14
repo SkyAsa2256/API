@@ -77,8 +77,7 @@ public class NumberModificationUI {
             if (config.config.currentValue.isEnabled()) {
                 pane.set(position.getX(), position.getY(),
                          GuiFactory.displayable(new ItemBuilder(UtilConfigItem.fromConfigItem(config.config.currentValue, config.transformers))
-                                                        .name(UtilChatColour.translateColourCodes(
-                                                                '&',
+                                                        .name(UtilChatColour.colour(
                                                                 config.config.currentValue.getName()
                                                                         .replace("%value%", config.currentValue + "")
                                                         ))

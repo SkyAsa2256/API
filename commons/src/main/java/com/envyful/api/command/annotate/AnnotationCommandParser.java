@@ -362,13 +362,11 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
         for (int i = 0; i < parameterAnnotations.length; i++) {
             if (hasTabCompleter[i]) {
                 for (Annotation annotation : parameterAnnotations[i]) {
-                    if (annotation instanceof Completable) {
-                        try {
-                            tabCompleters.add((TabCompleter<?, B>) ((Completable) annotation).value().newInstance());
-                        } catch (InstantiationException | IllegalAccessException e) {
-                            throw new CommandParseException("Error creating tab completer instance for command " + commandInstance.getClass().getName() + " in method " + commandProcessor.getName(), e);
-                        }
+                    if (!(annotation instanceof Completable)) {
+                        continue;
                     }
+
+                    tabCompleters.add(this.getCompleterInstance(commandInstance, commandProcessor, (Completable) annotation));
                 }
             } else {
                 tabCompleters.add(null);
@@ -376,6 +374,16 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
         }
 
         return tabCompleters;
+    }
+
+    @SuppressWarnings("unchecked")
+    protected TabCompleter<?, B> getCompleterInstance(Object commandInstance, Method commandProcessor, Completable completable) {
+        try {
+            Constructor<? extends Completable> constructor = completable.getClass().getConstructor();
+            return (TabCompleter<?, B>) constructor.newInstance();
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new CommandParseException("Error creating tab completer instance for command " + commandInstance.getClass().getName() + " in method " + commandProcessor.getName(), e);
+        }
     }
 
     protected Method findTabHandlerMethod(Object commandInstance) {

@@ -43,7 +43,11 @@ public class UtilConcurrency {
      */
     public static CompletableFuture<Void> runAsync(Runnable runnable) {
         return CompletableFuture.runAsync(runnable,
-                SCHEDULED_EXECUTOR_SERVICE);
+                        SCHEDULED_EXECUTOR_SERVICE)
+                .exceptionally(throwable -> {
+                    UtilLogger.logger().ifPresent(logger -> logger.error("Error while executing async task", throwable));
+                    return null;
+                });
     }
 
     /**
@@ -60,7 +64,10 @@ public class UtilConcurrency {
      */
     public static <T> CompletableFuture<T> supplyAsync(Supplier<T> supplier) {
         return CompletableFuture.supplyAsync(supplier,
-                SCHEDULED_EXECUTOR_SERVICE);
+                SCHEDULED_EXECUTOR_SERVICE).exceptionally(throwable -> {
+            UtilLogger.logger().ifPresent(logger -> logger.error("Error while executing async task", throwable));
+            return null;
+        });
     }
 
     /**

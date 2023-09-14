@@ -35,14 +35,14 @@ public class AnnotationPlatformCommandExecutor<C> implements PlatformCommandExec
 
         values[0] = this.senderType.getInstance(sender);
 
-        for (int i = 1; i < (this.arguments.size() + 1); i++) {
-            var value = this.arguments.get(i - 1).defaultValue;
+        for (int i = 0; i < this.arguments.size(); i++) {
+            var value = this.arguments.get(i).defaultValue;
 
             if (args.length > i) {
                 value = args[i];
             }
 
-            values[i] = this.arguments.get(i - 1).injector.instantiateClass(sender, value);
+            values[i] = this.arguments.get(i).injector.instantiateClass(sender, value);
 
             if (values[i] == null) {
                 return;

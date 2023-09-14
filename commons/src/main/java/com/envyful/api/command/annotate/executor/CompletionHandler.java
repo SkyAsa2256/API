@@ -1,4 +1,4 @@
-package com.envyful.api.command.annotate;
+package com.envyful.api.command.annotate.executor;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,5 +7,5 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface TabCompletions {
+public @interface CompletionHandler {
 }

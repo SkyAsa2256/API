@@ -6,7 +6,6 @@ import com.envyful.api.command.InjectedCommandFactory;
 import com.envyful.api.command.PlatformCommand;
 import com.envyful.api.command.exception.CommandParseException;
 import com.envyful.api.command.sender.SenderTypeFactory;
-import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.velocity.player.VelocityPlayerManager;
 import com.envyful.api.velocity.player.command.command.VelocityPlatformCommand;
 import com.envyful.api.velocity.player.command.command.sender.ConsoleSenderType;
@@ -74,6 +73,8 @@ public class VelocityCommandFactory extends InjectedCommandFactory<CommandManage
         if (!(command instanceof VelocityPlatformCommand)) {
             return;
         }
+
+        ((VelocityPlatformCommand) command).proxy = this.proxyServer;
 
         BrigadierCommand brigadierCommand = new BrigadierCommand(LiteralArgumentBuilder.<CommandSource>literal(command.getName())
                 .requires(commandSource -> true)
@@ -151,10 +152,7 @@ public class VelocityCommandFactory extends InjectedCommandFactory<CommandManage
     private CompletableFuture<Suggestions> buildSuggestions(VelocityPlatformCommand command, CommandContext<CommandSource> context, SuggestionsBuilder builder) {
         String[] args = this.getArgs(context);
         return command.getTabCompletions(context.getSource(), args)
-                .exceptionally(throwable -> {
-                    UtilLogger.logger().ifPresent(logger -> logger.error("Error when tab completing command", throwable));
-                    return Lists.newArrayList();
-                })
+                .exceptionally(throwable -> Lists.newArrayList())
                 .thenApply(completions -> {
                     int lastArgPos = context.getInput().lastIndexOf(' ') + 1;
                     String lastArg = context.getInput().endsWith(" ") ? "" : args[args.length - 1];

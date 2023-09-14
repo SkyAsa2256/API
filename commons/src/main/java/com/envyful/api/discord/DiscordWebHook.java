@@ -133,7 +133,7 @@ public class DiscordWebHook {
             );
         }
 
-        var json = this.toJson();
+        JsonObject json = this.toJson();
 
         URL url = new URL(this.url);
         HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();

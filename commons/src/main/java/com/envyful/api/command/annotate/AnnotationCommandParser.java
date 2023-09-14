@@ -379,7 +379,7 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
     @SuppressWarnings("unchecked")
     protected TabCompleter<?, B> getCompleterInstance(Object commandInstance, Method commandProcessor, Completable completable) {
         try {
-            Constructor<? extends Completable> constructor = completable.getClass().getConstructor();
+            Constructor<? extends TabCompleter<?, ?>> constructor = completable.value().getConstructor();
             return (TabCompleter<?, B>) constructor.newInstance();
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             throw new CommandParseException("Error creating tab completer instance for command " + commandInstance.getClass().getName() + " in method " + commandProcessor.getName(), e);

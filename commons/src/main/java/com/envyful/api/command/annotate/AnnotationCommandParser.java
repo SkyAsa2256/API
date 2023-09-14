@@ -6,25 +6,29 @@ import com.envyful.api.command.PlatformCommand;
 import com.envyful.api.command.PlatformCommandExecutor;
 import com.envyful.api.command.annotate.description.Description;
 import com.envyful.api.command.annotate.description.DescriptionHandler;
-import com.envyful.api.command.annotate.executor.Argument;
-import com.envyful.api.command.annotate.executor.CommandProcessor;
-import com.envyful.api.command.annotate.executor.Sender;
+import com.envyful.api.command.annotate.executor.*;
 import com.envyful.api.command.annotate.permission.Permissible;
 import com.envyful.api.command.annotate.permission.PermissionHandler;
 import com.envyful.api.command.exception.CommandParseException;
 import com.envyful.api.command.injector.ArgumentInjector;
+import com.envyful.api.command.injector.TabCompleter;
 import com.envyful.api.command.sender.SenderType;
 import com.envyful.api.command.sender.SenderTypeFactory;
+import com.envyful.api.command.tab.TabHandler;
+import com.envyful.api.concurrency.UtilConcurrency;
 import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.type.BooleanBiFunction;
 import com.google.common.collect.Lists;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
 
 public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements CommandParser<A, B> {
@@ -45,6 +49,7 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
         BiFunction<B, List<String>, List<String>> descriptionProvider = this.getDescriptionProvider(o);
         PlatformCommandExecutor<B> commandExecutor = this.getCommandExecutor(o);
         List<PlatformCommand<B>> subCommands = this.getSubCommands(o);
+        TabHandler<B> tabHandler = this.getTabHandler(o, subCommands);
 
 
         return (A) this.commandFactory.commandBuilder()
@@ -53,8 +58,9 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
                 .permissionCheck(permissionCheck)
                 .descriptionProvider(descriptionProvider)
                 .noPermissionProvider(b -> Collections.singletonList("&c&l(!) &cYou do not have permission to use this command!"))
-                .executor(commandExecutor) //TODO: tab completion
+                .executor(commandExecutor)
                 .subCommands(subCommands)
+                .tabHandler(tabHandler)
                 .build();
     }
 
@@ -297,5 +303,96 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
         } catch (Exception e) {
             throw new CommandParseException("No public constructor with no parameters found for sub command class " + subCommandClass.getName());
         }
+    }
+
+    protected TabHandler<B> getTabHandler(Object commandInstance, List<PlatformCommand<B>> subCommands) {
+        Method commandProcessor = this.findCommandProcessor(commandInstance);
+        boolean[] hasTabCompleter = this.getHasTabCompleter(commandProcessor);
+        List<TabCompleter<?, B>> tabCompleter = this.getParameterTabCompleters(commandInstance, commandProcessor, hasTabCompleter);
+
+        Method tabHandlerMethod = this.findTabHandlerMethod(commandInstance);
+
+
+        return (sender, args) -> {
+            int currentPosition = Math.max(0, args.length - 1);
+            String currentArg = args.length == 0 ? "" : args[args.length - 1];
+
+            if (hasTabCompleter[currentPosition]) {
+                return CompletableFuture.supplyAsync(() ->
+                                tabCompleter.get(currentPosition).getCompletions(sender, args),
+                        UtilConcurrency.SCHEDULED_EXECUTOR_SERVICE);
+            }
+
+            for (PlatformCommand<B> subCommand : subCommands) {
+                if (subCommand.getName().equalsIgnoreCase(currentArg) &&
+                        subCommand.checkPermission(sender, Lists.newArrayList(args))) {
+                    return subCommand.getTabCompletions(sender, Arrays.copyOfRange(args, 1, args.length));
+                }
+            }
+
+            return CompletableFuture.supplyAsync(() -> {
+                try {
+                    return (List<String>) tabHandlerMethod.invoke(commandInstance, sender, args);
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    throw new RuntimeException("Error when executing tab handler method " + tabHandlerMethod.getName() + " in class " + commandInstance.getClass().getName(), e);
+                }
+            }, UtilConcurrency.SCHEDULED_EXECUTOR_SERVICE);
+        };
+    }
+
+    protected boolean[] getHasTabCompleter(Method commandProcessor) {
+        Annotation[][] parameterAnnotations = commandProcessor.getParameterAnnotations();
+        boolean[] hasTabCompleter = new boolean[parameterAnnotations.length];
+
+        for (int i = 0; i < parameterAnnotations.length; i++) {
+            for (Annotation annotation : parameterAnnotations[i]) {
+                if (annotation instanceof Completable) {
+                    hasTabCompleter[i] = true;
+                }
+            }
+        }
+
+        return hasTabCompleter;
+    }
+
+    protected List<TabCompleter<?, B>> getParameterTabCompleters(Object commandInstance, Method commandProcessor, boolean[] hasTabCompleter) {
+        Annotation[][] parameterAnnotations = commandProcessor.getParameterAnnotations();
+        List<TabCompleter<?, B>> tabCompleters = Lists.newArrayList();
+
+        for (int i = 0; i < parameterAnnotations.length; i++) {
+            if (hasTabCompleter[i]) {
+                for (Annotation annotation : parameterAnnotations[i]) {
+                    if (annotation instanceof Completable) {
+                        try {
+                            tabCompleters.add((TabCompleter<?, B>) ((Completable) annotation).value().newInstance());
+                        } catch (InstantiationException | IllegalAccessException e) {
+                            throw new CommandParseException("Error creating tab completer instance for command " + commandInstance.getClass().getName() + " in method " + commandProcessor.getName(), e);
+                        }
+                    }
+                }
+            } else {
+                tabCompleters.add(null);
+            }
+        }
+
+        return tabCompleters;
+    }
+
+    protected Method findTabHandlerMethod(Object commandInstance) {
+        for (Method declaredMethod : commandInstance.getClass().getDeclaredMethods()) {
+            CompletionHandler completionHandler = declaredMethod.getAnnotation(CompletionHandler.class);
+
+            if (completionHandler == null) {
+                continue;
+            }
+
+            if (!Modifier.isPublic(declaredMethod.getModifiers())) {
+                throw new CommandParseException("Method with CompletionHandler annotation is not public for method " + declaredMethod.getName() + " in " + commandInstance.getClass().getName());
+            }
+
+            return declaredMethod;
+        }
+
+        return null;
     }
 }

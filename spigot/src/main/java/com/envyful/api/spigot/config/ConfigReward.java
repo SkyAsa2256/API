@@ -1,7 +1,9 @@
 package com.envyful.api.spigot.config;
 
+import com.envyful.api.config.type.ExtendedConfigItem;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
+import com.google.common.collect.Lists;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
@@ -14,12 +16,21 @@ import java.util.List;
 public class ConfigReward {
 
     protected String displayName = "Example Display Name";
+    protected ExtendedConfigItem displayItem;
     protected List<String> commands;
     protected List<String> messages;
 
+    @Deprecated
     public ConfigReward(List<String> commands, List<String> messages) {
         this.commands = commands;
         this.messages = messages;
+    }
+
+    private ConfigReward(Builder builder) {
+        this.displayName = builder.displayName;
+        this.displayItem = builder.displayItem;
+        this.commands = builder.commands;
+        this.messages = builder.messages;
     }
 
     public ConfigReward() {
@@ -27,6 +38,10 @@ public class ConfigReward {
 
     public String getDisplayName() {
         return this.displayName;
+    }
+
+    public ExtendedConfigItem getDisplayItem() {
+        return this.displayItem;
     }
 
     public void execute(Player player, Placeholder... placeholders) {
@@ -40,6 +55,44 @@ public class ConfigReward {
             for (String message : PlaceholderFactory.handlePlaceholders(this.messages, placeholders)) {
                 player.sendMessage(MiniMessage.miniMessage().deserialize(message).decoration(TextDecoration.ITALIC, false));
             }
+        }
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+
+        protected String displayName = "Example Display Name";
+        protected ExtendedConfigItem displayItem;
+        protected List<String> commands = Lists.newArrayList();
+        protected List<String> messages = Lists.newArrayList();
+
+        private Builder() {}
+
+        public Builder displayName(String displayName) {
+            this.displayName = displayName;
+            return this;
+        }
+
+        public Builder displayItem(ExtendedConfigItem displayItem) {
+            this.displayItem = displayItem;
+            return this;
+        }
+
+        public Builder commands(List<String> commands) {
+            this.commands.addAll(commands);
+            return this;
+        }
+
+        public Builder messages(List<String> messages) {
+            this.messages.addAll(messages);
+            return this;
+        }
+
+        public ConfigReward build() {
+            return new ConfigReward(this);
         }
     }
 }

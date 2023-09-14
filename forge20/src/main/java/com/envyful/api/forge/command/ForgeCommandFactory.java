@@ -6,6 +6,7 @@ import com.envyful.api.command.InjectedCommandFactory;
 import com.envyful.api.command.PlatformCommand;
 import com.envyful.api.command.exception.CommandParseException;
 import com.envyful.api.command.sender.SenderTypeFactory;
+import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.forge.command.command.ForgePlatformCommand;
 import com.envyful.api.forge.command.command.sender.ConsoleSenderType;
 import com.envyful.api.forge.command.command.sender.ForgePlayerSenderType;
@@ -14,6 +15,7 @@ import com.envyful.api.forge.command.completion.player.PlayerTabCompleter;
 import com.envyful.api.forge.command.injector.ForgeFunctionInjector;
 import com.envyful.api.forge.player.ForgePlayerManager;
 import com.envyful.api.forge.player.util.UtilPlayer;
+import com.google.common.collect.Lists;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -141,55 +143,27 @@ public class ForgeCommandFactory extends InjectedCommandFactory<CommandDispatche
 
     private CompletableFuture<Suggestions> buildSuggestions(ForgePlatformCommand command, CommandContext<CommandSourceStack> context, SuggestionsBuilder builder) {
         String[] args = this.getArgs(context);
-        return command.getTabCompletions(context.getSource().source, args).thenApply(completions -> builder.build());
+        return command.getTabCompletions(context.getSource().source, args)
+                .exceptionally(throwable -> {
+                    UtilLogger.logger().ifPresent(logger -> logger.error("Error when tab completing command", throwable));
+                    return Lists.newArrayList();
+                })
+                .thenApply(completions -> {
+                    int lastArgPos = context.getInput().lastIndexOf(' ') + 1;
+                    String lastArg = context.getInput().endsWith(" ") ? "" : args[args.length - 1];
 
-//        List<String> tabCompletions;
-//        String[] initialArgs = context.getInput().split(" ");
-//        List<String> args = Lists.newArrayList(Arrays.copyOfRange(initialArgs, 1, initialArgs.length));
-//        int spaces = 0;
-//        Matcher matcher = SPACE_PATTERN.matcher(context.getInput());
-//
-//        while (matcher.find()) {
-//            spaces++;
-//        }
-//
-//        while (spaces > args.size()) {
-//            args.add(" ");
-//            spaces--;
-//        }
-//
-//        tabCompletions = command.getTabCompletions(context.getSource().getServer(),
-//                context.getSource().getEntity(),
-//                args.toArray(new String[0]),
-//                new BlockPos((int) context.getSource().getPosition().x, (int) context.getSource().getPosition().y, (int) context.getSource().getPosition().z));
-//
-//        if (args.size() > 0 && !args.get(args.size() - 1).trim().isEmpty()) {
-//            builder = builder.createOffset(context.getInput().length() - args.get(args.size() - 1).length());
-//        } else {
-//            builder = builder.createOffset(context.getInput().length());
-//        }
-//
-//        for (String tabCompletion : tabCompletions) {
-//            if (args.isEmpty()) {
-//                builder.suggest(tabCompletion);
-//                continue;
-//            }
-//
-//            String currentWord = args.get(args.size() - 1);
-//
-//            if (currentWord.isEmpty() || currentWord.equals(" ")) {
-//                builder.suggest(tabCompletion);
-//                continue;
-//            }
-//
-//            if (!tabCompletion.toLowerCase().startsWith(currentWord.toLowerCase())) {
-//                continue;
-//            }
-//
-//            builder.suggest(tabCompletion);
-//        }
-//
-//        return builder.buildFuture();
+                    SuggestionsBuilder updatedBuilder = builder.createOffset(lastArgPos);
+
+                    for (String completion : completions) {
+                        if (!lastArg.isBlank() && !completion.toLowerCase(Locale.ROOT).contains(lastArg.toLowerCase(Locale.ROOT))) {
+                            continue;
+                        }
+
+                        updatedBuilder.suggest(completion);
+                    }
+
+                    return updatedBuilder.build();
+                });
     }
 
     @Override

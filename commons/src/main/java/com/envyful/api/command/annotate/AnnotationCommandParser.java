@@ -312,7 +312,7 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
         Method tabHandlerMethod = this.findTabHandlerMethod(commandInstance);
 
         return (sender, args) -> {
-            int currentPosition = args.length;
+            int currentPosition = Math.max(0, args.length - 1);
 
             if (currentPosition < hasTabCompleter.length && hasTabCompleter[currentPosition]) {
                 TabCompleteAnnotations data = tabCompleter.get(currentPosition);

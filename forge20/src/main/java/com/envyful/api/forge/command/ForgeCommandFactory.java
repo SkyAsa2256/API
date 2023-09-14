@@ -138,6 +138,10 @@ public class ForgeCommandFactory extends InjectedCommandFactory<CommandDispatche
 
     private String[] getArgs(CommandContext<CommandSourceStack> context) {
         String[] args = context.getInput().split(" ");
+        if (context.getInput().endsWith(" ")) {
+            args = Arrays.copyOf(args, args.length + 1);
+            args[args.length - 1] = "";
+        }
         return Arrays.copyOfRange(args, 1, args.length);
     }
 

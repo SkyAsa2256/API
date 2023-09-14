@@ -239,7 +239,7 @@ public abstract class PlatformCommand<C> {
             return this;
         }
 
-        public PlatformCommand<C> build(Function<Builder<C>, ? extends PlatformCommand<C>> constructor) {
+        protected PlatformCommand<C> build(Function<Builder<C>, ? extends PlatformCommand<C>> constructor) {
             return constructor.apply(this);
         }
 

@@ -25,7 +25,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -49,7 +48,7 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
         BiFunction<B, List<String>, List<String>> descriptionProvider = this.getDescriptionProvider(o);
         PlatformCommandExecutor<B> commandExecutor = this.getCommandExecutor(o);
         List<PlatformCommand<B>> subCommands = this.getSubCommands(o);
-        TabHandler<B> tabHandler = this.getTabHandler(o, subCommands);
+        TabHandler<B> tabHandler = this.getTabHandler(o);
 
 
         return (A) this.commandFactory.commandBuilder()
@@ -305,7 +304,7 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
         }
     }
 
-    protected TabHandler<B> getTabHandler(Object commandInstance, List<PlatformCommand<B>> subCommands) {
+    protected TabHandler<B> getTabHandler(Object commandInstance) {
         Method commandProcessor = this.findCommandProcessor(commandInstance);
         boolean[] hasTabCompleter = this.getHasTabCompleter(commandProcessor);
         List<TabCompleter<?, B>> tabCompleter = this.getParameterTabCompleters(commandInstance, commandProcessor, hasTabCompleter);
@@ -315,7 +314,6 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
 
         return (sender, args) -> {
             int currentPosition = Math.max(0, args.length - 1);
-            String currentArg = args.length == 0 ? "" : args[args.length - 1];
 
             if (hasTabCompleter[currentPosition]) {
                 return CompletableFuture.supplyAsync(() ->
@@ -323,11 +321,8 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
                         UtilConcurrency.SCHEDULED_EXECUTOR_SERVICE);
             }
 
-            for (PlatformCommand<B> subCommand : subCommands) {
-                if (subCommand.getName().equalsIgnoreCase(currentArg) &&
-                        subCommand.checkPermission(sender, Lists.newArrayList(args))) {
-                    return subCommand.getTabCompletions(sender, Arrays.copyOfRange(args, 1, args.length));
-                }
+            if (tabHandlerMethod == null) {
+                return CompletableFuture.completedFuture(Collections.emptyList());
             }
 
             return CompletableFuture.supplyAsync(() -> {

@@ -5,6 +5,10 @@ import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 @ConfigSerializable
 public  class SQLDatabaseDetails {
 
+    public static final SQLDatabaseDetails DEFAULT = new SQLDatabaseDetails(
+            "pool-name", "0.0.0.0", 3306, "username", "password", "database"
+    );
+
     private String poolName;
     private String ip;
     private int port;
@@ -14,6 +18,7 @@ public  class SQLDatabaseDetails {
     private int maxPoolSize = 30;
     private String connectionUrl = null;
     private long maxLifeTimeSeconds = 30;
+    private boolean disableSSL = false;
 
     public SQLDatabaseDetails() {
     }
@@ -67,5 +72,9 @@ public  class SQLDatabaseDetails {
 
     public long getMaxLifeTimeSeconds() {
         return this.maxLifeTimeSeconds;
+    }
+
+    public boolean isDisableSSL() {
+        return this.disableSSL;
     }
 }

@@ -43,6 +43,13 @@ public class ConfigReward {
         return this.displayItem;
     }
 
+    public List<String> getCommands() {
+        return this.commands;
+    }
+
+    public List<String> getMessages() {
+        return this.messages;
+    }
     public void execute(ServerPlayer player, Placeholder... placeholders) {
         if (this.commands != null && !this.commands.isEmpty()) {
             for (String command : PlaceholderFactory.handlePlaceholders(this.commands, placeholders)) {

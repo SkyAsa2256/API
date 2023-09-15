@@ -1,5 +1,5 @@
 # API 
-[![Discord](https://img.shields.io/discord/831966641586831431)](https://discord.gg/7vqgtrjDGw) 
+[![Join our Discord](https://img.shields.io/discord/831966641586831431.svg?logo=discord&label=)](https://discord.envyware.co.uk) 
 [![Developer Releases](https://maven.envyware.co.uk/api/badge/latest/releases/com/envyful/api/commons?color=40c14a&prefix=v&name=API)]([https://jitpack.io/#Pixelmon-Development/API](https://maven.envyware.co.uk/#/releases/com/envyful/api)) 
 [![GitHub](https://img.shields.io/github/license/EnvyWare/API)](https://www.gnu.org/licenses/lgpl-3.0.html) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/5ebf0eeeb79a4d19b6932b04da2a13ec)](https://app.codacy.com/gh/EnvyWare/API/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 

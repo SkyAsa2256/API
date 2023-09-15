@@ -69,7 +69,7 @@ public class UtilChatColour {
                 lastColor = colour.get();
                 nextApply = null;
             } else {
-                var byCode = TextFormatting.getByCode(colourCode.toCharArray()[0]);
+                var byCode = getByCode(colourCode.toCharArray()[0]);
 
                 if (byCode != null) {
                     nextApply = byCode;

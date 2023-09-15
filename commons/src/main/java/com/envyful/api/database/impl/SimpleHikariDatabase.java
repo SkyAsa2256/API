@@ -27,20 +27,22 @@ public class SimpleHikariDatabase implements Database {
                 details.getPassword(),
                 details.getDatabase(),
                 details.getMaxPoolSize(),
-                details.getMaxLifeTimeSeconds()
+                details.getMaxLifeTimeSeconds(),
+                details.isDisableSSL()
         );
     }
 
     public SimpleHikariDatabase(String name, String ip,
                                 int port, String username,
                                 String password, String database) {
-        this(null, name, ip, port, username, password, database, 30, 30);
+        this(null, name, ip, port, username, password, database, 30, 30, false);
     }
 
     public SimpleHikariDatabase(String connectionUrl, String name,
                                 String ip, int port, String username,
                                 String password, String database,
-                                int maxConnections, long maxLifeTime) {
+                                int maxConnections, long maxLifeTime,
+                                boolean disableSSL) {
         HikariConfig config = new HikariConfig();
 
         config.setMaximumPoolSize(Math.max(1, maxConnections));
@@ -48,7 +50,7 @@ public class SimpleHikariDatabase implements Database {
 
         if (connectionUrl == null) {
             config.setJdbcUrl(
-                    "jdbc:mysql://" + ip + ":" + port + "/" + database + "?noAccessToProcedureBodies=true");
+                    "jdbc:mysql://" + ip + ":" + port + "/" + database + "?noAccessToProcedureBodies=true"+ (disableSSL ? "&useSSL=false" : ""));
         } else {
             config.setJdbcUrl(connectionUrl);
         }

@@ -25,7 +25,7 @@ public class ConfigReward {
         this.messages = messages;
     }
 
-    private ConfigReward(Builder builder) {
+    protected ConfigReward(Builder builder) {
         this.displayName = builder.displayName;
         this.displayItem = builder.displayItem;
         this.commands = builder.commands;
@@ -68,7 +68,7 @@ public class ConfigReward {
         protected List<String> commands = Lists.newArrayList();
         protected List<String> messages = Lists.newArrayList();
 
-        private Builder() {}
+        protected Builder() {}
 
         public Builder displayName(String displayName) {
             this.displayName = displayName;

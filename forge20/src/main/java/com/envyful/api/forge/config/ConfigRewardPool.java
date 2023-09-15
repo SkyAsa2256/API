@@ -18,11 +18,19 @@ public class ConfigRewardPool<T extends ConfigReward> extends AbstractYamlConfig
     private int rewardRollsMax;
     private ConfigRandomWeightedSet<T> rewards;
 
+    @Deprecated
     private ConfigRewardPool(T guaranteedReward, int rewardRollsMin, int rewardRollsMax, ConfigRandomWeightedSet<T> rewards) {
         this.guaranteedReward = guaranteedReward;
         this.rewardRollsMin = rewardRollsMin;
         this.rewardRollsMax = rewardRollsMax;
         this.rewards = rewards;
+    }
+
+    protected ConfigRewardPool(Builder<T> builder) {
+        this.guaranteedReward = builder.guaranteedReward;
+        this.rewardRollsMin = builder.rewardRollsMin;
+        this.rewardRollsMax = builder.rewardRollsMax;
+        this.rewards = builder.rewards;
     }
 
     public ConfigRewardPool() {
@@ -59,7 +67,7 @@ public class ConfigRewardPool<T extends ConfigReward> extends AbstractYamlConfig
         private int rewardRollsMax;
         private ConfigRandomWeightedSet<A> rewards;
 
-        private Builder() {}
+        protected Builder() {}
 
         public Builder<A> gauranteedReward(A reward) {
             this.guaranteedReward = reward;
@@ -82,10 +90,7 @@ public class ConfigRewardPool<T extends ConfigReward> extends AbstractYamlConfig
         }
 
         public ConfigRewardPool<A> build() {
-            return new ConfigRewardPool<>(
-                    this.guaranteedReward, this.rewardRollsMin, this.rewardRollsMax,
-                    this.rewards
-            );
+            return new ConfigRewardPool<>(this);
         }
     }
 }

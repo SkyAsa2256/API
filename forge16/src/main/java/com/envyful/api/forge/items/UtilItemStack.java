@@ -1,11 +1,13 @@
 package com.envyful.api.forge.items;
 
+import com.envyful.api.forge.chat.UtilChatColour;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
+import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 
 import java.util.Collections;
@@ -85,7 +87,14 @@ public class UtilItemStack {
         CompoundNBT display = itemStack.getOrCreateTagElement("display");
         ListNBT newLore = new ListNBT();
 
-        lore.forEach(s -> newLore.add(StringNBT.valueOf(s)));
+        lore.forEach(s -> {
+            var component = UtilChatColour.colour(s);
+            if (component instanceof IFormattableTextComponent) {
+                component = ((IFormattableTextComponent) component).setStyle(component.getStyle().withItalic(false));
+            }
+
+            newLore.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(component)));
+        });
 
         display.put("Lore", newLore);
         itemStack.addTagElement("display", display);

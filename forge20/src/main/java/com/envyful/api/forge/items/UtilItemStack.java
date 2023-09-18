@@ -1,11 +1,12 @@
 package com.envyful.api.forge.items;
 
+import com.envyful.api.forge.chat.UtilChatColour;
 import com.google.common.collect.Lists;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.Collections;
@@ -82,10 +83,17 @@ public class UtilItemStack {
      * @param lore The new lore
      */
     public static void setLore(ItemStack itemStack, List<String> lore) {
-        CompoundTag display = itemStack.getOrCreateTagElement("display");
-        ListTag newLore = new ListTag();
+        var display = itemStack.getOrCreateTagElement("display");
+        var newLore = new ListTag();
 
-        lore.forEach(s -> newLore.add(StringTag.valueOf(s)));
+        lore.forEach(s -> {
+            var component = UtilChatColour.colour(s);
+            if (component instanceof MutableComponent) {
+                component = ((MutableComponent) component).setStyle(component.getStyle().withItalic(false));
+            }
+
+            newLore.add(StringTag.valueOf(Component.Serializer.toJson(component)));
+        });
 
         display.put("Lore", newLore);
         itemStack.addTagElement("display", display);

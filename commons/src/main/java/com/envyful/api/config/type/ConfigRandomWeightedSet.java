@@ -28,6 +28,11 @@ public class ConfigRandomWeightedSet<A> implements Serializable {
     public ConfigRandomWeightedSet() {
     }
 
+    public void add(WeightedObject<A> entry) {
+        this.entries.put(String.valueOf(this.entries.size()), entry);
+        this.weightedSet = null;
+    }
+
     public RandomWeightedSet<A> getWeightedSet() {
         if (this.weightedSet == null) {
             this.weightedSet = new RandomWeightedSet<>();

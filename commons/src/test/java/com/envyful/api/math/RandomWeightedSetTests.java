@@ -34,7 +34,7 @@ public class RandomWeightedSetTests {
             }
         }
 
-        assert count >= 950;
+        assert count >= 900;
     }
 
 

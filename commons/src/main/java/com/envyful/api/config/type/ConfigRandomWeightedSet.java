@@ -10,7 +10,7 @@ import java.util.Map;
 @ConfigSerializable
 public class ConfigRandomWeightedSet<A> implements Serializable {
 
-    private Map<String, WeightedObject<A>> entries;
+    private Map<String, WeightedObject<A>> entries = Maps.newHashMap();
     private transient RandomWeightedSet<A> weightedSet = null;
 
     public ConfigRandomWeightedSet(Map<String, WeightedObject<A>> entries) {

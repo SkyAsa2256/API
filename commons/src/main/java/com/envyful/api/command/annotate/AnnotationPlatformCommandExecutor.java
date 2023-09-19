@@ -49,7 +49,7 @@ public class AnnotationPlatformCommandExecutor<C> implements PlatformCommandExec
             }
         }
 
-        if (this.argsCapture) {
+        if (this.argsCapture && this.arguments.size() < args.length) {
             values[values.length - 1] = Arrays.copyOfRange(args, this.arguments.size(), args.length);
         }
 

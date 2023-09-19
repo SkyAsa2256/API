@@ -56,6 +56,10 @@ public class ConfigRewardPool<T extends ConfigReward> extends AbstractYamlConfig
         }
     }
 
+    public ConfigRandomWeightedSet<T> getRewards() {
+        return this.rewards;
+    }
+
     public static <A extends ConfigReward> Builder<A> builder(A guaranteedReward) {
         return new Builder().gauranteedReward(guaranteedReward);
     }

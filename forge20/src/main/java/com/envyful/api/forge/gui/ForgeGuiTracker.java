@@ -20,8 +20,8 @@ import java.util.UUID;
  */
 public class ForgeGuiTracker {
 
-    private static final Map<UUID, ForgeGui> OPEN_GUIS = Maps.newHashMap();
-    private static final Set<UUID> REQUIRED_UPDATE = Sets.newHashSet();
+    private static final Map<UUID, ForgeGui> OPEN_GUIS = Maps.newConcurrentMap();
+    private static final Set<UUID> REQUIRED_UPDATE = Sets.newConcurrentHashSet();
 
     static {
         new ForgeGuiTickListener();

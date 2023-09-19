@@ -115,13 +115,17 @@ public class ForgeGui implements Gui {
 
     public void update() {
         for (ForgeGuiContainer value : this.containers) {
+            boolean updated = false;
             for (ForgeSimplePane pane : value.gui.panes) {
                 if (pane.getTickHandler() != null) {
+                    updated = true;
                     pane.getTickHandler().tick(pane);
                 }
             }
 
-            value.update(this.panes, false);
+            if (updated) {
+                value.update(this.panes, false);
+            }
         }
     }
 

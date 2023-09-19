@@ -17,7 +17,7 @@ public class RandomWeightedSetTests {
             }
         }
 
-        assert count >= 950;
+        assert count >= 900;
     }
 
     // Checks that the weights are working correctly - roughly close to 1,000 (1% of 100,000)

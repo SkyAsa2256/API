@@ -35,6 +35,19 @@ public class Pair<X, Y> implements Map.Entry<X, Y> {
         return this.y;
     }
 
+    public X getA() { return this.x; }
+
+    public Y getB() { return this.y; }
+
+    public X getFirst() {
+        return this.x;
+    }
+
+    public Y getSecond() {
+        return this.y;
+    }
+
+
     @Override
     public X getKey() {
         return this.getX();

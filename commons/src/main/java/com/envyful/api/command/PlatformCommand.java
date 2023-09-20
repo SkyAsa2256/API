@@ -30,6 +30,7 @@ public abstract class PlatformCommand<C> {
     protected final PlatformCommandExecutor<C> executor;
     protected final List<PlatformCommand<C>> subCommands;
     protected final TabHandler<C> tabHandler;
+    protected final boolean includePlayersWithArguments;
 
     protected PlatformCommand(Builder<C> builder) {
         this.name = builder.name;
@@ -40,6 +41,7 @@ public abstract class PlatformCommand<C> {
         this.executor = builder.executor;
         this.subCommands = builder.subCommands;
         this.tabHandler = builder.tabHandler;
+        this.includePlayersWithArguments = builder.includePlayersWithArguments;
     }
 
     public String getName() {
@@ -154,7 +156,9 @@ public abstract class PlatformCommand<C> {
                 }).thenApply(tabCompletions -> {
                     if (tabCompletions.isEmpty()) {
                         tabCompletions.addAll(this.getAccessibleSubCommands(sender, Lists.newArrayList(args)));
+                    }
 
+                    if (tabCompletions.isEmpty()) {
                         if (args.length == 0) {
                             tabCompletions.addAll(this.getOnlinePlayerNames());
                         } else {
@@ -198,6 +202,7 @@ public abstract class PlatformCommand<C> {
         protected PlatformCommandExecutor<C> executor;
         protected TabHandler<C> tabHandler;
         protected List<PlatformCommand<C>> subCommands = Lists.newArrayList();
+        protected boolean includePlayersWithArguments;
 
         public Builder<C> name(String name) {
             this.name = name;

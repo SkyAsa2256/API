@@ -12,7 +12,7 @@ public class SLF4JLog4jLogger extends AbstractLogger {
 
     private final Logger slf4jLogger;
 
-    protected SLF4JLog4jLogger(String name, MessageFactory messageFactory, Logger logger) {
+    public SLF4JLog4jLogger(String name, MessageFactory messageFactory, Logger logger) {
         super(name, messageFactory);
 
         this.slf4jLogger = logger;

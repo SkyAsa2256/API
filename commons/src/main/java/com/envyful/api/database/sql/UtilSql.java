@@ -50,6 +50,39 @@ public class UtilSql {
 
     /**
      *
+     * Executes a batch query provided as an update {@link PreparedStatement#executeUpdate()}
+     * <br>
+     * Any errors will log to {@link UtilLogger} if set
+     *
+     * @param database The database to query
+     * @param query The query
+     * @param data The data to add
+     * @return The int after running
+     */
+    public static <T> int[] executeBatchUpdate(Database database, String query, List<T> data, Function<T, List<SqlType>> parsing) {
+        try (var connection = database.getConnection();
+             var preparedStatement = connection.prepareStatement(query)) {
+
+            for (var datum : data) {
+                var sqlTypes = parsing.apply(datum);
+
+                for (int i = 0; i < sqlTypes.size(); i++) {
+                    sqlTypes.get(i).add(i + 1, preparedStatement);
+                }
+
+                preparedStatement.addBatch();
+            }
+
+            return preparedStatement.executeBatch();
+        } catch (SQLException e) {
+            UtilLogger.logger().ifPresent(logger -> logger.error("Error executing SQL (" + query + ")", e));
+        }
+
+        return new int[0];
+    }
+
+    /**
+     *
      * Executes the query provided as an update {@link PreparedStatement#executeQuery()}
      * <br>
      * Any errors will log to {@link UtilLogger} if set
@@ -124,6 +157,30 @@ public class UtilSql {
      */
     public static UpdateBuilder update(Database database) {
         return new UpdateBuilder().database(database);
+    }
+
+    /**
+     *
+     * Creates a batch update builder
+     *
+     * @param data The data to send
+     * @return The builder
+     * @param <T> The type
+     */
+    public static <T> BatchUpdateBuilder<T> batchUpdate(List<T> data) {
+        return new BatchUpdateBuilder<T>().data(data);
+    }
+
+    /**
+     *
+     * Creates a batch update builder
+     *
+     * @param data The data to send
+     * @return The builder
+     * @param <T> The type
+     */
+    public static <T> BatchUpdateBuilder<T> batchUpdate(T... data) {
+        return new BatchUpdateBuilder<T>().data(data);
     }
 
     public static class QueryBuilder<T> {
@@ -205,6 +262,53 @@ public class UtilSql {
             }
 
             return executeUpdate(this.database, this.query, this.data.toArray(new SqlType[0]));
+        }
+    }
+
+    public static class BatchUpdateBuilder<T> {
+
+        private Database database;
+        private String query;
+        private List<T> data = Lists.newArrayList();
+        private Function<T, List<SqlType>> converter;
+
+        private BatchUpdateBuilder() {}
+
+        public BatchUpdateBuilder<T> database(Database database) {
+            this.database = database;
+            return this;
+        }
+
+        public BatchUpdateBuilder<T> query(String query) {
+            this.query = query;
+            return this;
+        }
+
+        public BatchUpdateBuilder<T> data(List<T> data) {
+            this.data.addAll(data);
+            return this;
+        }
+
+        public BatchUpdateBuilder<T> data(T... data) {
+            this.data.addAll(Lists.newArrayList(data));
+            return this;
+        }
+
+        public BatchUpdateBuilder<T> converter(Function<T, List<SqlType>> converter) {
+            this.converter = converter;
+            return this;
+        }
+
+        public int[] execute() {
+            if (this.database == null) {
+                throw new IllegalArgumentException("Database cannot be null");
+            }
+
+            if (this.converter == null) {
+                throw new IllegalArgumentException("Converter cannot be null");
+            }
+
+            return executeBatchUpdate(this.database, this.query, this.data, this.converter);
         }
     }
 

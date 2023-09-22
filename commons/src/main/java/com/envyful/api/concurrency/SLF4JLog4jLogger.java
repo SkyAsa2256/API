@@ -10,7 +10,6 @@ import org.slf4j.MarkerFactory;
 
 public class SLF4JLog4jLogger extends AbstractLogger {
 
-    private static final org.slf4j.Marker MARKER = MarkerFactory.getMarker("SLF4JLog4jLogger");
     private final Logger slf4jLogger;
 
     protected SLF4JLog4jLogger(String name, MessageFactory messageFactory, Logger logger) {

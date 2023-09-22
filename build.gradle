@@ -15,7 +15,7 @@ subprojects {
     apply plugin: 'maven-publish'
 
     group = 'com.envyful.api'
-    version = '5.3.2'
+    version = '5.3.3'
 
     tasks.withType(JavaCompile) {
         options.encoding = 'UTF-8'

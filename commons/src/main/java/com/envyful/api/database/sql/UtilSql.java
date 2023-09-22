@@ -18,6 +18,10 @@ import java.util.function.Function;
  */
 public class UtilSql {
 
+    private UtilSql() {
+        throw new UnsupportedOperationException("Static utility class");
+    }
+
     /**
      *
      * Executes the query provided as an update {@link PreparedStatement#executeUpdate()}

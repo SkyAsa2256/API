@@ -43,7 +43,7 @@ public class ForgeGui implements Gui {
     private final ForgeSimplePane[] panes;
     private final ContainerType<?> containerType;
 
-    private final List<ForgeGuiContainer> containers = Lists.newArrayList();
+    private final List<ForgeGuiContainer> containers = Lists.newCopyOnWriteArrayList();
 
     ForgeGui(ITextComponent title, int height, PlayerManager<ForgeEnvyPlayer, ServerPlayerEntity> playerManager,
              ForgeCloseConsumer closeConsumer, Pane... panes) {
@@ -146,6 +146,7 @@ public class ForgeGui implements Gui {
 
         private boolean closed = false;
         private boolean init = false;
+        private boolean updating = false;
 
         public ForgeGuiContainer(ForgeGui gui, ServerPlayerEntity player) {
             super(gui.getContainerType(), 1);
@@ -183,6 +184,12 @@ public class ForgeGui implements Gui {
         }
 
         public void update(ForgeSimplePane[] panes, boolean force) {
+            if (this.updating) {
+                return;
+            }
+
+            this.updating = true;
+
             this.slots.clear();
             boolean createEmptySlots = this.emptySlots.isEmpty();
 
@@ -228,18 +235,18 @@ public class ForgeGui implements Gui {
             this.init = true;
 
             for (int i = 9; i < 36; i++) {
-                ItemStack itemStack = player.inventory.items.get(i);
                 slots.add(new Slot(player.inventory, i, 0, 0));
             }
             // Sets the slots for the hotbar.
             for (int i = 0; i < 9; i++) {
-                ItemStack itemStack = player.inventory.items.get(i);
                 slots.add(new Slot(player.inventory, i, 0, 0));
             }
 
             if (force || ForgeGuiTracker.requiresUpdate(this.player)) {
                 this.refreshPlayerContents();
             }
+
+            this.updating = false;
         }
 
         @Override

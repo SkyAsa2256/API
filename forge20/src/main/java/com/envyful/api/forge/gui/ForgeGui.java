@@ -43,7 +43,7 @@ public class ForgeGui implements Gui {
     private final ForgeSimplePane[] panes;
     private final MenuType<?> containerType;
 
-    private final List<ForgeGuiContainer> containers = Lists.newArrayList();
+    private final List<ForgeGuiContainer> containers = Lists.newCopyOnWriteArrayList();
 
     ForgeGui(Component title, int height, PlayerManager<ForgeEnvyPlayer, ServerPlayer> playerManager,
              ForgeCloseConsumer closeConsumer, Pane... panes) {
@@ -147,6 +147,7 @@ public class ForgeGui implements Gui {
 
         private boolean closed = false;
         private boolean locked = false;
+        private boolean updating = false;
 
         public ForgeGuiContainer(ForgeGui gui, ServerPlayer player) {
             super(gui.getContainerType(), 1);
@@ -184,6 +185,12 @@ public class ForgeGui implements Gui {
         }
 
         public void update(ForgeSimplePane[] panes, boolean force) {
+            if (this.updating) {
+                return;
+            }
+
+            this.updating = true;
+
             this.slots.clear();
             this.inventoryItemStacks.clear();
             boolean createEmptySlots = this.emptySlots.isEmpty();
@@ -236,6 +243,8 @@ public class ForgeGui implements Gui {
             if (force || ForgeGuiTracker.requiresUpdate(this.player)) {
                 this.refreshPlayerContents();
             }
+
+            this.updating = false;
         }
 
         private Slot addSlot(Slot slotIn, ItemStack itemStack) {

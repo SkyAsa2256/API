@@ -1,6 +1,7 @@
 package com.envyful.api.forge.player.util;
 
 import com.envyful.api.forge.chat.UtilChatColour;
+import com.envyful.api.forge.player.ForgeEnvyPlayer;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
 import net.minecraft.command.ICommandSource;
@@ -42,10 +43,9 @@ public class UtilPlayer {
     }
 
     /**
-     *
      * Forces the player to run a command
      *
-     * @param player The player running the command
+     * @param player  The player running the command
      * @param command The command
      */
     public static void runCommand(ServerPlayerEntity player, String command) {
@@ -53,7 +53,6 @@ public class UtilPlayer {
     }
 
     /**
-     *
      * Gets the online player with the given name.
      * Returns null if not online
      *
@@ -65,7 +64,6 @@ public class UtilPlayer {
     }
 
     /**
-     *
      * Gets the online player with the given {@link UUID}.
      * Returns null if not online
      *
@@ -77,15 +75,26 @@ public class UtilPlayer {
     }
 
     /**
-     *
      * Formats the message with the provided placeholders via the {@link PlaceholderFactory}
      * then sends them to the player
      *
-     * @param player The player
-     * @param message The message to send
+     * @param player       The player
+     * @param message      The message to send
      * @param placeholders The placeholders to use
      */
-    public static void sendMessage(ServerPlayerEntity player, List<String> message, Placeholder... placeholders) {
+    public static void sendMessage(ForgeEnvyPlayer player, List<String> message, Placeholder... placeholders) {
+        sendMessage(player.getParent(), message, placeholders);
+    }
+
+    /**
+     * Formats the message with the provided placeholders via the {@link PlaceholderFactory}
+     * then sends them to the player
+     *
+     * @param player       The player
+     * @param message      The message to send
+     * @param placeholders The placeholders to use
+     */
+    public static void sendMessage(ICommandSource player, List<String> message, Placeholder... placeholders) {
         message = PlaceholderFactory.handlePlaceholders(message, placeholders);
 
         for (String s : message) {

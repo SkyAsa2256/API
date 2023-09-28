@@ -2,6 +2,7 @@ package com.envyful.api.forge.player.util;
 
 import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.forge.chat.UtilChatColour;
+import com.envyful.api.forge.player.ForgeEnvyPlayer;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
 import com.google.common.collect.Maps;
@@ -126,6 +127,18 @@ public class UtilPlayer {
     }
 
     /**
+     * Formats the message with the provided placeholders via the {@link PlaceholderFactory}
+     * then sends them to the player
+     *
+     * @param player       The player
+     * @param message      The message to send
+     * @param placeholders The placeholders to use
+     */
+    public static void sendMessage(ForgeEnvyPlayer player, List<String> message, Placeholder... placeholders) {
+        sendMessage(player.getParent(), message, placeholders);
+    }
+
+    /**
      *
      * Formats the message with the provided placeholders via the {@link PlaceholderFactory}
      * then sends them to the player
@@ -134,7 +147,7 @@ public class UtilPlayer {
      * @param message The message to send
      * @param placeholders The placeholders to use
      */
-    public static void sendMessage(ServerPlayer player, List<String> message, Placeholder... placeholders) {
+    public static void sendMessage(CommandSource player, List<String> message, Placeholder... placeholders) {
         message = PlaceholderFactory.handlePlaceholders(message, placeholders);
 
         for (String s : message) {

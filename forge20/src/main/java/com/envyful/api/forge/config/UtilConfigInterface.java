@@ -32,6 +32,26 @@ public class UtilConfigInterface {
         }
     }
 
+    public static void setBackground(
+            Pane pane, ConfigInterface settings,
+            Placeholder... transformers) {
+        int position = 0;
+
+        for (ConfigItem fillerItem : settings.getFillerItems()) {
+            if (!fillerItem.isEnabled()) {
+                ++position;
+                continue;
+            }
+
+            pane.set(position % 9, position / 9,
+                    GuiFactory.displayable(
+                            UtilConfigItem.fromConfigItem(
+                                    fillerItem, transformers
+                            )));
+            ++position;
+        }
+    }
+
     public static <T> PaginatedBuilder<T> paginatedBuilder(List<T> items) {
         return new PaginatedBuilder<T>().items(items);
     }

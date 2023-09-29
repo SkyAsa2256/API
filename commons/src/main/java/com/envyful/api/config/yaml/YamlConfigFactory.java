@@ -1,11 +1,11 @@
 package com.envyful.api.config.yaml;
 
 import com.envyful.api.concurrency.UtilLogger;
-import com.envyful.api.config.data.ConfigPath;
-import com.envyful.api.config.data.Serializers;
+import com.envyful.api.config.data.*;
 import com.envyful.api.config.yaml.data.YamlConfigStyle;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
+import com.envyful.api.type.Pair;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.spongepowered.configurate.CommentedConfigurationNode;
@@ -15,6 +15,7 @@ import org.spongepowered.configurate.loader.HeaderMode;
 import org.spongepowered.configurate.reference.ConfigurationReference;
 import org.spongepowered.configurate.reference.ValueReference;
 import org.spongepowered.configurate.serialize.ScalarSerializer;
+import org.spongepowered.configurate.serialize.TypeSerializer;
 import org.spongepowered.configurate.yaml.NodeStyle;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
@@ -63,16 +64,16 @@ public class YamlConfigFactory {
 
         Class<T> configClass = (Class<T>) config.getClass();
         NodeStyle style = getNodeStyle(configClass);
-        List<Class<? extends ScalarSerializer<?>>> serializers =
+        List<Class<? extends ScalarSerializer<?>>> scalarSerializers =
                 Lists.newArrayList();
-        Serializers serializedData = configClass.getAnnotation(Serializers.class);
+        ScalarSerializers serializedScalarData = configClass.getAnnotation(ScalarSerializers.class);
 
-        if (serializedData != null) {
-            serializers.addAll(Arrays.asList(serializedData.value()));
+        if (serializedScalarData != null) {
+            scalarSerializers.addAll(Arrays.asList(serializedScalarData.value()));
         }
 
         ConfigurationReference<CommentedConfigurationNode> base =
-                listenToConfig( file.toPath(), serializers, style);
+                listenToConfig( file.toPath(), scalarSerializers, getTypeSerializers(configClass), style);
         ValueReference<T, CommentedConfigurationNode> reference =
                 base.referenceTo(configClass);
 
@@ -115,7 +116,7 @@ public class YamlConfigFactory {
         NodeStyle style = getNodeStyle(configClass);
         List<Class<? extends ScalarSerializer<?>>> serializers =
                 Lists.newArrayList();
-        Serializers serializedData = configClass.getAnnotation(Serializers.class);
+        ScalarSerializers serializedData = configClass.getAnnotation(ScalarSerializers.class);
 
         if (serializedData != null) {
             serializers.addAll(Arrays.asList(serializedData.value()));
@@ -136,7 +137,7 @@ public class YamlConfigFactory {
             }
 
             ConfigurationReference<CommentedConfigurationNode> base =
-                    listenToConfig(file.toPath(), serializers, style);
+                    listenToConfig(file.toPath(), serializers, getTypeSerializers(configClass), style);
             ValueReference<T, CommentedConfigurationNode> reference =
                     base.referenceTo(configClass);
             T instance = reference.get();
@@ -153,6 +154,25 @@ public class YamlConfigFactory {
         return loadDirectory(configFiles, serializers, style, configClass);
     }
 
+    private static <T extends AbstractYamlConfig> List<Pair<Class<?>, Class<? extends TypeSerializer>>> getTypeSerializers(Class<T> configClass){
+        List<Class<? extends TypeSerializer>> typeSerializers =
+                Lists.newArrayList();
+        List<Class<?>> typeClasses = Lists.newArrayList();
+        TypeSerializers serializedTypeData = configClass.getAnnotation(TypeSerializers.class);
+
+        if (serializedTypeData != null) {
+            typeSerializers.addAll(Arrays.asList(serializedTypeData.serializer()));
+            typeClasses.addAll(Arrays.asList(serializedTypeData.clazz()));
+        }
+
+        List<Pair<Class<?>, Class<? extends TypeSerializer>>> typeSerializerPairs = Lists.newArrayList();
+        for (int i = 0; i < typeSerializers.size(); i++) {
+            typeSerializerPairs.add(Pair.of(typeClasses.get(i), typeSerializers.get(i)));
+        }
+
+        return typeSerializerPairs;
+    }
+
     private static <T extends AbstractYamlConfig> List<T>
     loadDirectory(File file, List<Class<? extends ScalarSerializer<?>>> serializers,
                   NodeStyle style, Class<T> configClass) throws IOException {
@@ -165,7 +185,7 @@ public class YamlConfigFactory {
             }
 
             ConfigurationReference<CommentedConfigurationNode> base =
-                    listenToConfig(listFile.toPath(), serializers, style);
+                    listenToConfig(listFile.toPath(), serializers, getTypeSerializers(configClass), style);
 
             if (base == null) {
                 throw new IOException("Error config loaded as null");
@@ -228,14 +248,14 @@ public class YamlConfigFactory {
 
         List<Class<? extends ScalarSerializer<?>>> serializers =
                 Lists.newArrayList();
-        Serializers serializedData = clazz.getAnnotation(Serializers.class);
+        ScalarSerializers serializedData = clazz.getAnnotation(ScalarSerializers.class);
 
         if (serializedData != null) {
             serializers.addAll(Arrays.asList(serializedData.value()));
         }
 
         ConfigurationReference<CommentedConfigurationNode> base =
-                listenToConfig(configFile, serializers, style);
+                listenToConfig(configFile, serializers, getTypeSerializers(clazz), style);
 
         if (base == null) {
             throw new IOException("Error config loaded as null");
@@ -268,7 +288,8 @@ public class YamlConfigFactory {
 
     private static ConfigurationReference<CommentedConfigurationNode>
     listenToConfig(Path configFile,
-                   List<Class<? extends ScalarSerializer<?>>> serializers,
+                   List<Class<? extends ScalarSerializer<?>>> scalarSerializers,
+                   List<Pair<Class<?>, Class<? extends TypeSerializer>>> typeSerializers,
                    NodeStyle style) throws IOException {
         try {
             return ConfigurationReference.fixed(YamlConfigurationLoader.builder()
@@ -282,9 +303,15 @@ public class YamlConfigFactory {
                     ).serializers(builder -> {
                         try {
                             for (Class<? extends ScalarSerializer<?>>
-                                    serializer : serializers) {
+                                    serializer : scalarSerializers) {
                                 builder.register(serializer.newInstance());
                             }
+
+                            for (Pair<Class<?>, Class<? extends TypeSerializer>> serializer : typeSerializers) {
+                                TypeSerializer instance = serializer.getSecond().newInstance();
+                                builder.register(serializer.getFirst(), instance);
+                            }
+
                         } catch (InstantiationException
                                  | IllegalAccessException e) {
                             UtilLogger.logger().ifPresent(logger -> logger.error("Error creating serializer for config " + configFile.getFileName(), e));

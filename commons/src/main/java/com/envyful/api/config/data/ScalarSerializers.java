@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Serializers {
+public @interface ScalarSerializers {
 
     Class<? extends ScalarSerializer<?>>[] value();
 

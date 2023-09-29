@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface TypeSerializers {
 
-    Class<? extends TypeSerializer<?>>[] serializer();
+    Class<? extends TypeSerializer>[] serializer();
 
     Class<?>[] clazz();
 

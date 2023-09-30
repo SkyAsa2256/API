@@ -2,6 +2,7 @@ package com.envyful.api.spigot.player;
 
 import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
 import com.envyful.api.concurrency.UtilConcurrency;
+import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.player.attribute.Attribute;
 import com.envyful.api.player.attribute.data.PlayerAttributeData;
@@ -134,7 +135,9 @@ public class SpigotPlayerManager implements PlayerManager<SpigotEnvyPlayer, Play
 
                     for (PlayerAttributeData attributeDatum : this.manager.attributeData) {
                         Attribute<?> attribute = this.findAttribute(attributeDatum, attributes);
+
                         if (attribute == null) {
+                            UtilLogger.logger().ifPresent(logger -> logger.error("Null attribute loaded for {}", attributeDatum.getAttributeClass().getName()));
                             continue;
                         }
 

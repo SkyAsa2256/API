@@ -1,6 +1,7 @@
 package com.envyful.api.player.save.impl;
 
 import com.envyful.api.concurrency.UtilConcurrency;
+import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.player.attribute.Attribute;
 import com.envyful.api.player.save.AbstractSaveManager;
@@ -54,7 +55,7 @@ public class EmptySaveManager<T> extends AbstractSaveManager<T> {
                 if (loaded != null) {
                     attributes.add(loaded);
                 } else if (throwable != null) {
-                    throwable.printStackTrace();
+                    UtilLogger.logger().ifPresent(logger -> logger.error("Error when loading attribute data for " + entry.getKey().getName(), throwable));
                 }
             }));
         }
@@ -86,7 +87,10 @@ public class EmptySaveManager<T> extends AbstractSaveManager<T> {
                 attribute.loadWithGenericId(id);
                 return attribute;
             }
-        }, UtilConcurrency.SCHEDULED_EXECUTOR_SERVICE);
+        }, UtilConcurrency.SCHEDULED_EXECUTOR_SERVICE).exceptionally(throwable -> {
+            UtilLogger.logger().ifPresent(logger -> logger.error("Error when loading attribute data for " + attributeClass.getName(), throwable));
+            return null;
+        });
     }
 
     @Override

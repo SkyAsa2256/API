@@ -1,6 +1,7 @@
 package com.envyful.api.forge.player;
 
 import com.envyful.api.concurrency.UtilConcurrency;
+import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.player.attribute.Attribute;
 import com.envyful.api.player.attribute.data.PlayerAttributeData;
@@ -132,6 +133,7 @@ public class ForgePlayerManager implements PlayerManager<ForgeEnvyPlayer, Server
                         Attribute<?> attribute = this.findAttribute(attributeDatum, attributes);
 
                         if (attribute == null) {
+                            UtilLogger.logger().ifPresent(logger -> logger.error("Null attribute loaded for {}", attributeDatum.getAttributeClass().getName()));
                             continue;
                         }
 

@@ -1,6 +1,7 @@
 package com.envyful.api.player.save.impl;
 
 import com.envyful.api.concurrency.UtilConcurrency;
+import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.database.Database;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.player.attribute.Attribute;
@@ -72,8 +73,12 @@ public class SQLSaveManager<T> extends AbstractSaveManager<T> {
                 if (loaded != null) {
                     attributes.add(loaded);
                 } else if (throwable != null) {
+                    UtilLogger.logger().ifPresent(logger -> logger.error("Error when loading attribute " + entry.getKey().getName(), throwable));
                     throwable.printStackTrace();
                 }
+            }).exceptionally(throwable -> {
+                UtilLogger.logger().ifPresent(logger -> logger.error("Error when loading attribute " + entry.getKey().getName(), throwable));
+                return null;
             }));
         }
 

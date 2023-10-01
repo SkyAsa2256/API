@@ -19,11 +19,11 @@ public class ConfigInterface {
     protected String title = "";
     protected int height = 6;
     protected String fillType = FillType.BLOCK.name();
-    protected Map<String, ConfigItem> fillerItems = Maps.newHashMap(
-            ImmutableMap.of("one", new ConfigItem()));
+    protected Map<String, ConfigItem> fillerItems = Maps.newHashMap(ImmutableMap.of("one", new ConfigItem()));
 
     public ConfigInterface() {}
 
+    @Deprecated
     public ConfigInterface(String title, int height,
                            String fillType,
                            Map<String, ConfigItem> fillerItems) {
@@ -31,6 +31,35 @@ public class ConfigInterface {
         this.height = height;
         this.fillType = fillType;
         this.fillerItems = fillerItems;
+    }
+
+    protected ConfigInterface(Builder builder) {
+        this.title = builder.title;
+        this.height = builder.height;
+        this.fillType = builder.fillType.name();
+        this.fillerItems = builder.fillerItems;
+    }
+
+    /**
+     *
+     * Gets a default config interface with the given title
+     *
+     * @param title The title
+     * @return The config interface
+     */
+    public static ConfigInterface defaultInterface(String title) {
+        return new ConfigInterface(
+                title, 6, FillType.BLOCK.name(), ImmutableMap.of(
+                "one", ConfigItem.builder()
+                        .type("minecraft:black_stained_glass_pane")
+                        .amount(1)
+                        .name(" ")
+                        .build())
+        );
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 
     public String getTitle() {
@@ -123,5 +152,39 @@ public class ConfigInterface {
 
         public abstract List<ConfigItem> convert(List<ConfigItem> conversion,
                                                  int height);
+    }
+
+    public static class Builder {
+
+        protected String title;
+        protected int height;
+        protected FillType fillType;
+        protected Map<String, ConfigItem> fillerItems = Maps.newHashMap();
+
+        private Builder() {}
+
+        public Builder title(String title) {
+            this.title = title;
+            return this;
+        }
+
+        public Builder height(int height) {
+            this.height = height;
+            return this;
+        }
+
+        public Builder fillType(FillType fillType) {
+            this.fillType = fillType;
+            return this;
+        }
+
+        public Builder fillerItem(ConfigItem configItem) {
+            this.fillerItems.put(String.valueOf(this.fillerItems.size() + 1), configItem);
+            return this;
+        }
+
+        public ConfigInterface build() {
+            return new ConfigInterface(this);
+        }
     }
 }

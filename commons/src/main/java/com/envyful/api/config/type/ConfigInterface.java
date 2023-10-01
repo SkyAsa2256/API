@@ -48,14 +48,16 @@ public class ConfigInterface {
      * @return The config interface
      */
     public static ConfigInterface defaultInterface(String title) {
-        return new ConfigInterface(
-                title, 6, FillType.BLOCK.name(), ImmutableMap.of(
-                "one", ConfigItem.builder()
+        return builder()
+                .title(title)
+                .height(6)
+                .fillType(FillType.BLOCK)
+                .fillerItem(ConfigItem.builder()
                         .type("minecraft:black_stained_glass_pane")
                         .amount(1)
                         .name(" ")
                         .build())
-        );
+                .build();
     }
 
     public static Builder builder() {

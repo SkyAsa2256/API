@@ -1,7 +1,6 @@
 package com.envyful.api.forge.gui.type;
 
 import com.envyful.api.config.type.ConfigInterface;
-import com.envyful.api.config.type.ConfigItem;
 import com.envyful.api.config.type.ExtendedConfigItem;
 import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.forge.config.UtilConfigInterface;
@@ -14,7 +13,6 @@ import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.text.Placeholder;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraft.item.ItemStack;
@@ -201,14 +199,7 @@ public class ConfirmationUI {
     @ConfigSerializable
     public static class ConfirmConfig {
 
-        private ConfigInterface guiSettings = new ConfigInterface(
-                "UltimatePokeBuilder", 3, "BLOCK",
-                ImmutableMap.of("one", ConfigItem.builder()
-                                .type("minecraft:black_stained_glass_pane")
-                                .amount(1)
-                                .name(" ")
-                        .build())
-        );
+        private ConfigInterface guiSettings = ConfigInterface.defaultInterface("Confirm");
 
         private ExtendedConfigItem declineItem = new ExtendedConfigItem("minecraft:red_wool", 1, (byte) 14, "&c&lDECLINE",
                                                                     Lists.newArrayList(), 2, 1, Maps.newHashMap());

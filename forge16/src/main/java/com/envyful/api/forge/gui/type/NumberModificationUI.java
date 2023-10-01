@@ -16,7 +16,6 @@ import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.type.Pair;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.logging.log4j.util.TriConsumer;
@@ -244,14 +243,16 @@ public class NumberModificationUI {
             this.currentValue = currentValue;
             this.maxValue = maxValue;
             this.minValue = minValue;
-            this.guiSettings = new ConfigInterface(
-                    title, height, "BLOCK",
-                    ImmutableMap.of("one", ConfigItem.builder()
+            this.guiSettings = ConfigInterface.builder()
+                    .title(title)
+                    .height(height)
+                    .fillType(ConfigInterface.FillType.BLOCK)
+                    .fillerItem(ConfigItem.builder()
                             .type("minecraft:black_stained_glass_pane")
                             .amount(1)
                             .name(" ")
                             .build())
-            );
+                    .build();
         }
 
         public NumberModificationConfig() {}

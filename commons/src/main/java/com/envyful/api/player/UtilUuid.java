@@ -19,6 +19,56 @@ public class UtilUuid {
 
     /**
      *
+     * Gets the player's name from their UUID
+     * <br>
+     * This will return null if there is an error in fetching the name
+     * from Mojang's API.
+     * <br>
+     * All errors are logged using {@link UtilLogger}
+     *
+     * @param uuid The player's uuid
+     * @return The name fetched from Mojang's API
+     */
+    public static String getNameFromUUID(UUID uuid) {
+        PlayerProfile result = getProfile(uuid);
+
+        if (result == null) {
+            return null;
+        }
+
+        return result.getName();
+    }
+
+    private static PlayerProfile getProfile(UUID uuid) {
+        try {
+            var connection = (HttpURLConnection) new URL("https://api.mojang.com/user/profile/" + uuid.toString().replace("-", "")).openConnection();
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setDoInput(true);
+
+            var response = new StringBuffer();
+
+            try (var inputStream = connection.getInputStream();
+                 var inputStreamReader = new InputStreamReader(inputStream);
+                 var reader = new BufferedReader(inputStreamReader)) {
+
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
+                    response.append('\r');
+                }
+            }
+
+            return UtilGson.GSON.fromJson(response.toString(), PlayerProfile.class);
+        } catch (IOException e) {
+            UtilLogger.logger().ifPresent(logger -> logger.error("Failed to get name from UUID: " + uuid.toString(), e));
+        }
+
+        return null;
+    }
+
+    /**
+     *
      * Gets the player's UUID from their name
      * <br>
      * This will return null if there is an error in fetching the UUID

@@ -220,6 +220,14 @@ public class UtilSql {
             return executeQuery(this.database, this.query, this.data.toArray(new SqlType[0]));
         }
 
+        public void execute(ExceptionThrowingConsumer<ResultSet> consumer) {
+            try (ResultSet resultSet = this.execute()) {
+                consumer.accept(resultSet);
+            } catch (SQLException e) {
+                UtilLogger.logger().ifPresent(logger -> logger.error("Error reading SQL result set", e));
+            }
+        }
+
         public List<T> executeWithConverter() {
             if (this.database == null) {
                 throw new IllegalArgumentException("Database cannot be null");

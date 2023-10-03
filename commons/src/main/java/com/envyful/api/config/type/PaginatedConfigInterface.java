@@ -49,7 +49,7 @@ public class PaginatedConfigInterface extends ConfigInterface {
         return this.displayPageButtonsAtLimits;
     }
 
-    public static Builder builder() {
+    public static Builder paginatedBuilder() {
         return new Builder();
     }
 

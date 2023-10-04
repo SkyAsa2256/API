@@ -12,6 +12,9 @@ import java.lang.reflect.Type;
 
 public class PotionEffectTypeSerializer implements TypeSerializer<PotionEffect> {
 
+    public PotionEffectTypeSerializer() {
+    }
+
     @Override
     public PotionEffect deserialize(Type type, ConfigurationNode node) {
         return new PotionEffect(

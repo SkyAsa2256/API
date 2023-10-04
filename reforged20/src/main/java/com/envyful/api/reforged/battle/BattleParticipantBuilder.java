@@ -30,7 +30,7 @@ public class BattleParticipantBuilder {
             return this;
         }
 
-        PlayerPartyStorage storage = StorageProxy.getParty(this.player.getUUID());
+        PlayerPartyStorage storage = StorageProxy.getPartyNow(this.player.getUUID());
 
         if (storage == null) {
             return this;
@@ -46,7 +46,7 @@ public class BattleParticipantBuilder {
     }
 
     public BattleParticipant build() {
-        PartyStorage storage = StorageProxy.getParty(this.player.getUUID());
+        PartyStorage storage = StorageProxy.getPartyNow(this.player.getUUID());
 
         if (this.player instanceof ServerPlayer) {
             return new PlayerParticipant((ServerPlayer) this.player, storage.getFirstAblePokemon());

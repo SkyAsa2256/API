@@ -30,7 +30,7 @@ public class PokeSpecPricing implements Comparable<PokeSpecPricing> {
 
     public Specification<?, ?> getSpec() {
         if (this.cachedSpec == null) {
-            this.cachedSpec = PokemonSpecificationProxy.create(this.spec);
+            this.cachedSpec = PokemonSpecificationProxy.create(this.spec).get();
         }
 
         return this.cachedSpec;

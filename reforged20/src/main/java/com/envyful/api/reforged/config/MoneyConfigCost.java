@@ -29,13 +29,13 @@ public class MoneyConfigCost implements ConfigCost {
 
     @Override
     public boolean has(ServerPlayer player) {
-        BankAccount bankAccount = BankAccountProxy.getBankAccountUnsafe(player);
+        BankAccount bankAccount = BankAccountProxy.getBankAccountNow(player);
         return bankAccount != null && bankAccount.getBalance().doubleValue() >= this.amount;
     }
 
     @Override
     public void take(ServerPlayer player, Placeholder... placeholders) {
-        BankAccount bankAccount = BankAccountProxy.getBankAccountUnsafe(player);
+        BankAccount bankAccount = BankAccountProxy.getBankAccountNow(player);
         bankAccount.take(this.amount);
 
         for (String handlePlaceholder : PlaceholderFactory.handlePlaceholders(Collections.singletonList(this.successMessage), placeholders)) {

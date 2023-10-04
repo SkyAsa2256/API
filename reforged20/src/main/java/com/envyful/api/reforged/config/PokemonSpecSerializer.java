@@ -16,7 +16,7 @@ public class PokemonSpecSerializer extends ScalarSerializer<PokemonSpecification
 
     @Override
     public PokemonSpecification deserialize(Type type, Object obj) throws SerializationException {
-        return PokemonSpecificationProxy.create(obj.toString());
+        return PokemonSpecificationProxy.create(obj.toString()).get();
     }
 
     @Override

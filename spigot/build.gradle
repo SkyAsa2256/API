@@ -30,7 +30,8 @@ shadowJar {
     relocate('org.yaml.snakeyaml', 'com.envyful.api.commons.shade.snakeyaml')
     relocate('io.leangen.geantyref', 'com.envyful.api.commons.shade.geantyref')
 
-    exclude 'net.minecraft'
+    exclude '**/**.java'
+    exclude 'io/netty/**/**.class'
     exclude "**/module-info.class"
 }
 

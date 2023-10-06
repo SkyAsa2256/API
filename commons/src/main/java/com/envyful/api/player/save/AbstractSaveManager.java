@@ -1,5 +1,6 @@
 package com.envyful.api.player.save;
 
+import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.player.attribute.Attribute;
 import com.google.common.collect.Maps;
@@ -27,6 +28,11 @@ public abstract class AbstractSaveManager<T> implements SaveManager<T> {
     public void registerAttribute(Class<? extends Attribute<?>> attribute) {
         Supplier<Attribute<?>> constructor =
                 this.getAttributeConstructor(attribute);
+
+        if (constructor == null) {
+            throw new IllegalArgumentException("No valid constructor found for " + attribute.getName());
+        }
+
         this.registeredAttributes.put(attribute, new AttributeData<>(constructor));
     }
 
@@ -41,13 +47,13 @@ public abstract class AbstractSaveManager<T> implements SaveManager<T> {
                          IllegalAccessException |
                         IllegalArgumentException |
                          InvocationTargetException e) {
-                    e.printStackTrace();
+                    UtilLogger.logger().ifPresent(logger -> logger.error("Failed to obtain player manager constructor for attribute " + clazz.getName(), e));
                 }
 
                 return null;
             };
         } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+            UtilLogger.logger().ifPresent(logger -> logger.error("Failed to obtain player manager constructor for attribute " + clazz.getName(), e));
         }
 
         return null;

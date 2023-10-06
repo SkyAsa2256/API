@@ -30,6 +30,12 @@ public class EmptySaveManager<T> extends AbstractSaveManager<T> {
 
         for (Map.Entry<Class<? extends Attribute<?>>, AttributeData<?, ?>> entry : this.registeredAttributes.entrySet()) {
             AttributeData<?, ?> value = entry.getValue();
+
+            if (value.getConstructor() == null) {
+                UtilLogger.logger().ifPresent(logger -> logger.error("Skipping load attempt for {} as there is no valid constructor", entry.getKey().getName()));
+                continue;
+            }
+
             Attribute<?> attribute = value.getConstructor().get();
 
             loadTasks.add(attribute.getId(uuid).thenApply(o -> {

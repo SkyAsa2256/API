@@ -74,7 +74,6 @@ public class SQLSaveManager<T> extends AbstractSaveManager<T> {
                     attributes.add(loaded);
                 } else if (throwable != null) {
                     UtilLogger.logger().ifPresent(logger -> logger.error("Error when loading attribute " + entry.getKey().getName(), throwable));
-                    throwable.printStackTrace();
                 }
             }).exceptionally(throwable -> {
                 UtilLogger.logger().ifPresent(logger -> logger.error("Error when loading attribute " + entry.getKey().getName(), throwable));

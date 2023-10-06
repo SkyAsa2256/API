@@ -88,7 +88,7 @@ public class JsonSaveManager<T> extends AbstractSaveManager<T> {
                 if (loaded != null) {
                     attributes.add(loaded);
                 } else if (throwable != null) {
-                    throwable.printStackTrace();
+                    UtilLogger.logger().ifPresent(logger -> logger.error("Error loading data for player " + uuid, throwable));
                 }
             }));
         }
@@ -109,7 +109,7 @@ public class JsonSaveManager<T> extends AbstractSaveManager<T> {
                 file.getParentFile().mkdirs();
                 Files.createFile(file.toPath());
             } catch (IOException e) {
-                e.printStackTrace();
+                UtilLogger.logger().ifPresent(logger -> logger.error("Error loading file for " + attributeClass.getName() + " for key " + key, e));
             }
             return original;
         }
@@ -117,7 +117,7 @@ public class JsonSaveManager<T> extends AbstractSaveManager<T> {
         try (FileReader fileWriter = new FileReader(file)) {
             return getGson().fromJson(new JsonReader(fileWriter), attributeClass);
         } catch (IOException e) {
-            e.printStackTrace();
+            UtilLogger.logger().ifPresent(logger -> logger.error("Error loading file for " + attributeClass.getName() + " for key " + key, e));
         }
 
         return original;

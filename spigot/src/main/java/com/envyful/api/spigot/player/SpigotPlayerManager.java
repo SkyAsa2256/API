@@ -129,7 +129,7 @@ public class SpigotPlayerManager implements PlayerManager<SpigotEnvyPlayer, Play
             UtilConcurrency.runAsync(() -> {
                 this.manager.saveManager.loadData(player).whenComplete((attributes, throwable) -> {
                     if (throwable != null) {
-                        throwable.printStackTrace();
+                        UtilLogger.logger().ifPresent(logger -> logger.error("Error loading data for " + player.getUuid() + " " + player.getName(), throwable));
                         return;
                     }
 

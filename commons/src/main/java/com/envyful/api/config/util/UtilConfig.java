@@ -1,8 +1,10 @@
 package com.envyful.api.config.util;
 
+import com.envyful.api.concurrency.UtilLogger;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -17,7 +19,7 @@ public class UtilConfig {
         try {
             return node.node(path).getList(type);
         } catch (SerializationException e) {
-            e.printStackTrace();
+            UtilLogger.logger().ifPresent(logger -> logger.error("Error reading type as a list for " + Arrays.toString(path), e));
         }
 
         return Collections.emptyList();

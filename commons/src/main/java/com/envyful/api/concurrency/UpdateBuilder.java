@@ -119,7 +119,7 @@ public class UpdateBuilder<T> {
                 try {
                     this.sendRequest();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    UtilLogger.logger().ifPresent(logger -> logger.error("error sending request for latest version", e));
                 }
             }
         });

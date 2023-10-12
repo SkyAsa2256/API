@@ -11,7 +11,7 @@ dependencies {
     implementation group: 'com.zaxxer', name: 'HikariCP', version: '4.0.1'
     implementation 'io.lettuce:lettuce-core:6.2.2.RELEASE'
     implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.5'
-    implementation group: 'org.spongepowered', name: 'configurate-yaml', version: '4.0.0'
+    implementation group: 'org.spongepowered', name: 'configurate-yaml', version: '4.2.0-COMMENTS'
 }
 
 shadowJar {

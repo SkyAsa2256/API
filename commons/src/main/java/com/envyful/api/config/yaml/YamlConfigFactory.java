@@ -1,7 +1,9 @@
 package com.envyful.api.config.yaml;
 
 import com.envyful.api.concurrency.UtilLogger;
-import com.envyful.api.config.data.*;
+import com.envyful.api.config.data.ConfigPath;
+import com.envyful.api.config.data.ScalarSerializers;
+import com.envyful.api.config.data.TypeSerializers;
 import com.envyful.api.config.yaml.data.YamlConfigStyle;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
@@ -295,6 +297,7 @@ public class YamlConfigFactory {
             return ConfigurationReference.fixed(YamlConfigurationLoader.builder()
                     .headerMode(HeaderMode.PRESERVE)
                     .nodeStyle(style)
+                    .commentsEnabled(true)
                     .defaultOptions(ConfigurationOptions.defaults().header(
                             "© EnvyWare Ltd Software 2022"
                                     + System.lineSeparator() +

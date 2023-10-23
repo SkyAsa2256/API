@@ -25,7 +25,7 @@ public class SpigotGuiTracker {
             return;
         }
 
-        OPEN_GUIS.put(player.getUuid(), new InventoryDetails(player.getUuid(), inventory, gui));
+        OPEN_GUIS.put(player.getUniqueId(), new InventoryDetails(player.getUniqueId(), inventory, gui));
     }
 
     public static InventoryDetails getDetails(Player player) {
@@ -41,7 +41,7 @@ public class SpigotGuiTracker {
             return;
         }
 
-        OPEN_GUIS.remove(player.getUuid());
+        OPEN_GUIS.remove(player.getUniqueId());
     }
 
     public static void enqueueUpdate(EnvyPlayer<?> player) {
@@ -49,7 +49,7 @@ public class SpigotGuiTracker {
             return;
         }
 
-        REQUIRED_UPDATE.add(player.getUuid());
+        REQUIRED_UPDATE.add(player.getUniqueId());
     }
 
     public static boolean requiresUpdate(Player player) {

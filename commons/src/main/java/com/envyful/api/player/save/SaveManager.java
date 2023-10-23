@@ -34,7 +34,7 @@ public interface SaveManager<T> {
      * @param attribute The attribute being saved
      */
     default void saveData(EnvyPlayer<T> player, Attribute<?> attribute) {
-        this.saveData(player.getUuid(), attribute);
+        this.saveData(player.getUniqueId(), attribute);
     }
 
     /**
@@ -55,7 +55,7 @@ public interface SaveManager<T> {
      * @return All successfully loaded attributes
      */
     default CompletableFuture<List<Attribute<?>>> loadData(EnvyPlayer<T> player) {
-        return this.loadData(player.getUuid());
+        return this.loadData(player.getUniqueId());
     }
 
     /**

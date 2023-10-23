@@ -33,6 +33,11 @@ public class VelocityEnvyPlayer extends AbstractEnvyPlayer<Player> {
     }
 
     @Override
+    public UUID getUniqueId() {
+        return this.uuid;
+    }
+
+    @Override
     public String getName() {
         return this.parent.getUsername();
     }

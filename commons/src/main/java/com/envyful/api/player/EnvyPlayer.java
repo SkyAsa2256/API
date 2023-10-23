@@ -26,7 +26,10 @@ import java.util.concurrent.CompletableFuture;
  */
 public interface EnvyPlayer<T> {
 
+    @Deprecated
     UUID getUuid();
+
+    UUID getUniqueId();
 
     String getName();
 

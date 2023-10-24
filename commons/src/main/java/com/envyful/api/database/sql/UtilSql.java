@@ -3,7 +3,9 @@ package com.envyful.api.database.sql;
 import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.database.Database;
 import com.google.common.collect.Lists;
+import com.mysql.cj.jdbc.Driver;
 
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,6 +22,19 @@ public class UtilSql {
 
     private UtilSql() {
         throw new UnsupportedOperationException("Static utility class");
+    }
+
+    /**
+     *
+     * Makes sure the MySQL JDBC driver is registered correctly
+     *
+     */
+    public static void registerDriver() {
+        try {
+            DriverManager.registerDriver(new Driver());
+        } catch (SQLException e) {
+            UtilLogger.logger().ifPresent(logger -> logger.error("Error occured when registering MySQL JDBC driver", e));
+        }
     }
 
     /**

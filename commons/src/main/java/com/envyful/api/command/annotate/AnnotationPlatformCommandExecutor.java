@@ -4,6 +4,7 @@ import com.envyful.api.command.PlatformCommandExecutor;
 import com.envyful.api.command.injector.ArgumentInjector;
 import com.envyful.api.command.sender.SenderType;
 import com.envyful.api.concurrency.UtilLogger;
+import com.envyful.api.platform.PlatformProxy;
 import com.google.common.collect.Lists;
 
 import java.lang.reflect.InvocationTargetException;
@@ -64,7 +65,13 @@ public class AnnotationPlatformCommandExecutor<C> implements PlatformCommandExec
                 UtilLogger.logger().ifPresent(logger -> logger.error("Error when executing command " + this.instance.getClass().getSimpleName() + " with method " + this.method.getName(), e));
             }
         } else {
-            //TODO: run sync
+            PlatformProxy.runSync(() -> {
+                try {
+                    this.method.invoke(this.instance,values);
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    UtilLogger.logger().ifPresent(logger -> logger.error("Error when executing command " + this.instance.getClass().getSimpleName() + " with method " + this.method.getName(), e));
+                }
+            });
         }
     }
 

@@ -11,6 +11,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import java.util.function.Function;
 
 /**
@@ -139,7 +141,13 @@ public class UtilSql {
             List<T> convertedData = Lists.newArrayList();
             
             while (resultSet.next()) {
-                convertedData.add(converter.apply(resultSet));
+                var converted = converter.apply(resultSet);
+
+                if (converted == null) {
+                    continue;
+                }
+
+                convertedData.add(converted);
             }
             
             return convertedData;
@@ -254,6 +262,14 @@ public class UtilSql {
 
             return executeQuery(this.database, this.query, this.converter, this.data.toArray(new SqlType[0]));
         }
+
+        public CompletableFuture<ResultSet> executeAsync(Executor executor) {
+            return CompletableFuture.supplyAsync(this::execute, executor);
+        }
+
+        public CompletableFuture<List<T>> executeAsyncWithConverter(Executor executor) {
+            return CompletableFuture.supplyAsync(this::executeWithConverter, executor);
+        }
     }
 
     public static class UpdateBuilder {
@@ -285,6 +301,10 @@ public class UtilSql {
             }
 
             return executeUpdate(this.database, this.query, this.data.toArray(new SqlType[0]));
+        }
+
+        public CompletableFuture<Integer> executeAsync(Executor executor) {
+            return CompletableFuture.supplyAsync(this::execute, executor);
         }
     }
 
@@ -332,6 +352,19 @@ public class UtilSql {
             }
 
             return executeBatchUpdate(this.database, this.query, this.data, this.converter);
+        }
+
+        public CompletableFuture<Integer[]> executeAsync(Executor executor) {
+            return CompletableFuture.supplyAsync(() -> {
+                var result = this.execute();
+                var converted = new Integer[result.length];
+
+                for (int i = 0; i < result.length; i++) {
+                    converted[i] = result[i];
+                }
+
+                return converted;
+            }, executor);
         }
     }
 

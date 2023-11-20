@@ -2,6 +2,7 @@ package com.envyful.api.database.sql;
 
 import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.database.Database;
+import com.envyful.api.database.SQLFunction;
 import com.google.common.collect.Lists;
 import com.mysql.cj.jdbc.Driver;
 
@@ -136,7 +137,7 @@ public class UtilSql {
      * @param data The data to add
      * @return The int after running
      */
-    public static <T> List<T> executeQuery(Database database, String query, Function<ResultSet, T> converter, SqlType... data) {
+    public static <T> List<T> executeQuery(Database database, String query, SQLFunction<ResultSet, T> converter, SqlType... data) {
         try (var resultSet = executeQuery(database, query, data)) {
             List<T> convertedData = Lists.newArrayList();
             
@@ -211,7 +212,7 @@ public class UtilSql {
         private Database database;
         private String query;
         private List<SqlType> data = Lists.newArrayList();
-        private Function<ResultSet, T> converter = null;
+        private SQLFunction<ResultSet, T> converter = null;
 
         private QueryBuilder() {}
 
@@ -230,7 +231,7 @@ public class UtilSql {
             return this;
         }
 
-        public QueryBuilder<T> converter(Function<ResultSet, T> converter) {
+        public QueryBuilder<T> converter(SQLFunction<ResultSet, T> converter) {
             this.converter = converter;
             return this;
         }

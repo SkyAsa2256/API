@@ -103,6 +103,6 @@ public interface CommandFactory<A, B> {
      *
      * @param tabCompleter The tab completer
      */
-    void registerCompleter(TabCompleter<?, ?> tabCompleter);
+    void registerCompleter(TabCompleter<?> tabCompleter);
 
 }

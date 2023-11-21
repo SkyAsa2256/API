@@ -14,7 +14,7 @@ import java.util.function.Function;
 public abstract class InjectedCommandFactory<A, B> implements CommandFactory<A, B> {
 
     protected final List<ArgumentInjector<?, B>> registeredInjectors = Lists.newArrayList();
-    protected final Map<Class<?>, TabCompleter<?, ?>> registeredCompleters = Maps.newConcurrentMap();
+    protected final Map<Class<?>, TabCompleter<?>> registeredCompleters = Maps.newConcurrentMap();
     protected final CommandParser<? extends PlatformCommand<B>, B> commandParser;
 
     protected InjectedCommandFactory(Function<InjectedCommandFactory<A, B>, ? extends CommandParser<? extends PlatformCommand<B>, B>> commandParser) {
@@ -69,7 +69,7 @@ public abstract class InjectedCommandFactory<A, B> implements CommandFactory<A, 
     }
 
     @Override
-    public void registerCompleter(TabCompleter<?, ?> tabCompleter) {
+    public void registerCompleter(TabCompleter<?> tabCompleter) {
         this.registeredCompleters.put(tabCompleter.getClass(), tabCompleter);
     }
 }

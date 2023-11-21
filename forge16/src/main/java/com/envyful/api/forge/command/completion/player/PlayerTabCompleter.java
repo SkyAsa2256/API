@@ -8,17 +8,7 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import java.lang.annotation.Annotation;
 import java.util.List;
 
-public class PlayerTabCompleter implements TabCompleter<String, ServerPlayerEntity> {
-
-    @Override
-    public Class<ServerPlayerEntity> getSenderClass() {
-        return ServerPlayerEntity.class;
-    }
-
-    @Override
-    public Class<String> getCompletedClass() {
-        return String.class;
-    }
+public class PlayerTabCompleter implements TabCompleter<ServerPlayerEntity> {
 
     @Override
     public List<String> getCompletions(ServerPlayerEntity sender, String[] currentData, Annotation... completionData) {

@@ -5,6 +5,7 @@ import com.envyful.api.command.CommandParser;
 import com.envyful.api.command.InjectedCommandFactory;
 import com.envyful.api.command.PlatformCommand;
 import com.envyful.api.command.exception.CommandParseException;
+import com.envyful.api.command.injector.TabCompleter;
 import com.envyful.api.command.sender.SenderTypeFactory;
 import com.envyful.api.velocity.player.VelocityPlayerManager;
 import com.envyful.api.velocity.player.command.command.VelocityPlatformCommand;
@@ -174,5 +175,9 @@ public class VelocityCommandFactory extends InjectedCommandFactory<CommandManage
     @Override
     public <C> void registerInjector(Class<C> parentClass, boolean multipleArgs, BiFunction<CommandSource, String[], C> function) {
         this.registeredInjectors.add(new VelocityFunctionInjector<>(parentClass, multipleArgs, function));
+    }
+
+    public static TabCompleter<CommandSource> tabCompleter(TabCompleter<CommandSource> completer) {
+        return completer;
     }
 }

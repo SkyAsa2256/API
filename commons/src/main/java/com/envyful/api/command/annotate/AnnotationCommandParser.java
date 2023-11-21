@@ -368,7 +368,7 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
         for (int i = 1; i < parameterAnnotations.length; i++) {
             if (hasTabCompleter[i - 1]) {
                 List<Annotation> annotations = Lists.newArrayList();
-                TabCompleter<?, B> completable = null;
+                TabCompleter<B> completable = null;
 
                 for (Annotation annotation : parameterAnnotations[i]) {
                     if (!(annotation instanceof Completable)) {
@@ -389,10 +389,10 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
     }
 
     @SuppressWarnings("unchecked")
-    protected TabCompleter<?, B> getCompleterInstance(Object commandInstance, Method commandProcessor, Completable completable) {
+    protected TabCompleter<B> getCompleterInstance(Object commandInstance, Method commandProcessor, Completable completable) {
         try {
-            Constructor<? extends TabCompleter<?, ?>> constructor = completable.value().getConstructor();
-            return (TabCompleter<?, B>) constructor.newInstance();
+            Constructor<? extends TabCompleter<?>> constructor = completable.value().getConstructor();
+            return (TabCompleter<B>) constructor.newInstance();
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             throw new CommandParseException("Error creating tab completer instance for command " + commandInstance.getClass().getName() + " in method " + commandProcessor.getName(), e);
         }
@@ -418,10 +418,10 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
 
     public class TabCompleteAnnotations {
 
-        protected final TabCompleter<?, B> completer;
+        protected final TabCompleter<B> completer;
         protected final List<Annotation> annotations;
 
-        public TabCompleteAnnotations(TabCompleter<?, B> completer, List<Annotation> annotations) {
+        public TabCompleteAnnotations(TabCompleter<B> completer, List<Annotation> annotations) {
             this.completer = completer;
             this.annotations = annotations;
         }

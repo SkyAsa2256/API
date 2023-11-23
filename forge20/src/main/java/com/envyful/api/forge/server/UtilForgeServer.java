@@ -73,7 +73,7 @@ public class UtilForgeServer {
 
             for (String parsed : parsedMessage) {
                 ServerLifecycleHooks.getCurrentServer().getPlayerList().broadcastSystemMessage(
-                        UtilChatColour.colour(parsed), true
+                        UtilChatColour.colour(parsed), false
                 );
             }
         }

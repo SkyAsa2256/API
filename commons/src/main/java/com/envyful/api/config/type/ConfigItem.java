@@ -226,6 +226,21 @@ public class ConfigItem {
             return this;
         }
 
+        public Builder clearLore() {
+            this.lore.clear();
+            return this;
+        }
+
+        public Builder setLore(List<String> lore) {
+            this.lore = lore;
+            return this;
+        }
+
+        public Builder setLore(String... lore) {
+            this.lore = Lists.newArrayList(lore);
+            return this;
+        }
+
         public Builder lore(String... lore) {
             this.lore.addAll(Arrays.asList(lore));
             return this;

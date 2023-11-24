@@ -204,7 +204,6 @@ public class UtilConfigItem {
             Item item = BuiltInRegistries.ITEM.getOptional(new ResourceLocation(data)).orElse(null);
 
             if (item != null) {
-                UtilLogger.logger().ifPresent(logger -> logger.error("Invalid item type provided: " + data));
                 return item;
             }
 

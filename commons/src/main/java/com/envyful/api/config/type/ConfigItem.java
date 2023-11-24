@@ -113,6 +113,16 @@ public class ConfigItem {
         return new Builder();
     }
 
+    public static Builder builder(ConfigItem configItem) {
+        return new Builder()
+                .type(configItem.type)
+                .amount(configItem.getAmount())
+                .lore(configItem.lore.toArray(new String[0]))
+                .name(configItem.name)
+                .flags(configItem.flags.toArray(new String[0]))
+                .enchants(configItem.enchants.values().toArray(new EnchantData[0]));
+    }
+
     @ConfigSerializable
     public static final class NBTValue {
 

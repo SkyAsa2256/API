@@ -51,6 +51,7 @@ public class UtilChatColour {
             } catch (Exception ignored) {}
         }
 
+        text = String.join("\n", PlaceholderFactory.handlePlaceholders(text, placeholders));
         Matcher matcher = COLOUR_PATTERN.matcher(text);
         MutableComponent textComponent = Component.literal("");
         ChatFormatting nextApply = null;
@@ -107,20 +108,14 @@ public class UtilChatColour {
             return null;
         }
 
-        var appended = Component.empty();
+        var literalText = Component.literal(segment);
 
-        for (var text : PlaceholderFactory.handlePlaceholders(segment, placeholders)) {
-            var literalText = Component.literal(text);
-
-            if (lastColour != null) {
-                literalText.setStyle(Style.EMPTY.withColor(lastColour));
-            }
-
-            appended.append(literalText);
+        if (lastColour != null) {
+            literalText.setStyle(Style.EMPTY.withColor(lastColour));
         }
 
-        textComponent.append(appended);
-        return appended;
+        textComponent.append(literalText);
+        return literalText;
     }
 
     /**

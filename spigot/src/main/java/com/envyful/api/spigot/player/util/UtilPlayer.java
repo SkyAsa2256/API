@@ -1,9 +1,14 @@
 package com.envyful.api.spigot.player.util;
 
+import com.envyful.api.spigot.player.SpigotEnvyPlayer;
+import com.envyful.api.text.Placeholder;
+import com.envyful.api.text.PlaceholderFactory;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -58,5 +63,34 @@ public class UtilPlayer {
      */
     public static Player getOnlinePlayer(UUID uuid) {
         return Bukkit.getPlayer(uuid);
+    }
+
+    /**
+     * Formats the message with the provided placeholders via the {@link PlaceholderFactory}
+     * then sends them to the player
+     *
+     * @param player       The player
+     * @param message      The message to send
+     * @param placeholders The placeholders to use
+     */
+    public static void sendMessage(SpigotEnvyPlayer player, List<String> message, Placeholder... placeholders) {
+        sendMessage(player.getParent(), message, placeholders);
+    }
+
+    /**
+     *
+     * Formats the message with the provided placeholders via the {@link PlaceholderFactory}
+     * then sends them to the player
+     *
+     * @param player The player
+     * @param message The message to send
+     * @param placeholders The placeholders to use
+     */
+    public static void sendMessage(CommandSender player, List<String> message, Placeholder... placeholders) {
+        message = PlaceholderFactory.handlePlaceholders(message, placeholders);
+
+        for (String s : message) {
+            player.sendMessage(MiniMessage.miniMessage().deserialize(s));
+        }
     }
 }

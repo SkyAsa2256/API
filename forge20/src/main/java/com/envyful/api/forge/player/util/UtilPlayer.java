@@ -17,6 +17,7 @@ import net.minecraftforge.server.permission.events.PermissionGatherEvent;
 import net.minecraftforge.server.permission.nodes.PermissionNode;
 import net.minecraftforge.server.permission.nodes.PermissionTypes;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -78,7 +79,12 @@ public class UtilPlayer {
      * @return The permission
      */
     public static PermissionNode<?> registerPermission(String permissionNode) {
-        return registerPermission("envyapi", permissionNode);
+        if (!permissionNode.contains(".")) {
+            return registerPermission("envyapi", permissionNode);
+        }
+
+        String[] split = permissionNode.split("\\.");
+        return registerPermission(split[0], String.join(" ", Arrays.copyOfRange(split, 1, split.length)));
     }
 
     /**

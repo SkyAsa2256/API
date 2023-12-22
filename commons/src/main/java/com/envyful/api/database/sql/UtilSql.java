@@ -1,5 +1,6 @@
 package com.envyful.api.database.sql;
 
+import com.envyful.api.concurrency.UtilConcurrency;
 import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.database.Database;
 import com.envyful.api.database.SQLFunction;
@@ -264,8 +265,16 @@ public class UtilSql {
             return executeQuery(this.database, this.query, this.converter, this.data.toArray(new SqlType[0]));
         }
 
+        public CompletableFuture<ResultSet> executeAsync() {
+            return this.executeAsync(UtilConcurrency.SCHEDULED_EXECUTOR_SERVICE);
+        }
+
         public CompletableFuture<ResultSet> executeAsync(Executor executor) {
             return CompletableFuture.supplyAsync(this::execute, executor);
+        }
+
+        public CompletableFuture<List<T>> executeAsyncWithConverter() {
+            return this.executeAsyncWithConverter(UtilConcurrency.SCHEDULED_EXECUTOR_SERVICE);
         }
 
         public CompletableFuture<List<T>> executeAsyncWithConverter(Executor executor) {
@@ -302,6 +311,10 @@ public class UtilSql {
             }
 
             return executeUpdate(this.database, this.query, this.data.toArray(new SqlType[0]));
+        }
+
+        public CompletableFuture<Integer> executeAsync() {
+            return this.executeAsync(UtilConcurrency.SCHEDULED_EXECUTOR_SERVICE);
         }
 
         public CompletableFuture<Integer> executeAsync(Executor executor) {
@@ -353,6 +366,10 @@ public class UtilSql {
             }
 
             return executeBatchUpdate(this.database, this.query, this.data, this.converter);
+        }
+
+        public CompletableFuture<Integer[]> executeAsync() {
+            return this.executeAsync(UtilConcurrency.SCHEDULED_EXECUTOR_SERVICE);
         }
 
         public CompletableFuture<Integer[]> executeAsync(Executor executor) {

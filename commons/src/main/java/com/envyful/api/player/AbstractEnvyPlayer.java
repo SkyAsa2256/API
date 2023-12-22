@@ -1,11 +1,13 @@
 package com.envyful.api.player;
 
+import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.player.attribute.Attribute;
 import com.envyful.api.player.attribute.PlayerAttribute;
 import com.envyful.api.player.save.SaveManager;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -28,8 +30,7 @@ import java.util.concurrent.CompletableFuture;
  */
 public abstract class AbstractEnvyPlayer<T> implements EnvyPlayer<T> {
 
-    protected final Map<Class<?>, Attribute<?>> attributes =
-            Maps.newHashMap();
+    protected final Map<Class<?>, AttributeInstance> attributes = Maps.newHashMap();
 
     protected final SaveManager<T> saveManager;
 
@@ -50,8 +51,18 @@ public abstract class AbstractEnvyPlayer<T> implements EnvyPlayer<T> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <A extends Attribute<B>, B> A getAttribute(Class<A> attributeClass) {
-        return (A) this.attributes.get(attributeClass);
+    public <A extends Attribute<B>, B> CompletableFuture<A> getAttribute(Class<A> attributeClass) {
+        if (!this.attributes.containsKey(attributeClass)) {
+            return null;
+        }
+
+        AttributeInstance<A, B> instance = (AttributeInstance<A, B>) this.attributes.get(attributeClass);
+        return instance.getAttribute();
+    }
+
+    @Override
+    public <A extends Attribute<B>, B> A getAttributeNow(Class<A> attributeClass) {
+        return this.getAttribute(attributeClass).join();
     }
 
     @Override
@@ -62,19 +73,68 @@ public abstract class AbstractEnvyPlayer<T> implements EnvyPlayer<T> {
     @Override
     public <A extends Attribute<B>, B> CompletableFuture<A> loadAttribute(
             Class<? extends A> attributeClass, B id) {
-        return this.saveManager.loadAttribute(attributeClass, id).thenApply(a -> {
-            this.attributes.put(attributeClass, a);
-            return a;
-        });
+        AttributeInstance<A, B> instance = new AttributeInstance<>(this.saveManager.loadAttribute(attributeClass, id));
+        this.attributes.put(attributeClass, instance);
+        return instance.getAttribute();
     }
 
     @Override
     public <A extends Attribute<?>> void setAttribute(A attribute) {
-        this.attributes.put(attribute.getClass(), attribute);
+        this.attributes.put(attribute.getClass(), new AttributeInstance<>(attribute));
     }
 
     @Override
     public List<Attribute<?>> getAttributes() {
-        return Lists.newArrayList(this.attributes.values());
+        List<Attribute<?>> attributes = Lists.newArrayList();
+
+        for (AttributeInstance<?, ?> attribute : this.attributes.values()) {
+            if (attribute.getAttributeNow() != null) {
+                attributes.add(attribute.getAttributeNow());
+            }
+        }
+
+        return attributes;
+    }
+
+    public static class AttributeInstance<A extends Attribute<B>, B> {
+
+        private A attribute;
+        private CompletableFuture<A> loadingAttribute;
+
+        public AttributeInstance(A attribute) {
+            this.attribute = attribute;
+            this.loadingAttribute = null;
+        }
+
+        public AttributeInstance(CompletableFuture<A> loadingAttribute) {
+            this.attribute = null;
+            this.loadingAttribute = loadingAttribute.whenComplete((a, throwable) -> {
+                if (throwable != null) {
+                    UtilLogger.logger().ifPresent(logger -> logger.error("Failed to load attribute", throwable));
+                } else {
+                    this.attribute = a;
+                    this.loadingAttribute = null;
+                }
+            });
+        }
+
+        public CompletableFuture<A> getAttribute() {
+            return this.loadingAttribute == null ? CompletableFuture.completedFuture(this.attribute) : this.loadingAttribute;
+        }
+
+        @Nullable
+        public A getAttributeNow() {
+            return this.attribute;
+        }
+
+        public void invalidate() {
+            this.attribute = null;
+
+            if (this.loadingAttribute != null) {
+                this.loadingAttribute.cancel(true);
+            }
+
+            this.loadingAttribute = null;
+        }
     }
 }

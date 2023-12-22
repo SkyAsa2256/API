@@ -10,6 +10,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -26,7 +27,7 @@ public class UtilChatColour {
     private static final Pattern COLOUR_PATTERN = Pattern.compile("&(#\\w{6}|[\\da-zA-Z])");
     private static final Pattern STRIP_PATTERN = Pattern.compile("(?i)&([0-9A-FK-ORX]|#([A-F0-9]{6}|[A-F0-9]{3}))");
 
-    public static List<Component> colour(List<String> text, Placeholder... placeholders) {
+    public static List<Component> colour(Collection<String> text, Placeholder... placeholders) {
         List<Component> components = Lists.newArrayList();
 
         for (String line : text) {

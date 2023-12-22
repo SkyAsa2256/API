@@ -1,5 +1,6 @@
 package com.envyful.api.forge.config;
 
+import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.config.type.ConfigItem;
 import com.envyful.api.config.type.ExtendedConfigItem;
 import com.envyful.api.forge.chat.UtilChatColour;
@@ -89,7 +90,7 @@ public class UtilConfigItem {
         String name = configItem.getName();
 
         ItemBuilder itemBuilder = new ItemBuilder()
-                .type(fromNameOrId(configItem.getType()))
+                .type(fromNameOrId(PlaceholderFactory.handlePlaceholders(configItem.getType(), placeholders).get(0)))
                 .amount(configItem.getAmount(placeholders));
 
         itemBuilder.lore(PlaceholderFactory.handlePlaceholders(configItem.getLore(), UtilChatColour::colour, placeholders));
@@ -209,11 +210,13 @@ public class UtilConfigItem {
             int integer = UtilParse.parseInt(data).orElse(-1);
 
             if (integer == -1) {
+                UtilLogger.logger().ifPresent(logger -> logger.error("Invalid item type provided: " + data));
                 return null;
             }
 
             return Item.byId(integer);
         } catch (ResourceLocationException e) {
+            UtilLogger.logger().ifPresent(logger -> logger.error("Invalid item type provided: " + data));
             return null;
         }
     }

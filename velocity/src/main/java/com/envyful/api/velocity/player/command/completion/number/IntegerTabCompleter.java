@@ -7,17 +7,7 @@ import com.velocitypowered.api.proxy.Player;
 import java.lang.annotation.Annotation;
 import java.util.List;
 
-public class IntegerTabCompleter implements TabCompleter<Integer, Player> {
-
-    @Override
-    public Class<Player> getSenderClass() {
-        return Player.class;
-    }
-
-    @Override
-    public Class<Integer> getCompletedClass() {
-        return Integer.class;
-    }
+public class IntegerTabCompleter implements TabCompleter<Player> {
 
     @Override
     public List<String> getCompletions(Player sender, String[] currentData, Annotation... completionData) {

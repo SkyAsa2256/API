@@ -113,6 +113,16 @@ public class ConfigItem {
         return new Builder();
     }
 
+    public static Builder builder(ConfigItem configItem) {
+        return new Builder()
+                .type(configItem.type)
+                .amount(configItem.getAmount())
+                .lore(configItem.lore.toArray(new String[0]))
+                .name(configItem.name)
+                .flags(configItem.flags.toArray(new String[0]))
+                .enchants(configItem.enchants.values().toArray(new EnchantData[0]));
+    }
+
     @ConfigSerializable
     public static final class NBTValue {
 
@@ -213,6 +223,21 @@ public class ConfigItem {
 
         public Builder flags(String... flags) {
             this.flags.addAll(Arrays.asList(flags));
+            return this;
+        }
+
+        public Builder clearLore() {
+            this.lore.clear();
+            return this;
+        }
+
+        public Builder setLore(List<String> lore) {
+            this.lore = lore;
+            return this;
+        }
+
+        public Builder setLore(String... lore) {
+            this.lore = Lists.newArrayList(lore);
             return this;
         }
 

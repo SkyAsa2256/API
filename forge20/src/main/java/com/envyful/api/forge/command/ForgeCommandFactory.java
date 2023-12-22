@@ -5,6 +5,7 @@ import com.envyful.api.command.CommandParser;
 import com.envyful.api.command.InjectedCommandFactory;
 import com.envyful.api.command.PlatformCommand;
 import com.envyful.api.command.exception.CommandParseException;
+import com.envyful.api.command.injector.TabCompleter;
 import com.envyful.api.command.sender.SenderTypeFactory;
 import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.forge.chat.UtilChatColour;
@@ -184,5 +185,9 @@ public class ForgeCommandFactory extends InjectedCommandFactory<CommandDispatche
     @Override
     public <C> void registerInjector(Class<C> parentClass, boolean multipleArgs, BiFunction<CommandSource, String[], C> function) {
         this.registeredInjectors.add(new ForgeFunctionInjector<>(parentClass, multipleArgs, function));
+    }
+
+    public static TabCompleter<CommandSource> tabCompleter(TabCompleter<CommandSource> completer) {
+        return completer;
     }
 }

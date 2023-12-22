@@ -32,11 +32,11 @@ public class ForgeGuiTracker {
             return;
         }
 
-        OPEN_GUIS.put(player.getUuid(), gui);
+        OPEN_GUIS.put(player.getUniqueId(), gui);
     }
 
     public static boolean inGui(EnvyPlayer<?> player) {
-        return OPEN_GUIS.containsKey(player.getUuid());
+        return OPEN_GUIS.containsKey(player.getUniqueId());
     }
 
     public static void removePlayer(EnvyPlayer<?> player) {
@@ -44,7 +44,7 @@ public class ForgeGuiTracker {
             return;
         }
 
-        OPEN_GUIS.remove(player.getUuid());
+        OPEN_GUIS.remove(player.getUniqueId());
     }
 
     public static void enqueueUpdate(EnvyPlayer<?> player) {
@@ -52,7 +52,7 @@ public class ForgeGuiTracker {
             return;
         }
 
-        REQUIRED_UPDATE.add(player.getUuid());
+        REQUIRED_UPDATE.add(player.getUniqueId());
     }
 
     public static boolean requiresUpdate(ServerPlayer player) {

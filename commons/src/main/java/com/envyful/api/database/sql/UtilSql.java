@@ -2,13 +2,18 @@ package com.envyful.api.database.sql;
 
 import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.database.Database;
+import com.envyful.api.database.SQLFunction;
 import com.google.common.collect.Lists;
+import com.mysql.cj.jdbc.Driver;
 
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import java.util.function.Function;
 
 /**
@@ -20,6 +25,19 @@ public class UtilSql {
 
     private UtilSql() {
         throw new UnsupportedOperationException("Static utility class");
+    }
+
+    /**
+     *
+     * Makes sure the MySQL JDBC driver is registered correctly
+     *
+     */
+    public static void registerDriver() {
+        try {
+            DriverManager.registerDriver(new Driver());
+        } catch (SQLException e) {
+            UtilLogger.logger().ifPresent(logger -> logger.error("Error occured when registering MySQL JDBC driver", e));
+        }
     }
 
     /**
@@ -119,12 +137,18 @@ public class UtilSql {
      * @param data The data to add
      * @return The int after running
      */
-    public static <T> List<T> executeQuery(Database database, String query, Function<ResultSet, T> converter, SqlType... data) {
+    public static <T> List<T> executeQuery(Database database, String query, SQLFunction<ResultSet, T> converter, SqlType... data) {
         try (var resultSet = executeQuery(database, query, data)) {
             List<T> convertedData = Lists.newArrayList();
             
             while (resultSet.next()) {
-                convertedData.add(converter.apply(resultSet));
+                var converted = converter.apply(resultSet);
+
+                if (converted == null) {
+                    continue;
+                }
+
+                convertedData.add(converted);
             }
             
             return convertedData;
@@ -188,7 +212,7 @@ public class UtilSql {
         private Database database;
         private String query;
         private List<SqlType> data = Lists.newArrayList();
-        private Function<ResultSet, T> converter = null;
+        private SQLFunction<ResultSet, T> converter = null;
 
         private QueryBuilder() {}
 
@@ -207,7 +231,7 @@ public class UtilSql {
             return this;
         }
 
-        public QueryBuilder<T> converter(Function<ResultSet, T> converter) {
+        public QueryBuilder<T> converter(SQLFunction<ResultSet, T> converter) {
             this.converter = converter;
             return this;
         }
@@ -238,6 +262,14 @@ public class UtilSql {
             }
 
             return executeQuery(this.database, this.query, this.converter, this.data.toArray(new SqlType[0]));
+        }
+
+        public CompletableFuture<ResultSet> executeAsync(Executor executor) {
+            return CompletableFuture.supplyAsync(this::execute, executor);
+        }
+
+        public CompletableFuture<List<T>> executeAsyncWithConverter(Executor executor) {
+            return CompletableFuture.supplyAsync(this::executeWithConverter, executor);
         }
     }
 
@@ -270,6 +302,10 @@ public class UtilSql {
             }
 
             return executeUpdate(this.database, this.query, this.data.toArray(new SqlType[0]));
+        }
+
+        public CompletableFuture<Integer> executeAsync(Executor executor) {
+            return CompletableFuture.supplyAsync(this::execute, executor);
         }
     }
 
@@ -317,6 +353,19 @@ public class UtilSql {
             }
 
             return executeBatchUpdate(this.database, this.query, this.data, this.converter);
+        }
+
+        public CompletableFuture<Integer[]> executeAsync(Executor executor) {
+            return CompletableFuture.supplyAsync(() -> {
+                var result = this.execute();
+                var converted = new Integer[result.length];
+
+                for (int i = 0; i < result.length; i++) {
+                    converted[i] = result[i];
+                }
+
+                return converted;
+            }, executor);
         }
     }
 

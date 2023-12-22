@@ -7,17 +7,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import java.lang.annotation.Annotation;
 import java.util.List;
 
-public class IntegerTabCompleter implements TabCompleter<Integer, ServerPlayerEntity> {
-
-    @Override
-    public Class<ServerPlayerEntity> getSenderClass() {
-        return ServerPlayerEntity.class;
-    }
-
-    @Override
-    public Class<Integer> getCompletedClass() {
-        return Integer.class;
-    }
+public class IntegerTabCompleter implements TabCompleter<ServerPlayerEntity> {
 
     @Override
     public List<String> getCompletions(ServerPlayerEntity sender, String[] currentData, Annotation... completionData) {
@@ -35,7 +25,7 @@ public class IntegerTabCompleter implements TabCompleter<Integer, ServerPlayerEn
         IntCompletionData data = (IntCompletionData) completionData[0];
 
         for (int i = data.min(); i <= data.max(); i++) {
-            completions.add(i + "");
+            completions.add(String.valueOf(i));
         }
 
         return completions;

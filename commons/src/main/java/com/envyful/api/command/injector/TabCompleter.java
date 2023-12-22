@@ -7,26 +7,10 @@ import java.util.List;
  *
  * An interface for handling when a specific data type needs to have tab completions.
  *
- * @param <A> represents the type of the data which will have tab completions
- * @param <B> represents the player object for the specific platform
+ * @param <A> represents the sender object for the specific platform
  */
-public interface TabCompleter<A, B> {
-
-    /**
-     *
-     * Gets the class of the sender type
-     *
-     * @return The sender type's class
-     */
-    Class<B> getSenderClass();
-
-    /**
-     *
-     * Gets the class that will have tab completions
-     *
-     * @return The class
-     */
-    Class<A> getCompletedClass();
+@FunctionalInterface
+public interface TabCompleter<A> {
 
     /**
      *
@@ -37,6 +21,6 @@ public interface TabCompleter<A, B> {
      * @param completionData The annotation provided on the tab complete
      * @return The tab completions generated
      */
-    List<String> getCompletions(B sender, String[] currentData, Annotation... completionData);
+    List<String> getCompletions(A sender, String[] currentData, Annotation... completionData);
 
 }

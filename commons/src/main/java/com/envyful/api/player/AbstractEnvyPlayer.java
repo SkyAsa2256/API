@@ -79,8 +79,8 @@ public abstract class AbstractEnvyPlayer<T> implements EnvyPlayer<T> {
     }
 
     @Override
-    public <A extends Attribute<?>> void setAttribute(A attribute) {
-        this.attributes.put(attribute.getClass(), new AttributeInstance<>(attribute));
+    public <A extends Attribute<B>, B> void setAttribute(A attribute) {
+        this.attributes.put(attribute.getClass(), new AttributeInstance<A, B>(attribute));
     }
 
     @Override

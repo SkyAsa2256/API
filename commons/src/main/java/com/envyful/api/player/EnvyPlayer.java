@@ -132,6 +132,6 @@ public interface EnvyPlayer<T> {
      * @param attribute The attribute to set
      * @param <A> The attribute type
      */
-    <A extends Attribute<?>> void setAttribute(A attribute);
+    <A extends Attribute<B>, B> void setAttribute(A attribute);
 
 }

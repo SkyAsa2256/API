@@ -1,6 +1,7 @@
 package com.envyful.api.player.attribute;
 
 import com.envyful.api.concurrency.UtilLogger;
+import com.envyful.api.database.Database;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.player.attribute.data.TableData;
@@ -31,6 +32,7 @@ public abstract class PlayerAttribute<A, B extends EnvyPlayer<C>, C, D extends P
 
     protected final transient D playerManager;
 
+    protected transient Database database;
     protected transient B parent;
 
     protected PlayerAttribute(A manager, D playerManager) {
@@ -80,10 +82,20 @@ public abstract class PlayerAttribute<A, B extends EnvyPlayer<C>, C, D extends P
 
     @Override
     public void deleteAll() {
-        this.findTargets().forEach(s -> this.playerManager.getSaveManager().delete(s));
+        this.findTargets().forEach(s -> {
+            if (this.getDatabase() == null) {
+                this.playerManager.getSaveManager().delete(s);
+            } else {
+                this.playerManager.getSaveManager().delete(this.getDatabase(), s);
+            }
+        });
     }
 
-    private List<String> findTargets() {
+    protected Database getDatabase() {
+        return this.database;
+    }
+
+    protected List<String> findTargets() {
         List<String> targets = Lists.newArrayList();
         SaveManager<?> saveManager = this.playerManager.getSaveManager();
 

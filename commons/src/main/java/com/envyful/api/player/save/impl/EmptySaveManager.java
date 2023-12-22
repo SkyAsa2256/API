@@ -103,4 +103,10 @@ public class EmptySaveManager<T> extends AbstractSaveManager<T> {
     public void saveData(UUID uuid, Attribute<?> attribute) {
         attribute.getId(uuid).whenComplete((o, throwable) -> attribute.saveWithGenericId(o));
     }
+
+    @Override
+    public boolean delete(String name) {
+        UtilLogger.logger().ifPresent(logger -> logger.error("Cannot delete data for {} as no save manager is registered", name));
+        return false;
+    }
 }

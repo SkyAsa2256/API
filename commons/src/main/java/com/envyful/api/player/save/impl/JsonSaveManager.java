@@ -192,4 +192,16 @@ public class JsonSaveManager<T> extends AbstractSaveManager<T> {
         this.attributeDirectories.put(attribute, dataDirectory.value());
         super.registerAttribute(attribute);
     }
+
+    @Override
+    public boolean delete(String name) {
+        try {
+            Files.delete(Paths.get(name));
+            return true;
+        } catch (IOException e) {
+            UtilLogger.logger().ifPresent(logger -> logger.error("Error deleting file " + name, e));
+        }
+
+        return false;
+    }
 }

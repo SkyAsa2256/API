@@ -80,4 +80,15 @@ public interface SaveManager<T> {
      */
     CompletableFuture<List<Attribute<?>>> loadData(UUID uuid);
 
+    /**
+     *
+     * Deletes all player data at the given location
+     * <br>
+     * For example, in the {@link com.envyful.api.player.save.impl.SQLSaveManager} this would be the table name
+     *
+     * @param name The location to delete the data from
+     * @return If the data was successfully deleted
+     */
+    boolean delete(String name);
+
 }

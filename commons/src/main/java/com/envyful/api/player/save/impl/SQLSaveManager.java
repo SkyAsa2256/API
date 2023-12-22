@@ -16,6 +16,12 @@ public class SQLSaveManager<T> extends EmptySaveManager<T> {
     }
 
     @Override
+    public boolean delete(Database database, String name) {
+        UtilSql.update(database).query("DELETE FROM ?;").data(SqlType.text(name)).executeAsync();
+        return true;
+    }
+
+    @Override
     public boolean delete(String name) {
         UtilSql.update(this.database).query("DELETE FROM ?;").data(SqlType.text(name)).executeAsync();
         return true;

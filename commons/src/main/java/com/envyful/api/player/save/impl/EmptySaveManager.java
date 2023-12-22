@@ -2,6 +2,7 @@ package com.envyful.api.player.save.impl;
 
 import com.envyful.api.concurrency.UtilConcurrency;
 import com.envyful.api.concurrency.UtilLogger;
+import com.envyful.api.database.Database;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.player.attribute.Attribute;
 import com.envyful.api.player.save.AbstractSaveManager;
@@ -107,6 +108,11 @@ public class EmptySaveManager<T> extends AbstractSaveManager<T> {
     @Override
     public boolean delete(String name) {
         UtilLogger.logger().ifPresent(logger -> logger.error("Cannot delete data for {} as no save manager is registered", name));
+        return false;
+    }
+
+    @Override
+    public boolean delete(Database database, String name) {
         return false;
     }
 }

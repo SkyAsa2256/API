@@ -1,5 +1,6 @@
 package com.envyful.api.player.save;
 
+import com.envyful.api.database.Database;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.attribute.Attribute;
 
@@ -79,6 +80,18 @@ public interface SaveManager<T> {
      * @return All successfully loaded attributes
      */
     CompletableFuture<List<Attribute<?>>> loadData(UUID uuid);
+
+    /**
+     *
+     * Deletes all player data at the given location using the given database
+     * <br>
+     * For example, in the {@link com.envyful.api.player.save.impl.SQLSaveManager} this would be the table name
+     *
+     * @param database The database to delete the data from
+     * @param name The location to delete the data from
+     * @return If the data was successfully deleted
+     */
+    boolean delete(Database database, String name);
 
     /**
      *

@@ -37,4 +37,6 @@ public interface Attribute<A> {
 
     void save(A id);
 
+    void deleteAll();
+
 }

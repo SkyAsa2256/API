@@ -127,7 +127,7 @@ public class SpigotPlayerManager implements PlayerManager<SpigotEnvyPlayer, Play
             this.manager.cachedPlayers.put(event.getUniqueId(), player);
 
             UtilConcurrency.runAsync(() -> {
-                this.manager.saveManager.loadData(player).whenComplete((attributes, throwable) -> {
+                this.manager.saveManager.loadData(player).whenCompleteAsync((attributes, throwable) -> {
                     if (throwable != null) {
                         UtilLogger.logger().ifPresent(logger -> logger.error("Error loading data for " + player.getUniqueId() + " " + player.getName(), throwable));
                         return;
@@ -143,7 +143,7 @@ public class SpigotPlayerManager implements PlayerManager<SpigotEnvyPlayer, Play
 
                         player.setAttribute(attribute);
                     }
-                });
+                }, UtilConcurrency.SCHEDULED_EXECUTOR_SERVICE);
             });
         }
 

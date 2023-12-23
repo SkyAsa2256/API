@@ -39,7 +39,7 @@ public class EmptySaveManager<T> extends AbstractSaveManager<T> {
 
             Attribute<?> attribute = value.getConstructor().get();
 
-            loadTasks.add(attribute.getId(uuid).thenApply(o -> {
+            loadTasks.add(attribute.getId(uuid).thenApplyAsync(o -> {
                 if (o == null) {
                     return null;
                 }
@@ -58,7 +58,7 @@ public class EmptySaveManager<T> extends AbstractSaveManager<T> {
                     attribute.loadWithGenericId(o);
                     return attribute;
                 }
-            }).whenComplete((loaded, throwable) -> {
+            }, UtilConcurrency.SCHEDULED_EXECUTOR_SERVICE).whenComplete((loaded, throwable) -> {
                 if (loaded != null) {
                     attributes.add(loaded);
                 } else if (throwable != null) {

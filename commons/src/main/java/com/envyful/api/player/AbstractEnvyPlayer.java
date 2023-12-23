@@ -62,7 +62,13 @@ public abstract class AbstractEnvyPlayer<T> implements EnvyPlayer<T> {
 
     @Override
     public <A extends Attribute<B>, B> A getAttributeNow(Class<A> attributeClass) {
-        return this.getAttribute(attributeClass).join();
+        var future = this.getAttribute(attributeClass);
+
+        if (future == null) {
+            return null;
+        }
+
+        return future.join();
     }
 
     @Override
@@ -80,7 +86,7 @@ public abstract class AbstractEnvyPlayer<T> implements EnvyPlayer<T> {
 
     @Override
     public <A extends Attribute<B>, B> void setAttribute(A attribute) {
-        this.attributes.put(attribute.getClass(), new AttributeInstance<A, B>(attribute));
+        this.attributes.put(attribute.getClass(), new AttributeInstance<>(attribute));
     }
 
     @Override

@@ -1,13 +1,14 @@
 package com.envyful.api.spigot.player.util;
 
+import com.envyful.api.platform.PlatformProxy;
 import com.envyful.api.spigot.player.SpigotEnvyPlayer;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -72,7 +73,9 @@ public class UtilPlayer {
      * @param player       The player
      * @param message      The message to send
      * @param placeholders The placeholders to use
+     * @deprecated Use {@link PlatformProxy#sendMessage(Object, Collection, Placeholder...)} instead
      */
+    @Deprecated
     public static void sendMessage(SpigotEnvyPlayer player, List<String> message, Placeholder... placeholders) {
         sendMessage(player.getParent(), message, placeholders);
     }
@@ -85,12 +88,10 @@ public class UtilPlayer {
      * @param player The player
      * @param message The message to send
      * @param placeholders The placeholders to use
+     * @deprecated Use {@link PlatformProxy#sendMessage(Object, Collection, Placeholder...)} instead
      */
+    @Deprecated
     public static void sendMessage(CommandSender player, List<String> message, Placeholder... placeholders) {
-        message = PlaceholderFactory.handlePlaceholders(message, placeholders);
-
-        for (String s : message) {
-            player.sendMessage(MiniMessage.miniMessage().deserialize(s));
-        }
+        PlatformProxy.sendMessage(player, message, placeholders);
     }
 }

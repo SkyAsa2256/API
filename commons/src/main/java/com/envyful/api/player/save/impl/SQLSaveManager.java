@@ -1,7 +1,6 @@
 package com.envyful.api.player.save.impl;
 
 import com.envyful.api.database.Database;
-import com.envyful.api.database.sql.SqlType;
 import com.envyful.api.database.sql.UtilSql;
 import com.envyful.api.player.PlayerManager;
 
@@ -17,13 +16,13 @@ public class SQLSaveManager<T> extends EmptySaveManager<T> {
 
     @Override
     public boolean delete(Database database, String name) {
-        UtilSql.update(database).query("DELETE FROM ?;").data(SqlType.text(name)).executeAsync();
+        UtilSql.update(database).query("DELETE FROM " + name + ";").executeAsync();
         return true;
     }
 
     @Override
     public boolean delete(String name) {
-        UtilSql.update(this.database).query("DELETE FROM ?;").data(SqlType.text(name)).executeAsync();
+        UtilSql.update(this.database).query("DELETE FROM " + name + ";").executeAsync();
         return true;
     }
 }

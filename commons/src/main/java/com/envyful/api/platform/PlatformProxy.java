@@ -1,7 +1,9 @@
 package com.envyful.api.platform;
 
 import com.envyful.api.concurrency.UtilLogger;
+import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.text.Placeholder;
+import com.google.common.collect.Lists;
 
 import java.util.Collection;
 
@@ -20,6 +22,35 @@ public class PlatformProxy {
         }
 
         handler.broadcastMessage(message, placeholders);
+    }
+
+    public static void sendMessage(EnvyPlayer<?> player, String... message) {
+        sendMessage(player.getParent(), Lists.newArrayList(message));
+    }
+
+    public static void sendMessage(Object player, String... message) {
+        sendMessage(player, Lists.newArrayList(message));
+    }
+
+    public static void sendMessage(EnvyPlayer<?> player, String message, Placeholder... placeholders) {
+        sendMessage(player.getParent(), message, placeholders);
+    }
+
+    public static void sendMessage(Object player, String message, Placeholder... placeholders) {
+        sendMessage(player, Lists.newArrayList(message), placeholders);
+    }
+
+    public static void sendMessage(EnvyPlayer<?> player, Collection<String> message, Placeholder... placeholders) {
+        sendMessage(player.getParent(), message, placeholders);
+    }
+
+    public static void sendMessage(Object player, Collection<String> message, Placeholder... placeholders) {
+        if (handler == null) {
+            UtilLogger.logger().ifPresent(logger -> logger.error("No platform handler set but sendMessage was called"));
+            return;
+        }
+
+        handler.sendMessage(player, message, placeholders);
     }
 
     public static void runSync(Runnable runnable) {

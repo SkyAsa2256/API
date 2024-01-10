@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class EmptySaveManager<T> extends AbstractSaveManager<T> {
 
@@ -26,7 +27,7 @@ public class EmptySaveManager<T> extends AbstractSaveManager<T> {
             return CompletableFuture.completedFuture(Collections.emptyList());
         }
 
-        List<Attribute<?>> attributes = Lists.newArrayList();
+        List<Attribute<?>> attributes = new CopyOnWriteArrayList<>();
         List<CompletableFuture<Attribute<?>>> loadTasks = Lists.newArrayList();
 
         for (Map.Entry<Class<? extends Attribute<?>>, AttributeData<?, ?>> entry : this.registeredAttributes.entrySet()) {
@@ -41,6 +42,7 @@ public class EmptySaveManager<T> extends AbstractSaveManager<T> {
 
             loadTasks.add(attribute.getId(uuid).thenApplyAsync(o -> {
                 if (o == null) {
+                    UtilLogger.logger().ifPresent(logger -> logger.error("Failed to find for {}", entry.getKey().getName()));
                     return null;
                 }
 
@@ -60,9 +62,12 @@ public class EmptySaveManager<T> extends AbstractSaveManager<T> {
                 }
             }, UtilConcurrency.SCHEDULED_EXECUTOR_SERVICE).whenComplete((loaded, throwable) -> {
                 if (loaded != null) {
+                    UtilLogger.logger().ifPresent(logger -> logger.error("Adding loaded attribute for {}", entry.getKey().getName()));
                     attributes.add(loaded);
                 } else if (throwable != null) {
                     UtilLogger.logger().ifPresent(logger -> logger.error("Error when loading attribute data for " + entry.getKey().getName(), throwable));
+                } else {
+                    UtilLogger.logger().ifPresent(logger -> logger.error("There was an error because no attribute was loaded but there was no error reported"));
                 }
             }));
         }

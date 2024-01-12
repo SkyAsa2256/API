@@ -106,7 +106,11 @@ public class EmptySaveManager<T> extends AbstractSaveManager<T> {
 
     @Override
     public void saveData(UUID uuid, Attribute<?> attribute) {
-        attribute.getId(uuid).whenComplete((o, throwable) -> attribute.saveWithGenericId(o));
+        attribute.getId(uuid).whenComplete((o, throwable) -> attribute.saveWithGenericId(o))
+                .exceptionally(throwable -> {
+                    UtilLogger.logger().ifPresent(logger -> logger.error("Error when saving attribute data for " + attribute.getClass().getName(), throwable));
+                    return null;
+                });
     }
 
     @Override

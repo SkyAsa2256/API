@@ -1,9 +1,12 @@
 package com.envyful.api.text;
 
+import com.envyful.api.text.parse.MultiPlaceholder;
 import com.envyful.api.text.parse.SimplePlaceholder;
 import com.envyful.api.text.placeholder.OptionalPlaceholder;
 
 import javax.annotation.Nonnull;
+import java.util.Collections;
+import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.UnaryOperator;
 
@@ -34,6 +37,36 @@ public interface Placeholder {
      */
     static Placeholder simple(UnaryOperator<String> replacer) {
         return (SimplePlaceholder) replacer::apply;
+    }
+
+    /**
+     *
+     * Gets a simple placeholder instance for the given key and result
+     *
+     * @param key The key to replace in the text
+     * @param result The result to replace the key with
+     * @return The placeholder instance
+     */
+    static Placeholder simple(String key, String result) {
+        return simple(s -> s.replace(key, result));
+    }
+
+    /**
+     *
+     * Creates a placeholder that matches the key and then returns the given result
+     *
+     * @param key The key to match
+     * @param result The result to return
+     * @return The placeholder instance
+     */
+    static Placeholder multiLine(String key, List<String> result) {
+        return (MultiPlaceholder) s -> {
+            if (s.equals(key)) {
+                return result;
+            }
+
+            return Collections.singletonList(s);
+        };
     }
 
     /**

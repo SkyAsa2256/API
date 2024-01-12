@@ -62,7 +62,6 @@ public class EmptySaveManager<T> extends AbstractSaveManager<T> {
                 }
             }, UtilConcurrency.SCHEDULED_EXECUTOR_SERVICE).whenComplete((loaded, throwable) -> {
                 if (loaded != null) {
-                    UtilLogger.logger().ifPresent(logger -> logger.error("Adding loaded attribute for {}", entry.getKey().getName()));
                     attributes.add(loaded);
                 } else if (throwable != null) {
                     UtilLogger.logger().ifPresent(logger -> logger.error("Error when loading attribute data for " + entry.getKey().getName(), throwable));

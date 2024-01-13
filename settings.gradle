@@ -16,11 +16,8 @@ plugins {
 
 rootProject.name = 'EnvyAPI'
 include 'commons'
-//include 'forge'
 include 'forge16'
-include 'forge19'
 include 'forge20'
-//include 'reforged'
 include 'reforged16'
 include 'reforged20'
 include 'discord'

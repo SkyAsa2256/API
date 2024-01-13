@@ -15,6 +15,7 @@ import com.envyful.api.forge.command.command.sender.ForgePlayerSenderType;
 import com.envyful.api.forge.command.completion.number.IntegerTabCompleter;
 import com.envyful.api.forge.command.completion.player.PlayerTabCompleter;
 import com.envyful.api.forge.command.injector.ForgeFunctionInjector;
+import com.envyful.api.forge.command.parser.ForgeAnnotationCommandParser;
 import com.envyful.api.forge.player.ForgeEnvyPlayer;
 import com.envyful.api.forge.player.ForgePlayerManager;
 import com.envyful.api.forge.player.util.UtilPlayer;
@@ -47,6 +48,14 @@ import java.util.function.Function;
  *
  */
 public class ForgeCommandFactory extends InjectedCommandFactory<CommandDispatcher<CommandSource>, ICommandSource> {
+
+    public ForgeCommandFactory(ForgePlayerManager playerManager) {
+        this(ForgeAnnotationCommandParser::new, playerManager);
+    }
+
+    public ForgeCommandFactory() {
+        this(ForgeAnnotationCommandParser::new);
+    }
 
     public ForgeCommandFactory(
             Function<InjectedCommandFactory<CommandDispatcher<CommandSource>, ICommandSource>, ? extends CommandParser<? extends PlatformCommand<ICommandSource>, ICommandSource>> commandParser) {

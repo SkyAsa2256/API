@@ -49,7 +49,7 @@ import java.util.function.Function;
 public class ForgeCommandFactory extends InjectedCommandFactory<CommandDispatcher<CommandSourceStack>, CommandSource> {
 
     public ForgeCommandFactory(
-            Function<InjectedCommandFactory<CommandDispatcher<CommandSourceStack>, CommandSource>, CommandParser<PlatformCommand<CommandSource>, CommandSource>> commandParser) {
+            Function<InjectedCommandFactory<CommandDispatcher<CommandSourceStack>, CommandSource>, ? extends CommandParser<? extends PlatformCommand<CommandSource>, CommandSource>> commandParser) {
         this(commandParser, null);
     }
 

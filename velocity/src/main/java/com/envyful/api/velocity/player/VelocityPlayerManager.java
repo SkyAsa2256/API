@@ -127,6 +127,11 @@ public class VelocityPlayerManager implements PlayerManager<VelocityEnvyPlayer, 
 
             UtilConcurrency.runAsync(() -> {
                 this.manager.saveManager.loadData(player).whenComplete((attributes, throwable) -> {
+                    if (throwable != null) {
+                        this.manager.saveManager.getErrorHandler().accept(player, throwable);
+                        return;
+                    }
+
                     for (PlayerAttributeData attributeDatum : this.manager.attributeData) {
                         Attribute<?> attribute = this.findAttribute(attributeDatum, attributes);
 

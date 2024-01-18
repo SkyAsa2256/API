@@ -7,6 +7,7 @@ import com.envyful.api.player.attribute.Attribute;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.BiConsumer;
 
 /**
  *
@@ -23,6 +24,34 @@ public interface SaveManager<T> {
      * @param attribute The class of the attribute being registered
      */
     void registerAttribute(Class<? extends Attribute<?>> attribute);
+
+    /**
+     *
+     * Gets the error handler set for the save manager.
+     * <br>
+     * The error handler is used exclusively for when an error occurs
+     * during the loading of an attribute.
+     * <br>
+     * The default error logger will always just log the error directly to
+     * {@link com.envyful.api.concurrency.UtilLogger} and then return
+     *
+     * @return The error handler
+     */
+    BiConsumer<EnvyPlayer<?>, Throwable> getErrorHandler();
+
+    /**
+     *
+     * Sets the error handler for the save manager.
+     * <br>
+     * The error handler is used exclusively for when an error occurs
+     * during the loading of an attribute.
+     * <br>
+     * The default error logger will always just log the error directly to
+     * {@link com.envyful.api.concurrency.UtilLogger} and then return
+     *
+     * @param errorHandler The new error handler
+     */
+    void setErrorHandler(BiConsumer<EnvyPlayer<?>, Throwable> errorHandler);
 
     /**
      *

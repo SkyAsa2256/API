@@ -142,6 +142,17 @@ public class UtilTimeFormat {
         long timeUntil = timeMillis - System.currentTimeMillis();
         Duration duration = Duration.ofMillis(timeUntil);
 
+        var days = duration.get(ChronoUnit.SECONDS) / (60 * 60 * 24);
+
+        if (days > 0) {
+            return String.format("%d day(s) %02d hour(s) %02d minute(s) and %02d second(s)",
+                    days,
+                    (duration.get(ChronoUnit.SECONDS) / (60 * 60)) % 24,
+                    (duration.get(ChronoUnit.SECONDS) / 60) % 60,
+                    duration.get(ChronoUnit.SECONDS) % 60
+            );
+        }
+
         return String.format("%d hour(s) %02d minute(s) and %02d second(s)",
                 duration.get(ChronoUnit.SECONDS) / (60 * 60),
                 (duration.get(ChronoUnit.SECONDS) / 60) % 60,

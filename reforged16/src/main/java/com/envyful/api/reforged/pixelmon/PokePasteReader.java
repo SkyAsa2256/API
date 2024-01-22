@@ -1,5 +1,6 @@
 package com.envyful.api.reforged.pixelmon;
 
+import com.envyful.api.concurrency.UtilLogger;
 import com.google.common.collect.Lists;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.pokemon.export.PokemonConverterFactory;
@@ -13,6 +14,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ *
+ * Reads a PokePaste format and converts it to a list of Pokemon
+ * <br>
+ * Can read from a URL or a file
+ *
+ */
 public class PokePasteReader {
 
     private final BufferedReader reader;
@@ -21,6 +29,15 @@ public class PokePasteReader {
         this.reader = reader;
     }
 
+    /**
+     *
+     * Reads the lines from the input source and converts them to a list of Pokemon
+     * <br>
+     * Warning: This method does not cache the result
+     * and closes the reader after reading all the lines
+     *
+     * @return
+     */
     public List<Pokemon> build() {
         List<String> lines = Lists.newArrayList();
         String currentLine;
@@ -34,7 +51,7 @@ public class PokePasteReader {
         try {
             return PokemonConverterFactory.importText(lines);
         } catch (PokemonImportException e) {
-            e.printStackTrace();
+            UtilLogger.logger().ifPresent(logger -> logger.error("Failed to import pokemon from PokePaste", e));
         }
 
         return Collections.emptyList();
@@ -44,7 +61,7 @@ public class PokePasteReader {
         try {
             this.reader.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            UtilLogger.logger().ifPresent(logger -> logger.error("Failed to import pokemon from PokePaste", e));
         }
     }
 
@@ -52,12 +69,19 @@ public class PokePasteReader {
         try {
             return reader.readLine();
         } catch (IOException e) {
-            e.printStackTrace();
+            UtilLogger.logger().ifPresent(logger -> logger.error("Failed to import pokemon from PokePaste", e));
         }
 
         return null;
     }
 
+    /**
+     *
+     * Creates a new PokePasteReader from a PokePaste URL
+     *
+     * @param paste The PokePaste URL
+     * @return The PokePasteReader
+     */
     public static PokePasteReader from(String paste) {
         URL url = getPokePasteURL(paste);
 
@@ -82,7 +106,7 @@ public class PokePasteReader {
         try {
             return new URL(paste);
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            UtilLogger.logger().ifPresent(logger -> logger.error("Failed to import pokemon from PokePaste", e));
         }
 
         return null;
@@ -92,12 +116,19 @@ public class PokePasteReader {
         try {
             return url.openStream();
         } catch (IOException e) {
-            e.printStackTrace();
+            UtilLogger.logger().ifPresent(logger -> logger.error("Failed to import pokemon from PokePaste", e));
         }
 
         return null;
     }
 
+    /**
+     *
+     * Creates a new PokePasteReader from a file
+     *
+     * @param file The file
+     * @return The PokePasteReader
+     */
     public static PokePasteReader from(File file) {
         if(file == null) {
             return null;
@@ -116,7 +147,7 @@ public class PokePasteReader {
         try {
             return new FileInputStream(file);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            UtilLogger.logger().ifPresent(logger -> logger.error("Failed to import pokemon from PokePaste", e));
         }
 
         return null;

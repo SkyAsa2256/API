@@ -21,7 +21,7 @@ public interface ParseResult {
      *
      * The result of trying to parse the text
      *
-     * @return
+     * @return The result
      */
     List<String> getCurrentResult();
 

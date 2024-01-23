@@ -70,7 +70,13 @@ public class ConfigRewardPool<T extends ConfigReward> extends AbstractYamlConfig
 
         protected Builder() {}
 
+        @Deprecated(since = "5.8.5", forRemoval = true)
         public Builder<A> gauranteedReward(A reward) {
+            this.guaranteedReward = reward;
+            return this;
+        }
+
+        public Builder<A> guaranteedReward(A reward) {
             this.guaranteedReward = reward;
             return this;
         }

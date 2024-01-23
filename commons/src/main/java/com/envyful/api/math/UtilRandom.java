@@ -128,4 +128,15 @@ public class UtilRandom {
                 .map(AbstractMap.SimpleEntry::getKey)
                 .orElse(defaultValue);
     }
+
+    /**
+     *
+     * Generates a random number between 0 and 1 and checks if it is less than or equal to the chance.
+     *
+     * @param chance A value between 0 and 1
+     * @return True if the random number is less than or equal to the chance
+     */
+    public static boolean chance(double chance) {
+        return ThreadLocalRandom.current().nextDouble() <= chance;
+    }
 }

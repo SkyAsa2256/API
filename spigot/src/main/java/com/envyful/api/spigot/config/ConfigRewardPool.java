@@ -16,21 +16,15 @@ public class ConfigRewardPool<T extends ConfigReward> extends AbstractYamlConfig
     private T guaranteedReward;
     private int rewardRollsMin;
     private int rewardRollsMax;
+    private double chanceOfAdditionalRewards = 1.0;
     private ConfigRandomWeightedSet<T> rewards;
-
-    @Deprecated
-    private ConfigRewardPool(T guaranteedReward, int rewardRollsMin, int rewardRollsMax, ConfigRandomWeightedSet<T> rewards) {
-        this.guaranteedReward = guaranteedReward;
-        this.rewardRollsMin = rewardRollsMin;
-        this.rewardRollsMax = rewardRollsMax;
-        this.rewards = rewards;
-    }
 
     protected ConfigRewardPool(Builder<T> builder) {
         this.guaranteedReward = builder.guaranteedReward;
         this.rewardRollsMin = builder.rewardRollsMin;
         this.rewardRollsMax = builder.rewardRollsMax;
         this.rewards = builder.rewards;
+        this.chanceOfAdditionalRewards = builder.chanceOfAdditionalRewards;
     }
 
     public ConfigRewardPool() {
@@ -39,8 +33,10 @@ public class ConfigRewardPool<T extends ConfigReward> extends AbstractYamlConfig
     public List<T> getRandomRewards() {
         List<T> randomlySelectedRewards = Lists.newArrayList();
 
-        for (int i = 0; i < UtilRandom.randomInteger(this.rewardRollsMin, this.rewardRollsMax); i++) {
-            randomlySelectedRewards.add(this.rewards.getRandom());
+        if (UtilRandom.chance(this.chanceOfAdditionalRewards)) {
+            for (int i = 0; i < UtilRandom.randomInteger(this.rewardRollsMin, this.rewardRollsMax); i++) {
+                randomlySelectedRewards.add(this.rewards.getRandom());
+            }
         }
 
         if (this.guaranteedReward != null) {
@@ -69,6 +65,7 @@ public class ConfigRewardPool<T extends ConfigReward> extends AbstractYamlConfig
         private A guaranteedReward;
         private int rewardRollsMin;
         private int rewardRollsMax;
+        private double chanceOfAdditionalRewards = 1.0;
         private ConfigRandomWeightedSet<A> rewards;
 
         protected Builder() {}
@@ -90,6 +87,11 @@ public class ConfigRewardPool<T extends ConfigReward> extends AbstractYamlConfig
 
         public Builder<A> rewards(ConfigRandomWeightedSet<A> rewards) {
             this.rewards = rewards;
+            return this;
+        }
+
+        public Builder<A> chanceOfAdditionalRewards(double chanceOfAdditionalRewards) {
+            this.chanceOfAdditionalRewards = chanceOfAdditionalRewards;
             return this;
         }
 

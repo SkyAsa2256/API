@@ -25,8 +25,9 @@ public class UtilChatColour {
 
     public static List<ITextComponent> colour(Collection<String> text, Placeholder... placeholders) {
         List<ITextComponent> components = Lists.newArrayList();
+        List<String> lines = PlaceholderFactory.handlePlaceholders(Lists.newArrayList(text), placeholders);
 
-        for (String line : text) {
+        for (String line : lines) {
             components.add(colour(line, placeholders));
         }
 

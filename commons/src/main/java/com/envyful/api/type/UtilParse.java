@@ -22,29 +22,6 @@ public class UtilParse {
      *
      * @param arg The arg to parse
      * @return The potential parsed integer
-     * @deprecated Use {@link UtilParse#parseInt(String)}
-     */
-    @Deprecated
-    public static Optional<Integer> parseInteger(String arg) {
-        if (arg == null) {
-            return Optional.empty();
-        }
-
-        Matcher matcher = INT_PATTERN.matcher(arg);
-
-        if (!matcher.matches()) {
-            return Optional.empty();
-        }
-
-        return Optional.of(Integer.parseInt(arg));
-    }
-
-    /**
-     *
-     * Parses the arg to an integer
-     *
-     * @param arg The arg to parse
-     * @return The potential parsed integer
      */
     public static OptionalInt parseInt(String arg) {
         if (arg == null) {

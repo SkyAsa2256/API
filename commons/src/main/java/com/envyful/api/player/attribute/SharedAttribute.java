@@ -2,7 +2,6 @@ package com.envyful.api.player.attribute;
 
 import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.database.Database;
-import com.envyful.api.player.PlayerManager;
 import com.envyful.api.player.attribute.data.TableData;
 import com.envyful.api.player.save.SaveManager;
 import com.envyful.api.player.save.attribute.DataDirectory;
@@ -25,16 +24,13 @@ import java.util.concurrent.TimeUnit;
  */
 public abstract class SharedAttribute<A, B> extends ManagedAttribute<A, B> {
 
-    protected final transient PlayerManager<?, ?> playerManager;
-
     protected A id;
-    protected long lastSave = -1L;
-    protected Database database;
 
-    protected SharedAttribute(B manager, PlayerManager<?, ?> playerManager) {
+    protected transient long lastSave = -1L;
+    protected transient Database database;
+
+    protected SharedAttribute(B manager) {
         super(manager);
-
-        this.playerManager = playerManager;
     }
 
     @Override
@@ -77,12 +73,12 @@ public abstract class SharedAttribute<A, B> extends ManagedAttribute<A, B> {
     }
 
     @Override
-    public void deleteAll() {
-        this.findTargets().forEach(s -> {
+    public void deleteAll(SaveManager<?> saveManager) {
+        this.findTargets(saveManager).forEach(s -> {
             if (this.getDatabase() == null) {
-                this.playerManager.getSaveManager().delete(s);
+                saveManager.delete(s);
             } else {
-                this.playerManager.getSaveManager().delete(this.getDatabase(), s);
+                saveManager.delete(this.getDatabase(), s);
             }
         });
     }
@@ -91,9 +87,8 @@ public abstract class SharedAttribute<A, B> extends ManagedAttribute<A, B> {
         return this.database;
     }
 
-    protected List<String> findTargets() {
+    protected List<String> findTargets(SaveManager<?> saveManager) {
         List<String> targets = Lists.newArrayList();
-        SaveManager<?> saveManager = this.playerManager.getSaveManager();
 
         if (saveManager instanceof SQLSaveManager) {
             TableData tableData = this.getClass().getAnnotation(TableData.class);

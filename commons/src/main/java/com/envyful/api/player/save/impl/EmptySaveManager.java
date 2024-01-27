@@ -5,6 +5,7 @@ import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.database.Database;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.player.attribute.Attribute;
+import com.envyful.api.player.attribute.PlayerAttribute;
 import com.envyful.api.player.save.AbstractSaveManager;
 import com.google.common.collect.Lists;
 
@@ -44,6 +45,10 @@ public class EmptySaveManager<T> extends AbstractSaveManager<T> {
                 if (o == null) {
                     UtilLogger.logger().ifPresent(logger -> logger.error("Failed to find for {}", entry.getKey().getName()));
                     return null;
+                }
+
+                if(attribute instanceof PlayerAttribute) {
+                    ((PlayerAttribute) attribute).setParent(this.playerManager.getPlayer(uuid));
                 }
 
                 if (attribute.isShared()) {

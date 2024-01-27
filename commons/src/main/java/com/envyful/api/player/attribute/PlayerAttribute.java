@@ -3,7 +3,6 @@ package com.envyful.api.player.attribute;
 import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.database.Database;
 import com.envyful.api.player.EnvyPlayer;
-import com.envyful.api.player.PlayerManager;
 import com.envyful.api.player.attribute.data.TableData;
 import com.envyful.api.player.save.SaveManager;
 import com.envyful.api.player.save.attribute.DataDirectory;
@@ -25,20 +24,15 @@ import java.util.concurrent.CompletableFuture;
  * @param <A> The manager type
  * @param <B> The API's player type
  * @param <C> The platform's player type
- * @param <D> The player manager's type
  */
-public abstract class PlayerAttribute<A, B extends EnvyPlayer<C>, C, D extends PlayerManager<B, C>>
+public abstract class PlayerAttribute<A, B extends EnvyPlayer<C>, C>
         extends ManagedAttribute<UUID, A> {
-
-    protected final transient D playerManager;
 
     protected transient Database database;
     protected transient B parent;
 
-    protected PlayerAttribute(A manager, D playerManager) {
+    protected PlayerAttribute(A manager) {
         super(manager);
-
-        this.playerManager = playerManager;
     }
 
     public void setParent(B parent) {
@@ -74,18 +68,17 @@ public abstract class PlayerAttribute<A, B extends EnvyPlayer<C>, C, D extends P
     @Override
     public void load(UUID id) {
         this.id = id;
-        this.parent = this.playerManager.getPlayer(this.id);
 
         this.load();
     }
 
     @Override
-    public void deleteAll() {
-        this.findTargets().forEach(s -> {
+    public void deleteAll(SaveManager<?> saveManager) {
+        this.findTargets(saveManager).forEach(s -> {
             if (this.getDatabase() == null) {
-                this.playerManager.getSaveManager().delete(s);
+                saveManager.delete(s);
             } else {
-                this.playerManager.getSaveManager().delete(this.getDatabase(), s);
+                saveManager.delete(this.getDatabase(), s);
             }
         });
     }
@@ -94,9 +87,8 @@ public abstract class PlayerAttribute<A, B extends EnvyPlayer<C>, C, D extends P
         return this.database;
     }
 
-    protected List<String> findTargets() {
+    protected List<String> findTargets(SaveManager<?> saveManager) {
         List<String> targets = Lists.newArrayList();
-        SaveManager<?> saveManager = this.playerManager.getSaveManager();
 
         if (saveManager instanceof SQLSaveManager) {
             TableData tableData = this.getClass().getAnnotation(TableData.class);

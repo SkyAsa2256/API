@@ -51,11 +51,11 @@ public abstract class AbstractSaveManager<T> implements SaveManager<T> {
 
     private Supplier<Attribute<?>> getAttributeConstructor(Class<? extends Attribute<?>> clazz) {
         try {
-            Constructor<? extends Attribute<?>> constructor = clazz.getConstructor(this.playerManager.getClass());
+            Constructor<? extends Attribute<?>> constructor = clazz.getConstructor();
 
             return () -> {
                 try {
-                    return constructor.newInstance(this.playerManager);
+                    return constructor.newInstance();
                 } catch (InstantiationException |
                          IllegalAccessException |
                         IllegalArgumentException |

@@ -1,5 +1,7 @@
 package com.envyful.api.player.attribute;
 
+import com.envyful.api.player.save.SaveManager;
+
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -37,6 +39,6 @@ public interface Attribute<A> {
 
     void save(A id);
 
-    void deleteAll();
+    void deleteAll(SaveManager<?> saveManager);
 
 }

@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 
 public class JsonSaveManager<T> extends AbstractSaveManager<T> {
 
@@ -171,7 +172,7 @@ public class JsonSaveManager<T> extends AbstractSaveManager<T> {
     }
 
     @Override
-    public void registerAttribute(Class<? extends Attribute<?>> attribute) {
+    public <A extends Attribute<B>, B> void registerAttribute(Class<A> attribute, Supplier<A> constructor) {
         DataDirectory dataDirectory = attribute.getAnnotation(DataDirectory.class);
 
         if (dataDirectory == null) {
@@ -191,7 +192,7 @@ public class JsonSaveManager<T> extends AbstractSaveManager<T> {
         }
 
         this.attributeDirectories.put(attribute, dataDirectory.value());
-        super.registerAttribute(attribute);
+        super.registerAttribute(attribute, constructor);
     }
 
     @Override

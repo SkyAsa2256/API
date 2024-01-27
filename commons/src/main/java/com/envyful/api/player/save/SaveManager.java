@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 
 /**
  *
@@ -22,8 +23,11 @@ public interface SaveManager<T> {
      * Registers an attribute for how this class should handle saving and loading
      *
      * @param attribute The class of the attribute being registered
+     * @param constructor The constructor for the attribute
+     * @param <A> The attribute type
+     * @param <B> The id type
      */
-    void registerAttribute(Class<? extends Attribute<?>> attribute);
+    <A extends Attribute<B>, B> void registerAttribute(Class<A> attribute, Supplier<A> constructor);
 
     /**
      *
@@ -57,7 +61,7 @@ public interface SaveManager<T> {
      *
      * Saves the player's data from the given attribute
      * This will call {@link Attribute#saveWithGenericId(Object)}} if this class has not been registered using
-     * {@link SaveManager#registerAttribute(Class)}
+     * {@link SaveManager#registerAttribute(Class, Supplier)}
      *
      *
      * @param player The player whose data is being saved
@@ -79,7 +83,7 @@ public interface SaveManager<T> {
     /**
      *
      * Load the player's data for all registered {@link Attribute} using
-     * {@link SaveManager#registerAttribute(Class)}
+     * {@link SaveManager#registerAttribute(Class, Supplier)}
      *
      * @param player The player whose data is being loaded
      * @return All successfully loaded attributes
@@ -103,7 +107,7 @@ public interface SaveManager<T> {
     /**
      *
      * Load the player's data for all registered {@link Attribute}
-     * using {@link SaveManager#registerAttribute(Class)}
+     * using {@link SaveManager#registerAttribute(Class, Supplier)}
      *
      * @param uuid The offline player's UUID
      * @return All successfully loaded attributes

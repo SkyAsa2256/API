@@ -6,6 +6,7 @@ import com.envyful.api.player.save.SaveManager;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 
 /**
  *
@@ -90,11 +91,11 @@ public interface PlayerManager<A extends EnvyPlayer<B>, B> {
       * instantiated it can be created (using reflection) from the registry in the PlayerManager implementation.
       *
       * If {@link PlayerManager#setSaveManager(SaveManager)} has been called then it will call
-      * {@link SaveManager#registerAttribute(Class)} on the given class
+      * {@link SaveManager#registerAttribute(Class, Supplier)}  on the given class
       *
       * @param attribute The class of the attribute being registered
       */
-     void registerAttribute(Class<? extends Attribute<?>> attribute);
+     <A extends Attribute<B>, B> void registerAttribute(Class<A> attribute, Supplier<A> constructor);
 
      /**
       *

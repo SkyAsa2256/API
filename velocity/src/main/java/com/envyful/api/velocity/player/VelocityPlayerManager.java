@@ -18,6 +18,7 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.function.Supplier;
 
 /**
  *
@@ -87,11 +88,11 @@ public class VelocityPlayerManager implements PlayerManager<VelocityEnvyPlayer, 
     }
 
     @Override
-    public void registerAttribute(Class<? extends Attribute<?>> attribute) {
-        this.attributeData.add(new PlayerAttributeData(this, attribute));
+    public <A extends Attribute<B>, B> void registerAttribute(Class<A> attribute, Supplier<A> constructor) {
+        this.attributeData.add(new PlayerAttributeData(attribute));
 
         if (this.saveManager != null) {
-            this.saveManager.registerAttribute(attribute);
+            this.saveManager.registerAttribute(attribute, constructor);
         }
     }
 

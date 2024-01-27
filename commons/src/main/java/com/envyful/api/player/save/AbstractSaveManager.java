@@ -4,10 +4,9 @@ import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.player.attribute.Attribute;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
@@ -38,38 +37,10 @@ public abstract class AbstractSaveManager<T> implements SaveManager<T> {
     }
 
     @Override
-    public void registerAttribute(Class<? extends Attribute<?>> attribute) {
-        Supplier<Attribute<?>> constructor =
-                this.getAttributeConstructor(attribute);
-
-        if (constructor == null) {
-            throw new IllegalArgumentException("No valid constructor found for " + attribute.getName());
-        }
-
+    public <A extends Attribute<B>, B> void registerAttribute(Class<A> attribute, Supplier<A> constructor) {
+        Preconditions.checkNotNull(attribute, "Cannot register null attribute");
+        Preconditions.checkNotNull(constructor, "Cannot register null constructor");
         this.registeredAttributes.put(attribute, new AttributeData<>(constructor));
-    }
-
-    private Supplier<Attribute<?>> getAttributeConstructor(Class<? extends Attribute<?>> clazz) {
-        try {
-            Constructor<? extends Attribute<?>> constructor = clazz.getConstructor();
-
-            return () -> {
-                try {
-                    return constructor.newInstance();
-                } catch (InstantiationException |
-                         IllegalAccessException |
-                        IllegalArgumentException |
-                         InvocationTargetException e) {
-                    UtilLogger.logger().ifPresent(logger -> logger.error("Failed to obtain player manager constructor for attribute " + clazz.getName(), e));
-                }
-
-                return null;
-            };
-        } catch (NoSuchMethodException e) {
-            UtilLogger.logger().ifPresent(logger -> logger.error("Failed to obtain player manager constructor for attribute " + clazz.getName(), e));
-        }
-
-        return null;
     }
 
     protected <A> Attribute<A> getSharedAttribute(Class<? extends Attribute<?>> attributeClass, Object o) {
@@ -80,11 +51,11 @@ public abstract class AbstractSaveManager<T> implements SaveManager<T> {
         this.sharedAttributes.computeIfAbsent((Class<? extends Attribute<?>>) attribute.getClass(), ___ -> Maps.newHashMap()).put(key, attribute);
     }
 
-    public static class AttributeData<A, B extends Attribute<A>> {
+    protected static class AttributeData<A, B extends Attribute<A>> {
 
         private final Supplier<B> constructor;
 
-        public AttributeData(Supplier<?> constructor) {
+        private AttributeData(Supplier<?> constructor) {
             this.constructor = (Supplier<B>) constructor;
         }
 

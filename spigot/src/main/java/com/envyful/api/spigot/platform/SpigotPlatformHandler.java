@@ -6,6 +6,7 @@ import com.envyful.api.text.PlaceholderFactory;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.util.Collection;
@@ -18,8 +19,13 @@ public class SpigotPlatformHandler implements PlatformHandler<Audience> {
         this.plugin = plugin;
     }
 
-    public static PlatformHandler<?> of(Plugin plugin) {
+    public static PlatformHandler<Audience> of(Plugin plugin) {
         return new SpigotPlatformHandler(plugin);
+    }
+
+    @Override
+    public boolean hasPermission(Audience player, String permission) {
+        return !(player instanceof Player) || ((Player) player).hasPermission(permission);
     }
 
     @Override

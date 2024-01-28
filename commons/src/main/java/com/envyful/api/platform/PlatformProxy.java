@@ -15,6 +15,15 @@ public class PlatformProxy {
         PlatformProxy.handler = handler;
     }
 
+    public static boolean hasPermission(EnvyPlayer<?> player, String permission) {
+        if (handler == null) {
+            UtilLogger.logger().ifPresent(logger -> logger.error("No platform handler set but broadcastMessage was called"));
+            return false;
+        }
+
+        return handler.hasPermission(player.getParent(), permission);
+    }
+
     public static void broadcastMessage(Collection<String> message, Placeholder... placeholders) {
         if (handler == null) {
             UtilLogger.logger().ifPresent(logger -> logger.error("No platform handler set but broadcastMessage was called"));

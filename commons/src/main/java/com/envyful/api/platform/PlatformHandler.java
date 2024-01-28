@@ -18,6 +18,16 @@ public interface PlatformHandler<A> {
 
     /**
      *
+     * Check if a player has a permission
+     *
+     * @param player The player to check
+     * @param permission The permission to check
+     * @return True if they have the permission
+     */
+    boolean hasPermission(A player, String permission);
+
+    /**
+     *
      * Broadcast a message to all players on the server with placeholders
      *
      * @param message The messages to broadcast

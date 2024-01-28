@@ -3,6 +3,7 @@ package com.envyful.api.forge.player.util;
 import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.forge.player.ForgeEnvyPlayer;
 import com.envyful.api.platform.PlatformProxy;
+import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
 import com.google.common.collect.Maps;
@@ -52,7 +53,9 @@ public class UtilPlayer {
      * @param player The player
      * @param permission The permission
      * @return true if they have access to said permission
+     * @deprecated Use {@link PlatformProxy#hasPermission(EnvyPlayer, String)} instead
      */
+    @Deprecated
     public static boolean hasPermission(ServerPlayer player, String permission) {
         if (player == null || permission == null) {
             return false;
@@ -99,6 +102,10 @@ public class UtilPlayer {
 
         PERMISSION_NODES.put(permissionNode, registeredPermission);
         return registeredPermission;
+    }
+
+    public static PermissionNode<Boolean> getPermission(String permissionNode) {
+        return PERMISSION_NODES.get(permissionNode);
     }
 
     public static boolean isOP(ServerPlayer player) {

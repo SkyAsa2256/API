@@ -1,11 +1,16 @@
 package com.envyful.api.forge.platform;
 
 import com.envyful.api.forge.chat.UtilChatColour;
+import com.envyful.api.forge.player.util.UtilPlayer;
 import com.envyful.api.platform.PlatformHandler;
 import com.envyful.api.text.Placeholder;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.server.TickTask;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.players.ServerOpListEntry;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.server.ServerLifecycleHooks;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 import java.util.Collection;
 
@@ -15,8 +20,26 @@ public class ForgePlatformHandler implements PlatformHandler<CommandSource> {
 
     private ForgePlatformHandler() {}
 
-    public static PlatformHandler<?> getInstance() {
+    public static PlatformHandler<CommandSource> getInstance() {
         return INSTANCE;
+    }
+
+    @Override
+    public boolean hasPermission(CommandSource player, String permission) {
+        if (player == null || permission == null) {
+            return false;
+        }
+
+        return (isOP(player) || PermissionAPI.getPermission((ServerPlayer) player, UtilPlayer.getPermission(permission)));
+    }
+
+    private boolean isOP(CommandSource sender) {
+        if (!(sender instanceof Player)) {
+            return true;
+        }
+
+        ServerOpListEntry entry = ServerLifecycleHooks.getCurrentServer().getPlayerList().getOps().get(((Player) sender).getGameProfile());
+        return entry != null;
     }
 
     @Override

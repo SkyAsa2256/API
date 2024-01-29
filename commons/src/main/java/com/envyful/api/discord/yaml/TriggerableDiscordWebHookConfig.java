@@ -61,6 +61,11 @@ public class TriggerableDiscordWebHookConfig extends DiscordWebHookConfig {
             return this;
         }
 
+        public Builder trigger(String trigger) {
+            this.trigger = trigger;
+            return this;
+        }
+
         public Builder url(String url) {
             this.url = url;
             return this;

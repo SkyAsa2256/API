@@ -18,13 +18,13 @@ import java.util.*;
 @ConfigSerializable
 public class DiscordWebHookConfig extends AbstractYamlConfig {
 
-    private boolean enabled;
-    private String url;
-    private String content;
-    private String username;
-    private String avatarUrl;
-    private boolean tts;
-    private Map<String, DiscordEmbedConfig> embeds;
+    protected boolean enabled;
+    protected String url;
+    protected String content;
+    protected String username;
+    protected String avatarUrl;
+    protected boolean tts;
+    protected Map<String, DiscordEmbedConfig> embeds;
 
     public DiscordWebHookConfig(Builder builder) {
         this.enabled = builder.enabled;

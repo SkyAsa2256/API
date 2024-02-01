@@ -299,7 +299,7 @@ public class YamlConfigFactory {
                     .nodeStyle(style)
                     .commentsEnabled(true)
                     .defaultOptions(ConfigurationOptions.defaults().header(
-                            "© EnvyWare Ltd Software 2022"
+                            "© EnvyWare Ltd Software 2024"
                                     + System.lineSeparator() +
                                     "For assistance visit" +
                                     " https://discord.envyware.co.uk"

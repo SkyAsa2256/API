@@ -2,6 +2,7 @@ package com.envyful.api.platform;
 
 import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.player.EnvyPlayer;
+import com.envyful.api.player.PlayerManager;
 import com.envyful.api.text.Placeholder;
 import com.google.common.collect.Lists;
 
@@ -10,9 +11,18 @@ import java.util.Collection;
 public class PlatformProxy {
 
     private static PlatformHandler handler;
+    private static PlayerManager<?, ?> playerManager;
 
     public static void setHandler(PlatformHandler handler) {
         PlatformProxy.handler = handler;
+    }
+
+    public static void setPlayerManager(PlayerManager<?, ?> playerManager) {
+        PlatformProxy.playerManager = playerManager;
+    }
+
+    public static PlayerManager<?, ?> getPlayerManager() {
+        return playerManager;
     }
 
     public static boolean hasPermission(EnvyPlayer<?> player, String permission) {

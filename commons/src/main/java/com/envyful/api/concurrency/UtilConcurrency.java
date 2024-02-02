@@ -25,9 +25,7 @@ public class UtilConcurrency {
                     .setDaemon(true)
                     .setNameFormat("envyware_concurrency_%d")
                     .setUncaughtExceptionHandler(
-                            new DefaultUncaughtExceptionHandler(
-                                    UtilLogger.getLogger()
-                            )
+                            new DefaultUncaughtExceptionHandler()
                     )
                     .build());
 

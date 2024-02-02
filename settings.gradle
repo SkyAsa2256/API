@@ -23,6 +23,7 @@ include 'reforged20'
 include 'discord'
 include 'spigot'
 include 'velocity'
+include 'jexl'
 //include 'fabric'
 
 // Mods

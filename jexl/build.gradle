@@ -1,0 +1,43 @@
+java.toolchain.languageVersion = JavaLanguageVersion.of(11)
+
+
+dependencies {
+    implementation group: 'com.google.guava', name: 'guava', version: '11.0.2'
+    implementation group: 'com.google.code.gson', name: 'gson', version: '2.8.6'
+
+    implementation 'org.apache.logging.log4j:log4j-api:2.18.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.7.1'
+
+    implementation 'mysql:mysql-connector-java:8.0.33'
+    implementation group: 'com.zaxxer', name: 'HikariCP', version: '4.0.1'
+    implementation 'io.lettuce:lettuce-core:6.2.2.RELEASE'
+    implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.5'
+    implementation group: 'org.spongepowered', name: 'configurate-yaml', version: '4.2.0-COMMENTS'
+    implementation group: 'org.apache.commons', name: 'commons-jexl3', version: '3.2.1'
+
+}
+
+shadowJar {
+    configurations = [project.configurations.shadow]
+    setArchivesBaseName(rootProject.name + '-Commons.jar')
+
+    relocate('org.spongepowered.configurate', 'com.envyful.api.commons.shade.configurate')
+    relocate('org.yaml.snakeyaml', 'com.envyful.api.commons.shade.snakeyaml')
+    relocate('io.leangen.geantyref', 'com.envyful.api.commons.shade.geantyref')
+    relocate('com.zaxxer', 'com.envyful.api.commons.shade.hikari')
+
+    exclude "**/module-info.class"
+}
+
+tasks.named('test', Test) {
+    useJUnitPlatform()
+
+    maxHeapSize = '1G'
+
+    testLogging {
+        events "passed"
+    }
+}
+
+build.finalizedBy(shadowJar)
+//shadowJar.finalizedBy(notifyDiscordChannel)

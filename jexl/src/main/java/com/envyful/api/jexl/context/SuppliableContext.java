@@ -24,6 +24,10 @@ public class SuppliableContext implements JexlContext {
         return object;
     }
 
+    public void set(String s, Supplier<Object> supplier) {
+        this.context.put(s, supplier);
+    }
+
     @Override
     public void set(String s, Object o) {
         this.context.put(s, o);

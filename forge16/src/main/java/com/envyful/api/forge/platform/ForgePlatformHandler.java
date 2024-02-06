@@ -3,6 +3,7 @@ package com.envyful.api.forge.platform;
 import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.platform.PlatformHandler;
 import com.envyful.api.text.Placeholder;
+import com.envyful.api.text.PlaceholderFactory;
 import net.minecraft.command.ICommandSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.management.OpEntry;
@@ -13,6 +14,7 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.PermissionAPI;
 
 import java.util.Collection;
+import java.util.List;
 
 public class ForgePlatformHandler implements PlatformHandler<ICommandSource> {
 
@@ -71,5 +73,14 @@ public class ForgePlatformHandler implements PlatformHandler<ICommandSource> {
     @Override
     public double getTPS() {
         return ServerLifecycleHooks.getCurrentServer().getAverageTickTime();
+    }
+
+    @Override
+    public void executeConsoleCommands(List<String> commands, Placeholder... placeholders) {
+        for (String command : commands) {
+            for (String handlePlaceholder : PlaceholderFactory.handlePlaceholders(command, placeholders)) {
+                ServerLifecycleHooks.getCurrentServer().getCommands().performCommand(ServerLifecycleHooks.getCurrentServer().createCommandSourceStack(), handlePlaceholder);
+            }
+        }
     }
 }

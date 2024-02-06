@@ -3,6 +3,7 @@ package com.envyful.api.platform;
 import com.envyful.api.text.Placeholder;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  *
@@ -69,5 +70,14 @@ public interface PlatformHandler<A> {
      * @return The current TPS
      */
     double getTPS();
+
+    /**
+     *
+     * Exceutes the commands as the console
+     *
+     * @param commands The commands to execute
+     * @param placeholders The placeholders to replace
+     */
+    void executeConsoleCommands(List<String> commands, Placeholder... placeholders);
 
 }

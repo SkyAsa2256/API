@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.util.Collection;
+import java.util.List;
 
 public class SpigotPlatformHandler implements PlatformHandler<Audience> {
 
@@ -59,5 +60,14 @@ public class SpigotPlatformHandler implements PlatformHandler<Audience> {
     @Override
     public double getTPS() {
         return Bukkit.getServer().getTPS()[0];
+    }
+
+    @Override
+    public void executeConsoleCommands(List<String> commands, Placeholder... placeholders) {
+        for (String command : commands) {
+            for (String handlePlaceholder : PlaceholderFactory.handlePlaceholders(command, placeholders)) {
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), handlePlaceholder);
+            }
+        }
     }
 }

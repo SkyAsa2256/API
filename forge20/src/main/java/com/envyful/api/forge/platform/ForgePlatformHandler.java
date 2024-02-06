@@ -2,8 +2,10 @@ package com.envyful.api.forge.platform;
 
 import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.forge.player.util.UtilPlayer;
+import com.envyful.api.forge.server.UtilForgeServer;
 import com.envyful.api.platform.PlatformHandler;
 import com.envyful.api.text.Placeholder;
+import com.envyful.api.text.PlaceholderFactory;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerPlayer;
@@ -13,6 +15,7 @@ import net.minecraftforge.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.PermissionAPI;
 
 import java.util.Collection;
+import java.util.List;
 
 public class ForgePlatformHandler implements PlatformHandler<CommandSource> {
 
@@ -71,5 +74,14 @@ public class ForgePlatformHandler implements PlatformHandler<CommandSource> {
     @Override
     public double getTPS() {
         return ServerLifecycleHooks.getCurrentServer().getAverageTickTime();
+    }
+
+    @Override
+    public void executeConsoleCommands(List<String> commands, Placeholder... placeholders) {
+        for (String command : commands) {
+            for (String handlePlaceholder : PlaceholderFactory.handlePlaceholders(command, placeholders)) {
+                UtilForgeServer.executeCommand(handlePlaceholder);
+            }
+        }
     }
 }

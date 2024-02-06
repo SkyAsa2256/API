@@ -7,6 +7,7 @@ import com.envyful.api.text.Placeholder;
 import com.google.common.collect.Lists;
 
 import java.util.Collection;
+import java.util.List;
 
 public class PlatformProxy {
 
@@ -23,6 +24,19 @@ public class PlatformProxy {
 
     public static PlayerManager<?, ?> getPlayerManager() {
         return playerManager;
+    }
+
+    public static void executeConsoleCommands(String... commands) {
+        executeConsoleCommands(Lists.newArrayList(commands));
+    }
+
+    public static void executeConsoleCommands(List<String> commands, Placeholder... placeholders) {
+        if (handler == null) {
+            UtilLogger.logger().ifPresent(logger -> logger.error("No platform handler set but executeConsoleCommands was called"));
+            return;
+        }
+
+        handler.executeConsoleCommands(commands, placeholders);
     }
 
     public static boolean hasPermission(EnvyPlayer<?> player, String permission) {

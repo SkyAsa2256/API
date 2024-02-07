@@ -16,11 +16,17 @@ import java.util.function.Supplier;
  *          - UtilForgeConcurrency
  *          - UtilSpigotConcurrency
  *
+ * You can change the number of threads used by the mod by setting the system property
+ * `envyware.concurrency.threads` to the number of threads you want to use. The
+ * default is 5.
+ *
  */
 public class UtilConcurrency {
 
+    public static final int THREADS = Integer.parseInt(System.getProperty("envyware.concurrency.threads", "5"));
+
     public static final ScheduledExecutorService SCHEDULED_EXECUTOR_SERVICE =
-            Executors.newScheduledThreadPool(10,
+            Executors.newScheduledThreadPool(THREADS,
             new ThreadFactoryBuilder()
                     .setDaemon(true)
                     .setNameFormat("envyware_concurrency_%d")

@@ -49,6 +49,10 @@ public class ConfigRandomWeightedSet<A> implements Serializable {
         return this.getWeightedSet().getRandom();
     }
 
+    public static <A> Builder<A> builder(A entry, double weight) {
+        return new Builder<A>().entry(entry, weight);
+    }
+
     @ConfigSerializable
     public static class WeightedObject<A> {
 
@@ -69,6 +73,23 @@ public class ConfigRandomWeightedSet<A> implements Serializable {
 
         public A getObject() {
             return this.object;
+        }
+    }
+
+    public static class Builder<A> {
+
+        private Map<String, WeightedObject<A>> entries = Maps.newHashMap();
+
+        protected Builder() {
+        }
+
+        public Builder<A> entry(A entry, double weight) {
+            this.entries.put(String.valueOf(entries.size() + 1), new WeightedObject<>(weight, entry));
+            return this;
+        }
+
+        public ConfigRandomWeightedSet<A> build() {
+            return new ConfigRandomWeightedSet<>(this.entries);
         }
     }
 }

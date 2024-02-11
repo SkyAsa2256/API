@@ -1,5 +1,6 @@
 package com.envyful.api.gui.factory;
 
+import com.envyful.api.config.type.ConfigInterface;
 import com.envyful.api.gui.Gui;
 import com.envyful.api.gui.close.CloseConsumer;
 import com.envyful.api.gui.item.Displayable;
@@ -13,6 +14,15 @@ import com.envyful.api.gui.pane.type.PagedPane;
  *
  */
 public interface PlatformGuiFactory<T> {
+
+    /**
+     *
+     * Creates a pane from a given config interface
+     *
+     * @param guiSettings The settings for the pane
+     * @return The new pane
+     */
+    Pane createPane(ConfigInterface guiSettings);
 
     /**
      *

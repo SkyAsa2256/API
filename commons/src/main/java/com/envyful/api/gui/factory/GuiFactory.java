@@ -1,5 +1,6 @@
 package com.envyful.api.gui.factory;
 
+import com.envyful.api.config.type.ConfigInterface;
 import com.envyful.api.gui.Gui;
 import com.envyful.api.gui.close.CloseConsumer;
 import com.envyful.api.gui.item.Displayable;
@@ -22,6 +23,7 @@ public class GuiFactory {
         throw new UnsupportedOperationException("Static factory");
     }
 
+
     /**
      *
      * Gets the platform factory instance
@@ -41,6 +43,18 @@ public class GuiFactory {
     public static void setPlatformFactory(
             PlatformGuiFactory<?> platformFactory) {
         GuiFactory.platformFactory = platformFactory;
+    }
+
+    /**
+     *
+     * Creates a pane from a given config interface
+     *
+     * @param guiSettings The settings for the pane
+     * @return The new pane
+     */
+    public static Pane createPane(ConfigInterface guiSettings) {
+        checkThenThrowSetupException();
+        return platformFactory.createPane(guiSettings);
     }
 
     /**

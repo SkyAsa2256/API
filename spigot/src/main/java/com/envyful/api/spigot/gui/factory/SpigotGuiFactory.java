@@ -1,12 +1,15 @@
 package com.envyful.api.spigot.gui.factory;
 
+import com.envyful.api.config.type.ConfigInterface;
 import com.envyful.api.gui.Gui;
 import com.envyful.api.gui.close.CloseConsumer;
+import com.envyful.api.gui.factory.GuiFactory;
 import com.envyful.api.gui.factory.PlatformGuiFactory;
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.gui.pane.TickHandler;
 import com.envyful.api.gui.pane.type.PagedPane;
+import com.envyful.api.spigot.config.UtilConfigInterface;
 import com.envyful.api.spigot.gui.SpigotGui;
 import com.envyful.api.spigot.gui.SpigotGuiBuilder;
 import com.envyful.api.spigot.gui.close.SpigotCloseConsumer;
@@ -33,6 +36,19 @@ public class SpigotGuiFactory implements PlatformGuiFactory<ItemStack> {
 
     public Plugin getPlugin() {
         return this.plugin;
+    }
+
+    @Override
+    public Pane createPane(ConfigInterface guiSettings) {
+        Pane pane = GuiFactory.paneBuilder()
+                .topLeftX(0)
+                .topLeftY(0)
+                .width(9)
+                .height(guiSettings.getHeight())
+                .build();
+
+        UtilConfigInterface.fillBackground(pane, guiSettings);
+        return pane;
     }
 
     @Override

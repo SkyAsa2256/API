@@ -2,6 +2,7 @@ package com.envyful.api.spigot.gui.item;
 
 import com.envyful.api.concurrency.UtilConcurrency;
 import com.envyful.api.gui.factory.GuiFactory;
+import com.envyful.api.gui.item.AbstractDisplayable;
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.spigot.gui.factory.SpigotGuiFactory;
@@ -18,7 +19,7 @@ import java.util.function.Consumer;
  * set.
  *
  */
-public class SpigotSimpleDisplayable implements Displayable {
+public class SpigotSimpleDisplayable extends AbstractDisplayable {
 
     private final ItemStack itemStack;
     private final BiConsumer<EnvyPlayer<?>, ClickType> clickHandler;

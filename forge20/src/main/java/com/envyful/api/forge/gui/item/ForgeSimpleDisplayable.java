@@ -2,6 +2,7 @@ package com.envyful.api.forge.gui.item;
 
 import com.envyful.api.concurrency.UtilConcurrency;
 import com.envyful.api.forge.concurrency.UtilForgeConcurrency;
+import com.envyful.api.gui.item.AbstractDisplayable;
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.player.EnvyPlayer;
 import net.minecraft.world.item.ItemStack;
@@ -15,7 +16,7 @@ import java.util.function.Consumer;
  * set.
  *
  */
-public class ForgeSimpleDisplayable implements Displayable {
+public class ForgeSimpleDisplayable extends AbstractDisplayable {
 
     private final ItemStack itemStack;
     private final BiConsumer<EnvyPlayer<?>, ClickType> clickHandler;

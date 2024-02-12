@@ -26,9 +26,6 @@ import java.util.concurrent.CompletableFuture;
  */
 public interface EnvyPlayer<T> {
 
-    @Deprecated
-    UUID getUuid();
-
     UUID getUniqueId();
 
     String getName();
@@ -109,6 +106,14 @@ public interface EnvyPlayer<T> {
      * @param attribute The attribute to invalidate
      */
     void invalidateAttribute(Attribute<?> attribute);
+
+    /**
+     *
+     * Loads the attribute a new for the player
+     *
+     * @param attributeClass The attribute to reload
+     */
+    void refreshAttribute(Class<?> attributeClass);
 
     /**
      *

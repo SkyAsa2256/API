@@ -9,6 +9,7 @@ import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.gui.pane.TickHandler;
 import com.envyful.api.gui.pane.type.PagedPane;
+import com.envyful.api.player.PlayerManager;
 import com.envyful.api.spigot.config.UtilConfigInterface;
 import com.envyful.api.spigot.gui.SpigotGui;
 import com.envyful.api.spigot.gui.SpigotGuiBuilder;
@@ -27,6 +28,8 @@ import org.bukkit.plugin.Plugin;
 public class SpigotGuiFactory implements PlatformGuiFactory<ItemStack> {
 
     private final Plugin plugin;
+
+    private PlayerManager<?, ?> playerManager;
 
     public SpigotGuiFactory(Plugin plugin) {
         this.plugin = plugin;
@@ -52,6 +55,11 @@ public class SpigotGuiFactory implements PlatformGuiFactory<ItemStack> {
     }
 
     @Override
+    public void setPlayerManager(PlayerManager<?, ?> playerManager) {
+        this.playerManager = playerManager;
+    }
+
+    @Override
     public Displayable.Builder<ItemStack> displayableBuilder() {
         return new SpigotSimpleDisplayable.Builder();
     }
@@ -64,6 +72,16 @@ public class SpigotGuiFactory implements PlatformGuiFactory<ItemStack> {
     @Override
     public PagedPane.Builder pagedPaneBuilder() {
         return null; //TODO: not made yet
+    }
+
+    @Override
+    public Gui singlePaneGui(ConfigInterface guiSettings, Pane pane) {
+        return GuiFactory.guiBuilder()
+                .setPlayerManager(this.playerManager)
+                .addPane(pane)
+                .height(guiSettings.getHeight())
+                .title(guiSettings.getTitle())
+                .build();
     }
 
     @Override

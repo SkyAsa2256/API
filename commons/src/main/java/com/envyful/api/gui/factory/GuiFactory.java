@@ -7,6 +7,7 @@ import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.gui.pane.TickHandler;
 import com.envyful.api.gui.pane.type.PagedPane;
+import com.envyful.api.player.PlayerManager;
 
 /**
  *
@@ -59,6 +60,18 @@ public class GuiFactory {
 
     /**
      *
+     * Caches the player manager
+     *
+     * @param playerManager The player manager
+     */
+    public static void setPlayerManager(PlayerManager<?, ?> playerManager) {
+        checkThenThrowSetupException();
+        platformFactory.setPlayerManager(playerManager);
+    }
+
+
+    /**
+     *
      * Gets a new instance of the playform's displayable with the given item
      *
      * @param t The item provided
@@ -70,7 +83,6 @@ public class GuiFactory {
         return ((Displayable.Builder<T>) platformFactory.displayableBuilder())
                 .itemStack(t).build();
     }
-
 
     /**
      *
@@ -122,6 +134,19 @@ public class GuiFactory {
     public static PagedPane.Builder pagedPaneBuilder() {
         checkThenThrowSetupException();
         return platformFactory.pagedPaneBuilder();
+    }
+
+    /**
+     *
+     * Creates a GUI using a single pane and {@link ConfigInterface}
+     *
+     * @param guiSettings The gui settings
+     * @param pane The pane
+     * @return The gui builder for the given platform
+     */
+    public static Gui singlePaneGui(ConfigInterface guiSettings, Pane pane) {
+        checkThenThrowSetupException();
+        return platformFactory.singlePaneGui(guiSettings, pane);
     }
 
     /**

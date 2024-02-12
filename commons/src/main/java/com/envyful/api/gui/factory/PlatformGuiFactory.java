@@ -7,6 +7,7 @@ import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.gui.pane.TickHandler;
 import com.envyful.api.gui.pane.type.PagedPane;
+import com.envyful.api.player.PlayerManager;
 
 /**
  *
@@ -23,6 +24,15 @@ public interface PlatformGuiFactory<T> {
      * @return The new pane
      */
     Pane createPane(ConfigInterface guiSettings);
+
+
+    /**
+     *
+     * Caches the player manager
+     *
+     * @param playerManager The player manager
+     */
+    void setPlayerManager(PlayerManager<?, ?> playerManager);
 
     /**
      *
@@ -47,6 +57,16 @@ public interface PlatformGuiFactory<T> {
      * @return The paged pane builder for the given platform
      */
     PagedPane.Builder pagedPaneBuilder();
+
+    /**
+     *
+     * Creates a GUI using a single pane and {@link ConfigInterface}
+     *
+     * @param guiSettings The gui settings
+     * @param pane The pane
+     * @return The gui builder for the given platform
+     */
+    Gui singlePaneGui(ConfigInterface guiSettings, Pane pane);
 
     /**
      *

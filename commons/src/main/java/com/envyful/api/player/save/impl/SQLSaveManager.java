@@ -8,7 +8,7 @@ public class SQLSaveManager<T> extends EmptySaveManager<T> {
 
     private final Database database;
 
-    public SQLSaveManager(PlayerManager<?, ?> playerManager, Database database) {
+    public SQLSaveManager(PlayerManager<?, T> playerManager, Database database) {
         super(playerManager);
 
         this.database = database;

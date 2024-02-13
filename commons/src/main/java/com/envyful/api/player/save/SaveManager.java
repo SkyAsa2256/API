@@ -1,14 +1,12 @@
 package com.envyful.api.player.save;
 
 import com.envyful.api.database.Database;
+import com.envyful.api.player.Attribute;
 import com.envyful.api.player.EnvyPlayer;
-import com.envyful.api.player.attribute.Attribute;
+import com.envyful.api.player.PlayerManager;
 
-import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
-import java.util.function.Supplier;
 
 /**
  *
@@ -23,11 +21,10 @@ public interface SaveManager<T> {
      * Registers an attribute for how this class should handle saving and loading
      *
      * @param attribute The class of the attribute being registered
-     * @param constructor The constructor for the attribute
      * @param <A> The attribute type
      * @param <B> The id type
      */
-    <A extends Attribute<B>, B> void registerAttribute(Class<A> attribute, Supplier<A> constructor);
+    <A extends Attribute<B, T>, B> void registerAttribute(PlayerManager.AttributeData<A, B, T> attribute);
 
     /**
      *
@@ -41,56 +38,16 @@ public interface SaveManager<T> {
      *
      * @return The error handler
      */
-    BiConsumer<EnvyPlayer<?>, Throwable> getErrorHandler();
-
-    /**
-     *
-     * Sets the error handler for the save manager.
-     * <br>
-     * The error handler is used exclusively for when an error occurs
-     * during the loading of an attribute.
-     * <br>
-     * The default error logger will always just log the error directly to
-     * {@link com.envyful.api.concurrency.UtilLogger} and then return
-     *
-     * @param errorHandler The new error handler
-     */
-    void setErrorHandler(BiConsumer<EnvyPlayer<?>, Throwable> errorHandler);
-
-    /**
-     *
-     * Saves the player's data from the given attribute
-     * This will call {@link Attribute#saveWithGenericId(Object)}} if this class has not been registered using
-     * {@link SaveManager#registerAttribute(Class, Supplier)}
-     *
-     *
-     * @param player The player whose data is being saved
-     * @param attribute The attribute being saved
-     */
-    default void saveData(EnvyPlayer<T> player, Attribute<?> attribute) {
-        this.saveData(player.getUniqueId(), attribute);
-    }
+    BiConsumer<EnvyPlayer<T>, Throwable> getErrorHandler();
 
     /**
      *
      * Saves the player's data from the given attribute
      *
-     * @param uuid The offline UUID
+     * @param id The unique ID of the attribute
      * @param attribute The attribute being saved
      */
-    void saveData(UUID uuid, Attribute<?> attribute);
-
-    /**
-     *
-     * Load the player's data for all registered {@link Attribute} using
-     * {@link SaveManager#registerAttribute(Class, Supplier)}
-     *
-     * @param player The player whose data is being loaded
-     * @return All successfully loaded attributes
-     */
-    default CompletableFuture<List<Attribute<?>>> loadData(EnvyPlayer<T> player) {
-        return this.loadData(player.getUniqueId());
-    }
+    <A> void saveData(A id, Attribute<A, T> attribute);
 
     /**
      *
@@ -102,17 +59,7 @@ public interface SaveManager<T> {
      * @param <A> The attribute type
      * @param <B> The id type
      */
-    <A extends Attribute<?>, B> CompletableFuture<A> loadAttribute(Class<? extends A> attributeClass, B id);
-
-    /**
-     *
-     * Load the player's data for all registered {@link Attribute}
-     * using {@link SaveManager#registerAttribute(Class, Supplier)}
-     *
-     * @param uuid The offline player's UUID
-     * @return All successfully loaded attributes
-     */
-    CompletableFuture<List<Attribute<?>>> loadData(UUID uuid);
+    <A extends Attribute<B, T>, B> CompletableFuture<A> loadAttribute(Class<? extends A> attributeClass, B id);
 
     /**
      *

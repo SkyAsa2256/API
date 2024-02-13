@@ -1,7 +1,6 @@
 package com.envyful.api.player;
 
 import com.envyful.api.config.ConfigLocation;
-import com.envyful.api.player.attribute.Attribute;
 import com.envyful.api.player.attribute.PlayerAttribute;
 
 import java.util.List;
@@ -26,10 +25,28 @@ import java.util.concurrent.CompletableFuture;
  */
 public interface EnvyPlayer<T> {
 
+    /**
+     *
+     * Gets the player's UUID from Mojang
+     *
+     * @return The player's UUID
+     */
     UUID getUniqueId();
 
+    /**
+     *
+     * Gets a String representation fo the player's name
+     *
+     * @return The player's name
+     */
     String getName();
 
+    /**
+     *
+     * Gets the platform relative representation of the player
+     *
+     * @return The parent
+     */
     T getParent();
 
     /**
@@ -70,7 +87,7 @@ public interface EnvyPlayer<T> {
      *
      * @return All the attributes
      */
-    List<Attribute<?>> getAttributes();
+    List<Attribute<?, T>> getAttributes();
 
     /**
      *
@@ -83,7 +100,7 @@ public interface EnvyPlayer<T> {
      * @param <A> The attribute type
      * @param <B> The attribute id type
      */
-    <A extends Attribute<B>, B> CompletableFuture<A> getAttribute(Class<A> attributeClass);
+    <A extends Attribute<B, T>, B> CompletableFuture<A> getAttribute(Class<A> attributeClass);
 
     /**
      *
@@ -97,38 +114,7 @@ public interface EnvyPlayer<T> {
      * @param <A> The attribute type
      * @param <B> The attribute id type
      */
-    <A extends Attribute<B>, B> A getAttributeNow(Class<A> attributeClass);
-
-    /**
-     *
-     * Invalidates the attribute for the player
-     *
-     * @param attribute The attribute to invalidate
-     */
-    void invalidateAttribute(Attribute<?> attribute);
-
-    /**
-     *
-     * Loads the attribute a new for the player
-     *
-     * @param attributeClass The attribute to reload
-     */
-    void refreshAttribute(Class<?> attributeClass);
-
-    /**
-     *
-     * Loads the attribute for the player
-     * <br>
-     * Returns a completable future that is completed once the full attribute has been loaded
-     *
-     * @param attributeClass The attribute class
-     * @param id The attribute id
-     * @return A completable future
-     * @param <A> The attribute type
-     * @param <B> The attribute id type
-     */
-    <A extends Attribute<B>, B> CompletableFuture<A> loadAttribute(
-            Class<? extends A> attributeClass, B id);
+    <A extends Attribute<B, T>, B> A getAttributeNow(Class<A> attributeClass);
 
     /**
      *
@@ -137,6 +123,17 @@ public interface EnvyPlayer<T> {
      * @param attribute The attribute to set
      * @param <A> The attribute type
      */
-    <A extends Attribute<B>, B> void setAttribute(A attribute);
+    <A extends Attribute<B, T>, B, C extends EnvyPlayer<T>> void setAttribute(A attribute);
+
+    /**
+     *
+     * Removes the attribute from the player
+     *
+     * @param attributeClass The attribute class
+     * @param <A> The attribute type
+     * @param <B> The attribute id type
+     */
+    <A extends Attribute<B, T>, B> void removeAttribute(Class<A> attributeClass);
+
 
 }

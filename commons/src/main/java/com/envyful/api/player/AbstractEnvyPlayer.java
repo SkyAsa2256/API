@@ -1,7 +1,6 @@
 package com.envyful.api.player;
 
 import com.envyful.api.concurrency.UtilLogger;
-import com.envyful.api.player.attribute.Attribute;
 import com.envyful.api.player.attribute.PlayerAttribute;
 import com.envyful.api.player.save.SaveManager;
 import com.google.common.collect.Lists;
@@ -30,7 +29,7 @@ import java.util.concurrent.CompletableFuture;
  */
 public abstract class AbstractEnvyPlayer<T> implements EnvyPlayer<T> {
 
-    protected final Map<Class<?>, AttributeInstance> attributes = Maps.newHashMap();
+    protected final Map<Class<?>, AttributeInstance<?, ?, T>> attributes = Maps.newHashMap();
 
     protected final SaveManager<T> saveManager;
 
@@ -51,17 +50,17 @@ public abstract class AbstractEnvyPlayer<T> implements EnvyPlayer<T> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <A extends Attribute<B>, B> CompletableFuture<A> getAttribute(Class<A> attributeClass) {
+    public <A extends Attribute<B, T>, B> CompletableFuture<A> getAttribute(Class<A> attributeClass) {
         if (!this.attributes.containsKey(attributeClass)) {
             return null;
         }
 
-        AttributeInstance<A, B> instance = (AttributeInstance<A, B>) this.attributes.get(attributeClass);
+        AttributeInstance<A, B, T> instance = (AttributeInstance<A, B, T>) this.attributes.get(attributeClass);
         return instance.getAttribute();
     }
 
     @Override
-    public <A extends Attribute<B>, B> A getAttributeNow(Class<A> attributeClass) {
+    public <A extends Attribute<B, T>, B> A getAttributeNow(Class<A> attributeClass) {
         var future = this.getAttribute(attributeClass);
 
         if (future == null) {
@@ -72,28 +71,29 @@ public abstract class AbstractEnvyPlayer<T> implements EnvyPlayer<T> {
     }
 
     @Override
-    public void invalidateAttribute(Attribute<?> attribute) {
-        this.attributes.remove(attribute.getClass());
-    }
+    @SuppressWarnings("unchecked")
+    public <A extends Attribute<B, T>, B, C extends EnvyPlayer<T>> void setAttribute(A attribute) {
+        if (attribute == null) {
+            return;
+        }
 
-    @Override
-    public <A extends Attribute<B>, B> CompletableFuture<A> loadAttribute(
-            Class<? extends A> attributeClass, B id) {
-        AttributeInstance<A, B> instance = new AttributeInstance<>(this.saveManager.loadAttribute(attributeClass, id));
-        this.attributes.put(attributeClass, instance);
-        return instance.getAttribute();
-    }
+        if (attribute instanceof PlayerAttribute) {
+            ((PlayerAttribute<?, C, T>) attribute).setParent((C) this);
+        }
 
-    @Override
-    public <A extends Attribute<B>, B> void setAttribute(A attribute) {
         this.attributes.put(attribute.getClass(), new AttributeInstance<>(attribute));
     }
 
     @Override
-    public List<Attribute<?>> getAttributes() {
-        List<Attribute<?>> attributes = Lists.newArrayList();
+    public <A extends Attribute<B, T>, B> void removeAttribute(Class<A> attributeClass) {
+        this.attributes.remove(attributeClass);
+    }
 
-        for (AttributeInstance<?, ?> attribute : this.attributes.values()) {
+    @Override
+    public List<Attribute<?, T>> getAttributes() {
+        List<Attribute<?, T>> attributes = Lists.newArrayList();
+
+        for (var attribute : this.attributes.values()) {
             if (attribute.getAttributeNow() != null) {
                 attributes.add(attribute.getAttributeNow());
             }
@@ -102,17 +102,17 @@ public abstract class AbstractEnvyPlayer<T> implements EnvyPlayer<T> {
         return attributes;
     }
 
-    public static class AttributeInstance<A extends Attribute<B>, B> {
+    protected static class AttributeInstance<A extends Attribute<B, C>, B, C> {
 
         private A attribute;
         private CompletableFuture<A> loadingAttribute;
 
-        public AttributeInstance(A attribute) {
+        AttributeInstance(A attribute) {
             this.attribute = attribute;
             this.loadingAttribute = null;
         }
 
-        public AttributeInstance(CompletableFuture<A> loadingAttribute) {
+        AttributeInstance(CompletableFuture<A> loadingAttribute) {
             this.attribute = null;
             this.loadingAttribute = loadingAttribute.whenComplete((a, throwable) -> {
                 if (throwable != null) {
@@ -124,23 +124,13 @@ public abstract class AbstractEnvyPlayer<T> implements EnvyPlayer<T> {
             });
         }
 
-        public CompletableFuture<A> getAttribute() {
+        CompletableFuture<A> getAttribute() {
             return this.loadingAttribute == null ? CompletableFuture.completedFuture(this.attribute) : this.loadingAttribute;
         }
 
         @Nullable
-        public A getAttributeNow() {
+        A getAttributeNow() {
             return this.attribute;
-        }
-
-        public void invalidate() {
-            this.attribute = null;
-
-            if (this.loadingAttribute != null) {
-                this.loadingAttribute.cancel(true);
-            }
-
-            this.loadingAttribute = null;
         }
     }
 }

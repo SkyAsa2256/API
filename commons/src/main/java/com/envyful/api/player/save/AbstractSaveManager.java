@@ -1,66 +1,55 @@
 package com.envyful.api.player.save;
 
 import com.envyful.api.concurrency.UtilLogger;
+import com.envyful.api.player.Attribute;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
-import com.envyful.api.player.attribute.Attribute;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 
+import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.function.BiConsumer;
-import java.util.function.Supplier;
 
-@SuppressWarnings("unchecked")
 public abstract class AbstractSaveManager<T> implements SaveManager<T> {
 
-    protected final Map<Class<? extends Attribute<?>>, AttributeData<?, ?>>
-            registeredAttributes = Maps.newConcurrentMap();
-    protected final Map<Class<? extends Attribute<?>>, Map<Object, Attribute<?>>> sharedAttributes
-            = Maps.newConcurrentMap();
+    protected final Map<Class<? extends Attribute<?, T>>, PlayerManager.AttributeData<?, ?, T>> registeredAttributes = Maps.newConcurrentMap();
+    protected final Map<Class<? extends Attribute<?, T>>, Map<Object, Attribute<?, T>>> sharedAttributes = Maps.newConcurrentMap();
 
-    protected final PlayerManager<?, ?> playerManager;
-    protected BiConsumer<EnvyPlayer<?>, Throwable> errorHandler = (player, throwable) -> UtilLogger.logger().ifPresent(logger -> logger.error("Error loading data for " + player.getUniqueId() + " " + player.getName(), throwable));
+    protected final PlayerManager<?, T> playerManager;
+    protected BiConsumer<EnvyPlayer<T>, Throwable> errorHandler = (player, throwable) -> UtilLogger.logger().ifPresent(logger -> logger.error("Error loading data for " + player.getUniqueId() + " " + player.getName(), throwable));
 
-    protected AbstractSaveManager(PlayerManager<?, ?> playerManager) {
+
+    protected AbstractSaveManager(PlayerManager<?, T> playerManager) {
+        this(playerManager, null);
+    }
+
+    protected AbstractSaveManager(PlayerManager<?, T> playerManager, @Nullable BiConsumer<EnvyPlayer<T>, Throwable> errorHandler) {
         this.playerManager = playerManager;
+
+        if (errorHandler != null) {
+            this.errorHandler = errorHandler;
+        }
     }
 
     @Override
-    public void setErrorHandler(BiConsumer<EnvyPlayer<?>, Throwable> errorHandler) {
-        this.errorHandler = errorHandler;
-    }
-
-    @Override
-    public BiConsumer<EnvyPlayer<?>, Throwable> getErrorHandler() {
+    public BiConsumer<EnvyPlayer<T>, Throwable> getErrorHandler() {
         return this.errorHandler;
     }
 
     @Override
-    public <A extends Attribute<B>, B> void registerAttribute(Class<A> attribute, Supplier<A> constructor) {
+    public <A extends Attribute<B, T>, B> void registerAttribute(PlayerManager.AttributeData<A, B, T> attribute) {
         Preconditions.checkNotNull(attribute, "Cannot register null attribute");
-        Preconditions.checkNotNull(constructor, "Cannot register null constructor");
-        this.registeredAttributes.put(attribute, new AttributeData<>(constructor));
+        this.registeredAttributes.put(attribute.attributeClass(), attribute);
     }
 
-    protected <A> Attribute<A> getSharedAttribute(Class<? extends Attribute<?>> attributeClass, Object o) {
-        return (Attribute<A>) this.sharedAttributes.computeIfAbsent(attributeClass, ___ -> Maps.newHashMap()).get(o);
+    @SuppressWarnings("unchecked")
+    protected <A> Attribute<A, T> getSharedAttribute(Class<? extends A> attributeClass, Object o) {
+        return (Attribute<A, T>) this.sharedAttributes.computeIfAbsent((Class<? extends Attribute<?, T>>) attributeClass, ___ -> Maps.newHashMap()).get(o);
     }
 
-    protected void addSharedAttribute(Object key, Attribute<?> attribute) {
-        this.sharedAttributes.computeIfAbsent((Class<? extends Attribute<?>>) attribute.getClass(), ___ -> Maps.newHashMap()).put(key, attribute);
-    }
-
-    protected static class AttributeData<A, B extends Attribute<A>> {
-
-        private final Supplier<B> constructor;
-
-        private AttributeData(Supplier<?> constructor) {
-            this.constructor = (Supplier<B>) constructor;
-        }
-
-        public Supplier<B> getConstructor() {
-            return this.constructor;
-        }
+    @SuppressWarnings("unchecked")
+    protected void addSharedAttribute(Object key, Attribute<?, T> attribute) {
+        this.sharedAttributes.computeIfAbsent((Class<? extends Attribute<?, T>>) attribute.getClass(), ___ -> Maps.newHashMap()).put(key, attribute);
     }
 }

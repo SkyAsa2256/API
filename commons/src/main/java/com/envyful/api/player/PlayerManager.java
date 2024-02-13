@@ -98,7 +98,7 @@ public interface PlayerManager<A extends EnvyPlayer<B>, B> {
       * instantiated it can be created (using reflection) from the registry in the PlayerManager implementation.
       * <br>
       * If {@link PlayerManager#setSaveManager(SaveManager)} has been called then it will call
-      * {@link SaveManager#registerAttribute(Class, Supplier)}  on the given class
+      * {@link SaveManager#registerAttribute(AttributeData)}  on the given class
       *
       * @param attribute The class of the attribute being registered
       */

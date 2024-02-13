@@ -28,11 +28,6 @@ public class ForgeEnvyPlayer extends AbstractEnvyPlayer<ServerPlayer> {
     }
 
     @Override
-    public UUID getUuid() {
-        return this.parent.getUUID();
-    }
-
-    @Override
     public UUID getUniqueId() {
         return this.parent.getUUID();
     }

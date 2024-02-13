@@ -123,7 +123,7 @@ public class SpigotTrigger {
         var listener = new GenericListener<A>() {
             @Override
             public void onEvent(A event) {
-
+                // Spigot requires this but we don't really need to do anything here
             }
         };
 

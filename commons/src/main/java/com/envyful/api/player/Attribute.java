@@ -1,8 +1,7 @@
-package com.envyful.api.player.attribute;
+package com.envyful.api.player;
 
 import com.envyful.api.player.save.SaveManager;
 
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 
@@ -11,24 +10,15 @@ import java.util.concurrent.CompletableFuture;
  * An interface representing data stored about something, typically a player
  *
  * @param <A> The unique identifier type
+ * @param <B> The platform player type
  */
 @SuppressWarnings({"unused", "unchecked"})
-public interface Attribute<A> {
-
-    CompletableFuture<A> getId(UUID playerUuid);
+public interface Attribute<A, B> {
 
     CompletableFuture<A> getId();
 
-    default boolean isShared() {
-        return false;
-    }
-
     default boolean shouldSave() {
         return true;
-    }
-
-    default void loadWithGenericId(Object object) throws ClassCastException {
-        this.load((A) object);
     }
 
     void load(A id);
@@ -40,5 +30,9 @@ public interface Attribute<A> {
     void save(A id);
 
     void deleteAll(SaveManager<?> saveManager);
+
+    static <A extends Attribute<B, C>, B, C> AttributeBuilder<A, B, C> builder(Class<A> attributeClass) {
+        return new AttributeBuilder<A, B, C>().attributeClass(attributeClass);
+    }
 
 }

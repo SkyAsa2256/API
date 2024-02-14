@@ -3,124 +3,57 @@ package com.envyful.api.player.save.impl;
 import com.envyful.api.concurrency.UtilConcurrency;
 import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.database.Database;
+import com.envyful.api.player.Attribute;
 import com.envyful.api.player.PlayerManager;
-import com.envyful.api.player.attribute.Attribute;
-import com.envyful.api.player.attribute.PlayerAttribute;
 import com.envyful.api.player.save.AbstractSaveManager;
-import com.google.common.collect.Lists;
+import com.google.common.base.Preconditions;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class EmptySaveManager<T> extends AbstractSaveManager<T> {
 
-    public EmptySaveManager(PlayerManager<?, ?> playerManager) {
+    public EmptySaveManager(PlayerManager<?, T> playerManager) {
         super(playerManager);
     }
 
     @Override
-    public CompletableFuture<List<Attribute<?>>> loadData(UUID uuid) {
-        if (this.registeredAttributes.isEmpty()) {
-            return CompletableFuture.completedFuture(Collections.emptyList());
-        }
-
-        List<Attribute<?>> attributes = new CopyOnWriteArrayList<>();
-        List<CompletableFuture<Attribute<?>>> loadTasks = Lists.newArrayList();
-
-        for (Map.Entry<Class<? extends Attribute<?>>, AttributeData<?, ?>> entry : this.registeredAttributes.entrySet()) {
-            AttributeData<?, ?> value = entry.getValue();
-
-            if (value.getConstructor() == null) {
-                UtilLogger.logger().ifPresent(logger -> logger.error("Skipping load attempt for {} as there is no valid constructor", entry.getKey().getName()));
-                continue;
-            }
-
-            Attribute<?> attribute = value.getConstructor().get();
-
-            loadTasks.add(attribute.getId(uuid).thenApplyAsync(o -> {
-                if (o == null) {
-                    UtilLogger.logger().ifPresent(logger -> logger.error("Failed to find for {}", entry.getKey().getName()));
-                    return null;
-                }
-
-                if(attribute instanceof PlayerAttribute) {
-                    ((PlayerAttribute) attribute).setParent(this.playerManager.getPlayer(uuid));
-                }
-
-                if (attribute.isShared()) {
-                    Attribute<?> sharedAttribute = this.getSharedAttribute((Class<? extends Attribute<?>>) attribute.getClass(),  o);
-
-                    if (sharedAttribute == null) {
-                        sharedAttribute = attribute;
-                        attribute.loadWithGenericId(o);
-                        this.addSharedAttribute(o, sharedAttribute);
-                    }
-
-                    return sharedAttribute;
-                } else {
-                    attribute.loadWithGenericId(o);
-                    return attribute;
-                }
-            }, UtilConcurrency.SCHEDULED_EXECUTOR_SERVICE).whenComplete((loaded, throwable) -> {
-                if (loaded != null) {
-                    attributes.add(loaded);
-                } else if (throwable != null) {
-                    UtilLogger.logger().ifPresent(logger -> logger.error("Error when loading attribute data for " + entry.getKey().getName(), throwable));
-                } else {
-                    UtilLogger.logger().ifPresent(logger -> logger.error("There was an error because no attribute was loaded but there was no error reported"));
-                }
-            }));
-        }
-
-        return CompletableFuture.allOf(loadTasks.toArray(new CompletableFuture[0])).thenApply(unused -> attributes);
-    }
-
-    @Override
-    public <A extends Attribute<?>, B> CompletableFuture<A> loadAttribute(Class<? extends A> attributeClass, B id) {
-        if (id == null) {
-            return CompletableFuture.completedFuture(null);
-        }
+    @SuppressWarnings("unchecked")
+    public <A extends Attribute<B, T>, B> CompletableFuture<A> loadAttribute(Class<? extends A> attributeClass, B id) {
+        Preconditions.checkNotNull(attributeClass, "Cannot load attribute with null class");
+        Preconditions.checkNotNull(id, "Cannot load attribute with null id");
 
         return CompletableFuture.supplyAsync(() -> {
-            AttributeData<?, A> attributeData = (AttributeData<?, A>) this.registeredAttributes.get(attributeClass);
-            A attribute = attributeData.getConstructor().get();
+                    var data = this.registeredAttributes.get(attributeClass);
 
-            if (attribute.isShared()) {
-                A sharedAttribute = (A) this.getSharedAttribute(attributeClass, id);
+                    if (data.shared()) {
+                        A sharedAttribute = (A) this.getSharedAttribute(attributeClass, id);
 
-                if (sharedAttribute == null) {
-                    sharedAttribute = attribute;
-                    attribute.loadWithGenericId(id);
-                    this.addSharedAttribute(id, sharedAttribute);
-                }
+                        if (sharedAttribute == null) {
+                            sharedAttribute = (A) data.constructor().get();
+                            sharedAttribute.load(id);
+                            this.addSharedAttribute(id, sharedAttribute);
+                        }
 
-                return sharedAttribute;
-            } else {
-                attribute.loadWithGenericId(id);
-                return attribute;
-            }
-        }, UtilConcurrency.SCHEDULED_EXECUTOR_SERVICE).exceptionally(throwable -> {
-            UtilLogger.logger().ifPresent(logger -> logger.error("Error when loading attribute data for " + attributeClass.getName(), throwable));
-            return null;
-        });
-    }
-
-    @Override
-    public void saveData(UUID uuid, Attribute<?> attribute) {
-        attribute.getId(uuid).whenComplete((o, throwable) -> attribute.saveWithGenericId(o))
+                        return sharedAttribute;
+                    } else {
+                        A attribute = (A) data.constructor().get();
+                        attribute.load(id);
+                        return attribute;
+                    }
+                }, UtilConcurrency.SCHEDULED_EXECUTOR_SERVICE)
                 .exceptionally(throwable -> {
-                    UtilLogger.logger().ifPresent(logger -> logger.error("Error when saving attribute data for " + attribute.getClass().getName(), throwable));
+                    UtilLogger.logger().ifPresent(logger -> logger.error("Error when loading attribute data for " + attributeClass.getName(), throwable));
                     return null;
                 });
     }
 
     @Override
+    public <A> void saveData(A id, Attribute<A, T> attribute) {
+        attribute.save(id);
+    }
+
+    @Override
     public boolean delete(String name) {
-        UtilLogger.logger().ifPresent(logger -> logger.error("Cannot delete data for {} as no save manager is registered", name));
         return false;
     }
 

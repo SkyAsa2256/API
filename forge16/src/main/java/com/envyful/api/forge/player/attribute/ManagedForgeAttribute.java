@@ -7,9 +7,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 public abstract class ManagedForgeAttribute<A>
         extends PlayerAttribute<A, ForgeEnvyPlayer, ServerPlayerEntity> {
 
-    protected ManagedForgeAttribute(
-            A manager
-    ) {
+    protected ManagedForgeAttribute(A manager) {
         super(manager);
     }
 }

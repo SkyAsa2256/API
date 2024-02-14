@@ -1,5 +1,7 @@
 package com.envyful.api.player.attribute;
 
+import com.envyful.api.player.Attribute;
+
 import java.io.Serializable;
 
 /**
@@ -10,8 +12,8 @@ import java.io.Serializable;
  * @param <A> The attribute ID type
  * @param <B> The manager instance for the attribute
  */
-public abstract class ManagedAttribute<A, B>
-        implements Attribute<A>, Serializable {
+public abstract class ManagedAttribute<A, B, C>
+        implements Attribute<A, C>, Serializable {
 
     protected final transient B manager;
 

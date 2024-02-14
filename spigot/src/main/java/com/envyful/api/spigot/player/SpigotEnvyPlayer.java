@@ -25,11 +25,6 @@ public class SpigotEnvyPlayer extends AbstractEnvyPlayer<Player> {
     }
 
     @Override
-    public UUID getUuid() {
-        return this.uuid;
-    }
-
-    @Override
     public UUID getUniqueId() {
         return this.uuid;
     }

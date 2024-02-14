@@ -3,13 +3,13 @@ package com.envyful.api.player.save.impl;
 import com.envyful.api.concurrency.UtilConcurrency;
 import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.database.Database;
+import com.envyful.api.json.UtilGson;
+import com.envyful.api.player.Attribute;
 import com.envyful.api.player.PlayerManager;
-import com.envyful.api.player.attribute.Attribute;
-import com.envyful.api.player.attribute.PlayerAttribute;
 import com.envyful.api.player.save.AbstractSaveManager;
 import com.envyful.api.player.save.attribute.DataDirectory;
 import com.envyful.api.player.save.attribute.TypeAdapter;
-import com.google.common.collect.Lists;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -22,12 +22,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Supplier;
 
 public class JsonSaveManager<T> extends AbstractSaveManager<T> {
 
@@ -36,9 +32,9 @@ public class JsonSaveManager<T> extends AbstractSaveManager<T> {
 
     private static Gson gson = null;
 
-    protected final Map<Class<? extends Attribute<?>>, String> attributeDirectories = Maps.newHashMap();
+    protected final Map<Class<? extends Attribute<?, T>>, String> attributeDirectories = Maps.newHashMap();
 
-    public JsonSaveManager(PlayerManager<?, ?> playerManager) {
+    public JsonSaveManager(PlayerManager<?, T> playerManager) {
         super(playerManager);
     }
 
@@ -51,59 +47,36 @@ public class JsonSaveManager<T> extends AbstractSaveManager<T> {
     }
 
     @Override
-    public CompletableFuture<List<Attribute<?>>> loadData(UUID uuid) {
-        if (this.registeredAttributes.isEmpty()) {
-            return CompletableFuture.completedFuture(Collections.emptyList());
-        }
+    @SuppressWarnings("unchecked")
+    public <A extends Attribute<B, T>, B> CompletableFuture<A> loadAttribute(Class<? extends A> attributeClass, B id) {
+        Preconditions.checkNotNull(attributeClass, "Cannot load attribute with null class");
+        Preconditions.checkNotNull(id, "Cannot load attribute with null id");
 
-        List<Attribute<?>> attributes = Lists.newArrayList();
-        List<CompletableFuture<Attribute<?>>> loadTasks = Lists.newArrayList();
+        return CompletableFuture.supplyAsync(() -> {
+                    var data = (PlayerManager.AttributeData<A, B, T>) this.registeredAttributes.get(attributeClass);
 
-        for (Map.Entry<Class<? extends Attribute<?>>, AttributeData<?, ?>> entry : this.registeredAttributes.entrySet()) {
-            AttributeData<?, ?> value = entry.getValue();
-            Attribute<?> attribute = value.getConstructor().get();
+                    if (data.shared()) {
+                        A sharedAttribute = (A) this.getSharedAttribute(data.attributeClass(), id);
 
-            loadTasks.add(attribute.getId(uuid).thenApply(o -> {
-                if (o == null) {
+                        if (sharedAttribute == null) {
+                            sharedAttribute = this.readData(data, id);
+                            sharedAttribute.load(id);
+                            this.addSharedAttribute(id, sharedAttribute);
+                        }
+
+                        return sharedAttribute;
+                    } else {
+                        return this.readData(data, id);
+                    }
+                }, UtilConcurrency.SCHEDULED_EXECUTOR_SERVICE)
+                .exceptionally(throwable -> {
+                    UtilLogger.logger().ifPresent(logger -> logger.error("Error when loading attribute data for " + attributeClass.getName(), throwable));
                     return null;
-                }
-
-                if (attribute.isShared()) {
-                    Attribute<?> sharedAttribute = this.getSharedAttribute((Class<? extends Attribute<?>>) attribute.getClass(), o);
-
-                    if (sharedAttribute == null) {
-                        sharedAttribute = this.readData(entry.getKey(), attribute, o);
-                        this.addSharedAttribute(o, sharedAttribute);
-                    }
-
-                    return sharedAttribute;
-                } else {
-                    Attribute<?> loaded = this.readData(entry.getKey(), attribute, o);
-
-                    if (loaded instanceof PlayerAttribute) {
-                        ((PlayerAttribute) loaded).setParent(this.playerManager.getPlayer(uuid));
-                    }
-
-                    return loaded;
-                }
-            }).whenComplete((loaded, throwable) -> {
-                if (loaded != null) {
-                    attributes.add(loaded);
-                } else if (throwable != null) {
-                    UtilLogger.logger().ifPresent(logger -> logger.error("Error loading data for player " + uuid, throwable));
-                }
-            }));
-        }
-
-        return CompletableFuture.allOf(loadTasks.toArray(new CompletableFuture[0])).thenApply(unused -> attributes);
+                });
     }
 
-    protected Attribute<?> readData(
-            Class<? extends Attribute<?>> attributeClass,
-            Attribute<?> original,
-            Object key
-    ) {
-        String dataDirectory = this.attributeDirectories.get(attributeClass);
+    protected <A extends Attribute<B, T>, B> A readData(PlayerManager.AttributeData<A, B, T> data, B key) {
+        String dataDirectory = this.attributeDirectories.get(data.attributeClass());
         File file = Paths.get(dataDirectory, key.toString() + ".json").toFile();
 
         if (!file.exists()) {
@@ -111,49 +84,24 @@ public class JsonSaveManager<T> extends AbstractSaveManager<T> {
                 file.getParentFile().mkdirs();
                 Files.createFile(file.toPath());
             } catch (IOException e) {
-                UtilLogger.logger().ifPresent(logger -> logger.error("Error loading file for " + attributeClass.getName() + " for key " + key, e));
+                UtilLogger.logger().ifPresent(logger -> logger.error("Error loading file for " + data.attributeClass().getName() + " for key " + key, e));
             }
-            return original;
+            return data.constructor().get();
         }
 
         try (FileReader fileWriter = new FileReader(file)) {
-            return getGson().fromJson(new JsonReader(fileWriter), attributeClass);
+            return UtilGson.GSON.fromJson(new JsonReader(fileWriter), data.attributeClass());
         } catch (IOException e) {
-            UtilLogger.logger().ifPresent(logger -> logger.error("Error loading file for " + attributeClass.getName() + " for key " + key, e));
+            UtilLogger.logger().ifPresent(logger -> logger.error("Error loading file for " + data.attributeClass().getName() + " for key " + key, e));
         }
 
-        return original;
+        return data.constructor().get();
     }
 
     @Override
-    public <A extends Attribute<?>, B> CompletableFuture<A> loadAttribute(Class<? extends A> attributeClass, B id) {
-        if (id == null) {
-            return CompletableFuture.completedFuture(null);
-        }
-
-        return CompletableFuture.supplyAsync(() -> {
-            AttributeData<?, A> attributeData = (AttributeData<?, A>) this.registeredAttributes.get(attributeClass);
-            A attribute = attributeData.getConstructor().get();
-
-            if (attribute.isShared()) {
-                A sharedAttribute = (A) this.getSharedAttribute(attributeClass, id);
-
-                if (sharedAttribute == null) {
-                    sharedAttribute = (A) this.readData(attributeClass, attribute, id);
-                    this.addSharedAttribute(id, sharedAttribute);
-                }
-
-                return sharedAttribute;
-            } else {
-                return (A) this.readData(attributeClass, attribute, id);
-            }
-        }, UtilConcurrency.SCHEDULED_EXECUTOR_SERVICE);
-    }
-
-    @Override
-    public void saveData(UUID uuid, Attribute<?> attribute) {
+    public <A> void saveData(A id, Attribute<A, T> attribute) {
         String dataDirectory = this.attributeDirectories.get(attribute.getClass());
-        File file = Paths.get(dataDirectory, uuid.toString() + ".json").toFile();
+        File file = Paths.get(dataDirectory, id.toString() + ".json").toFile();
 
         if (!file.exists()) {
             try {
@@ -172,27 +120,28 @@ public class JsonSaveManager<T> extends AbstractSaveManager<T> {
     }
 
     @Override
-    public <A extends Attribute<B>, B> void registerAttribute(Class<A> attribute, Supplier<A> constructor) {
-        DataDirectory dataDirectory = attribute.getAnnotation(DataDirectory.class);
+    public <A extends Attribute<B, T>, B> void registerAttribute(PlayerManager.AttributeData<A, B, T> attribute) {
+        DataDirectory dataDirectory = attribute.attributeClass().getAnnotation(DataDirectory.class);
 
         if (dataDirectory == null) {
             return;
         }
 
-        TypeAdapter typeAdapter = attribute.getAnnotation(TypeAdapter.class);
+        TypeAdapter typeAdapter = attribute.attributeClass().getAnnotation(TypeAdapter.class);
 
         if (typeAdapter != null) {
             try {
-                GSON_BUILDER.registerTypeAdapter(attribute, typeAdapter.value().newInstance());
+                GSON_BUILDER.registerTypeAdapter(attribute.attributeClass(), typeAdapter.value().newInstance());
             } catch (InstantiationException | IllegalAccessException e) {
                 UtilLogger.logger()
                         .ifPresent(logger -> logger.error(
-                                "Error registering type adapter for: " + attribute.getSimpleName(), e));
+                                "Error registering type adapter for: " + attribute.attributeClass().getSimpleName(), e));
             }
         }
 
-        this.attributeDirectories.put(attribute, dataDirectory.value());
-        super.registerAttribute(attribute, constructor);
+        this.attributeDirectories.put(attribute.attributeClass(), dataDirectory.value());
+
+        super.registerAttribute(attribute);
     }
 
     @Override

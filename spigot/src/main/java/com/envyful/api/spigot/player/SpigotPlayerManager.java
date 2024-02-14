@@ -2,14 +2,13 @@ package com.envyful.api.spigot.player;
 
 import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
 import com.envyful.api.concurrency.UtilConcurrency;
-import com.envyful.api.concurrency.UtilLogger;
+import com.envyful.api.player.Attribute;
+import com.envyful.api.player.AttributeBuilder;
 import com.envyful.api.player.PlayerManager;
-import com.envyful.api.player.attribute.Attribute;
-import com.envyful.api.player.attribute.data.PlayerAttributeData;
-import com.envyful.api.player.save.SaveManager;
-import com.envyful.api.player.save.impl.EmptySaveManager;
+import com.envyful.api.player.manager.AbstractPlayerManager;
+import com.envyful.api.spigot.event.ServerShutdownEvent;
+import com.envyful.api.spigot.player.attribute.SpigotTrigger;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,12 +17,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.world.WorldSaveEvent;
 import org.bukkit.plugin.Plugin;
-
-import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.function.Supplier;
 
 /**
  *
@@ -33,164 +28,52 @@ import java.util.function.Supplier;
  *
  * Simple instantiation as not enough arguments to warrant a builder class and
  */
-public class SpigotPlayerManager implements PlayerManager<SpigotEnvyPlayer, Player> {
+public class SpigotPlayerManager extends AbstractPlayerManager<SpigotEnvyPlayer, Player> {
 
-    private final Map<UUID, SpigotEnvyPlayer> cachedPlayers = Maps.newHashMap();
-    private final List<PlayerAttributeData> attributeData = Lists.newArrayList();
-
-    private SaveManager<Player> saveManager = new EmptySaveManager<>(this);
+    protected final Plugin plugin;
 
     public SpigotPlayerManager(Plugin plugin) {
-        Bukkit.getPluginManager().registerEvents(new PlayerListener(this), plugin);
+        super(Player::getUniqueId);
+
+        this.plugin = plugin;
+
+        Bukkit.getPluginManager().registerEvents(new PlayerListener(), plugin);
     }
 
     @Override
-    public SpigotEnvyPlayer getPlayer(Player player) {
-        return this.getPlayer(player.getUniqueId());
-    }
+    public <X extends Attribute<Y, Player>, Y> void registerAttribute(AttributeBuilder<X, Y, Player> builder) {
+        builder.triggers(
+                SpigotTrigger.singleSet(this.plugin, PlayerLoginEvent.class, event -> this.cachedPlayers.get(event.getPlayer().getUniqueId())),
+                SpigotTrigger.singleSave(this.plugin, PlayerQuitEvent.class, event -> this.cachedPlayers.get(event.getPlayer().getUniqueId())),
+                SpigotTrigger.save(this.plugin, WorldSaveEvent.class, event -> Lists.newArrayList(this.cachedPlayers.values())),
+                SpigotTrigger.save(this.plugin, ServerShutdownEvent.class, event -> Lists.newArrayList(this.cachedPlayers.values()))
+        );
 
-    @Override
-    public SpigotEnvyPlayer getPlayer(UUID uuid) {
-        return this.cachedPlayers.get(uuid);
-    }
-
-    @Override
-    public SpigotEnvyPlayer getOnlinePlayer(String username) {
-        for (SpigotEnvyPlayer online : this.cachedPlayers.values()) {
-            if (online.getParent().getName().equals(username)) {
-                return online;
-            }
-        }
-
-        return null;
-    }
-
-    @Override
-    public SpigotEnvyPlayer getOnlinePlayerCaseInsensitive(String username) {
-        for (SpigotEnvyPlayer online : this.cachedPlayers.values()) {
-            if (online.getParent().getName().equalsIgnoreCase(username)) {
-                return online;
-            }
-        }
-
-        return null;
-    }
-
-    @Override
-    public List<SpigotEnvyPlayer> getOnlinePlayers() {
-        return Collections.unmodifiableList(Lists.newArrayList(this.cachedPlayers.values()));
-    }
-
-    @Override
-    public List<Attribute<?>> getOfflineAttributes(UUID uuid) {
-        try {
-            return this.saveManager.loadData(uuid).get();
-        } catch (InterruptedException | ExecutionException e) {
-            return Collections.emptyList();
-        }
-    }
-
-    @Override
-    public <A extends Attribute<B>, B> void registerAttribute(Class<A> attribute, Supplier<A> constructor) {
-        this.attributeData.add(new PlayerAttributeData(attribute));
-
-        if (this.saveManager != null) {
-            this.saveManager.registerAttribute(attribute, constructor);
-        }
-    }
-
-    @Override
-    public void setSaveManager(SaveManager<Player> saveManager) {
-        this.saveManager = saveManager;
-    }
-
-    @Override
-    public SaveManager<Player> getSaveManager() {
-        return this.saveManager;
-    }
-
-    @Override
-    public <A extends Attribute<B>, B> CompletableFuture<A> loadAttribute(Class<? extends A> attributeClass, B id) {
-        return this.saveManager.loadAttribute(attributeClass, id);
+        super.registerAttribute(builder);
     }
 
     private final class PlayerListener implements Listener {
 
-        private final SpigotPlayerManager manager;
-
-        private PlayerListener(SpigotPlayerManager manager) {
-            this.manager = manager;
-        }
-
         @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
         public void onAsyncPrePlayerLogin(AsyncPlayerPreLoginEvent event) {
-            SpigotEnvyPlayer player = new SpigotEnvyPlayer(this.manager.saveManager,event.getUniqueId());
-            this.manager.cachedPlayers.put(event.getUniqueId(), player);
-
-            UtilConcurrency.runAsync(() -> {
-                this.manager.saveManager.loadData(player).whenCompleteAsync((attributes, throwable) -> {
-                    if (throwable != null) {
-                        this.manager.saveManager.getErrorHandler().accept(player, throwable);
-                        return;
-                    }
-
-                    for (PlayerAttributeData attributeDatum : this.manager.attributeData) {
-                        Attribute<?> attribute = this.findAttribute(attributeDatum, attributes);
-
-                        if (attribute == null) {
-                            UtilLogger.logger().ifPresent(logger -> logger.error("Null attribute loaded for {}", attributeDatum.getAttributeClass().getName()));
-                            continue;
-                        }
-
-                        player.setAttribute(attribute);
-                    }
-                }, UtilConcurrency.SCHEDULED_EXECUTOR_SERVICE);
-            });
-        }
-
-        private Attribute<?> findAttribute(PlayerAttributeData attributeDatum,
-                                              List<Attribute<?>> playerAttributes) {
-            for (Attribute<?> playerAttribute : playerAttributes) {
-                if (Objects.equals(attributeDatum.getAttributeClass(), playerAttribute.getClass())) {
-                    return playerAttribute;
-                }
-            }
-
-            return null;
+            var player = new SpigotEnvyPlayer(saveManager, event.getUniqueId());
+            cachedPlayers.put(event.getUniqueId(), player);
         }
 
         @EventHandler(priority = EventPriority.LOWEST)
         public void onPlayerJoin(PlayerLoginEvent event) {
-            this.manager.cachedPlayers.get(event.getPlayer().getUniqueId()).setParent(event.getPlayer());
+            cachedPlayers.get(event.getPlayer().getUniqueId()).setParent(event.getPlayer());
         }
 
-        @EventHandler(priority = EventPriority.HIGHEST)
+        @EventHandler(priority = EventPriority.MONITOR)
         public void onPlayerQuit(PlayerQuitEvent event) {
-            SpigotEnvyPlayer player = this.manager.cachedPlayers.remove(event.getPlayer().getUniqueId());
-
-            if (player == null) {
-                return;
-            }
-
-            if (Bukkit.isStopping()) {
-                this.saveData(player);
-            } else {
-                UtilConcurrency.runAsync(() -> this.saveData(player));
-            }
-        }
-
-        private void saveData(SpigotEnvyPlayer player) {
-            for (Attribute<?> value : player.getAttributes()) {
-                if (value != null) {
-                    this.manager.saveManager.saveData(player, value);
-                }
-            }
+            Bukkit.getScheduler().runTaskLater(plugin, () -> cachedPlayers.remove(event.getPlayer().getUniqueId()), 40L);
         }
 
         @EventHandler(priority = EventPriority.LOWEST)
         public void onPlayerRespawn(PlayerPostRespawnEvent event) {
             UtilConcurrency.runLater(() -> {
-                SpigotEnvyPlayer player = this.manager.cachedPlayers.get(event.getPlayer().getUniqueId());
+                SpigotEnvyPlayer player = cachedPlayers.get(event.getPlayer().getUniqueId());
 
                 player.setParent(event.getPlayer());
             }, 5L);

@@ -1,6 +1,5 @@
 package com.envyful.api.gui.item;
 
-import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.player.EnvyPlayer;
 
 import java.util.function.BiConsumer;
@@ -29,25 +28,6 @@ public interface Displayable {
      * @param viewer The player viewing the current page / container for which the update should occur
      */
     void update(EnvyPlayer<?> viewer);
-
-    /**
-     *
-     * Adds the Displayable to the provided Pane
-     *
-     * @param pane The pane
-     * @param slot The slot
-     */
-    void add(Pane pane, int slot);
-
-    /**
-     *
-     * Adds the Displayable to the provided Pane
-     *
-     * @param pane The pane
-     * @param slotX The slot's X position
-     * @param slotY the slot's Y position
-     */
-    void add(Pane pane, int slotX, int slotY);
 
     /**
      *

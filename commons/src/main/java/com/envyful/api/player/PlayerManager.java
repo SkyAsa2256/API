@@ -102,7 +102,6 @@ public interface PlayerManager<A extends EnvyPlayer<B>, B> {
       *
       * @param attribute The class of the attribute being registered
       */
-     @Deprecated(forRemoval = true)
      default <X extends Attribute<Y, B>, Y> void registerAttribute(Class<X> attribute, Supplier<X> constructor) {
           this.registerAttribute(Attribute.builder(attribute).constructor(constructor));
      }

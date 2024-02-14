@@ -7,6 +7,7 @@ import com.envyful.api.type.AsyncFunction;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -91,6 +92,20 @@ public interface PlayerManager<A extends EnvyPlayer<B>, B> {
       * @return The save manager
       */
      SaveManager<B> getSaveManager();
+
+     /**
+      *
+      * Loads the data for a single attribute using the given id
+      *
+      * @param attributeClass The class of the attribute
+      * @param id The id to load the data using
+      * @return The attribute instance
+      * @param <X> The attribute type
+      * @param <Y> The id type
+      */
+     default <X extends Attribute<Y, B>, Y> CompletableFuture<X> loadAttribute(Class<? extends X> attributeClass, Y id) {
+          return this.getSaveManager().loadAttribute(attributeClass, id);
+     }
 
      /**
       *

@@ -76,6 +76,10 @@ public abstract class AbstractPlayerManager<A extends EnvyPlayer<B>, B> implemen
     @Override
     @SuppressWarnings("unchecked")
     public <X extends Attribute<Y, B>, Y> void registerAttribute(AttributeData<X, Y, B> attributeData) {
+        for (var trigger : attributeData.triggers()) {
+            trigger.addAttribute(attributeData);
+        }
+
         this.attributeData.put((Class<? extends Attribute<?, B>>) attributeData.getClass(), attributeData);
 
         if (this.saveManager != null) {

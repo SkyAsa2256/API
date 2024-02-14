@@ -145,10 +145,6 @@ public interface PlayerManager<A extends EnvyPlayer<B>, B> {
           );
 
           this.registerAttribute(data);
-
-          for (var trigger : data.triggers()) {
-               trigger.addAttribute(data);
-          }
      }
 
      /**

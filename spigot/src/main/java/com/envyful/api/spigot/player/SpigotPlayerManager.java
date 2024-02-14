@@ -6,6 +6,7 @@ import com.envyful.api.player.Attribute;
 import com.envyful.api.player.AttributeBuilder;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.player.manager.AbstractPlayerManager;
+import com.envyful.api.spigot.event.ServerShutdownEvent;
 import com.envyful.api.spigot.player.attribute.SpigotTrigger;
 import com.google.common.collect.Lists;
 import org.bukkit.Bukkit;
@@ -44,7 +45,8 @@ public class SpigotPlayerManager extends AbstractPlayerManager<SpigotEnvyPlayer,
         builder.triggers(
                 SpigotTrigger.singleSet(this.plugin, PlayerLoginEvent.class, event -> this.cachedPlayers.get(event.getPlayer().getUniqueId())),
                 SpigotTrigger.singleSave(this.plugin, PlayerQuitEvent.class, event -> this.cachedPlayers.get(event.getPlayer().getUniqueId())),
-                SpigotTrigger.save(this.plugin, WorldSaveEvent.class, event -> Lists.newArrayList(this.cachedPlayers.values()))
+                SpigotTrigger.save(this.plugin, WorldSaveEvent.class, event -> Lists.newArrayList(this.cachedPlayers.values())),
+                SpigotTrigger.save(this.plugin, ServerShutdownEvent.class, event -> Lists.newArrayList(this.cachedPlayers.values()))
         );
 
         super.registerAttribute(builder);

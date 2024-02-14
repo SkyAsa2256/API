@@ -30,8 +30,8 @@ public class AttributeBuilder<A extends Attribute<B, C>, B, C> {
         return this;
     }
 
-    public AttributeBuilder<A, B, C> idMapper(Function<C, Object> idMapper) {
-        return this.idMapper((AsyncFunction<C, Object>) player -> CompletableFuture.completedFuture(idMapper.apply(player)));
+    public AttributeBuilder<A, B, C> instantIdMapper(Function<C, Object> idMapper) {
+        return this.idMapper(player -> CompletableFuture.completedFuture(idMapper.apply(player)));
     }
 
     public AttributeBuilder<A, B, C> idMapper(AsyncFunction<C, Object> idMapper) {

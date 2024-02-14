@@ -12,7 +12,6 @@ import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.platform.PlatformProxy;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.text.Placeholder;
-import com.envyful.api.type.Pair;
 import com.google.common.collect.Lists;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
@@ -32,7 +31,6 @@ public class ConfirmationUI {
     private ExtendedConfigItem confirmItem = ExtendedConfigItem.builder()
             .type("minecraft:stained_glass_pane")
             .name("&aConfirm")
-            .positions(Pair.of(2, 1))
             .lore("&7Click to confirm")
             .amount(1)
             .build();
@@ -41,11 +39,9 @@ public class ConfirmationUI {
             .name("&cDeny")
             .lore("&7Click to deny")
             .amount(1)
-            .positions(Pair.of(1, 1))
             .build();
     private ExtendedConfigItem returnItem = ExtendedConfigItem.builder()
             .disable()
-            .positions(Pair.of(1, 2))
             .type("minecraft:stained_glass_pane")
             .name("&cDeny")
             .lore("&7Click to deny")

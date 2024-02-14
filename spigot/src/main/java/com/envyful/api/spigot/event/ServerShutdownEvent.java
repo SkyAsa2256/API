@@ -16,15 +16,6 @@ public class ServerShutdownEvent extends Event {
 
     private static final HandlerList HANDLER_LIST = new HandlerList();
 
-    /**
-     *
-     * Constructor for the event
-     *
-     */
-    public ServerShutdownEvent() {
-        super();
-    }
-
     @Override
     public @NotNull HandlerList getHandlers() {
         return HANDLER_LIST;

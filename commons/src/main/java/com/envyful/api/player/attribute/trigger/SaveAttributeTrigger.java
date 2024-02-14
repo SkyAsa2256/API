@@ -11,7 +11,7 @@ public class SaveAttributeTrigger<T> extends AbstractAttributeTrigger<T> {
     @Override
     public void trigger(EnvyPlayer<T> player) {
         for (var data : this.attributes) {
-            data.idMapper().apply(player.getParent())
+            this.getIdMapper(player, data).apply(player.getParent())
                     .thenAcceptAsync(id -> this.saveAttribute(data.saveManager(), player.getAttributeNow(data.attributeClass()), id), UtilConcurrency.SCHEDULED_EXECUTOR_SERVICE);
         }
     }

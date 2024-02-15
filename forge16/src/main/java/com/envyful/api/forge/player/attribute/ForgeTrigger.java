@@ -51,7 +51,15 @@ public class ForgeTrigger {
      * @param <A> The event type
      */
     public static <A extends Event> AttributeTrigger<ServerPlayerEntity> singleSet(IEventBus eventBus, Class<A> event, Function<A, ForgeEnvyPlayer> converter) {
-        return set(eventBus, event, a -> List.of(converter.apply(a)));
+        return set(eventBus, event, a -> {
+            var player = converter.apply(a);
+
+            if (player == null) {
+                return List.of();
+            }
+
+            return List.of(player);
+        });
     }
 
     /**
@@ -107,7 +115,15 @@ public class ForgeTrigger {
      * @param <A> The event type
      */
     public static <A extends Event> AttributeTrigger<ServerPlayerEntity> singleClear(IEventBus eventBus, Class<A> event, Function<A, ForgeEnvyPlayer> converter) {
-        return clear(eventBus, event, a -> List.of(converter.apply(a)));
+        return clear(eventBus, event, a -> {
+            var player = converter.apply(a);
+
+            if (player == null) {
+                return List.of();
+            }
+
+            return List.of(player);
+        });
     }
 
     /**
@@ -149,7 +165,15 @@ public class ForgeTrigger {
      * @param <A> the event type
      */
     public static <A extends Event> AttributeTrigger<ServerPlayerEntity> singleSave(Class<A> event, Function<A, ForgeEnvyPlayer> converter) {
-        return save(MinecraftForge.EVENT_BUS, event, a -> List.of(converter.apply(a)));
+        return save(MinecraftForge.EVENT_BUS, event, a -> {
+            var player = converter.apply(a);
+
+            if (player == null) {
+                return List.of();
+            }
+
+            return List.of(player);
+        });
     }
 
 
@@ -164,7 +188,15 @@ public class ForgeTrigger {
      * @param <A> The event type
      */
     public static <A extends Event> AttributeTrigger<ServerPlayerEntity> singleSave(IEventBus eventBus, Class<A> event, Function<A, ForgeEnvyPlayer> converter) {
-        return save(eventBus, event, a -> List.of(converter.apply(a)));
+        return save(eventBus, event, a -> {
+            var player = converter.apply(a);
+
+            if (player == null) {
+                return List.of();
+            }
+
+            return List.of(player);
+        });
     }
 
     /**

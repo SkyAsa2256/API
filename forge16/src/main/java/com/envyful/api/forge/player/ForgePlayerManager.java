@@ -48,7 +48,7 @@ public class ForgePlayerManager extends AbstractPlayerManager<ForgeEnvyPlayer, S
 
     private final class PlayerListener {
 
-        @SubscribeEvent(priority = EventPriority.LOWEST)
+        @SubscribeEvent(priority = EventPriority.HIGHEST)
         public void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
             var player = new ForgeEnvyPlayer(saveManager, (ServerPlayerEntity) event.getPlayer());
             cachedPlayers.put(event.getPlayer().getUUID(), player);
@@ -59,7 +59,7 @@ public class ForgePlayerManager extends AbstractPlayerManager<ForgeEnvyPlayer, S
             UtilForgeConcurrency.runLater(() -> cachedPlayers.remove(event.getEntity().getUUID()), 40);
         }
 
-        @SubscribeEvent(priority = EventPriority.LOWEST)
+        @SubscribeEvent(priority = EventPriority.HIGHEST)
         public void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
             UtilConcurrency.runLater(() -> {
                 ForgeEnvyPlayer player = cachedPlayers.get(event.getPlayer().getUUID());

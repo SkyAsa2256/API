@@ -28,11 +28,19 @@ public abstract class AbstractPlayerManager<A extends EnvyPlayer<B>, B> implemen
 
     @Override
     public A getPlayer(B player) {
+        if (player == null) {
+            return null;
+        }
+
         return this.getPlayer(this.uuidGetter.apply(player));
     }
 
     @Override
     public A getPlayer(UUID uuid) {
+        if (uuid == null) {
+            return null;
+        }
+
         return this.cachedPlayers.get(uuid);
     }
 

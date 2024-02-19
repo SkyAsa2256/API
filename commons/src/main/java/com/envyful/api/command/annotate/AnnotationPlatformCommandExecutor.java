@@ -34,6 +34,11 @@ public class AnnotationPlatformCommandExecutor<C> implements PlatformCommandExec
     public void execute(C sender, String[] args) {
         Object[] values = new Object[this.getArgumentsSize()];
 
+        if (!this.senderType.isAccepted(sender)) {
+            PlatformProxy.sendMessage(sender, List.of("&c&l(!) &cYou cannot execute this command!"));
+            return;
+        }
+
         values[0] = this.senderType.getInstance(sender);
 
         for (int i = 0; i < this.arguments.size(); i++) {

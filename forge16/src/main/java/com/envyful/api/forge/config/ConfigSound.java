@@ -14,11 +14,20 @@ public class ConfigSound {
     private transient ResourceLocation cachedSound = null;
     private float volume;
     private float pitch;
+    private SoundCategory source;
+
+    public ConfigSound(String sound, float volume, float pitch, SoundCategory source) {
+        this.sound = sound;
+        this.volume = volume;
+        this.pitch = pitch;
+        this.source = source;
+    }
 
     public ConfigSound(String sound, float volume, float pitch) {
         this.sound = sound;
         this.volume = volume;
         this.pitch = pitch;
+        this.source = SoundCategory.MASTER;
     }
 
     public ConfigSound() {
@@ -34,7 +43,7 @@ public class ConfigSound {
         }
 
         for (ServerPlayerEntity player : players) {
-            player.connection.send(new SPlaySoundPacket(this.cachedSound, SoundCategory.MUSIC,
+            player.connection.send(new SPlaySoundPacket(this.cachedSound, this.source,
                     new Vector3d(player.getX(), player.getY(), player.getZ()), 1.0f, 1.0f));
         }
     }

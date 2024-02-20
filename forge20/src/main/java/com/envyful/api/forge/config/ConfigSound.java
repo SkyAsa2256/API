@@ -15,11 +15,20 @@ public class ConfigSound {
     private transient SoundEvent cachedSound = null;
     private float volume;
     private float pitch;
+    private SoundSource source;
+
+    public ConfigSound(String sound, float volume, float pitch, SoundSource source) {
+        this.sound = sound;
+        this.volume = volume;
+        this.pitch = pitch;
+        this.source = source;
+    }
 
     public ConfigSound(String sound, float volume, float pitch) {
         this.sound = sound;
         this.volume = volume;
         this.pitch = pitch;
+        this.source = SoundSource.MASTER;
     }
 
     public ConfigSound() {
@@ -35,7 +44,7 @@ public class ConfigSound {
         }
 
         for (ServerPlayer player : players) {
-            player.connection.send(new ClientboundSoundPacket(Holder.direct(this.cachedSound), SoundSource.MUSIC, player.getX(), player.getY(), player.getZ(), 1.0f, 1.0f, 1));
+            player.connection.send(new ClientboundSoundPacket(Holder.direct(this.cachedSound), this.source, player.getX(), player.getY(), player.getZ(), 1.0f, 1.0f, 1));
         }
     }
 }

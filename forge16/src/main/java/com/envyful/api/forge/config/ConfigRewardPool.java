@@ -47,10 +47,6 @@ public class ConfigRewardPool<T extends ConfigReward> extends AbstractYamlConfig
     }
 
     public void give(ServerPlayerEntity player, Placeholder... transformers) {
-        if (this.guaranteedReward != null) {
-            this.guaranteedReward.execute(player, transformers);
-        }
-
         for (ConfigReward randomReward : this.getRandomRewards()) {
             randomReward.execute(player, transformers);
         }

@@ -13,7 +13,7 @@ import java.util.List;
 @ConfigSerializable
 public class ConfigRewardPool<T extends ConfigReward> extends AbstractYamlConfig {
 
-    private ConfigReward guaranteedReward;
+    private T guaranteedReward;
     private int rewardRollsMin;
     private int rewardRollsMax;
     private double chanceOfAdditionalRewards = 1.0;
@@ -37,6 +37,10 @@ public class ConfigRewardPool<T extends ConfigReward> extends AbstractYamlConfig
             for (int i = 0; i < UtilRandom.randomInteger(this.rewardRollsMin, this.rewardRollsMax); i++) {
                 randomlySelectedRewards.add(this.rewards.getRandom());
             }
+        }
+
+        if (this.guaranteedReward != null) {
+            randomlySelectedRewards.add(guaranteedReward);
         }
 
         return randomlySelectedRewards;

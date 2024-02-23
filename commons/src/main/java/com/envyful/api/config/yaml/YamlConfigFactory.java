@@ -186,25 +186,29 @@ public class YamlConfigFactory {
                 continue;
             }
 
-            ConfigurationReference<CommentedConfigurationNode> base =
-                    listenToConfig(listFile.toPath(), serializers, getTypeSerializers(configClass), style);
+            try {
+                ConfigurationReference<CommentedConfigurationNode> base =
+                        listenToConfig(listFile.toPath(), serializers, getTypeSerializers(configClass), style);
 
-            if (base == null) {
-                throw new IOException("Error config loaded as null");
+                if (base == null) {
+                    throw new IOException("Error config loaded as null");
+                }
+
+                ValueReference<T, CommentedConfigurationNode> reference =
+                        base.referenceTo(configClass);
+                T instance = reference.get();
+
+                if (instance == null) {
+                    throw new IOException("Error config loaded as null");
+                }
+
+                instance.base = base;
+                instance.config = reference;
+                instance.save();
+                loadedConfigs.add(instance);
+            } catch (IOException e) {
+                throw new IOException("Error loading config " + listFile.getName(), e);
             }
-
-            ValueReference<T, CommentedConfigurationNode> reference =
-                    base.referenceTo(configClass);
-            T instance = reference.get();
-
-            if (instance == null) {
-                throw new IOException("Error config loaded as null");
-            }
-
-            instance.base = base;
-            instance.config = reference;
-            instance.save();
-            loadedConfigs.add(instance);
         }
 
         return loadedConfigs;

@@ -72,6 +72,13 @@ public interface CommandFactory<A, B> {
         this.registerInjector(parentClass, false, function);
     }
 
+    /**
+     *
+     * Gets the argument injector for this parent class
+     *
+     * @param parentClass The class to get the injector for
+     * @return The injector
+     */
     ArgumentInjector<?, B> getRegisteredInjector(Class<?> parentClass);
 
     /**

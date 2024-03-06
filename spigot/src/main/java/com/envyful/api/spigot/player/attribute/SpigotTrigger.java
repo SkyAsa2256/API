@@ -39,7 +39,15 @@ public class SpigotTrigger {
      * @param <A> the event type
      */
     public static <A extends Event> AttributeTrigger<Player> singleSet(Plugin plugin, Class<A> event, Function<A, SpigotEnvyPlayer> converter) {
-        return set(plugin, event, a -> List.of(converter.apply(a)));
+        return set(plugin, event, a -> {
+            var player = converter.apply(a);
+
+            if (player == null) {
+                return List.of();
+            }
+
+            return List.of(player);
+        });
     }
 
     /**
@@ -69,7 +77,15 @@ public class SpigotTrigger {
      * @param <A> the event type
      */
     public static <A extends Event> AttributeTrigger<Player> singleClear(Plugin plugin, Class<A> event, Function<A, SpigotEnvyPlayer> converter) {
-        return clear(plugin, event, a -> List.of(converter.apply(a)));
+        return clear(plugin, event, a -> {
+            var player = converter.apply(a);
+
+            if (player == null) {
+                return List.of();
+            }
+
+            return List.of(player);
+        });
     }
 
     /**
@@ -99,7 +115,15 @@ public class SpigotTrigger {
      * @param <A> the event type
      */
     public static <A extends Event> AttributeTrigger<Player> singleSave(Plugin plugin, Class<A> event, Function<A, SpigotEnvyPlayer> converter) {
-        return save(plugin, event, a -> List.of(converter.apply(a)));
+        return save(plugin, event, a -> {
+            var player = converter.apply(a);
+
+            if (player == null) {
+                return List.of();
+            }
+
+            return List.of(player);
+        });
     }
 
     /**

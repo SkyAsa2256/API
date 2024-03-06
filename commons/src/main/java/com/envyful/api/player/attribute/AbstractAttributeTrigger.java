@@ -27,7 +27,7 @@ public abstract class AbstractAttributeTrigger<T> implements AttributeTrigger<T>
         return true;
     }
 
-    protected AsyncFunction<T, Object> getIdMapper(EnvyPlayer<T> player, PlayerManager.AttributeData<?, ?, T> attributeData) {
+    protected AsyncFunction<EnvyPlayer<T>, Object> getIdMapper(EnvyPlayer<T> player, PlayerManager.AttributeData<?, ?, T> attributeData) {
         if (attributeData.idMapper() == null) {
             return t -> CompletableFuture.completedFuture(player.getUniqueId());
         }

@@ -174,12 +174,12 @@ public interface PlayerManager<A extends EnvyPlayer<B>, B> {
           private final Class<A> attributeClass;
           private final boolean shared;
           private final Supplier<A> constructor;
-          private final AsyncFunction<C, Object> idMapper;
+          private final AsyncFunction<EnvyPlayer<C>, Object> idMapper;
           private final List<Predicate<EnvyPlayer<C>>> predicates;
           private final List<AttributeTrigger<C>> triggers;
           private final SaveManager<C> saveManager;
 
-          protected AttributeData(Class<A> attributeClass, boolean shared, Supplier<A> constructor, AsyncFunction<C, Object> idMapper,
+          protected AttributeData(Class<A> attributeClass, boolean shared, Supplier<A> constructor, AsyncFunction<EnvyPlayer<C>, Object> idMapper,
                                   List<Predicate<EnvyPlayer<C>>> predicates, List<AttributeTrigger<C>> triggers, SaveManager<C> saveManager) {
                this.attributeClass = attributeClass;
                this.shared = shared;
@@ -202,7 +202,7 @@ public interface PlayerManager<A extends EnvyPlayer<B>, B> {
                return this.constructor;
           }
 
-          public AsyncFunction<C, Object> idMapper() {
+          public AsyncFunction<EnvyPlayer<C>, Object> idMapper() {
                return this.idMapper;
           }
 

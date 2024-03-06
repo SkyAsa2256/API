@@ -14,7 +14,7 @@ public class AttributeBuilder<A extends Attribute<B, C>, B, C> {
 
     protected Class<A> attributeClass;
     protected Supplier<A> constructor;
-    protected AsyncFunction<C, Object> idMapper;
+    protected AsyncFunction<EnvyPlayer<C>, Object> idMapper;
     protected List<Predicate<EnvyPlayer<C>>> predicates = Lists.newArrayList();
     protected List<AttributeTrigger<C>> triggers = Lists.newArrayList();
 
@@ -30,11 +30,11 @@ public class AttributeBuilder<A extends Attribute<B, C>, B, C> {
         return this;
     }
 
-    public AttributeBuilder<A, B, C> instantIdMapper(Function<C, Object> idMapper) {
+    public AttributeBuilder<A, B, C> instantIdMapper(Function<EnvyPlayer<C>, Object> idMapper) {
         return this.idMapper(player -> CompletableFuture.completedFuture(idMapper.apply(player)));
     }
 
-    public AttributeBuilder<A, B, C> idMapper(AsyncFunction<C, Object> idMapper) {
+    public AttributeBuilder<A, B, C> idMapper(AsyncFunction<EnvyPlayer<C>, Object> idMapper) {
         this.idMapper = idMapper;
         return this;
     }

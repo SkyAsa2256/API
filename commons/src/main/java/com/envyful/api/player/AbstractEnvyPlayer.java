@@ -86,13 +86,13 @@ public abstract class AbstractEnvyPlayer<T> implements EnvyPlayer<T> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <A extends Attribute<B, T>, B, C extends EnvyPlayer<T>> void setAttribute(CompletableFuture<A> attribute) {
+    public <A extends Attribute<B, T>, B, C extends EnvyPlayer<T>> void setAttribute(Class<A> attributeClass, CompletableFuture<A> attribute) {
         attribute.whenComplete((a, throwable) -> {
             if (a instanceof PlayerAttribute) {
                 ((PlayerAttribute<?, C, T>) a).setParent((C) this);
             }
         });
-        this.attributes.put(attribute.getClass(), new AttributeInstance<>(attribute));
+        this.attributes.put(attributeClass, new AttributeInstance<>(attribute));
     }
 
     @Override

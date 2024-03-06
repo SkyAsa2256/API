@@ -16,7 +16,7 @@ public class SetAttributeTrigger<T> extends AbstractAttributeTrigger<T> {
                 continue;
             }
 
-            player.setAttribute(
+            setAttribute(player, data.attributeClass(),
                     this.getIdMapper(player, data).apply(player.getParent())
                             .thenCompose(id -> loadAttribute(data.saveManager(), data.attributeClass(), id))
                             .exceptionally(throwable -> {
@@ -24,6 +24,11 @@ public class SetAttributeTrigger<T> extends AbstractAttributeTrigger<T> {
                                 return null;
                             }));
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private <A extends Attribute<B, T>, B, C extends EnvyPlayer<T>> void setAttribute(C player, Class<?> attributeClass, CompletableFuture<? extends Attribute> attribute) {
+        player.setAttribute((Class<A>) attributeClass, (CompletableFuture<A>) attribute);
     }
 
     @SuppressWarnings("unchecked")

@@ -4,16 +4,22 @@ import com.envyful.api.concurrency.UtilConcurrency;
 import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.database.Database;
 import com.envyful.api.player.Attribute;
+import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.player.save.AbstractSaveManager;
 import com.google.common.base.Preconditions;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.function.BiConsumer;
 
 public class EmptySaveManager<T> extends AbstractSaveManager<T> {
 
     public EmptySaveManager(PlayerManager<?, T> playerManager) {
         super(playerManager);
+    }
+
+    public EmptySaveManager(PlayerManager<?, T> playerManager, BiConsumer<EnvyPlayer<T>, Throwable> errorHandler) {
+        super(playerManager, errorHandler);
     }
 
     @Override

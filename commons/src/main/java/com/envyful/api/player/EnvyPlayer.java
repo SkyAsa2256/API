@@ -122,6 +122,16 @@ public interface EnvyPlayer<T> {
      *
      * @param attribute The attribute to set
      * @param <A> The attribute type
+     * @param <B> The attribute id type
+     */
+    <A extends Attribute<B, T>, B, C extends EnvyPlayer<T>> void setAttribute(CompletableFuture<A> attribute);
+
+    /**
+     *
+     * Sets the attribute for the player
+     *
+     * @param attribute The attribute to set
+     * @param <A> The attribute type
      */
     <A extends Attribute<B, T>, B, C extends EnvyPlayer<T>> void setAttribute(A attribute);
 

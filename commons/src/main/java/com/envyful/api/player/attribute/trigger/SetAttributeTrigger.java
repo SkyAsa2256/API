@@ -16,9 +16,9 @@ public class SetAttributeTrigger<T> extends AbstractAttributeTrigger<T> {
                 continue;
             }
 
-            this.getIdMapper(player, data).apply(player.getParent())
-                    .thenAccept(id -> loadAttribute(data.saveManager(), data.attributeClass(), id)
-                            .thenAccept(player::setAttribute)
+            player.setAttribute(
+                    this.getIdMapper(player, data).apply(player.getParent())
+                            .thenCompose(id -> loadAttribute(data.saveManager(), data.attributeClass(), id))
                             .exceptionally(throwable -> {
                                 data.saveManager().getErrorHandler().accept(player, throwable);
                                 return null;

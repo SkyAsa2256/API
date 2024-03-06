@@ -43,7 +43,7 @@ public class SpigotPlayerManager extends AbstractPlayerManager<SpigotEnvyPlayer,
     @Override
     public <X extends Attribute<Y, Player>, Y> void registerAttribute(AttributeBuilder<X, Y, Player> builder) {
         builder.triggers(
-                SpigotTrigger.singleSet(this.plugin, PlayerLoginEvent.class, event -> this.cachedPlayers.get(event.getPlayer().getUniqueId())),
+                SpigotTrigger.singleSet(this.plugin, AsyncPlayerPreLoginEvent.class, event -> this.cachedPlayers.get(event.getUniqueId())),
                 SpigotTrigger.singleSave(this.plugin, PlayerQuitEvent.class, event -> this.cachedPlayers.get(event.getPlayer().getUniqueId())),
                 SpigotTrigger.save(this.plugin, WorldSaveEvent.class, event -> Lists.newArrayList(this.cachedPlayers.values())),
                 SpigotTrigger.save(this.plugin, ServerShutdownEvent.class, event -> Lists.newArrayList(this.cachedPlayers.values()))

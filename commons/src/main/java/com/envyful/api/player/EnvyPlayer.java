@@ -3,6 +3,7 @@ package com.envyful.api.player;
 import com.envyful.api.config.ConfigLocation;
 import com.envyful.api.player.attribute.PlayerAttribute;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -47,6 +48,7 @@ public interface EnvyPlayer<T> {
      *
      * @return The parent
      */
+    @Nullable
     T getParent();
 
     /**

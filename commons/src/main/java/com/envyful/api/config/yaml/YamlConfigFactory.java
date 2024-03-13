@@ -186,6 +186,10 @@ public class YamlConfigFactory {
                 continue;
             }
 
+            if (!listFile.getName().endsWith(".yml")) {
+                continue;
+            }
+
             try {
                 ConfigurationReference<CommentedConfigurationNode> base =
                         listenToConfig(listFile.toPath(), serializers, getTypeSerializers(configClass), style);
@@ -246,6 +250,10 @@ public class YamlConfigFactory {
         }
 
         Path configFile = Paths.get(configDir.get(0));
+
+        if (!configDir.get(0).endsWith(".yml")) {
+            throw new IOException("Config location provided is not a .yml file");
+        }
 
         if (!configFile.toFile().exists()) {
             configFile.getParent().toFile().mkdirs();

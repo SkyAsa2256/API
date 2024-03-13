@@ -89,7 +89,7 @@ public class UtilConfigItem {
         String name = configItem.getName();
 
         ItemBuilder itemBuilder = new ItemBuilder()
-                .type(fromNameOrId(configItem.getType()))
+                .type(fromNameOrId(PlaceholderFactory.handlePlaceholders(configItem.getType(), placeholders).get(0)))
                 .amount(configItem.getAmount(placeholders));
 
         itemBuilder.lore(PlaceholderFactory.handlePlaceholders(configItem.getLore(), UtilChatColour::colour, placeholders));

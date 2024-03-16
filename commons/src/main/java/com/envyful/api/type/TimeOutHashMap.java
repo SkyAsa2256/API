@@ -6,6 +6,16 @@ import com.google.common.collect.Sets;
 
 import java.util.*;
 
+/**
+ *
+ * A simple generic implementation of a Map that has a timeout for each entry. If the entry has not been accessed within
+ * the timeout period, it will be removed from the map
+ * <br>
+ * The values are only invalidated when they are accessed, not when they are added
+ *
+ * @param <K> The type of the key
+ * @param <V> The type of the value
+ */
 public class TimeOutHashMap<K, V> implements Map<K, V> {
 
     private final long cacheDuration;

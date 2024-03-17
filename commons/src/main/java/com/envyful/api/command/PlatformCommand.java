@@ -4,7 +4,6 @@ import com.envyful.api.command.tab.TabHandler;
 import com.envyful.api.concurrency.UtilConcurrency;
 import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.text.UtilString;
-import com.envyful.api.type.BooleanBiFunction;
 import com.google.common.collect.Lists;
 
 import java.util.Arrays;
@@ -12,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 import java.util.function.Function;
 
 /**
@@ -24,7 +24,7 @@ public abstract class PlatformCommand<C> {
 
     protected final String name;
     protected final BiFunction<C, List<String>, List<String>> descriptionProvider;
-    protected final BooleanBiFunction<C, List<String>> permissionCheck;
+    protected final BiPredicate<C, List<String>> permissionCheck;
     protected final Function<C, List<String>> noPermissionProvider;
     protected final List<String> aliases;
     protected final PlatformCommandExecutor<C> executor;
@@ -196,7 +196,7 @@ public abstract class PlatformCommand<C> {
 
         protected String name;
         protected BiFunction<C, List<String>, List<String>> descriptionProvider;
-        protected BooleanBiFunction<C, List<String>> permissionCheck;
+        protected BiPredicate<C, List<String>> permissionCheck;
         protected Function<C, List<String>> noPermissionProvider;
         protected List<String> aliases = Lists.newArrayList();
         protected PlatformCommandExecutor<C> executor;
@@ -214,7 +214,7 @@ public abstract class PlatformCommand<C> {
             return this;
         }
 
-        public Builder<C> permissionCheck(BooleanBiFunction<C, List<String>> permissionCheck) {
+        public Builder<C> permissionCheck(BiPredicate<C, List<String>> permissionCheck) {
             this.permissionCheck = permissionCheck;
             return this;
         }

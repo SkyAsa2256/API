@@ -8,11 +8,11 @@ import com.envyful.api.command.exception.CommandParseException;
 import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.forge.command.command.ForgePlatformCommand;
 import com.envyful.api.forge.player.util.UtilPlayer;
-import com.envyful.api.type.BooleanBiFunction;
 import net.minecraft.commands.CommandSource;
 
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.function.BiPredicate;
 
 public class ForgeAnnotationCommandParser extends AnnotationCommandParser<ForgePlatformCommand, CommandSource> {
 
@@ -21,7 +21,7 @@ public class ForgeAnnotationCommandParser extends AnnotationCommandParser<ForgeP
     }
 
     @Override
-    protected BooleanBiFunction<CommandSource, List<String>> getPermissionCheck(Object o) {
+    protected BiPredicate<CommandSource, List<String>> getPermissionCheck(Object o) {
         Permissible permissible = o.getClass().getAnnotation(Permissible.class);
 
         if (permissible != null) {

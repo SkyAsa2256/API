@@ -4,13 +4,13 @@ import com.envyful.api.command.PlatformCommand;
 import com.envyful.api.command.PlatformCommandExecutor;
 import com.envyful.api.command.tab.TabHandler;
 import com.envyful.api.forge.chat.UtilChatColour;
-import com.envyful.api.type.BooleanBiFunction;
 import com.google.common.collect.Lists;
 import net.minecraft.commands.CommandSource;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
 import java.util.List;
 import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 import java.util.function.Function;
 
 public class ForgePlatformCommand extends PlatformCommand<CommandSource> {
@@ -52,7 +52,7 @@ public class ForgePlatformCommand extends PlatformCommand<CommandSource> {
         }
 
         @Override
-        public Builder permissionCheck(BooleanBiFunction<CommandSource, List<String>> permissionCheck) {
+        public Builder permissionCheck(BiPredicate<CommandSource, List<String>> permissionCheck) {
             return (Builder) super.permissionCheck(permissionCheck);
         }
 

@@ -17,7 +17,6 @@ import com.envyful.api.command.sender.SenderTypeFactory;
 import com.envyful.api.command.tab.TabHandler;
 import com.envyful.api.concurrency.UtilConcurrency;
 import com.envyful.api.concurrency.UtilLogger;
-import com.envyful.api.type.BooleanBiFunction;
 import com.google.common.collect.Lists;
 
 import java.lang.annotation.Annotation;
@@ -29,6 +28,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 
 public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements CommandParser<A, B> {
 
@@ -44,7 +44,7 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
     @Override
     public A parseCommand(Object o) throws CommandParseException {
         Command commandData = this.getCommandData(o);
-        BooleanBiFunction<B, List<String>> permissionCheck = this.getPermissionCheck(o);
+        BiPredicate<B, List<String>> permissionCheck = this.getPermissionCheck(o);
         BiFunction<B, List<String>, List<String>> descriptionProvider = this.getDescriptionProvider(o);
         PlatformCommandExecutor<B> commandExecutor = this.getCommandExecutor(o);
         List<PlatformCommand<B>> subCommands = this.getSubCommands(o);
@@ -77,7 +77,7 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
         return annotation;
     }
 
-    protected BooleanBiFunction<B, List<String>> getPermissionCheck(Object o) {
+    protected BiPredicate<B, List<String>> getPermissionCheck(Object o) {
         Permissible permissible = o.getClass().getAnnotation(Permissible.class);
 
         if (permissible != null) {

@@ -3,7 +3,6 @@ package com.envyful.api.velocity.player.command.command;
 import com.envyful.api.command.PlatformCommand;
 import com.envyful.api.command.PlatformCommandExecutor;
 import com.envyful.api.command.tab.TabHandler;
-import com.envyful.api.type.BooleanBiFunction;
 import com.google.common.collect.Lists;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
@@ -12,6 +11,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 
 import java.util.List;
 import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -56,7 +56,7 @@ public class VelocityPlatformCommand extends PlatformCommand<CommandSource> {
         }
 
         @Override
-        public Builder permissionCheck(BooleanBiFunction<CommandSource, List<String>> permissionCheck) {
+        public Builder permissionCheck(BiPredicate<CommandSource, List<String>> permissionCheck) {
             return (Builder) super.permissionCheck(permissionCheck);
         }
 

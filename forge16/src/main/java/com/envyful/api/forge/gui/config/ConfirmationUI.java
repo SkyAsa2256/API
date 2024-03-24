@@ -64,19 +64,23 @@ public class ConfirmationUI {
         UtilConfigInterface.fillBackground(pane, this.guiSettings, placeholders);
 
         UtilConfigItem.builder()
+                .singleClick()
                 .clickHandler(builder.confirmHandler)
                 .extendedConfigItem(player, pane, this.confirmItem, placeholders);
 
         UtilConfigItem.builder()
+                .singleClick()
                 .clickHandler(builder.returnHandler)
                 .extendedConfigItem(player, pane, this.returnItem, placeholders);
 
         UtilConfigItem.builder()
+                .singleClick()
                 .clickHandler(builder.denyHandler)
                 .extendedConfigItem(player, pane, this.denyItem, placeholders);
 
         for (ExtendedConfigItem value : this.additionalItems.values()) {
             UtilConfigItem.builder()
+                    .singleClick()
                     .extendedConfigItem(player, pane, value, placeholders);
         }
 

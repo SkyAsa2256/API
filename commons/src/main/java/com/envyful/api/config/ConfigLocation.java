@@ -17,45 +17,6 @@ public class ConfigLocation {
     private double pitch;
     private double yaw;
 
-    /**
-     *
-     * Creates a new config location
-     *
-     * @param worldName The name of the world
-     * @param posX The x position
-     * @param posY The y position
-     * @param posZ The z position
-     * @param pitch The pitch
-     * @param yaw The yaw
-     * @deprecated Use {@link Builder} instead
-     */
-    @Deprecated
-    public ConfigLocation(String worldName, double posX,
-                          double posY, double posZ, double pitch, double yaw) {
-        this.worldName = worldName;
-        this.posX = posX;
-        this.posY = posY;
-        this.posZ = posZ;
-        this.pitch = pitch;
-        this.yaw = yaw;
-    }
-
-    /**
-     *
-     * Creates a new config location
-     *
-     * @param worldName The name of the world
-     * @param posX The x position
-     * @param posY The y position
-     * @param posZ The z position
-     * @deprecated Use {@link Builder} instead
-     */
-    @Deprecated
-    public ConfigLocation(String worldName,
-                          double posX, double posY, double posZ) {
-        this(worldName, posX, posY, posZ, 0.0F, 0.0F);
-    }
-
     protected ConfigLocation(Builder builder) {
         this.worldName = builder.worldName;
         this.posX = builder.posX;

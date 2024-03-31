@@ -48,21 +48,6 @@ public class DefaultConfig<T extends AbstractYamlConfig> {
         return this.replaceExisting;
     }
 
-
-    /**
-     *
-     *
-     * @param fileName The name of the default file
-     * @param instance The instance of the default values
-     * @return The new default config instance
-     * @param <T> The default config type
-     * @deprecated Use either {@link DefaultConfig#overwriting(String, AbstractYamlConfig)} or {@link DefaultConfig#onlyNew(String, AbstractYamlConfig)}
-     */
-    @Deprecated
-    public static <T extends AbstractYamlConfig> DefaultConfig<T> of(String fileName, T instance) {
-        return new DefaultConfig<>(fileName, instance, true);
-    }
-
     /**
      *
      * Creates a default config instance that will overwrite any file

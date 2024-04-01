@@ -69,6 +69,16 @@ public class GuiFactory {
         platformFactory.setPlayerManager(playerManager);
     }
 
+    /**
+     *
+     * Gets the platform's player manager
+     *
+     * @return The player manager
+     */
+    public static PlayerManager<?, ?> getPlayerManager() {
+        checkThenThrowSetupException();
+        return platformFactory.getPlayerManager();
+    }
 
     /**
      *

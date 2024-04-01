@@ -78,7 +78,7 @@ public class ForgeGuiBuilder implements Gui.Builder {
         }
 
         return new ForgeGui(
-                this.title, this.height, this.playerManager,
+                this.title, this.height,
                 this.closeConsumer, this.panes.toArray(new Pane[0])
         );
     }

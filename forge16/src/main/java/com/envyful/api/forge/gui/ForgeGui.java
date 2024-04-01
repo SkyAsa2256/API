@@ -6,10 +6,10 @@ import com.envyful.api.forge.gui.item.EmptySlot;
 import com.envyful.api.forge.gui.pane.ForgeSimplePane;
 import com.envyful.api.forge.player.ForgeEnvyPlayer;
 import com.envyful.api.gui.Gui;
+import com.envyful.api.gui.factory.GuiFactory;
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.player.EnvyPlayer;
-import com.envyful.api.player.PlayerManager;
 import com.envyful.api.type.Pair;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.player.PlayerEntity;
@@ -37,7 +37,6 @@ public class ForgeGui implements Gui {
 
     private final ITextComponent title;
     private final int height;
-    private final PlayerManager<ForgeEnvyPlayer, ServerPlayerEntity> playerManager;
     private final ForgeCloseConsumer closeConsumer;
     private final ForgeSimplePane parentPane;
     private final ForgeSimplePane[] panes;
@@ -45,11 +44,10 @@ public class ForgeGui implements Gui {
 
     private final List<ForgeGuiContainer> containers = Lists.newCopyOnWriteArrayList();
 
-    ForgeGui(ITextComponent title, int height, PlayerManager<ForgeEnvyPlayer, ServerPlayerEntity> playerManager,
+    ForgeGui(ITextComponent title, int height,
              ForgeCloseConsumer closeConsumer, Pane... panes) {
         this.title = title;
         this.height = height;
-        this.playerManager = playerManager;
         this.closeConsumer = closeConsumer;
         this.parentPane = (ForgeSimplePane) new ForgeSimplePane.Builder().height(height).topLeftX(0).topLeftY(0).width(9).build();
         this.panes = new ForgeSimplePane[panes.length];
@@ -268,7 +266,7 @@ public class ForgeGui implements Gui {
 
         @Override
         public ItemStack quickMoveStack(PlayerEntity p_82846_1_, int p_82846_2_) {
-            this.gui.open(this.gui.playerManager.getPlayer(this.player));
+            this.gui.open(GuiFactory.getPlayerManager().getPlayer(this.player.getUUID()));
             return ItemStack.EMPTY;
         }
 
@@ -309,7 +307,7 @@ public class ForgeGui implements Gui {
                 return ItemStack.EMPTY;
             }
 
-            EnvyPlayer<?> envyPlayer = this.gui.playerManager.getPlayer((ServerPlayerEntity) player);
+            EnvyPlayer<?> envyPlayer = GuiFactory.getPlayerManager().getPlayer(player.getUUID());
 
             if (envyPlayer == null) {
                 return ItemStack.EMPTY;
@@ -369,7 +367,7 @@ public class ForgeGui implements Gui {
             super.removed(player);
 
             ServerPlayerEntity sender = (ServerPlayerEntity) playerIn;
-            ForgeEnvyPlayer player = this.gui.playerManager.getPlayer(playerIn.getUUID());
+            ForgeEnvyPlayer player = (ForgeEnvyPlayer) GuiFactory.getPlayerManager().getPlayer(playerIn.getUUID());
 
             int windowId = sender.containerMenu.containerId;
 

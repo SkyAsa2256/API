@@ -46,6 +46,11 @@ public class ForgeGuiFactory implements PlatformGuiFactory<ItemStack> {
     }
 
     @Override
+    public PlayerManager<?, ?> getPlayerManager() {
+        return this.playerManager;
+    }
+
+    @Override
     public Displayable.Builder<ItemStack> displayableBuilder() {
         return new ForgeSimpleDisplayable.Builder();
     }

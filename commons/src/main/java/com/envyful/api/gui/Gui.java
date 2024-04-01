@@ -62,6 +62,7 @@ public interface Gui {
          * @param playerManager the mods player manager
          * @return The builder
          */
+        @Deprecated
         Builder setPlayerManager(PlayerManager<?, ?> playerManager);
 
         /**

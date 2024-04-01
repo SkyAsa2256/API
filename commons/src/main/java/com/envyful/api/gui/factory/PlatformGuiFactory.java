@@ -36,6 +36,14 @@ public interface PlatformGuiFactory<T> {
 
     /**
      *
+     * Gets the platform's player manager
+     *
+     * @return The player manager
+     */
+    PlayerManager<?, ?> getPlayerManager();
+
+    /**
+     *
      * Gets the platform's {@link Displayable.Builder} class as a new instance
      *
      * @return The new displayable builder for the given platform

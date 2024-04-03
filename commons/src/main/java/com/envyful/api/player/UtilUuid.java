@@ -8,7 +8,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *
@@ -16,6 +18,9 @@ import java.util.UUID;
  *
  */
 public class UtilUuid {
+
+    private static final Map<UUID, PlayerProfile> CACHED_NAMES = new ConcurrentHashMap<>();
+    private static final Map<String, PlayerProfile> CACHED_UUIDS = new ConcurrentHashMap<>();
 
     /**
      *
@@ -40,6 +45,20 @@ public class UtilUuid {
     }
 
     private static PlayerProfile getProfile(UUID uuid) {
+        var profile = CACHED_NAMES.computeIfAbsent(uuid, UtilUuid::getProfileRemote);
+
+        if (profile == null) {
+            return null;
+        }
+
+        if (!CACHED_UUIDS.containsKey(profile.getName())) {
+            CACHED_UUIDS.put(profile.getName(), profile);
+        }
+
+        return profile;
+    }
+
+    private static PlayerProfile getProfileRemote(UUID uuid) {
         try {
             var connection = (HttpURLConnection) new URL("https://api.mojang.com/user/profile/" + uuid.toString().replace("-", "")).openConnection();
             connection.setRequestMethod("GET");
@@ -90,6 +109,20 @@ public class UtilUuid {
     }
 
     private static PlayerProfile getProfile(String name) {
+        var profile = CACHED_UUIDS.computeIfAbsent(name, UtilUuid::getProfileRemote);
+
+        if (profile == null) {
+            return null;
+        }
+
+        if (!CACHED_NAMES.containsKey(formatUuid(profile.getId()))) {
+            CACHED_NAMES.put(formatUuid(profile.getId()), profile);
+        }
+
+        return profile;
+    }
+
+    private static PlayerProfile getProfileRemote(String name) {
         try {
             var connection = (HttpURLConnection) new URL("https://api.mojang.com/users/profiles/minecraft/" + name).openConnection();
             connection.setRequestMethod("GET");

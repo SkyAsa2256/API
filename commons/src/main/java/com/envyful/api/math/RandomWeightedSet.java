@@ -14,7 +14,7 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class RandomWeightedSet<A> extends HashMap<A, Double> {
 
-    protected transient final NavigableMap<Double, A> treeMap = Maps.newTreeMap();
+    protected final transient NavigableMap<Double, A> treeMap = Maps.newTreeMap();
     protected transient double totalWeight = 0;
 
     public RandomWeightedSet() {

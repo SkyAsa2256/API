@@ -1,5 +1,6 @@
 package com.envyful.api.leaderboard;
 
+import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.database.Database;
 import com.envyful.api.database.SQLFunction;
 import com.envyful.api.database.leaderboard.Order;
@@ -25,16 +26,15 @@ public class Leaderboard<A> {
     private final SQLFunction<ResultSet, A> formatter;
     private final Map<Integer, List<A>> cachedEntries;
 
-    private Leaderboard(Database database, String table, Order order, String orderColumn,
-                        int perPage, long cacheDuration, String extraClauses, SQLFunction<ResultSet, A> formatter) {
-        this.database = database;
-        this.table = table;
-        this.order = order;
-        this.orderColumn = orderColumn;
-        this.perPage = perPage;
-        this.extraClauses = extraClauses;
-        this.formatter = formatter;
-        this.cachedEntries = new TimeOutHashMap<>(cacheDuration);
+    private Leaderboard(Builder<A> builder) {
+        this.database = builder.database;
+        this.table = builder.table;
+        this.order = builder.order;
+        this.orderColumn = builder.orderColumn;
+        this.perPage = builder.perPage;
+        this.extraClauses = builder.extraClauses;
+        this.formatter = builder.formatter;
+        this.cachedEntries = new TimeOutHashMap<>(builder.cacheDuration);
     }
 
     public List<A> getPage(int page) {
@@ -65,7 +65,7 @@ public class Leaderboard<A> {
             this.cachedEntries.put(page, data);
             return data;
         } catch (SQLException e) {
-            e.printStackTrace();
+            UtilLogger.logger().ifPresent(logger -> logger.error("Failed to load leaderboard page", e));
         }
 
         return Collections.emptyList();
@@ -134,8 +134,7 @@ public class Leaderboard<A> {
         }
 
         public Leaderboard<A> build() {
-            return new Leaderboard<>(this.database, this.table, this.order, this.orderColumn, this.perPage,
-                    this.cacheDuration, extraClauses, this.formatter);
+            return new Leaderboard<>(this);
         }
     }
 }

@@ -19,22 +19,22 @@ public class UtilLogger {
 
     private static Logger logger;
 
+    /**
+     *
+     * Sets the logger for the API to use
+     *
+     * @param logger The logger
+     */
     public static void setLogger(Logger logger) {
         UtilLogger.logger = logger;
     }
 
     /**
      *
-     * Gets the instance of the provided logger
+     * Safely attempts to get the logger provided by the mod/plugin
      *
-     * @return The logger
-     * @deprecated Use {@link UtilLogger#logger()} to safely get the logger instance
+     * @return The logger, if it exists
      */
-    @Deprecated
-    public static Logger getLogger() {
-        return logger;
-    }
-
     public static Optional<Logger> logger() {
         return Optional.ofNullable(logger);
     }

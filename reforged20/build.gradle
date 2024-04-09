@@ -28,7 +28,7 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.20.1-47.1.0'
+    minecraft 'net.minecraftforge:forge:1.20.2-48.1.0'
 
     shadow group: 'org.spongepowered', name: 'configurate-yaml', version: '4.0.0'
 
@@ -37,12 +37,11 @@ dependencies {
         transitive = false
     }
 
-    implementation 'pixelmon:Pixelmon-1.20.1-9.2.3-server:9.2.3'
+    implementation 'pixelmon:Pixelmon-1.20.2-9.2.7-server:9.2.7'
 }
 
 shadowJar {
     configurations = [project.configurations.shadow]
-//    dependsOn('reobfJar')
 
     relocate('org.spongepowered.configurate', 'com.envyful.api.commons.shade.configurate')
     relocate('org.yaml.snakeyaml', 'com.envyful.api.commons.shade.snakeyaml')
@@ -51,9 +50,3 @@ shadowJar {
     exclude 'net.minecraft'
     exclude "**/module-info.class"
 }
-
-//reobf {
-//    shadowJar {}
-//}
-//
-//jar.finalizedBy('reobfJar')

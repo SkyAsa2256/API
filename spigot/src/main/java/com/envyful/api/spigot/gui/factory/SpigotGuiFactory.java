@@ -8,7 +8,6 @@ import com.envyful.api.gui.factory.PlatformGuiFactory;
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.gui.pane.TickHandler;
-import com.envyful.api.gui.pane.type.PagedPane;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.spigot.config.UtilConfigInterface;
 import com.envyful.api.spigot.gui.SpigotGui;
@@ -60,6 +59,11 @@ public class SpigotGuiFactory implements PlatformGuiFactory<ItemStack> {
     }
 
     @Override
+    public PlayerManager<?, ?> getPlayerManager() {
+        return this.playerManager;
+    }
+
+    @Override
     public Displayable.Builder<ItemStack> displayableBuilder() {
         return new SpigotSimpleDisplayable.Builder();
     }
@@ -67,11 +71,6 @@ public class SpigotGuiFactory implements PlatformGuiFactory<ItemStack> {
     @Override
     public Pane.Builder paneBuilder() {
         return new SpigotSimplePane.Builder();
-    }
-
-    @Override
-    public PagedPane.Builder pagedPaneBuilder() {
-        return null; //TODO: not made yet
     }
 
     @Override

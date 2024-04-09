@@ -14,7 +14,6 @@ import com.envyful.api.gui.factory.PlatformGuiFactory;
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.gui.pane.TickHandler;
-import com.envyful.api.gui.pane.type.PagedPane;
 import com.envyful.api.player.PlayerManager;
 import net.minecraft.world.item.ItemStack;
 
@@ -46,6 +45,11 @@ public class ForgeGuiFactory implements PlatformGuiFactory<ItemStack> {
     }
 
     @Override
+    public PlayerManager<?, ?> getPlayerManager() {
+        return this.playerManager;
+    }
+
+    @Override
     public Displayable.Builder<ItemStack> displayableBuilder() {
         return new ForgeSimpleDisplayable.Builder();
     }
@@ -53,11 +57,6 @@ public class ForgeGuiFactory implements PlatformGuiFactory<ItemStack> {
     @Override
     public Pane.Builder paneBuilder() {
         return new ForgeSimplePane.Builder();
-    }
-
-    @Override
-    public PagedPane.Builder pagedPaneBuilder() {
-        return null; //TODO: not made yet
     }
 
     @Override

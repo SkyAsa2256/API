@@ -6,7 +6,6 @@ import com.envyful.api.gui.close.CloseConsumer;
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.gui.pane.TickHandler;
-import com.envyful.api.gui.pane.type.PagedPane;
 import com.envyful.api.player.PlayerManager;
 
 /**
@@ -133,17 +132,6 @@ public class GuiFactory {
     public static Pane.Builder paneBuilder() {
         checkThenThrowSetupException();
         return platformFactory.paneBuilder();
-    }
-
-    /**
-     *
-     * Gets a new instance of the platform's paged pane builder
-     *
-     * @return The new paged pane builder
-     */
-    public static PagedPane.Builder pagedPaneBuilder() {
-        checkThenThrowSetupException();
-        return platformFactory.pagedPaneBuilder();
     }
 
     /**

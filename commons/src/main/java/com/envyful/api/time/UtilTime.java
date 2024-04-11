@@ -1,5 +1,7 @@
 package com.envyful.api.time;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -33,5 +35,18 @@ public class UtilTime {
         } catch (NumberFormatException e) {
             return 0;
         }
+    }
+
+    public static long getStartOfDay() {
+        return getStartOfDay(TimeUnit.MILLISECONDS);
+    }
+
+    public static long getStartOfDay(TimeUnit timeUnit) {
+        var currentDate = LocalDate.now();
+        var startOfDay = currentDate.atStartOfDay();
+        var zonedStartOfDay = startOfDay.atZone(ZoneId.systemDefault());
+        var timestampStartOfDay = timeUnit.convert(zonedStartOfDay.toInstant().toEpochMilli(), TimeUnit.MILLISECONDS);
+
+        return timestampStartOfDay;
     }
 }

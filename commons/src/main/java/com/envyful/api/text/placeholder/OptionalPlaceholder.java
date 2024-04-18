@@ -6,6 +6,12 @@ import com.envyful.api.text.Placeholder;
 import javax.annotation.Nonnull;
 import java.util.function.BooleanSupplier;
 
+/**
+ *
+ * A placeholder that will only replace the line if the test is true
+ * otherwise it will remove the line from the result
+ *
+ */
 public class OptionalPlaceholder implements Placeholder {
 
     protected final BooleanSupplier test;

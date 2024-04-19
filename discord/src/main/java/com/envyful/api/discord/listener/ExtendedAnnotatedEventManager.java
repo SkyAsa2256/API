@@ -20,6 +20,14 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+/**
+ *
+ * This version of JDA's AnnotatedEventManager allows for the use of static methods
+ * and scans the class hierarchy for annotated methods too
+ * which means you don't need to annotate the methods in the class that you're registering as a listener
+ * as it will search the parent classes too
+ *
+ */
 public class ExtendedAnnotatedEventManager implements IEventManager {
 
     protected final Set<Object> listeners = ConcurrentHashMap.newKeySet();

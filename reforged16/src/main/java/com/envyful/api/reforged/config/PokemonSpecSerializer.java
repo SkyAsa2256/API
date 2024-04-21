@@ -2,25 +2,35 @@ package com.envyful.api.reforged.config;
 
 import com.pixelmonmod.api.pokemon.PokemonSpecification;
 import com.pixelmonmod.api.pokemon.PokemonSpecificationProxy;
-import org.spongepowered.configurate.serialize.ScalarSerializer;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
+import org.spongepowered.configurate.serialize.TypeSerializer;
 
 import java.lang.reflect.Type;
-import java.util.function.Predicate;
 
-public class PokemonSpecSerializer extends ScalarSerializer<PokemonSpecification> {
+public class PokemonSpecSerializer implements TypeSerializer<PokemonSpecification> {
 
-    public PokemonSpecSerializer() {
-        super(PokemonSpecification.class);
+    private static final PokemonSpecSerializer INSTANCE = new PokemonSpecSerializer();
+
+    private PokemonSpecSerializer() {}
+
+    public static PokemonSpecSerializer getInstance() {
+        return INSTANCE;
     }
 
     @Override
-    public PokemonSpecification deserialize(Type type, Object obj) throws SerializationException {
-        return PokemonSpecificationProxy.create(obj.toString());
+    public PokemonSpecification deserialize(Type type, ConfigurationNode node) throws SerializationException {
+        return PokemonSpecificationProxy.create(node.getString());
     }
 
     @Override
-    protected Object serialize(PokemonSpecification item, Predicate<Class<?>> typeSupported) {
-        return item.toString();
+    public void serialize(Type type, @Nullable PokemonSpecification obj, ConfigurationNode node) throws SerializationException {
+        if (obj == null) {
+            node.set(null);
+            return;
+        }
+
+        node.set(obj.toString());
     }
 }

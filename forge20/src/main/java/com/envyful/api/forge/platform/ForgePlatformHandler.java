@@ -1,5 +1,7 @@
 package com.envyful.api.forge.platform;
 
+import com.envyful.api.concurrency.UtilLogger;
+import com.envyful.api.forge.InitializationTask;
 import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.forge.player.util.UtilPlayer;
 import com.envyful.api.forge.server.UtilForgeServer;
@@ -11,9 +13,16 @@ import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.ServerOpListEntry;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.server.ServerStartingEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.forgespi.language.ModFileScanData;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.PermissionAPI;
+import org.objectweb.asm.Type;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.List;
 
@@ -21,10 +30,33 @@ public class ForgePlatformHandler implements PlatformHandler<CommandSource> {
 
     private static final ForgePlatformHandler INSTANCE = new ForgePlatformHandler();
 
-    private ForgePlatformHandler() {}
+    private ForgePlatformHandler() {
+        MinecraftForge.EVENT_BUS.register(this);
+    }
 
     public static PlatformHandler<CommandSource> getInstance() {
         return INSTANCE;
+    }
+
+    @SubscribeEvent
+    public void onServerStart(ServerStartingEvent event) {
+        ModList.get().getAllScanData().stream()
+                .map(ModFileScanData::getClasses)
+                .flatMap(Collection::stream)
+                .filter(classData -> classData.interfaces().contains(Type.getType(InitializationTask.class)))
+                .forEach(classData -> {
+                    try {
+                        var clazz = Class.forName(classData.clazz().getClassName());
+                        var constructor = clazz.getConstructor();
+                        var initializationTask = (InitializationTask) constructor.newInstance();
+
+                        initializationTask.run();
+                    } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException |
+                             IllegalAccessException | IllegalArgumentException |
+                             InvocationTargetException e) {
+                        UtilLogger.logger().ifPresent(logger -> logger.error("Error loading class", e));
+                    }
+                });
     }
 
     @Override

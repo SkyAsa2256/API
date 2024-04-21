@@ -1,15 +1,17 @@
 package com.envyful.api.config.yaml;
 
 import com.envyful.api.concurrency.UtilLogger;
+import com.envyful.api.config.ConfigTypeSerializer;
+import com.envyful.api.config.ConfigTypeSerializerRegistry;
 import com.envyful.api.config.data.ConfigPath;
 import com.envyful.api.config.data.ScalarSerializers;
 import com.envyful.api.config.data.TypeSerializers;
 import com.envyful.api.config.yaml.data.YamlConfigStyle;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
-import com.envyful.api.type.Pair;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import io.leangen.geantyref.TypeToken;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationOptions;
@@ -18,6 +20,7 @@ import org.spongepowered.configurate.reference.ConfigurationReference;
 import org.spongepowered.configurate.reference.ValueReference;
 import org.spongepowered.configurate.serialize.ScalarSerializer;
 import org.spongepowered.configurate.serialize.TypeSerializer;
+import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 import org.spongepowered.configurate.yaml.NodeStyle;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
@@ -156,23 +159,26 @@ public class YamlConfigFactory {
         return loadDirectory(configFiles, serializers, style, configClass);
     }
 
-    private static <T extends AbstractYamlConfig> List<Pair<Class<?>, Class<? extends TypeSerializer>>> getTypeSerializers(Class<T> configClass){
-        List<Class<? extends TypeSerializer>> typeSerializers =
-                Lists.newArrayList();
-        List<Class<?>> typeClasses = Lists.newArrayList();
-        TypeSerializers serializedTypeData = configClass.getAnnotation(TypeSerializers.class);
+    private static <T extends AbstractYamlConfig> List<ConfigTypeSerializer<?>> getTypeSerializers(Class<T> configClass) {
+        var serializedTypeData = configClass.getAnnotation(TypeSerializers.class);
 
         if (serializedTypeData != null) {
-            typeSerializers.addAll(Arrays.asList(serializedTypeData.serializer()));
-            typeClasses.addAll(Arrays.asList(serializedTypeData.clazz()));
+            return Collections.emptyList();
         }
 
-        List<Pair<Class<?>, Class<? extends TypeSerializer>>> typeSerializerPairs = Lists.newArrayList();
-        for (int i = 0; i < typeSerializers.size(); i++) {
-            typeSerializerPairs.add(Pair.of(typeClasses.get(i), typeSerializers.get(i)));
+        List<ConfigTypeSerializer<?>> typeSerializers = Lists.newArrayList();
+
+        for (Class<?> clazz : serializedTypeData.value()) {
+            var serializer = ConfigTypeSerializerRegistry.get(clazz);
+
+            if (serializedTypeData == null) {
+                throw new IllegalArgumentException("No serializer found for class " + clazz.getName());
+            }
+
+            typeSerializers.add(serializer);
         }
 
-        return typeSerializerPairs;
+        return typeSerializers;
     }
 
     private static <T extends AbstractYamlConfig> List<T>
@@ -303,7 +309,7 @@ public class YamlConfigFactory {
     private static ConfigurationReference<CommentedConfigurationNode>
     listenToConfig(Path configFile,
                    List<Class<? extends ScalarSerializer<?>>> scalarSerializers,
-                   List<Pair<Class<?>, Class<? extends TypeSerializer>>> typeSerializers,
+                   List<ConfigTypeSerializer<?>> typeSerializers,
                    NodeStyle style) throws IOException {
         try {
             return ConfigurationReference.fixed(YamlConfigurationLoader.builder()
@@ -322,11 +328,12 @@ public class YamlConfigFactory {
                                 builder.register(serializer.newInstance());
                             }
 
-                            for (Pair<Class<?>, Class<? extends TypeSerializer>> serializer : typeSerializers) {
-                                TypeSerializer instance = serializer.getSecond().newInstance();
-                                builder.register(serializer.getFirst(), instance);
-                            }
+                            for (var typeSerializer : typeSerializers) {
+                                var typeToken = typeSerializer.type();
+                                var serializer = typeSerializer.serializer();
 
+                                register(builder, typeToken, serializer);
+                            }
                         } catch (InstantiationException
                                  | IllegalAccessException e) {
                             UtilLogger.logger().ifPresent(logger -> logger.error("Error creating serializer for config " + configFile.getFileName(), e));
@@ -348,5 +355,10 @@ public class YamlConfigFactory {
         } catch (ConfigurateException e) {
             throw new IOException(e);
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> void register(TypeSerializerCollection.Builder builder, TypeToken<?> clazz, TypeSerializer<?> serializer) {
+        builder.register((TypeToken<T>) clazz, (TypeSerializer<T>) serializer);
     }
 }

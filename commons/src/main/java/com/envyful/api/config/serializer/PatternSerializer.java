@@ -1,27 +1,36 @@
 package com.envyful.api.config.serializer;
 
-import org.spongepowered.configurate.serialize.ScalarSerializer;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
+import org.spongepowered.configurate.serialize.TypeSerializer;
 
 import java.lang.reflect.Type;
-import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-public class PatternSerializer extends ScalarSerializer<Pattern> {
+public class PatternSerializer implements TypeSerializer<Pattern> {
 
-    public PatternSerializer() {
-        super(Pattern.class);
+    private static final PatternSerializer INSTANCE = new PatternSerializer();
+
+    private PatternSerializer() {}
+
+    public static PatternSerializer get() {
+        return INSTANCE;
     }
 
     @Override
-    public Pattern deserialize(Type type, Object obj)
-            throws SerializationException {
-        return Pattern.compile((String) obj);
+    public Pattern deserialize(Type type, ConfigurationNode node) throws SerializationException {
+        var value = node.getString();
+        return Pattern.compile(value);
     }
 
     @Override
-    protected Object serialize(
-            Pattern item, Predicate<Class<?>> typeSupported) {
-        return item.pattern();
+    public void serialize(Type type, @Nullable Pattern obj, ConfigurationNode node) throws SerializationException {
+        if (obj == null) {
+            node.set(null);
+            return;
+        }
+
+        node.set(obj.pattern());
     }
 }

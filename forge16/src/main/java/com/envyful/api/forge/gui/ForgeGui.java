@@ -78,7 +78,7 @@ public class ForgeGui implements Gui {
             return;
         }
 
-        ServerPlayerEntity parent = (ServerPlayerEntity)player.getParent();
+        var parent = (ServerPlayerEntity)player.getParent();
 
         if (ForgeGuiTracker.inGui(player) && parent.containerMenu != parent.inventoryMenu &&
                 Objects.equals(parent.containerMenu.getType(), this.getContainerType())) {
@@ -197,16 +197,14 @@ public class ForgeGui implements Gui {
 
             for (int i = 0; i < (9 * this.gui.height); i++) {
                 if (createEmptySlots) {
-                    EmptySlot emptySlot = new EmptySlot(this.gui.parentPane, i);
+                    var emptySlot = new EmptySlot(this.gui.parentPane, i);
 
                     this.addSlot(emptySlot);
-
                     this.emptySlots.add(emptySlot);
-                    this.slots.add(emptySlot);
                 }
             }
 
-            for (ForgeSimplePane pane : panes) {
+            for (var pane : panes) {
                 if (pane == null) {
                     continue;
                 }
@@ -231,14 +229,6 @@ public class ForgeGui implements Gui {
             }
 
             this.init = true;
-
-            for (int i = 9; i < 36; i++) {
-                slots.add(new Slot(player.inventory, i, 0, 0));
-            }
-            // Sets the slots for the hotbar.
-            for (int i = 0; i < 9; i++) {
-                slots.add(new Slot(player.inventory, i, 0, 0));
-            }
 
             if (force || ForgeGuiTracker.requiresUpdate(this.player)) {
                 this.refreshPlayerContents();

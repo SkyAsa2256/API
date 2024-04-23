@@ -162,7 +162,7 @@ public class YamlConfigFactory {
     private static <T extends AbstractYamlConfig> List<ConfigTypeSerializer<?>> getTypeSerializers(Class<T> configClass) {
         var serializedTypeData = configClass.getAnnotation(TypeSerializers.class);
 
-        if (serializedTypeData != null) {
+        if (serializedTypeData == null) {
             return Collections.emptyList();
         }
 

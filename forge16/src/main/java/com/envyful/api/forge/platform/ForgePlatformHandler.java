@@ -25,8 +25,8 @@ import java.util.List;
 
 public class ForgePlatformHandler implements PlatformHandler<ICommandSource> {
 
-    private static final ForgePlatformHandler INSTANCE = new ForgePlatformHandler();
     private static final Type DATA_ANNOTATION = Type.getType(Initialized.class);
+    private static final ForgePlatformHandler INSTANCE = new ForgePlatformHandler();
 
     private ForgePlatformHandler() {
         ModList.get().getAllScanData().stream()

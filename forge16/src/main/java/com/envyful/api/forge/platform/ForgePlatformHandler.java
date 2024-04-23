@@ -1,5 +1,8 @@
 package com.envyful.api.forge.platform;
 
+import com.envyful.api.concurrency.UtilLogger;
+import com.envyful.api.forge.InitializationTask;
+import com.envyful.api.forge.Initialized;
 import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.platform.PlatformHandler;
 import com.envyful.api.text.Placeholder;
@@ -10,17 +13,40 @@ import net.minecraft.server.management.OpEntry;
 import net.minecraft.util.Util;
 import net.minecraft.util.concurrent.TickDelayedTask;
 import net.minecraft.util.text.ChatType;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.forgespi.language.ModFileScanData;
 import net.minecraftforge.server.permission.PermissionAPI;
+import org.objectweb.asm.Type;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.List;
 
 public class ForgePlatformHandler implements PlatformHandler<ICommandSource> {
 
     private static final ForgePlatformHandler INSTANCE = new ForgePlatformHandler();
+    private static final Type DATA_ANNOTATION = Type.getType(Initialized.class);
 
-    private ForgePlatformHandler() {}
+    private ForgePlatformHandler() {
+        ModList.get().getAllScanData().stream()
+                .map(ModFileScanData::getAnnotations)
+                .flatMap(Collection::stream)
+                .filter(a -> DATA_ANNOTATION.equals(a.getAnnotationType()))
+                .forEach(annotationData -> {
+                    try {
+                        var clazz = Class.forName(annotationData.getClassType().getClassName());
+                        var constructor = clazz.getConstructor();
+                        var initializationTask = (InitializationTask) constructor.newInstance();
+
+                        initializationTask.run();
+                    } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException |
+                             IllegalAccessException | IllegalArgumentException |
+                             InvocationTargetException e) {
+                        UtilLogger.logger().ifPresent(logger -> logger.error("Error loading class", e));
+                    }
+                });
+    }
 
     public static PlatformHandler<ICommandSource> getInstance() {
         return INSTANCE;

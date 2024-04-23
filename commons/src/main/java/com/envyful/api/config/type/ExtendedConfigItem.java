@@ -34,24 +34,6 @@ public class ExtendedConfigItem {
     public ExtendedConfigItem() {
     }
 
-    @Deprecated
-    public ExtendedConfigItem(String type, int amount,
-                              byte damage, String name,
-                              List<String> lore, int xPos,
-                              int yPos, Map<String, ConfigItem.NBTValue> nbt) {
-
-        this.type = type;
-        this.amount = String.valueOf(amount);
-        this.damage = String.valueOf(damage);
-        this.name = name;
-        this.lore = lore;
-        this.nbt = nbt;
-        this.closeOnClick = false;
-        this.requiresPermission = false;
-        this.positions.put("first", Pair.of(xPos, yPos));
-        this.commandsExecuted = Lists.newArrayList();
-    }
-
     private ExtendedConfigItem(boolean enabled, String type,
                                String amount, String name, List<String> flags,
                                List<String> lore,

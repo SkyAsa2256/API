@@ -23,16 +23,6 @@ public class ConfigInterface {
 
     public ConfigInterface() {}
 
-    @Deprecated
-    public ConfigInterface(String title, int height,
-                           String fillType,
-                           Map<String, ConfigItem> fillerItems) {
-        this.title = title;
-        this.height = height;
-        this.fillType = fillType;
-        this.fillerItems = fillerItems;
-    }
-
     protected ConfigInterface(Builder builder) {
         this.title = builder.title;
         this.height = builder.height;

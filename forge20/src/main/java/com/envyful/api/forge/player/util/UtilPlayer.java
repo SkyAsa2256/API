@@ -1,11 +1,8 @@
 package com.envyful.api.forge.player.util;
 
 import com.envyful.api.concurrency.UtilLogger;
-import com.envyful.api.forge.player.ForgeEnvyPlayer;
 import com.envyful.api.platform.PlatformProxy;
 import com.envyful.api.player.EnvyPlayer;
-import com.envyful.api.text.Placeholder;
-import com.envyful.api.text.PlaceholderFactory;
 import com.google.common.collect.Maps;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.server.level.ServerPlayer;
@@ -18,7 +15,9 @@ import net.minecraftforge.server.permission.events.PermissionGatherEvent;
 import net.minecraftforge.server.permission.nodes.PermissionNode;
 import net.minecraftforge.server.permission.nodes.PermissionTypes;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  *
@@ -146,34 +145,5 @@ public class UtilPlayer {
      */
     public static ServerPlayer getOnlinePlayer(UUID uuid) {
         return ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(uuid);
-    }
-
-    /**
-     * Formats the message with the provided placeholders via the {@link PlaceholderFactory}
-     * then sends them to the player
-     *
-     * @param player       The player
-     * @param message      The message to send
-     * @param placeholders The placeholders to use
-     * @deprecated Use {@link PlatformProxy#sendMessage(Object, Collection, Placeholder...)} instead
-     */
-    @Deprecated
-    public static void sendMessage(ForgeEnvyPlayer player, List<String> message, Placeholder... placeholders) {
-        sendMessage(player.getParent(), message, placeholders);
-    }
-
-    /**
-     *
-     * Formats the message with the provided placeholders via the {@link PlaceholderFactory}
-     * then sends them to the player
-     *
-     * @param player The player
-     * @param message The message to send
-     * @param placeholders The placeholders to use
-     * @deprecated Use {@link PlatformProxy#sendMessage(Object, Collection, Placeholder...)} instead
-     */
-    @Deprecated
-    public static void sendMessage(CommandSource player, List<String> message, Placeholder... placeholders) {
-        PlatformProxy.sendMessage(player, message, placeholders);
     }
 }

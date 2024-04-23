@@ -1,18 +1,13 @@
 package com.envyful.api.forge.player.util;
 
-import com.envyful.api.forge.player.ForgeEnvyPlayer;
 import com.envyful.api.platform.PlatformProxy;
 import com.envyful.api.player.EnvyPlayer;
-import com.envyful.api.text.Placeholder;
-import com.envyful.api.text.PlaceholderFactory;
 import net.minecraft.command.ICommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.management.OpEntry;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.PermissionAPI;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -29,7 +24,6 @@ public class UtilPlayer {
 
         return "CONSOLE";
     }
-
 
     /**
      *
@@ -84,32 +78,5 @@ public class UtilPlayer {
      */
     public static ServerPlayerEntity getOnlinePlayer(UUID uuid) {
         return ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(uuid);
-    }
-
-    /**
-     * Formats the message with the provided placeholders via the {@link PlaceholderFactory}
-     * then sends them to the player
-     *
-     * @param player       The player
-     * @param message      The message to send
-     * @param placeholders The placeholders to use
-     * @deprecated Use {@link PlatformProxy#sendMessage(Object, Collection, Placeholder...)} instead
-     */
-    @Deprecated
-    public static void sendMessage(ForgeEnvyPlayer player, List<String> message, Placeholder... placeholders) {
-        sendMessage(player.getParent(), message, placeholders);
-    }
-
-    /**
-     * Formats the message with the provided placeholders via the {@link PlaceholderFactory}
-     * then sends them to the player
-     *
-     * @param player       The player
-     * @param message      The message to send
-     * @param placeholders The placeholders to use
-     * @deprecated Use {@link PlatformProxy#sendMessage(Object, Collection, Placeholder...)} instead
-     */
-    public static void sendMessage(ICommandSource player, List<String> message, Placeholder... placeholders) {
-        PlatformProxy.sendMessage(player, message, placeholders);
     }
 }

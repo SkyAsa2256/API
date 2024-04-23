@@ -20,12 +20,6 @@ public class ConfigReward {
     protected List<String> commands;
     protected List<String> messages;
 
-    @Deprecated
-    public ConfigReward(List<String> commands, List<String> messages) {
-        this.commands = commands;
-        this.messages = messages;
-    }
-
     protected ConfigReward(Builder builder) {
         this.displayName = builder.displayName;
         this.displayItem = builder.displayItem;
@@ -85,9 +79,17 @@ public class ConfigReward {
             return this;
         }
 
+        public Builder commands(String... commands) {
+            return this.commands(Lists.newArrayList(commands));
+        }
+
         public Builder commands(List<String> commands) {
             this.commands.addAll(commands);
             return this;
+        }
+
+        public Builder messages(String... messages) {
+            return this.messages(Lists.newArrayList(messages));
         }
 
         public Builder messages(List<String> messages) {

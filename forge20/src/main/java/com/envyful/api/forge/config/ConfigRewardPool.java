@@ -57,7 +57,7 @@ public class ConfigRewardPool<T extends ConfigReward> extends AbstractYamlConfig
     }
 
     public static <A extends ConfigReward> Builder<A> builder(A guaranteedReward) {
-        return new Builder<A>().gauranteedReward(guaranteedReward);
+        return new Builder<A>().guaranteedReward(guaranteedReward);
     }
 
     public static class Builder<A extends ConfigReward> {
@@ -69,12 +69,6 @@ public class ConfigRewardPool<T extends ConfigReward> extends AbstractYamlConfig
         private ConfigRandomWeightedSet<A> rewards;
 
         protected Builder() {}
-
-        @Deprecated(since = "5.8.5", forRemoval = true)
-        public Builder<A> gauranteedReward(A reward) {
-            this.guaranteedReward = reward;
-            return this;
-        }
 
         public Builder<A> guaranteedReward(A reward) {
             this.guaranteedReward = reward;

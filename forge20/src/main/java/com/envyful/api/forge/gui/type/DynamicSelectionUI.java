@@ -16,7 +16,6 @@ import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.text.Placeholder;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import net.minecraft.world.item.ItemStack;
 import org.apache.logging.log4j.util.TriConsumer;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
@@ -213,10 +212,12 @@ public class DynamicSelectionUI {
 
         private List<Integer> optionPositions;
 
-        private ExtendedConfigItem backButton = new ExtendedConfigItem(
-                "pixelmon:eject_button", 1, (byte) 0, "&cBack",
-                Lists.newArrayList(), 0, 0, Maps.newHashMap()
-        );
+        private ExtendedConfigItem backButton = ExtendedConfigItem.builder()
+                .type("minecraft:barrier")
+                .name("&cBack")
+                .amount(1)
+                .positions(0, 0)
+                .build();
 
         private String nameColour;
 

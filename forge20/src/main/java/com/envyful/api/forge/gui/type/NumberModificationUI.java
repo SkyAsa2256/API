@@ -17,7 +17,6 @@ import com.envyful.api.player.PlayerManager;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.type.Pair;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import org.apache.logging.log4j.util.TriConsumer;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
@@ -223,15 +222,19 @@ public class NumberModificationUI {
 
         private Map<String, EditValueButton> editValueButtons;
 
-        private ExtendedConfigItem backButton = new ExtendedConfigItem(
-                "pixelmon:eject_button", 1, (byte) 0, "&cBack",
-                Lists.newArrayList(), 0, 0, Maps.newHashMap()
-        );
+        private ExtendedConfigItem backButton = ExtendedConfigItem.builder()
+                .type("minecraft:barrier")
+                .amount(1)
+                .name("&cBack")
+                .positions(0, 0)
+                .build();
 
-        private ExtendedConfigItem confirmItem = new ExtendedConfigItem(
-                "pixelmon:poke_ball", 1, (byte) 0, "&a&lCONFIRM",
-                Lists.newArrayList(), 2, 2, Maps.newHashMap()
-        );
+        private ExtendedConfigItem confirmItem = ExtendedConfigItem.builder()
+                .type("minecraft:lime_wool")
+                .name("&a&lCONFIRM")
+                .amount(1)
+                .positions(2, 2)
+                .build();
 
         private ExtendedConfigItem currentValue;
         private int maxValue;

@@ -14,7 +14,6 @@ import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.text.Placeholder;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 import java.util.Arrays;
@@ -209,15 +208,19 @@ public class TrueFalseSelectionUI {
         private ExtendedConfigItem trueItem;
         private ExtendedConfigItem falseItem;
 
-        private ExtendedConfigItem acceptItem = new ExtendedConfigItem(
-                "minecraft:lime_stained_glass_pane", 1, (byte) 0, "&a&lCONFIRM",
-                Lists.newArrayList(), 6, 1, Maps.newHashMap()
-        );
+        private ExtendedConfigItem acceptItem = ExtendedConfigItem.builder()
+                .type("minecraft:lime_stained_glass_pane")
+                .amount(1)
+                .name("&a&lCONFIRM")
+                .positions(6, 1)
+                .build();
 
-        private ExtendedConfigItem backButton = new ExtendedConfigItem(
-                "pixelmon:eject_button", 1, (byte) 0, "&cBack",
-                Lists.newArrayList(), 0, 0, Maps.newHashMap()
-        );
+        private ExtendedConfigItem backButton = ExtendedConfigItem.builder()
+                .type("minecraft:barrier")
+                .name("&cBack")
+                .amount(1)
+                .positions(0, 0)
+                .build();
 
         public TrueFalseConfig(ExtendedConfigItem trueItem, ExtendedConfigItem falseItem) {
             this.trueItem = trueItem;

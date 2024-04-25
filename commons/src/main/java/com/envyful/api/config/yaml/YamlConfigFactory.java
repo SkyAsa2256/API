@@ -1,11 +1,9 @@
 package com.envyful.api.config.yaml;
 
 import com.envyful.api.concurrency.UtilLogger;
-import com.envyful.api.config.ConfigTypeSerializer;
 import com.envyful.api.config.ConfigTypeSerializerRegistry;
 import com.envyful.api.config.data.ConfigPath;
 import com.envyful.api.config.data.ScalarSerializers;
-import com.envyful.api.config.data.TypeSerializers;
 import com.envyful.api.config.yaml.data.YamlConfigStyle;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
@@ -77,10 +75,8 @@ public class YamlConfigFactory {
             scalarSerializers.addAll(Arrays.asList(serializedScalarData.value()));
         }
 
-        ConfigurationReference<CommentedConfigurationNode> base =
-                listenToConfig( file.toPath(), scalarSerializers, getTypeSerializers(configClass), style);
-        ValueReference<T, CommentedConfigurationNode> reference =
-                base.referenceTo(configClass);
+        var base = listenToConfig( file.toPath(), scalarSerializers, style);
+        var reference = base.referenceTo(configClass);
 
         config.base = base;
         config.config = reference;
@@ -105,10 +101,9 @@ public class YamlConfigFactory {
      * @throws IOException Thrown if there is an error loading any of the configs
      */
     @SafeVarargs
-    public static <T extends AbstractYamlConfig> List<T>
-    getInstances(Class<T> configClass, String configDirectory,
+    public static <T extends AbstractYamlConfig> List<T> getInstances(Class<T> configClass, String configDirectory,
                  DefaultConfig<T>... defaults) throws IOException {
-        File configFiles = Paths.get(configDirectory).toFile();
+        var configFiles = Paths.get(configDirectory).toFile();
 
         if (!configFiles.exists()) {
             configFiles.mkdir();
@@ -118,17 +113,16 @@ public class YamlConfigFactory {
             throw new IOException("Invalid path provided - must be a directory");
         }
 
-        NodeStyle style = getNodeStyle(configClass);
-        List<Class<? extends ScalarSerializer<?>>> serializers =
-                Lists.newArrayList();
-        ScalarSerializers serializedData = configClass.getAnnotation(ScalarSerializers.class);
+        var style = getNodeStyle(configClass);
+        List<Class<? extends ScalarSerializer<?>>> serializers = Lists.newArrayList();
+        var serializedData = configClass.getAnnotation(ScalarSerializers.class);
 
         if (serializedData != null) {
             serializers.addAll(Arrays.asList(serializedData.value()));
         }
 
-        for (DefaultConfig<T> defaultConfig : defaults) {
-            File file = new File(configDirectory, defaultConfig.getFileName());
+        for (var defaultConfig : defaults) {
+            var file = new File(configDirectory, defaultConfig.getFileName());
 
             if (file.exists() && !defaultConfig.shouldReplaceExisting()) {
                 continue;
@@ -141,11 +135,9 @@ public class YamlConfigFactory {
                 file.createNewFile();
             }
 
-            ConfigurationReference<CommentedConfigurationNode> base =
-                    listenToConfig(file.toPath(), serializers, getTypeSerializers(configClass), style);
-            ValueReference<T, CommentedConfigurationNode> reference =
-                    base.referenceTo(configClass);
-            T instance = reference.get();
+            var base = listenToConfig(file.toPath(), serializers, style);
+            var reference = base.referenceTo(configClass);
+            var instance = reference.get();
 
             if (instance == null) {
                 throw new IOException("Error config loaded as null");
@@ -157,28 +149,6 @@ public class YamlConfigFactory {
         }
 
         return loadDirectory(configFiles, serializers, style, configClass);
-    }
-
-    private static <T extends AbstractYamlConfig> List<ConfigTypeSerializer<?>> getTypeSerializers(Class<T> configClass) {
-        var serializedTypeData = configClass.getAnnotation(TypeSerializers.class);
-
-        if (serializedTypeData == null) {
-            return Collections.emptyList();
-        }
-
-        List<ConfigTypeSerializer<?>> typeSerializers = Lists.newArrayList();
-
-        for (Class<?> clazz : serializedTypeData.value()) {
-            var serializer = ConfigTypeSerializerRegistry.get(clazz);
-
-            if (serializedTypeData == null) {
-                throw new IllegalArgumentException("No serializer found for class " + clazz.getName());
-            }
-
-            typeSerializers.add(serializer);
-        }
-
-        return typeSerializers;
     }
 
     private static <T extends AbstractYamlConfig> List<T>
@@ -198,7 +168,7 @@ public class YamlConfigFactory {
 
             try {
                 ConfigurationReference<CommentedConfigurationNode> base =
-                        listenToConfig(listFile.toPath(), serializers, getTypeSerializers(configClass), style);
+                        listenToConfig(listFile.toPath(), serializers, style);
 
                 if (base == null) {
                     throw new IOException("Error config loaded as null");
@@ -275,7 +245,7 @@ public class YamlConfigFactory {
         }
 
         ConfigurationReference<CommentedConfigurationNode> base =
-                listenToConfig(configFile, serializers, getTypeSerializers(clazz), style);
+                listenToConfig(configFile, serializers, style);
 
         if (base == null) {
             throw new IOException("Error config loaded as null");
@@ -309,7 +279,6 @@ public class YamlConfigFactory {
     private static ConfigurationReference<CommentedConfigurationNode>
     listenToConfig(Path configFile,
                    List<Class<? extends ScalarSerializer<?>>> scalarSerializers,
-                   List<ConfigTypeSerializer<?>> typeSerializers,
                    NodeStyle style) throws IOException {
         try {
             return ConfigurationReference.fixed(YamlConfigurationLoader.builder()
@@ -328,7 +297,7 @@ public class YamlConfigFactory {
                                 builder.register(serializer.newInstance());
                             }
 
-                            for (var typeSerializer : typeSerializers) {
+                            for (var typeSerializer : ConfigTypeSerializerRegistry.getAll()) {
                                 var typeToken = typeSerializer.type();
                                 var serializer = typeSerializer.serializer();
 

@@ -2,6 +2,7 @@ package com.envyful.api.config;
 
 import com.google.common.collect.Maps;
 
+import java.util.List;
 import java.util.Map;
 
 public class ConfigTypeSerializerRegistry {
@@ -14,5 +15,9 @@ public class ConfigTypeSerializerRegistry {
 
     public static ConfigTypeSerializer<?> get(Class<?> id) {
         return REGISTRY.get(id);
+    }
+
+    public static List<ConfigTypeSerializer<?>> getAll() {
+        return List.copyOf(REGISTRY.values());
     }
 }

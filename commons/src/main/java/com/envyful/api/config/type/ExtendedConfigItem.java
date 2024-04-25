@@ -239,12 +239,18 @@ public class ExtendedConfigItem {
             return this;
         }
 
+        @Deprecated
         @SafeVarargs
         public final Builder positions(Pair<Integer, Integer>... positions) {
             for (Pair<Integer, Integer> position : positions) {
                 this.positions.put(this.positions.size() + "", position);
             }
 
+            return this;
+        }
+
+        public Builder positions(int x, int y) {
+            this.positions.put(this.positions.size() + "", Pair.of(x, y));
             return this;
         }
 

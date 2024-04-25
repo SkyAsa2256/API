@@ -14,7 +14,6 @@ import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.text.Placeholder;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import net.minecraft.item.ItemStack;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
@@ -201,14 +200,19 @@ public class ConfirmationUI {
 
         private ConfigInterface guiSettings = ConfigInterface.defaultInterface("Confirm");
 
-        private ExtendedConfigItem declineItem = new ExtendedConfigItem("minecraft:red_wool", 1, (byte) 14, "&c&lDECLINE",
-                                                                    Lists.newArrayList(), 2, 1, Maps.newHashMap());
+        private ExtendedConfigItem declineItem = ExtendedConfigItem.builder()
+                .type("minecraft:red_wool")
+                .name("&c&lDECLINE")
+                .amount(1)
+                .positions(6, 1)
+                .build();
 
-
-        private ExtendedConfigItem acceptItem = new ExtendedConfigItem("minecraft:lime_wool", 1, (byte) 5,
-                                                                               "&a&lACCEPT",
-                                                                                Lists.newArrayList(), 6, 1,
-                                                                               Maps.newHashMap());
+        private ExtendedConfigItem acceptItem = ExtendedConfigItem.builder()
+                .type("minecraft:lime_wool")
+                .name("&a&lACCEPT")
+                .amount(1)
+                .positions(6, 1)
+                .build();
 
         private int descriptionPosition = 13;
 

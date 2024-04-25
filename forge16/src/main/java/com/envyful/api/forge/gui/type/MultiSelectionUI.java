@@ -15,7 +15,6 @@ import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.text.Placeholder;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import net.minecraft.item.ItemStack;
 import org.apache.logging.log4j.util.TriConsumer;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
@@ -242,20 +241,26 @@ public class MultiSelectionUI {
         private Map<String, ConfigItem> options;
         private List<Integer> optionPositions;
 
-        private ExtendedConfigItem backButton = new ExtendedConfigItem(
-                "pixelmon:eject_button", 1, (byte) 0, "&cBack",
-                Lists.newArrayList(), 0, 0, Maps.newHashMap()
-        );
+        private ExtendedConfigItem backButton = ExtendedConfigItem.builder()
+                .type("minecraft:barrier")
+                .amount(1)
+                .name("&cBack")
+                .positions(0, 0)
+                .build();
 
-        private ExtendedConfigItem nextPageButton = new ExtendedConfigItem(
-                "pixelmon:trade_holder_right", 1, (byte) 0, "&aNext Page",
-                Lists.newArrayList(), 8, 5, Maps.newHashMap()
-        );
+        private ExtendedConfigItem nextPageButton = ExtendedConfigItem.builder()
+                .type("minecraft:arrow")
+                .name("&aNext Page")
+                .amount(1)
+                .positions(8, 5)
+                .build();
 
-        private ExtendedConfigItem previousPageButton = new ExtendedConfigItem(
-                "pixelmon:trade_holder_left", 1, (byte) 0, "&aPrevious Page",
-                Lists.newArrayList(), 0, 5, Maps.newHashMap()
-        );
+        private ExtendedConfigItem previousPageButton = ExtendedConfigItem.builder()
+                .type("minecraft:arrow")
+                .name("&aPrevious Page")
+                .amount(1)
+                .positions(0, 5)
+                .build();
 
         public MultiSelectionConfig(String title, int height, Map<String, ConfigItem> options,
                                     List<Integer> optionPositions) {

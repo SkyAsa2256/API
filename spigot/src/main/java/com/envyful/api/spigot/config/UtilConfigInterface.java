@@ -19,6 +19,11 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
+/**
+ *
+ * Static utility class for creating gui interfaces from {@link ConfigInterface} and {@link PaginatedConfigInterface} objects
+ *
+ */
 public class UtilConfigInterface {
 
     public static void fillBackground(Pane pane, ConfigInterface settings, Placeholder... transformers) {

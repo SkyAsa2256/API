@@ -25,6 +25,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+/**
+ *
+ * Static utility for turning the {@link ConfigItem} into an {@link ItemStack} for use in GUIs
+ *
+ */
 public class UtilConfigItem {
 
     private UtilConfigItem() {

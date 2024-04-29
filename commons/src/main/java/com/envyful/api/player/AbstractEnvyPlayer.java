@@ -61,13 +61,21 @@ public abstract class AbstractEnvyPlayer<T> implements EnvyPlayer<T> {
 
     @Override
     public <A extends Attribute<B, T>, B> A getAttributeNow(Class<A> attributeClass) {
-        var future = this.getAttribute(attributeClass);
-
-        if (future == null) {
+        if (!this.attributes.containsKey(attributeClass)) {
             return null;
         }
 
-        return future.join();
+        var instance = (AttributeInstance<A, B, T>) this.attributes.get(attributeClass);
+
+        if (instance.attribute != null) {
+            return instance.attribute;
+        }
+
+        if (instance.loadingAttribute == null) {
+            return null;
+        }
+
+        return instance.loadingAttribute.join();
     }
 
     @Override

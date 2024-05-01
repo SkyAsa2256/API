@@ -15,6 +15,11 @@ import org.bukkit.inventory.ItemStack;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+/**
+ *
+ * Builder class for creating {@link Displayable} instances from {@link ConfigItem} and {@link ExtendedConfigItem} instances
+ *
+ */
 public class ConfigItemBuilder extends SpigotSimpleDisplayable.Builder {
 
     protected ConfigItemBuilder() {

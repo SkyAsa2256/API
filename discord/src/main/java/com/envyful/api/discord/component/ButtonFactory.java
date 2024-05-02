@@ -14,6 +14,14 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
+/**
+ *
+ * Static factory class for creating {@link Button}s with ease
+ * <br>
+ * This allows you to give a button an id, label, style, emoji, and interaction handler
+ * rather than having to explicitly listen to the {@link ButtonInteractionEvent} and check the id
+ *
+ */
 public class ButtonFactory {
 
     private static final AtomicBoolean REGISTERED = new AtomicBoolean(false);

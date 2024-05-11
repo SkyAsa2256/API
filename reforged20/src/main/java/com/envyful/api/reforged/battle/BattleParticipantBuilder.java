@@ -14,6 +14,11 @@ import net.minecraft.world.entity.Entity;
 
 import java.awt.*;
 
+/**
+ *
+ * Builder for creating a {@link BattleParticipant} instance
+ *
+ */
 public class BattleParticipantBuilder {
 
     private Entity player;

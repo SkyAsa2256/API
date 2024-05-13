@@ -4,6 +4,7 @@ import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.forge.InitializationTask;
 import com.envyful.api.forge.Initialized;
 import com.envyful.api.forge.chat.UtilChatColour;
+import com.envyful.api.forge.server.UtilForgeServer;
 import com.envyful.api.platform.PlatformHandler;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
@@ -105,7 +106,7 @@ public class ForgePlatformHandler implements PlatformHandler<ICommandSource> {
     public void executeConsoleCommands(List<String> commands, Placeholder... placeholders) {
         for (String command : commands) {
             for (String handlePlaceholder : PlaceholderFactory.handlePlaceholders(command, placeholders)) {
-                ServerLifecycleHooks.getCurrentServer().getCommands().performCommand(ServerLifecycleHooks.getCurrentServer().createCommandSourceStack(), handlePlaceholder);
+                UtilForgeServer.executeCommand(handlePlaceholder);
             }
         }
     }

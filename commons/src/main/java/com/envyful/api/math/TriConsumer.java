@@ -8,6 +8,7 @@ package com.envyful.api.math;
  * @param <B> The second argument type
  * @param <C> The third argument type
  */
+@FunctionalInterface
 public interface TriConsumer<A, B, C> {
 
     /**

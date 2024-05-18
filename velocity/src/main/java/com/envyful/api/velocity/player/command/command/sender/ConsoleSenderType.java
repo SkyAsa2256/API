@@ -3,6 +3,11 @@ package com.envyful.api.velocity.player.command.command.sender;
 import com.envyful.api.command.sender.SenderType;
 import com.velocitypowered.api.command.CommandSource;
 
+/**
+ *
+ * Velocity implementation of the {@link SenderType} interface for the console
+ *
+ */
 public class ConsoleSenderType implements SenderType<CommandSource, CommandSource> {
     
     @Override

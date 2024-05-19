@@ -4,6 +4,11 @@ import com.envyful.api.command.sender.SenderType;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
 
+/**
+ *
+ * A {@link SenderType} for the Velocity {@link Player} class
+ *
+ */
 public class VelocityPlayerSenderType implements SenderType<CommandSource, Player> {
 
     @Override

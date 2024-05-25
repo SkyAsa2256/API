@@ -15,6 +15,11 @@ import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ *
+ * A platform command for the Velocity platform
+ *
+ */
 public class VelocityPlatformCommand extends PlatformCommand<CommandSource> {
 
     public ProxyServer proxy;

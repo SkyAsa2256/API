@@ -6,6 +6,11 @@ import com.envyful.api.velocity.player.VelocityPlayerManager;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
 
+/**
+ *
+ * Velocity implementation of the {@link SenderType} interface for the {@link VelocityEnvyPlayer} class
+ *
+ */
 public class VelocityEnvyPlayerSenderType implements SenderType<CommandSource, VelocityEnvyPlayer> {
 
     private final VelocityPlayerManager playerManager;

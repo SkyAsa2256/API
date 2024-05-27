@@ -1,13 +1,11 @@
 package com.envyful.api.forge.gui;
 
 import com.envyful.api.concurrency.UtilConcurrency;
-import com.envyful.api.forge.listener.LazyListener;
 import com.envyful.api.player.EnvyPlayer;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 import java.util.Map;
 import java.util.Set;
@@ -24,7 +22,15 @@ public class ForgeGuiTracker {
     private static final Set<UUID> REQUIRED_UPDATE = Sets.newConcurrentHashSet();
 
     static {
-        new ForgeGuiTickListener();
+        UtilConcurrency.runRepeatingTask(() -> {
+            if (ServerLifecycleHooks.getCurrentServer() == null) {
+                return;
+            }
+
+            for (ForgeGui value : OPEN_GUIS.values()) {
+                value.update();
+            }
+        }, 50L, 50L);
     }
 
     public static void addGui(EnvyPlayer<?> player, ForgeGui gui) {
@@ -63,19 +69,4 @@ public class ForgeGuiTracker {
         REQUIRED_UPDATE.remove(player.getUUID());
     }
 
-    private static final class ForgeGuiTickListener extends LazyListener {
-
-        private ForgeGuiTickListener() {
-            super();
-        }
-
-        @SubscribeEvent
-        public void onServerTick(TickEvent.ServerTickEvent event) {
-            UtilConcurrency.runAsync(() -> {
-                for (ForgeGui value : OPEN_GUIS.values()) {
-                    value.update();
-                }
-            });
-        }
-    }
 }

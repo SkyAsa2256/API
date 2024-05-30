@@ -9,7 +9,6 @@ import com.pixelmonmod.pixelmon.api.world.WorldTime;
 import com.pixelmonmod.pixelmon.spawning.PixelmonSpawning;
 import net.minecraft.tags.TagEntry;
 
-import java.util.Collections;
 import java.util.List;
 
 public class UtilPokemonInfo {
@@ -78,16 +77,7 @@ public class UtilPokemonInfo {
         return names;
     }
 
-
-    public static List<String> getCatchRate(Stats pokemon) {
-        double males = pokemon.getMalePercentage();
-        if (males == (double) -1) {
-            return Collections.singletonList("§7Base rate: " + String.format("%.2f", pokemon.getCatchRate() / 255.0D * 100.0D) + "%");
-        } else {
-            return Lists.newArrayList(
-                    "§b♂ Male: " + String.format("%.2f", pokemon.getMalePercentage()) + "%",
-                    "§d♀ Female: " + String.format("%.2f", (100 - pokemon.getMalePercentage())) + "%"
-            );
-        }
+    public static double getCatchRatePercentage(Stats pokemon) {
+        return pokemon.getCatchRate() / 255.0D * 100.0D;
     }
 }

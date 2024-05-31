@@ -11,6 +11,11 @@ import net.minecraft.tags.TagEntry;
 
 import java.util.List;
 
+/**
+ *
+ * Utility class for easily converting spawn info to a more readable format
+ *
+ */
 public class UtilPokemonInfo {
 
     public static List<String> getSpawnBiomes(Stats pokemon) {

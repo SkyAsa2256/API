@@ -4,6 +4,11 @@ import com.pixelmonmod.pixelmon.api.pokemon.stats.BattleStatsType;
 
 import java.util.Optional;
 
+/**
+ *
+ * Static utility class for converting strings to BattleStatsType
+ *
+ */
 public class UtilBattleStatType {
 
     public static Optional<BattleStatsType> convert(String identifier) {

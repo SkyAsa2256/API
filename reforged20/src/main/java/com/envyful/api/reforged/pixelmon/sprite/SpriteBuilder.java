@@ -9,6 +9,11 @@ import net.minecraft.nbt.ShortTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.world.item.ItemStack;
 
+/**
+ *
+ * Builder class for creating a Pixelmon sprite ItemStack
+ *
+ */
 public class SpriteBuilder {
 
     private Species species;

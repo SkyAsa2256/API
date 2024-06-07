@@ -77,9 +77,34 @@ public class PlatformProxy {
         handler.executeConsoleCommands(commands, placeholders);
     }
 
+    /**
+     *
+     * Checks if a player has a permission
+     *
+     * @param player The player
+     * @param permission The permission
+     * @return If the player has the permission
+     */
+    public static boolean hasPermission(Object player, String permission) {
+        if (handler == null) {
+            UtilLogger.logger().ifPresent(logger -> logger.error("No platform handler set but hasPermission was called"));
+            return false;
+        }
+
+        return handler.hasPermission(player, permission);
+    }
+
+    /**
+     *
+     * Checks if a player has a permission
+     *
+     * @param player The player
+     * @param permission The permission
+     * @return If the player has the permission
+     */
     public static boolean hasPermission(EnvyPlayer<?> player, String permission) {
         if (handler == null) {
-            UtilLogger.logger().ifPresent(logger -> logger.error("No platform handler set but broadcastMessage was called"));
+            UtilLogger.logger().ifPresent(logger -> logger.error("No platform handler set but hasPermission was called"));
             return false;
         }
 

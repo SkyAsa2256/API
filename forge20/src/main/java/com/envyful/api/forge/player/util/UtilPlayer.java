@@ -77,7 +77,7 @@ public class UtilPlayer {
      * @param permissionNode The node
      * @return The permission
      */
-    public static PermissionNode<?> registerPermission(String permissionNode) {
+    public static PermissionNode<Boolean> registerPermission(String permissionNode) {
         if (!permissionNode.contains(".")) {
             return registerPermission("envyapi", permissionNode);
         }
@@ -94,12 +94,12 @@ public class UtilPlayer {
      * @param permissionNode The node
      * @return The permission
      */
-    public static PermissionNode<?> registerPermission(String modId, String permissionNode) {
+    public static PermissionNode<Boolean> registerPermission(String modId, String permissionNode) {
         var registeredPermission = new PermissionNode<>(modId, permissionNode,
                 PermissionTypes.BOOLEAN,
                 (player, uuid, contexts) -> false);
 
-        PERMISSION_NODES.put(permissionNode, registeredPermission);
+        PERMISSION_NODES.put(modId + "." + permissionNode, registeredPermission);
         return registeredPermission;
     }
 

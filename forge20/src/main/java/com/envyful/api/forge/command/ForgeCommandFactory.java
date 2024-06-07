@@ -5,7 +5,6 @@ import com.envyful.api.command.CommandParser;
 import com.envyful.api.command.InjectedCommandFactory;
 import com.envyful.api.command.PlatformCommand;
 import com.envyful.api.command.exception.CommandParseException;
-import com.envyful.api.command.injector.TabCompleter;
 import com.envyful.api.command.sender.SenderTypeFactory;
 import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.forge.chat.UtilChatColour;
@@ -18,7 +17,7 @@ import com.envyful.api.forge.command.injector.ForgeFunctionInjector;
 import com.envyful.api.forge.command.parser.ForgeAnnotationCommandParser;
 import com.envyful.api.forge.player.ForgeEnvyPlayer;
 import com.envyful.api.forge.player.ForgePlayerManager;
-import com.envyful.api.forge.player.util.UtilPlayer;
+import com.envyful.api.platform.PlatformProxy;
 import com.google.common.collect.Lists;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -129,7 +128,7 @@ public class ForgeCommandFactory extends InjectedCommandFactory<CommandDispatche
             return true;
         }
 
-        return UtilPlayer.hasPermission((ServerPlayer) sender, permission);
+        return PlatformProxy.hasPermission(sender, permission);
     }
 
     /**
@@ -194,9 +193,5 @@ public class ForgeCommandFactory extends InjectedCommandFactory<CommandDispatche
     @Override
     public <C> void registerInjector(Class<C> parentClass, boolean multipleArgs, BiFunction<CommandSource, String[], C> function) {
         this.registeredInjectors.add(new ForgeFunctionInjector<>(parentClass, multipleArgs, function));
-    }
-
-    public static TabCompleter<CommandSource> tabCompleter(TabCompleter<CommandSource> completer) {
-        return completer;
     }
 }

@@ -15,7 +15,7 @@ public class PokemonSpecSerializer implements TypeSerializer<PokemonSpecificatio
 
     private static final PokemonSpecSerializer INSTANCE = new PokemonSpecSerializer();
 
-    private PokemonSpecSerializer() {}
+    public PokemonSpecSerializer() {}
 
     public static PokemonSpecSerializer getInstance() {
         return INSTANCE;

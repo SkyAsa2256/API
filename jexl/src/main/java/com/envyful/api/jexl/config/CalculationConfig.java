@@ -4,6 +4,11 @@ import com.envyful.api.jexl.UtilJexl;
 import org.apache.commons.jexl3.JexlExpression;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
+/**
+ *
+ * A simple configuration object for a Jexl calculation
+ *
+ */
 @ConfigSerializable
 public class CalculationConfig {
 

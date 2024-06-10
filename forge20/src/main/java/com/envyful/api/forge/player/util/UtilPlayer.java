@@ -83,7 +83,7 @@ public class UtilPlayer {
         }
 
         String[] split = permissionNode.split("\\.");
-        return registerPermission(split[0], String.join(" ", Arrays.copyOfRange(split, 1, split.length)));
+        return registerPermission(split[0], String.join(".", Arrays.copyOfRange(split, 1, split.length)));
     }
 
     /**

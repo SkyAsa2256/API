@@ -57,7 +57,18 @@ public class ForgePlatformHandler implements PlatformHandler<CommandSource> {
             return false;
         }
 
-        return (isOP(player) || PermissionAPI.getPermission((ServerPlayer) player, UtilPlayer.getPermission(permission)));
+        if (isOP(player)) {
+            return true;
+        }
+
+        var permissionNode = UtilPlayer.getPermission(permission);
+
+        if (permissionNode == null) {
+            UtilLogger.logger().ifPresent(logger -> logger.error("Unregistered permission node is attempted to be used: {}", permission));
+            return false;
+        }
+
+        return PermissionAPI.getPermission((ServerPlayer) player, permissionNode);
     }
 
     private boolean isOP(CommandSource sender) {

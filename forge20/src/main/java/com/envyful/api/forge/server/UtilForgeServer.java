@@ -28,6 +28,10 @@ public class UtilForgeServer {
      * @param command The command to execute
      */
     public static void executeCommand(String command) {
+        if (ServerLifecycleHooks.getCurrentServer() == null || ServerLifecycleHooks.getCurrentServer().isShutdown()) {
+            return;
+        }
+
         if (!ServerLifecycleHooks.getCurrentServer().isSameThread()) {
             ServerLifecycleHooks.getCurrentServer().execute(() -> executeCommand(command));
             return;

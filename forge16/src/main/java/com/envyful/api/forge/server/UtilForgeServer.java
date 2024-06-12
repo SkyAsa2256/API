@@ -30,7 +30,7 @@ public class UtilForgeServer {
      * @param command The command to execute
      */
     public static void executeCommand(String command) {
-        if (ServerLifecycleHooks.getCurrentServer() == null || ServerLifecycleHooks.getCurrentServer().isShutdown()) {
+        if (ServerLifecycleHooks.getCurrentServer() == null || !ServerLifecycleHooks.getCurrentServer().getRunningThread().isAlive()) {
             return;
         }
 

@@ -4,6 +4,11 @@ import com.pixelmonmod.pixelmon.battles.api.rules.BattleRuleRegistry;
 import com.pixelmonmod.pixelmon.battles.api.rules.BattleRules;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
+/**
+ *
+ * Config object for a battle rule
+ *
+ */
 @ConfigSerializable
 public class ConfigBattleRule {
 

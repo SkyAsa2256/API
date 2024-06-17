@@ -4,8 +4,6 @@ import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.reforged.pixelmon.config.SpriteConfig;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
-import com.envyful.api.text.parse.SimplePlaceholder;
-import com.google.common.collect.Lists;
 import com.pixelmonmod.api.Flags;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonBase;
@@ -29,6 +27,7 @@ import net.minecraft.nbt.StringNBT;
 import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -71,13 +70,6 @@ public class UtilSprite {
         itemStack.setTag(tag);
 
         return itemStack;
-    }
-
-    private static List<Placeholder> getPokemonPlaceholders(Pokemon pokemon, SpriteConfig spriteConfig, Placeholder... placeholders) {
-        List<Placeholder> placeholderList = Lists.newArrayList(placeholders);
-
-        placeholderList.add((SimplePlaceholder)line -> replacePokemonPlaceholders(line, pokemon, spriteConfig));
-        return placeholderList;
     }
 
     public static ItemStack getPixelmonSprite(Species pokemon) {
@@ -186,6 +178,82 @@ public class UtilSprite {
         return line;
     }
 
+    public static List<Placeholder> getPokemonPlaceholders(Pokemon pokemon, SpriteConfig config, Placeholder... otherPlaceholders) {
+        IVStore iVs = pokemon.getIVs();
+        float ivHP = iVs.getStat(BattleStatsType.HP);
+        float ivAtk = iVs.getStat(BattleStatsType.ATTACK);
+        float ivDef = iVs.getStat(BattleStatsType.DEFENSE);
+        float ivSpeed = iVs.getStat(BattleStatsType.SPEED);
+        float ivSAtk = iVs.getStat(BattleStatsType.SPECIAL_ATTACK);
+        float ivSDef = iVs.getStat(BattleStatsType.SPECIAL_DEFENSE);
+        int percentage = Math.round(((ivHP + ivDef + ivAtk + ivSpeed + ivSAtk + ivSDef) / 186f) * 100);
+        float evHP = pokemon.getEVs().getStat(BattleStatsType.HP);
+        float evAtk = pokemon.getEVs().getStat(BattleStatsType.ATTACK);
+        float evDef = pokemon.getEVs().getStat(BattleStatsType.DEFENSE);
+        float evSpeed = pokemon.getEVs().getStat(BattleStatsType.SPEED);
+        float evSAtk = pokemon.getEVs().getStat(BattleStatsType.SPECIAL_ATTACK);
+        float evSDef = pokemon.getEVs().getStat(BattleStatsType.SPECIAL_DEFENSE);
+        ExtraStats extraStats = pokemon.getExtraStats();
+
+        List<Placeholder> placeholders = new ArrayList<>();
+
+        for (var otherPlaceholder : otherPlaceholders) {
+            placeholders.add(otherPlaceholder);
+        }
+
+        placeholders.add(Placeholder.simple("%nickname%", pokemon.getDisplayName()));
+        placeholders.add(Placeholder.simple("%held_item%", pokemon.getHeldItem().getHoverName().getString()));
+        placeholders.add(Placeholder.simple("%palette%", pokemon.getPalette().getLocalizedName()));
+        placeholders.add(Placeholder.simple("%species_name%", pokemon.isEgg() ? "Egg" : pokemon.getSpecies().getLocalizedName()));
+        placeholders.add(Placeholder.simple("%level%", pokemon.getPokemonLevel() + ""));
+        placeholders.add(Placeholder.simple("%gender%", pokemon.getGender() == Gender.MALE ? config.getMaleFormat() : pokemon.getGender() == Gender.NONE ? config.getNoneFormat() : config.getFemaleFormat()));
+        placeholders.add(Placeholder.simple("%breedable%", pokemon.hasFlag(Flags.UNBREEDABLE) ?
+                        config.getUnbreedableTrueFormat() : config.getUnbreedableFalseFormat()));
+        placeholders.add(Placeholder.simple("%nature%", config.getNatureFormat().replace("%nature_name%",
+                                pokemon.getMintNature() != null ?
+                                        pokemon.getBaseNature().getLocalizedName() :
+                                        pokemon.getNature().getLocalizedName())
+                        .replace("%mint_nature%", pokemon.getMintNature() != null ?
+                                config.getMintNatureFormat().replace("%mint_nature_name%", pokemon.getMintNature().getLocalizedName()) : "")));
+        placeholders.add(Placeholder.simple("%ability%", config.getAbilityFormat()
+                        .replace("%ability_name%", pokemon.getAbility().getLocalizedName())
+                        .replace("%ability_ha%", pokemon.hasHiddenAbility() ? config.getHaFormat() : "")));
+        placeholders.add(Placeholder.simple("%friendship%", pokemon.getFriendship() + ""));
+        placeholders.add(Placeholder.simple("%untradeable%", pokemon.hasFlag("untradeable") ?
+                        config.getUntrdeableTrueFormat() : config.getUntradeableFalseFormat()));
+        placeholders.add(Placeholder.simple("%iv_percentage%", percentage + ""));
+        placeholders.add(Placeholder.simple("%iv_hp%", getColour(config, iVs, BattleStatsType.HP) + ((int) ivHP) + ""));
+        placeholders.add(Placeholder.simple("%iv_attack%", getColour(config, iVs, BattleStatsType.ATTACK) + ((int) ivAtk) + ""));
+        placeholders.add(Placeholder.simple("%iv_defence%", getColour(config, iVs, BattleStatsType.DEFENSE) + ((int) ivDef) + ""));
+        placeholders.add(Placeholder.simple("%iv_spattack%", getColour(config, iVs, BattleStatsType.SPECIAL_ATTACK) + ((int) ivSAtk) + ""));
+        placeholders.add(Placeholder.simple("%iv_spdefence%", getColour(config, iVs, BattleStatsType.SPECIAL_DEFENSE) + ((int) ivSDef) + ""));
+        placeholders.add(Placeholder.simple("%iv_speed%", getColour(config, iVs, BattleStatsType.SPEED) + ((int) ivSpeed) + ""));
+        placeholders.add(Placeholder.simple("%ev_hp%", ((int) evHP) + ""));
+        placeholders.add(Placeholder.simple("%ev_attack%", ((int) evAtk) + ""));
+        placeholders.add(Placeholder.simple("%ev_defence%", ((int) evDef) + ""));
+        placeholders.add(Placeholder.simple("%ev_spattack%", ((int) evSAtk) + ""));
+        placeholders.add(Placeholder.simple("%ev_spdefence%", ((int) evSDef) + ""));
+        placeholders.add(Placeholder.simple("%ev_speed%", ((int) evSpeed) + ""));
+        placeholders.add(getMovePlaceholder(pokemon, 0));
+        placeholders.add(getMovePlaceholder(pokemon, 1));
+        placeholders.add(getMovePlaceholder(pokemon, 2));
+        placeholders.add(getMovePlaceholder(pokemon, 3));
+        placeholders.add(Placeholder.simple("%shiny%", pokemon.isShiny() ? config.getShinyTrueFormat() : config.getShinyFalseFormat()));
+        placeholders.add(Placeholder.simple("%form%", pokemon.getForm().getLocalizedName()));
+        placeholders.add(Placeholder.simple("%size%", pokemon.getGrowth().getLocalizedName()));
+        placeholders.add(Placeholder.simple("%friendship%", pokemon.getFriendship() + ""));
+
+        placeholders.add(Placeholder.require(() -> extraStats instanceof MewStats)
+                .placeholder(Placeholder.simple(s -> s.replace("%mew_cloned%", config.getMewClonedFormat()
+                        .replace("%cloned%", ((MewStats) extraStats).numCloned + "")))).build());
+
+        placeholders.add(Placeholder.require(() -> extraStats instanceof LakeTrioStats)
+                .placeholder(Placeholder.simple(s -> s.replace("%trio_gemmed%", config.getGemmedFormat()
+                        .replace("%gemmed%", ((LakeTrioStats)extraStats).numEnchanted + "")))).build());
+
+        return placeholders;
+    }
+
     private static String getColour(SpriteConfig config, IVStore ivStore, BattleStatsType statsType) {
         if (ivStore.isHyperTrained(statsType)) {
             return config.getHyperIvColour();
@@ -208,6 +276,21 @@ public class UtilSprite {
         }
 
         return pokemon.getMoveset().attacks[pos].getActualMove().getLocalizedName();
+    }
+
+    private static Placeholder getMovePlaceholder(Pokemon pokemon, int pos) {
+        return Placeholder.require(() -> {
+                    if (pokemon.getMoveset() == null) {
+                        return false;
+                    }
+
+                    if (pokemon.getMoveset().attacks.length <= pos) {
+                        return false;
+                    }
+
+                    return pokemon.getMoveset().attacks[pos] != null;
+                }).placeholder(Placeholder.simple("%move_" + (pos + 1) + "%", getMove(pokemon, pos)))
+                .build();
     }
 
     public static Pokemon getPokemon(ItemStack stack) {

@@ -4,6 +4,7 @@ import com.envyful.api.concurrency.UtilConcurrency;
 import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.database.Database;
 import com.envyful.api.database.SQLFunction;
+import com.envyful.api.type.ExceptionThrowingConsumer;
 import com.google.common.collect.Lists;
 import com.mysql.cj.jdbc.Driver;
 
@@ -245,7 +246,7 @@ public class UtilSql {
             return executeQuery(this.database, this.query, this.data.toArray(new SqlType[0]));
         }
 
-        public void execute(ExceptionThrowingConsumer<ResultSet> consumer) {
+        public void execute(ExceptionThrowingConsumer<ResultSet, SQLException> consumer) {
             try (ResultSet resultSet = this.execute()) {
                 consumer.accept(resultSet);
             } catch (SQLException e) {

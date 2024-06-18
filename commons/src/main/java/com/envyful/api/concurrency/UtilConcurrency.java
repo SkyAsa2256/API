@@ -1,5 +1,6 @@
 package com.envyful.api.concurrency;
 
+import com.envyful.api.type.ExceptionThrowingSupplier;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 import java.util.concurrent.*;
@@ -34,6 +35,25 @@ public class UtilConcurrency {
                             new DefaultUncaughtExceptionHandler()
                     )
                     .build());
+
+    /**
+     *
+     * Runs a task asynchronously using the {@link UtilConcurrency#SCHEDULED_EXECUTOR_SERVICE}
+     *
+     * @param supplier The supplier to run
+     * @return The completable future
+     * @param <T> The type to return
+     * @param <D> The exception that can be thrown
+     */
+    public static <T, D extends Throwable> CompletableFuture<T> supplyAsyncWithException(ExceptionThrowingSupplier<T, D> supplier) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                return supplier.get();
+            } catch (Throwable throwable) {
+                throw new RuntimeException("Error while executing async task", throwable);
+            }
+        }, SCHEDULED_EXECUTOR_SERVICE);
+    }
 
     /**
      *

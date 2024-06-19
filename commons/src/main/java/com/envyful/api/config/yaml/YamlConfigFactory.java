@@ -276,7 +276,7 @@ public class YamlConfigFactory {
         return annotation.value();
     }
 
-    private static ConfigurationReference<CommentedConfigurationNode>
+    protected static ConfigurationReference<CommentedConfigurationNode>
     listenToConfig(Path configFile,
                    List<Class<? extends ScalarSerializer<?>>> scalarSerializers,
                    NodeStyle style) throws IOException {

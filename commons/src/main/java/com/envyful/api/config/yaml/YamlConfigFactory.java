@@ -80,6 +80,7 @@ public class YamlConfigFactory {
 
         config.base = base;
         config.config = reference;
+        config.path = path;
         config.save();
 
         return file;
@@ -145,6 +146,7 @@ public class YamlConfigFactory {
 
             defaultConfig.getInstance().base = base;
             defaultConfig.getInstance().config = reference;
+            defaultConfig.getInstance().path = file.toPath();
             defaultConfig.getInstance().save();
         }
 
@@ -184,6 +186,7 @@ public class YamlConfigFactory {
 
                 instance.base = base;
                 instance.config = reference;
+                instance.path = listFile.toPath();
                 instance.save();
                 loadedConfigs.add(instance);
             } catch (IOException e) {
@@ -261,6 +264,7 @@ public class YamlConfigFactory {
 
         instance.base = base;
         instance.config = reference;
+        instance.path = configFile;
         instance.save();
 
         return instance;

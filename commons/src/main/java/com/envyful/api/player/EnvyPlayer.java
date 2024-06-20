@@ -106,6 +106,17 @@ public interface EnvyPlayer<T> {
 
     /**
      *
+     * Checks if the player has the attribute
+     *
+     * @param attributeClass The attribute class
+     * @return If the player has the attribute
+     * @param <A> The attribute type
+     * @param <B> The attribute id type
+     */
+    <A extends Attribute<B, T>, B> boolean hasAttribute(Class<A> attributeClass);
+
+    /**
+     *
      * Gets the attribute for the player immediately
      * <br>
      * NOTE: This will hold the current thread until the attribute has been loaded if it is not already

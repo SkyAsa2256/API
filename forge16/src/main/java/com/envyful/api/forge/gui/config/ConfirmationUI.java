@@ -1,6 +1,7 @@
 package com.envyful.api.forge.gui.config;
 
 import com.envyful.api.config.type.ConfigInterface;
+import com.envyful.api.config.type.ConfigItem;
 import com.envyful.api.config.type.ExtendedConfigItem;
 import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.forge.config.UtilConfigInterface;
@@ -27,24 +28,37 @@ import java.util.function.BiConsumer;
 @ConfigSerializable
 public class ConfirmationUI {
 
-    private ConfigInterface guiSettings = ConfigInterface.defaultInterface("Confirmation");
+    private ConfigInterface guiSettings = ConfigInterface.builder()
+            .height(3)
+            .title("&7Are you sure?")
+            .fillType(ConfigInterface.FillType.BLOCK)
+            .fillerItem(ConfigItem.builder()
+                    .type("minecraft:black_stained_glass_pane")
+                    .name(" ")
+                    .amount(1)
+                    .build()
+            )
+            .build();
     private ExtendedConfigItem confirmItem = ExtendedConfigItem.builder()
-            .type("minecraft:stained_glass_pane")
+            .type("minecraft:lime_stained_glass_pane")
             .name("&aConfirm")
             .lore("&7Click to confirm")
+            .positions(5, 1)
             .amount(1)
             .build();
     private ExtendedConfigItem denyItem = ExtendedConfigItem.builder()
-            .type("minecraft:stained_glass_pane")
+            .type("minecraft:red_stained_glass_pane")
             .name("&cDeny")
             .lore("&7Click to deny")
+            .positions(3, 1)
             .amount(1)
             .build();
     private ExtendedConfigItem returnItem = ExtendedConfigItem.builder()
             .disable()
-            .type("minecraft:stained_glass_pane")
+            .type("minecraft:barrier")
             .name("&cDeny")
             .lore("&7Click to deny")
+            .positions(0, 0)
             .amount(1)
             .build();
     private Map<String, ExtendedConfigItem> additionalItems = Map.of();

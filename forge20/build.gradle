@@ -43,7 +43,7 @@ reobf {
 tasks.named('jar', Jar).configure {
     manifest {
         attributes([
-            'FMLModType': 'LIBRARY'
+            'FMLModType': 'GAMELIBRARY'
         ])
     }
     finalizedBy 'reobfJar'

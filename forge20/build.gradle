@@ -40,4 +40,11 @@ reobf {
     shadowJar {}
 }
 
-jar.finalizedBy('reobfJar')
+tasks.named('jar', Jar).configure {
+    manifest {
+        attributes([
+            'FMLModType': 'LIBRARY'
+        ])
+    }
+    finalizedBy 'reobfJar'
+}

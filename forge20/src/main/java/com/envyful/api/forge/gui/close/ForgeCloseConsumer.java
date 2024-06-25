@@ -9,6 +9,11 @@ import net.minecraft.server.level.ServerPlayer;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+/**
+ *
+ * Forge based implementation of a {@link CloseConsumer}
+ *
+ */
 public class ForgeCloseConsumer implements CloseConsumer<ForgeEnvyPlayer, ServerPlayer> {
 
     private final int delayTicks;

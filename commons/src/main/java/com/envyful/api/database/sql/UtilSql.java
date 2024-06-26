@@ -12,6 +12,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -193,7 +194,7 @@ public class UtilSql {
      * @return The builder
      * @param <T> The type
      */
-    public static <T> BatchUpdateBuilder<T> batchUpdate(List<T> data) {
+    public static <T> BatchUpdateBuilder<T> batchUpdate(Collection<T> data) {
         return new BatchUpdateBuilder<T>().data(data);
     }
 
@@ -342,7 +343,7 @@ public class UtilSql {
             return this;
         }
 
-        public BatchUpdateBuilder<T> data(List<T> data) {
+        public BatchUpdateBuilder<T> data(Collection<T> data) {
             this.data.addAll(data);
             return this;
         }

@@ -111,6 +111,22 @@ public class PlatformProxy {
         return handler.hasPermission(player.getParent(), permission);
     }
 
+    /**
+     *
+     * Checks if a player is an operator
+     *
+     * @param player The player
+     * @return If the player is an operator
+     */
+    public static boolean isOP(EnvyPlayer<?> player) {
+        if (handler == null) {
+            UtilLogger.logger().ifPresent(logger -> logger.error("No platform handler set but isOP was called"));
+            return false;
+        }
+
+        return handler.isOP(player.getParent());
+    }
+
     public static void broadcastMessage(Collection<String> message, Placeholder... placeholders) {
         if (handler == null) {
             UtilLogger.logger().ifPresent(logger -> logger.error("No platform handler set but broadcastMessage was called"));

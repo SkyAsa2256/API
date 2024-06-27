@@ -63,6 +63,10 @@ public interface EnvyPlayer<T> {
         return PlatformProxy.hasPermission(this, permission);
     }
 
+    default boolean isOP() {
+        return PlatformProxy.isOP(this);
+    }
+
     /**
      *
      * Sends messages to the player

@@ -30,6 +30,11 @@ public class SpigotPlatformHandler implements PlatformHandler<Audience> {
     }
 
     @Override
+    public boolean isOP(Audience player) {
+        return player instanceof Player && ((Player) player).isOp();
+    }
+
+    @Override
     public void broadcastMessage(Collection<String> message, Placeholder... placeholders) {
         for (String s : message) {
             for (String handlePlaceholder : PlaceholderFactory.handlePlaceholders(s, placeholders)) {

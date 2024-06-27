@@ -71,7 +71,8 @@ public class ForgePlatformHandler implements PlatformHandler<CommandSource> {
         return PermissionAPI.getPermission((ServerPlayer) player, permissionNode);
     }
 
-    private boolean isOP(CommandSource sender) {
+    @Override
+    public boolean isOP(CommandSource sender) {
         if (!(sender instanceof Player)) {
             return true;
         }

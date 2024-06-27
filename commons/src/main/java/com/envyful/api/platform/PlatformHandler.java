@@ -29,6 +29,15 @@ public interface PlatformHandler<A> {
 
     /**
      *
+     * Check if a player is an operator
+     *
+     * @param player The player to check
+     * @return True if they are an operator
+     */
+    boolean isOP(A player);
+
+    /**
+     *
      * Broadcast a message to all players on the server with placeholders
      *
      * @param message The messages to broadcast

@@ -1,6 +1,7 @@
 package com.envyful.api.player;
 
 import com.envyful.api.config.ConfigLocation;
+import com.envyful.api.platform.PlatformProxy;
 import com.envyful.api.player.attribute.PlayerAttribute;
 
 import javax.annotation.Nullable;
@@ -50,6 +51,17 @@ public interface EnvyPlayer<T> {
      */
     @Nullable
     T getParent();
+
+    /**
+     *
+     * Checks if the player has the permission
+     *
+     * @param permission The permission to check
+     * @return If the player has the permission
+     */
+    default boolean hasPermission(String permission) {
+        return PlatformProxy.hasPermission(this, permission);
+    }
 
     /**
      *

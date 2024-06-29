@@ -37,7 +37,7 @@ public class VelocityPlayerManager extends AbstractPlayerManager<VelocityEnvyPla
     }
 
     @Override
-    public <X extends Attribute<Y, Player>, Y> void registerAttribute(AttributeBuilder<X, Y, Player> builder) {
+    public <X extends Attribute<Y>, Y> void registerAttribute(AttributeBuilder<X, Y, Player> builder) {
         builder.triggers(
                 VelocityTrigger.singleSet(proxyServer, plugin, LoginEvent.class, event -> this.cachedPlayers.get(event.getPlayer().getUniqueId())),
                 VelocityTrigger.singleSave(proxyServer, plugin, DisconnectEvent.class, event -> this.cachedPlayers.get(event.getPlayer().getUniqueId()))

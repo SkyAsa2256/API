@@ -17,7 +17,7 @@ public class SaveAttributeTrigger<T> extends AbstractAttributeTrigger<T> {
     }
 
     @SuppressWarnings("unchecked")
-    private <A extends Attribute<B, T>, B> void saveAttribute(
+    private <A extends Attribute<B>, B> void saveAttribute(
             SaveManager<T> saveManager, A attribute, Object id) {
         saveManager.saveData((B) id, attribute);
     }

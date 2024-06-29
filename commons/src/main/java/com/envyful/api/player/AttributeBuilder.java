@@ -10,7 +10,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-public class AttributeBuilder<A extends Attribute<B, C>, B, C> {
+public class AttributeBuilder<A extends Attribute<B>, B, C> {
 
     protected Class<A> attributeClass;
     protected Supplier<A> constructor;

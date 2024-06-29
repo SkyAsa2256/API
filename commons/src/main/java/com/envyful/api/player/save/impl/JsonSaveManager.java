@@ -32,7 +32,7 @@ public class JsonSaveManager<T> extends AbstractSaveManager<T> {
 
     private static Gson gson = null;
 
-    protected final Map<Class<? extends Attribute<?, T>>, String> attributeDirectories = Maps.newHashMap();
+    protected final Map<Class<? extends Attribute<?>>, String> attributeDirectories = Maps.newHashMap();
 
     public JsonSaveManager(PlayerManager<?, T> playerManager) {
         super(playerManager);
@@ -48,7 +48,7 @@ public class JsonSaveManager<T> extends AbstractSaveManager<T> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <A extends Attribute<B, T>, B> CompletableFuture<A> loadAttribute(Class<? extends A> attributeClass, B id) {
+    public <A extends Attribute<B>, B> CompletableFuture<A> loadAttribute(Class<? extends A> attributeClass, B id) {
         Preconditions.checkNotNull(attributeClass, "Cannot load attribute with null class");
         Preconditions.checkNotNull(id, "Cannot load attribute with null id");
 
@@ -75,7 +75,7 @@ public class JsonSaveManager<T> extends AbstractSaveManager<T> {
                 });
     }
 
-    protected <A extends Attribute<B, T>, B> A readData(PlayerManager.AttributeData<A, B, T> data, B key) {
+    protected <A extends Attribute<B>, B> A readData(PlayerManager.AttributeData<A, B, T> data, B key) {
         String dataDirectory = this.attributeDirectories.get(data.attributeClass());
         File file = Paths.get(dataDirectory, key.toString() + ".json").toFile();
 
@@ -99,7 +99,7 @@ public class JsonSaveManager<T> extends AbstractSaveManager<T> {
     }
 
     @Override
-    public <A> void saveData(A id, Attribute<A, T> attribute) {
+    public <A> void saveData(A id, Attribute<A> attribute) {
         String dataDirectory = this.attributeDirectories.get(attribute.getClass());
         File file = Paths.get(dataDirectory, id.toString() + ".json").toFile();
 
@@ -120,7 +120,7 @@ public class JsonSaveManager<T> extends AbstractSaveManager<T> {
     }
 
     @Override
-    public <A extends Attribute<B, T>, B> void registerAttribute(PlayerManager.AttributeData<A, B, T> attribute) {
+    public <A extends Attribute<B>, B> void registerAttribute(PlayerManager.AttributeData<A, B, T> attribute) {
         DataDirectory dataDirectory = attribute.attributeClass().getAnnotation(DataDirectory.class);
 
         if (dataDirectory == null) {

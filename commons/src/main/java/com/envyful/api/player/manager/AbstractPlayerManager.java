@@ -17,7 +17,7 @@ import java.util.function.Function;
 public abstract class AbstractPlayerManager<A extends EnvyPlayer<B>, B> implements PlayerManager<A, B> {
 
     protected final Map<UUID, A> cachedPlayers = Maps.newConcurrentMap();
-    protected final Map<Class<? extends Attribute<?, B>>, AttributeData<?, ?, B>> attributeData = Maps.newHashMap();
+    protected final Map<Class<? extends Attribute<?>>, AttributeData<?, ?, B>> attributeData = Maps.newHashMap();
     protected final Function<B, UUID> uuidGetter;
 
     protected SaveManager<B> saveManager = new EmptySaveManager<>(this);
@@ -83,12 +83,12 @@ public abstract class AbstractPlayerManager<A extends EnvyPlayer<B>, B> implemen
 
     @Override
     @SuppressWarnings("unchecked")
-    public <X extends Attribute<Y, B>, Y> void registerAttribute(AttributeData<X, Y, B> attributeData) {
+    public <X extends Attribute<Y>, Y> void registerAttribute(AttributeData<X, Y, B> attributeData) {
         for (var trigger : attributeData.triggers()) {
             trigger.addAttribute(attributeData);
         }
 
-        this.attributeData.put((Class<? extends Attribute<?, B>>) attributeData.getClass(), attributeData);
+        this.attributeData.put((Class<? extends Attribute<?>>) attributeData.getClass(), attributeData);
 
         if (this.saveManager != null) {
             this.saveManager.registerAttribute(attributeData);

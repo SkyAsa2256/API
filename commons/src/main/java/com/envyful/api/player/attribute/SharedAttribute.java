@@ -21,9 +21,8 @@ import java.util.concurrent.TimeUnit;
  *
  * @param <A> The attribute ID type
  * @param <B> The manager instance for the attribute
- * @param <C> The platform player type
  */
-public abstract class SharedAttribute<A, B, C> extends ManagedAttribute<A, B, C> {
+public abstract class SharedAttribute<A, B> extends ManagedAttribute<A, B> {
 
     protected A id;
 

@@ -124,7 +124,7 @@ public interface EnvyPlayer<T> {
      *
      * @return All the attributes
      */
-    List<Attribute<?, T>> getAttributes();
+    List<Attribute<?>> getAttributes();
 
     /**
      *
@@ -137,7 +137,7 @@ public interface EnvyPlayer<T> {
      * @param <A> The attribute type
      * @param <B> The attribute id type
      */
-    <A extends Attribute<B, T>, B> CompletableFuture<A> getAttribute(Class<A> attributeClass);
+    <A extends Attribute<B>, B> CompletableFuture<A> getAttribute(Class<A> attributeClass);
 
     /**
      *
@@ -148,7 +148,7 @@ public interface EnvyPlayer<T> {
      * @param <A> The attribute type
      * @param <B> The attribute id type
      */
-    <A extends Attribute<B, T>, B> boolean hasAttribute(Class<A> attributeClass);
+    <A extends Attribute<B>, B> boolean hasAttribute(Class<A> attributeClass);
 
     /**
      *
@@ -162,7 +162,7 @@ public interface EnvyPlayer<T> {
      * @param <A> The attribute type
      * @param <B> The attribute id type
      */
-    <A extends Attribute<B, T>, B> A getAttributeNow(Class<A> attributeClass);
+    <A extends Attribute<B>, B> A getAttributeNow(Class<A> attributeClass);
 
     /**
      *
@@ -172,7 +172,7 @@ public interface EnvyPlayer<T> {
      * @param <A> The attribute type
      * @param <B> The attribute id type
      */
-    <A extends Attribute<B, T>, B, C extends EnvyPlayer<T>> void setAttribute(Class<A> attributeClass, CompletableFuture<A> attribute);
+    <A extends Attribute<B>, B, C extends EnvyPlayer<T>> void setAttribute(Class<A> attributeClass, CompletableFuture<A> attribute);
 
     /**
      *
@@ -181,7 +181,7 @@ public interface EnvyPlayer<T> {
      * @param attribute The attribute to set
      * @param <A> The attribute type
      */
-    <A extends Attribute<B, T>, B, C extends EnvyPlayer<T>> void setAttribute(A attribute);
+    <A extends Attribute<B>, B, C extends EnvyPlayer<T>> void setAttribute(A attribute);
 
     /**
      *
@@ -191,7 +191,7 @@ public interface EnvyPlayer<T> {
      * @param <A> The attribute type
      * @param <B> The attribute id type
      */
-    <A extends Attribute<B, T>, B> void removeAttribute(Class<A> attributeClass);
+    <A extends Attribute<B>, B> void removeAttribute(Class<A> attributeClass);
 
 
 }

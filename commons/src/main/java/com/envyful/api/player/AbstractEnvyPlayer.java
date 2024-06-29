@@ -29,7 +29,7 @@ import java.util.concurrent.CompletableFuture;
  */
 public abstract class AbstractEnvyPlayer<T> implements EnvyPlayer<T> {
 
-    protected final Map<Class<?>, AttributeInstance<?, ?, T>> attributes = Maps.newHashMap();
+    protected final Map<Class<?>, AttributeInstance<?, ?>> attributes = Maps.newHashMap();
 
     protected final SaveManager<T> saveManager;
 
@@ -50,17 +50,17 @@ public abstract class AbstractEnvyPlayer<T> implements EnvyPlayer<T> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <A extends Attribute<B, T>, B> CompletableFuture<A> getAttribute(Class<A> attributeClass) {
+    public <A extends Attribute<B>, B> CompletableFuture<A> getAttribute(Class<A> attributeClass) {
         if (!this.attributes.containsKey(attributeClass)) {
             return null;
         }
 
-        AttributeInstance<A, B, T> instance = (AttributeInstance<A, B, T>) this.attributes.get(attributeClass);
+        AttributeInstance<A, B> instance = (AttributeInstance<A, B>) this.attributes.get(attributeClass);
         return instance.getAttribute();
     }
 
     @Override
-    public <A extends Attribute<B, T>, B> boolean hasAttribute(Class<A> attributeClass) {
+    public <A extends Attribute<B>, B> boolean hasAttribute(Class<A> attributeClass) {
         var instance = this.attributes.get(attributeClass);
 
         if (instance == null) {
@@ -75,12 +75,12 @@ public abstract class AbstractEnvyPlayer<T> implements EnvyPlayer<T> {
     }
 
     @Override
-    public <A extends Attribute<B, T>, B> A getAttributeNow(Class<A> attributeClass) {
+    public <A extends Attribute<B>, B> A getAttributeNow(Class<A> attributeClass) {
         if (!this.attributes.containsKey(attributeClass)) {
             return null;
         }
 
-        var instance = (AttributeInstance<A, B, T>) this.attributes.get(attributeClass);
+        var instance = (AttributeInstance<A, B>) this.attributes.get(attributeClass);
 
         if (instance.attribute != null) {
             return instance.attribute;
@@ -95,7 +95,7 @@ public abstract class AbstractEnvyPlayer<T> implements EnvyPlayer<T> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <A extends Attribute<B, T>, B, C extends EnvyPlayer<T>> void setAttribute(A attribute) {
+    public <A extends Attribute<B>, B, C extends EnvyPlayer<T>> void setAttribute(A attribute) {
         if (attribute == null) {
             return;
         }
@@ -109,7 +109,7 @@ public abstract class AbstractEnvyPlayer<T> implements EnvyPlayer<T> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <A extends Attribute<B, T>, B, C extends EnvyPlayer<T>> void setAttribute(Class<A> attributeClass, CompletableFuture<A> attribute) {
+    public <A extends Attribute<B>, B, C extends EnvyPlayer<T>> void setAttribute(Class<A> attributeClass, CompletableFuture<A> attribute) {
         attribute.whenComplete((a, throwable) -> {
             if (a instanceof PlayerAttribute) {
                 ((PlayerAttribute<?, C, T>) a).setParent((C) this);
@@ -119,13 +119,13 @@ public abstract class AbstractEnvyPlayer<T> implements EnvyPlayer<T> {
     }
 
     @Override
-    public <A extends Attribute<B, T>, B> void removeAttribute(Class<A> attributeClass) {
+    public <A extends Attribute<B>, B> void removeAttribute(Class<A> attributeClass) {
         this.attributes.remove(attributeClass);
     }
 
     @Override
-    public List<Attribute<?, T>> getAttributes() {
-        List<Attribute<?, T>> attributes = Lists.newArrayList();
+    public List<Attribute<?>> getAttributes() {
+        List<Attribute<?>> attributes = Lists.newArrayList();
 
         for (var attribute : this.attributes.values()) {
             if (attribute.getAttributeNow() != null) {
@@ -136,7 +136,7 @@ public abstract class AbstractEnvyPlayer<T> implements EnvyPlayer<T> {
         return attributes;
     }
 
-    protected static class AttributeInstance<A extends Attribute<B, C>, B, C> {
+    protected static class AttributeInstance<A extends Attribute<B>, B> {
 
         private A attribute;
         private CompletableFuture<A> loadingAttribute;

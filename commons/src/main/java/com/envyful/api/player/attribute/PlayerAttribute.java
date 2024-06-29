@@ -26,7 +26,7 @@ import java.util.concurrent.CompletableFuture;
  * @param <C> The platform's player type
  */
 public abstract class PlayerAttribute<A, B extends EnvyPlayer<C>, C>
-        extends ManagedAttribute<UUID, A, C> {
+        extends ManagedAttribute<UUID, A> {
 
     protected transient Database database;
     protected transient B parent;

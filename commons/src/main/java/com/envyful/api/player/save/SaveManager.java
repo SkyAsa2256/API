@@ -24,7 +24,7 @@ public interface SaveManager<T> {
      * @param <A> The attribute type
      * @param <B> The id type
      */
-    <A extends Attribute<B, T>, B> void registerAttribute(PlayerManager.AttributeData<A, B, T> attribute);
+    <A extends Attribute<B>, B> void registerAttribute(PlayerManager.AttributeData<A, B, T> attribute);
 
     /**
      *
@@ -47,7 +47,7 @@ public interface SaveManager<T> {
      * @param id The unique ID of the attribute
      * @param attribute The attribute being saved
      */
-    <A> void saveData(A id, Attribute<A, T> attribute);
+    <A> void saveData(A id, Attribute<A> attribute);
 
     /**
      *
@@ -59,7 +59,7 @@ public interface SaveManager<T> {
      * @param <A> The attribute type
      * @param <B> The id type
      */
-    <A extends Attribute<B, T>, B> CompletableFuture<A> loadAttribute(Class<? extends A> attributeClass, B id);
+    <A extends Attribute<B>, B> CompletableFuture<A> loadAttribute(Class<? extends A> attributeClass, B id);
 
     /**
      *

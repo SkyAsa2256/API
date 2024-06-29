@@ -24,7 +24,7 @@ public class EmptySaveManager<T> extends AbstractSaveManager<T> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <A extends Attribute<B, T>, B> CompletableFuture<A> loadAttribute(Class<? extends A> attributeClass, B id) {
+    public <A extends Attribute<B>, B> CompletableFuture<A> loadAttribute(Class<? extends A> attributeClass, B id) {
         Preconditions.checkNotNull(attributeClass, "Cannot load attribute with null class");
         Preconditions.checkNotNull(id, "Cannot load attribute with null id");
 
@@ -54,7 +54,7 @@ public class EmptySaveManager<T> extends AbstractSaveManager<T> {
     }
 
     @Override
-    public <A> void saveData(A id, Attribute<A, T> attribute) {
+    public <A> void saveData(A id, Attribute<A> attribute) {
         attribute.save(id);
     }
 

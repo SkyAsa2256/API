@@ -103,7 +103,7 @@ public interface PlayerManager<A extends EnvyPlayer<B>, B> {
       * @param <X> The attribute type
       * @param <Y> The id type
       */
-     default <X extends Attribute<Y, B>, Y> CompletableFuture<X> loadAttribute(Class<? extends X> attributeClass, Y id) {
+     default <X extends Attribute<Y>, Y> CompletableFuture<X> loadAttribute(Class<? extends X> attributeClass, Y id) {
           return this.getSaveManager().loadAttribute(attributeClass, id);
      }
 
@@ -117,8 +117,8 @@ public interface PlayerManager<A extends EnvyPlayer<B>, B> {
       *
       * @param attribute The class of the attribute being registered
       */
-     default <X extends Attribute<Y, B>, Y> void registerAttribute(Class<X> attribute, Supplier<X> constructor) {
-          this.registerAttribute(Attribute.builder(attribute).constructor(constructor));
+     default <X extends Attribute<Y>, Y> void registerAttribute(Class<X> attribute, Supplier<X> constructor) {
+          this.registerAttribute(Attribute.<X, Y, B>builder(attribute).constructor(constructor));
      }
 
      /**
@@ -133,7 +133,7 @@ public interface PlayerManager<A extends EnvyPlayer<B>, B> {
       * @param <X> The attribute type
       * @param <Y> The id type
       */
-     default <X extends Attribute<Y, B>, Y> void registerAttribute(AttributeBuilder<X, Y, B> builder) {
+     default <X extends Attribute<Y>, Y> void registerAttribute(AttributeBuilder<X, Y, B> builder) {
           var data = new AttributeData<>(
                   builder.attributeClass,
                   SharedAttribute.class.isAssignableFrom(builder.attributeClass),
@@ -159,7 +159,7 @@ public interface PlayerManager<A extends EnvyPlayer<B>, B> {
       * @param <X> The attribute type
       * @param <Y> The id type
       */
-     <X extends Attribute<Y, B>, Y> void registerAttribute(AttributeData<X, Y, B> attributeData);
+     <X extends Attribute<Y>, Y> void registerAttribute(AttributeData<X, Y, B> attributeData);
 
      /**
       *
@@ -169,7 +169,7 @@ public interface PlayerManager<A extends EnvyPlayer<B>, B> {
       * @param <B> The id type
       * @param <C> The platform player type
       */
-     class AttributeData<A extends Attribute<B, C>, B, C> {
+     class AttributeData<A extends Attribute<B>, B, C> {
 
           private final Class<A> attributeClass;
           private final boolean shared;

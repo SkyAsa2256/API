@@ -27,12 +27,12 @@ public class SetAttributeTrigger<T> extends AbstractAttributeTrigger<T> {
     }
 
     @SuppressWarnings("unchecked")
-    private <A extends Attribute<B, T>, B, C extends EnvyPlayer<T>> void setAttribute(C player, Class<?> attributeClass, CompletableFuture<? extends Attribute> attribute) {
+    private <A extends Attribute<B>, B, C extends EnvyPlayer<T>> void setAttribute(C player, Class<?> attributeClass, CompletableFuture<? extends Attribute> attribute) {
         player.setAttribute((Class<A>) attributeClass, (CompletableFuture<A>) attribute);
     }
 
     @SuppressWarnings("unchecked")
-    private <A extends Attribute<B, T>, B> CompletableFuture<A> loadAttribute(
+    private <A extends Attribute<B>, B> CompletableFuture<A> loadAttribute(
             SaveManager<T> saveManager, Class<? extends A> attributeClass, Object id) {
         return saveManager.loadAttribute(attributeClass, (B) id);
     }

@@ -2,6 +2,11 @@ package com.envyful.api.player;
 
 import java.util.UUID;
 
+/**
+ *
+ * A utility class for getting the avatar URL of a player
+ *
+ **/
 public class UtilAvatar {
 
     public static String getAvatarUrl(EnvyPlayer<?> player) {

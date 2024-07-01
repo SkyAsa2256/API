@@ -150,6 +150,14 @@ public class UtilUuid {
         return null;
     }
 
+    /**
+     *
+     * Formats a String into a UUID, accounting for the fact that some UUIDs are
+     * formatted without dashes
+     *
+     * @param uuid The UUID string
+     * @return The formatted UUID
+     */
     public static UUID formatUuid(String uuid) {
         if(uuid == null) {
             throw new IllegalArgumentException();

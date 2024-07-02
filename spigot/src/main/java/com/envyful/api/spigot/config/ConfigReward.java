@@ -1,15 +1,14 @@
 package com.envyful.api.spigot.config;
 
 import com.envyful.api.config.type.ExtendedConfigItem;
+import com.envyful.api.platform.PlatformProxy;
 import com.envyful.api.text.Placeholder;
-import com.envyful.api.text.PlaceholderFactory;
 import com.google.common.collect.Lists;
-import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
+import java.util.Arrays;
 import java.util.List;
 
 @ConfigSerializable
@@ -38,17 +37,22 @@ public class ConfigReward {
         return this.displayItem;
     }
 
-    public void execute(Player player, Placeholder... placeholders) {
-        if (this.commands != null && !this.commands.isEmpty()) {
-            for (String command : PlaceholderFactory.handlePlaceholders(this.commands, placeholders)) {
-                Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), command.replace("%player%", player.getName()));
-            }
+    public void execute(Placeholder... placeholders) {
+        this.execute(null, placeholders);
+    }
+
+    public void execute(@Nullable Player player, Placeholder... placeholders) {
+        if (player != null) {
+            placeholders = Arrays.copyOf(placeholders, placeholders.length + 1);
+            placeholders[placeholders.length - 1] = Placeholder.simple("%player%", player.getName());
         }
 
-        if (this.messages != null && !this.messages.isEmpty()) {
-            for (String message : PlaceholderFactory.handlePlaceholders(this.messages, placeholders)) {
-                player.sendMessage(MiniMessage.miniMessage().deserialize(message).decoration(TextDecoration.ITALIC, false));
-            }
+        if (this.commands != null && !this.commands.isEmpty()) {
+            PlatformProxy.executeConsoleCommands(this.commands, placeholders);
+        }
+
+        if (player != null && this.messages != null && !this.messages.isEmpty()) {
+            PlatformProxy.sendMessage(player, this.messages, placeholders);
         }
     }
 

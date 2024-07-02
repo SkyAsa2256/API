@@ -1,14 +1,14 @@
 package com.envyful.api.forge.config;
 
 import com.envyful.api.config.type.ExtendedConfigItem;
-import com.envyful.api.forge.chat.UtilChatColour;
-import com.envyful.api.forge.server.UtilForgeServer;
+import com.envyful.api.platform.PlatformProxy;
 import com.envyful.api.text.Placeholder;
-import com.envyful.api.text.PlaceholderFactory;
 import com.google.common.collect.Lists;
 import net.minecraft.server.level.ServerPlayer;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
+import java.util.Arrays;
 import java.util.List;
 
 @ConfigSerializable
@@ -44,17 +44,23 @@ public class ConfigReward {
     public List<String> getMessages() {
         return this.messages;
     }
-    public void execute(ServerPlayer player, Placeholder... placeholders) {
-        if (this.commands != null && !this.commands.isEmpty()) {
-            for (String command : PlaceholderFactory.handlePlaceholders(this.commands, placeholders)) {
-                UtilForgeServer.executeCommand(command.replace("%player%", player.getName().getString()));
-            }
+
+    public void execute(Placeholder... placeholders) {
+        this.execute(null, placeholders);
+    }
+
+    public void execute(@Nullable ServerPlayer player, Placeholder... placeholders) {
+        if (player != null) {
+            placeholders = Arrays.copyOf(placeholders, placeholders.length + 1);
+            placeholders[placeholders.length - 1] = Placeholder.simple("%player%", player.getName().getString());
         }
 
-        if (this.messages != null && !this.messages.isEmpty()) {
-            for (String message : PlaceholderFactory.handlePlaceholders(this.messages, placeholders)) {
-                player.sendSystemMessage(UtilChatColour.colour(message));
-            }
+        if (this.commands != null && !this.commands.isEmpty()) {
+            PlatformProxy.executeConsoleCommands(this.commands, placeholders);
+        }
+
+        if (player != null && this.messages != null && !this.messages.isEmpty()) {
+            PlatformProxy.sendMessage(player, this.messages, placeholders);
         }
     }
 

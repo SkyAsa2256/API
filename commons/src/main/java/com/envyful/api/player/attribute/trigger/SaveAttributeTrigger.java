@@ -6,6 +6,12 @@ import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.attribute.AbstractAttributeTrigger;
 import com.envyful.api.player.save.SaveManager;
 
+/**
+ *
+ * An instance of a trigger that will save the attribute data
+ *
+ * @param <T> The type of the player
+ */
 public class SaveAttributeTrigger<T> extends AbstractAttributeTrigger<T> {
 
     @Override

@@ -6,6 +6,11 @@ import com.envyful.api.gui.pane.TickHandler;
 
 import java.util.function.Consumer;
 
+/**
+ *
+ * A Forge implementation of the {@link TickHandler} interface
+ *
+ */
 public class ForgeGuiTickHandler implements TickHandler {
 
     protected final boolean async;

@@ -63,12 +63,12 @@ public class ForgeGui implements Gui {
         }
 
         switch(height) {
-            default: case 0: case 1: this.containerType = ContainerType.GENERIC_9x1; break;
+            case 0: case 1: this.containerType = ContainerType.GENERIC_9x1; break;
             case 2: this.containerType = ContainerType.GENERIC_9x2; break;
             case 3: this.containerType = ContainerType.GENERIC_9x3; break;
             case 4: this.containerType = ContainerType.GENERIC_9x4; break;
             case 5: this.containerType = ContainerType.GENERIC_9x5; break;
-            case 6: this.containerType = ContainerType.GENERIC_9x6; break;
+            default: case 6: this.containerType = ContainerType.GENERIC_9x6; break;
         }
     }
 
@@ -85,7 +85,7 @@ public class ForgeGui implements Gui {
             UtilForgeConcurrency.runSync(() -> {
                 if (parent.containerMenu instanceof ForgeGuiContainer) {
                     ((ForgeGuiContainer)parent.containerMenu).gui.closeConsumer.handle((ForgeEnvyPlayer)player);
-                    this.containers.remove(((ForgeGuiContainer)parent.containerMenu));
+                    this.containers.remove((parent.containerMenu));
                 }
 
                 parent.containerMenu = new ForgeGuiContainer(this, parent);
@@ -335,7 +335,10 @@ public class ForgeGui implements Gui {
             ForgeGuiTracker.dequeueUpdate(this.player);
             this.player.containerMenu.broadcastChanges();
             this.player.refreshContainer(this.player.containerMenu, this.player.containerMenu.getItems());
-            this.player.refreshContainer(this.player.inventoryMenu);
+
+            if (this.gui.height <= 6) {
+                this.player.refreshContainer(this.player.inventoryMenu);
+            }
         }
 
         private void clearPlayerCursor() {

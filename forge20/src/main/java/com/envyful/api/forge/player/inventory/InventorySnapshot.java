@@ -17,11 +17,21 @@ public class InventorySnapshot {
     }
 
     public static InventorySnapshot of(ServerPlayer player) {
-        ItemStack[] items = player.getInventory().items.toArray(new ItemStack[0]);
-        ItemStack[] armor = player.getInventory().armor.toArray(new ItemStack[0]);
-        ItemStack[] offhand = player.getInventory().offhand.toArray(new ItemStack[0]);
+        ItemStack[] items = createArray(player.getInventory().items);
+        ItemStack[] armor = createArray(player.getInventory().armor);
+        ItemStack[] offhand = createArray(player.getInventory().offhand);
 
         return new InventorySnapshot(items, armor, offhand);
+    }
+
+    private static ItemStack[] createArray(NonNullList<ItemStack> list) {
+        ItemStack[] array = new ItemStack[list.size()];
+
+        for (int i = 0; i < list.size(); i++) {
+            array[i] = list.get(i).copy();
+        }
+
+        return array;
     }
 
     public ItemStack[] getItems() {

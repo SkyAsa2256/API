@@ -78,9 +78,13 @@ public class ModalFactory {
             }
 
             REGISTERED_MODALS.put(this.id.toLowerCase(Locale.ROOT), this);
-            return Modal.create(this.id, this.title)
-                    .addActionRows(this.components)
-                    .build();
+            var builder = Modal.create(this.id, this.title);
+
+            for (ActionRow component : this.components) {
+                builder.addComponents(component);
+            }
+
+            return builder.build();
         }
     }
 }

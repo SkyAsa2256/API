@@ -16,6 +16,14 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
+/**
+ *
+ * Static factory class for creating {@link Modal}s with ease
+ * <br>
+ * This allows you to give a modal an id, title, components, and interaction handler
+ * rather than having to explicitly listen to the {@link ModalInteractionEvent} and check the id
+ *
+ */
 public class ModalFactory {
 
     private static final AtomicBoolean REGISTERED = new AtomicBoolean(false);

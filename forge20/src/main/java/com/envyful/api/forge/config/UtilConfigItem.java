@@ -95,7 +95,10 @@ public class UtilConfigItem {
 
         itemBuilder.lore(PlaceholderFactory.handlePlaceholders(configItem.getLore(), UtilChatColour::colour, placeholders));
         itemBuilder.itemFlags(PlaceholderFactory.handlePlaceholders(configItem.getFlags(), s -> ItemFlag.valueOf(s.toUpperCase(Locale.ROOT)), placeholders));
-        itemBuilder.name(PlaceholderFactory.handlePlaceholders(Collections.singletonList(name), UtilChatColour::colour, placeholders).get(0));
+
+        if (!name.isBlank() && !name.isEmpty()) {
+            itemBuilder.name(PlaceholderFactory.handlePlaceholders(Collections.singletonList(name), UtilChatColour::colour, placeholders).get(0));
+        }
 
         for (ConfigItem.EnchantData value : configItem.getEnchants().values()) {
             String enchantName = value.getEnchant();

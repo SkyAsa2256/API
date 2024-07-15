@@ -95,6 +95,16 @@ public class ItemBuilder implements Cloneable {
      * @return The builder
      */
     public ItemBuilder name(String name) {
+        if (name == null) {
+            this.name = null;
+            return this;
+        }
+
+        if (name.isEmpty() || name.isBlank()) {
+            this.name = null;
+            return this;
+        }
+
         return this.name(UtilChatColour.colour(name));
     }
 

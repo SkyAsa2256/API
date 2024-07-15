@@ -45,6 +45,20 @@ public abstract class InjectedCommandFactory<A, B> implements CommandFactory<A, 
                 return null;
             }
         }));
+
+        this.registerInjector(boolean.class, ((ICommandSource, args) -> {
+            if (args[0].equalsIgnoreCase("true") || args[0].equalsIgnoreCase("yes") ||
+                args[0].equalsIgnoreCase("on") || args[0].equalsIgnoreCase("1")) {
+                return true;
+            }
+
+            if (args[0].equalsIgnoreCase("false") || args[0].equalsIgnoreCase("no") ||
+                args[0].equalsIgnoreCase("off") || args[0].equalsIgnoreCase("0")) {
+                return false;
+            }
+
+            return null;
+        }));
     }
 
     @Override

@@ -30,7 +30,7 @@ public class ItemBuilder implements Cloneable {
 
     private Item type = Items.AIR;
     private int amount = 1;
-    private ITextComponent name = StringTextComponent.EMPTY;
+    private ITextComponent name = null;
     private boolean unbreakable = false;
     private List<ITextComponent> lore = Lists.newArrayList();
     private List<ItemFlag> itemFlags = Lists.newArrayList();

@@ -28,7 +28,7 @@ public class ItemBuilder implements Cloneable {
 
     private Item type = Items.AIR;
     private int amount = 1;
-    private Component name = Component.empty();
+    private Component name = null;
     private boolean unbreakable = false;
     private List<Component> lore = Lists.newArrayList();
     private List<ItemFlag> itemFlags = Lists.newArrayList();

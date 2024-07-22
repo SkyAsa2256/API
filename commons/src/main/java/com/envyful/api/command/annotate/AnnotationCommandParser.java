@@ -30,6 +30,14 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 
+/**
+ *
+ * Annotation based implementation of the {@link CommandParser} interface. This class is responsible for parsing the
+ * command data from the provided object and returning a {@link PlatformCommand} instance.
+ *
+ * @param <A> The type of the command
+ * @param <B> The type of the sender
+ */
 public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements CommandParser<A, B> {
 
     protected final CommandFactory<?, B> commandFactory;

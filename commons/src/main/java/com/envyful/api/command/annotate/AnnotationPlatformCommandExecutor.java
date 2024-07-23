@@ -12,6 +12,12 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ *
+ * Annotation based implementation of the {@link PlatformCommandExecutor} interface
+ *
+ * @param <C> The sender type
+ */
 public class AnnotationPlatformCommandExecutor<C> implements PlatformCommandExecutor<C> {
 
     protected final SenderType<C, ?> senderType;

@@ -18,11 +18,8 @@ import java.util.function.Consumer;
  */
 public class ItemBuilder extends ItemStack {
 
-    public ItemBuilder() {}
-
-    public ItemBuilder type(Material type) {
-        this.setType(type);
-        return this;
+    public ItemBuilder(Material type) {
+        super(type);
     }
 
     public ItemBuilder amount(int amount) {

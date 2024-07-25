@@ -70,4 +70,18 @@ public interface Attribute<A> {
         return new AttributeBuilder<A, B, C>().attributeClass(attributeClass);
     }
 
+    /**
+     *
+     * Creates a new instance of the attribute builder
+     *
+     * @param attributeClass The class of the attribute
+     * @return The builder
+     * @param <A> The attribute type
+     * @param <B> The id type
+     * @param <C> The platform player type
+     */
+    static <A extends Attribute<B>, B, C> AttributeBuilder<A, B, C> builder(Class<A> attributeClass, Class<C> playerClass) {
+        return new AttributeBuilder<A, B, C>().attributeClass(attributeClass);
+    }
+
 }

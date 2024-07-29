@@ -11,6 +11,11 @@ import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ *
+ * A class representing a reward that can be given to a player
+ *
+ */
 @ConfigSerializable
 public class ConfigReward {
 

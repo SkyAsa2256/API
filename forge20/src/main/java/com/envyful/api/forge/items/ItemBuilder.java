@@ -276,13 +276,15 @@ public class ItemBuilder implements Cloneable {
     public ItemStack build() {
         ItemStack itemStack = new ItemStack(this.type, this.amount);
 
-        CompoundTag compound = itemStack.getOrCreateTag();
+        if (!nbtData.isEmpty()) {
+            CompoundTag compound = itemStack.getOrCreateTag();
 
-        for (Map.Entry<String, Tag> entry : nbtData.entrySet()) {
-            compound.put(entry.getKey(), entry.getValue());
+            for (Map.Entry<String, Tag> entry : nbtData.entrySet()) {
+                compound.put(entry.getKey(), entry.getValue());
+            }
+
+            itemStack.setTag(compound);
         }
-
-        itemStack.setTag(compound);
 
         if (this.name != null) {
             CompoundTag display = itemStack.getOrCreateTagElement("display");

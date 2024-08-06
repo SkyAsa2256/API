@@ -293,7 +293,7 @@ public class ItemBuilder implements Cloneable {
             itemStack.setTag(compound);
         }
 
-        if (this.name != null) {
+        if (this.name != null && !this.name.getString().isEmpty()) {
             CompoundNBT display = itemStack.getOrCreateTagElement("display");
             ITextComponent name = this.name.copy();
             if (name instanceof IFormattableTextComponent) {

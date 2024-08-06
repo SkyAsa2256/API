@@ -286,7 +286,7 @@ public class ItemBuilder implements Cloneable {
             itemStack.setTag(compound);
         }
 
-        if (this.name != null) {
+        if (this.name != null && !this.name.getString().isEmpty()) {
             CompoundTag display = itemStack.getOrCreateTagElement("display");
             Component name = this.name.copy().withStyle(style -> style.withItalic(false));
             display.put("Name", StringTag.valueOf(Component.Serializer.toJson(name)));

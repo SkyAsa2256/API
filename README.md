@@ -20,7 +20,7 @@ You will need to add the following to your build.gradle in the repositories sect
 Then in the dependencies section you'll need to add
 
 ```groovy
-  shadow "com.envyful.api:commons:6.4.4"
+  shadow "com.envyful.api:commons:6.4.9"
 ```
 
 My API is designed to be shaded into the JAR file so if you need more information on how to do that please find it [here](https://imperceptiblethoughts.com/shadow/)

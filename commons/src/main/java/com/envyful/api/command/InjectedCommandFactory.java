@@ -11,6 +11,13 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
+/**
+ *
+ * A command factory that allows for the registration of argument injectors and tab completers
+ *
+ * @param <A> The platform specific command dispatcher
+ * @param <B> The platform specific sender type
+ */
 public abstract class InjectedCommandFactory<A, B> implements CommandFactory<A, B> {
 
     protected final List<ArgumentInjector<?, B>> registeredInjectors = Lists.newArrayList();

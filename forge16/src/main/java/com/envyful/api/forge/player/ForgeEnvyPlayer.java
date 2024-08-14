@@ -6,8 +6,10 @@ import com.envyful.api.forge.world.UtilWorld;
 import com.envyful.api.player.AbstractEnvyPlayer;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.save.SaveManager;
+import com.envyful.api.text.Placeholder;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.Util;
+import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
@@ -52,6 +54,22 @@ public class ForgeEnvyPlayer extends AbstractEnvyPlayer<ServerPlayerEntity> {
             } else {
                 throw new RuntimeException("Unsupported message type");
             }
+        }
+    }
+
+    @Override
+    public void actionBar(String message, Placeholder... placeholders) {
+        this.actionBar(UtilChatColour.colour(message, placeholders));
+    }
+
+    @Override
+    public void actionBar(Object message) {
+        if (message instanceof String) {
+            this.actionBar((String) message, new Placeholder[0]);
+        } else if (message instanceof ITextComponent) {
+            this.getParent().sendMessage((ITextComponent) message, ChatType.GAME_INFO, Util.NIL_UUID);
+        } else {
+            throw new RuntimeException("Unsupported message type");
         }
     }
 

@@ -4,7 +4,10 @@ import com.envyful.api.config.ConfigLocation;
 import com.envyful.api.player.AbstractEnvyPlayer;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.save.SaveManager;
+import com.envyful.api.text.Placeholder;
+import com.envyful.api.text.PlaceholderFactory;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
@@ -42,6 +45,28 @@ public class SpigotEnvyPlayer extends AbstractEnvyPlayer<Player> {
             } else if (message instanceof String) {
                 //TODO: convert
             }
+        }
+    }
+
+    @Override
+    public void actionBar(String message, Placeholder... placeholders) {
+        var converted = PlaceholderFactory.handlePlaceholders(message, placeholders);
+
+        if (converted.isEmpty()) {
+            return;
+        }
+
+        this.getParent().sendActionBar(MiniMessage.miniMessage().deserialize(converted.get(0)));
+    }
+
+    @Override
+    public void actionBar(Object message) {
+        if (message instanceof Component component) {
+            this.getParent().sendActionBar(component);
+        } else if (message instanceof String string) {
+            this.actionBar(string, new Placeholder[0]);
+        } else {
+            throw new RuntimeException("Unsupported message type");
         }
     }
 

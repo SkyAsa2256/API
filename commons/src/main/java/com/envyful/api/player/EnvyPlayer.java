@@ -96,6 +96,23 @@ public interface EnvyPlayer<T> {
 
     /**
      *
+     * Sends an action bar message to the player
+     *
+     * @param message The message to send
+     * @param placeholders The placeholders to replace in the message
+     */
+    void actionBar(String message, Placeholder... placeholders);
+
+    /**
+     *
+     * Sends an action bar message to the player
+     *
+     * @param message The message to send
+     */
+    void actionBar(Object message);
+
+    /**
+     *
      * Execute the command as the player
      *
      * @param command The command to execute

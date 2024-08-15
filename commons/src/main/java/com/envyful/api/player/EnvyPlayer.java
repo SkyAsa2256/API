@@ -121,6 +121,26 @@ public interface EnvyPlayer<T> {
 
     /**
      *
+     * Plays a sound to the player
+     *
+     * @param sound The sound to play
+     * @param volume The volume of the sound
+     * @param pitch The pitch of the sound
+     */
+    void playSound(String sound, float volume, float pitch);
+
+    /**
+     *
+     * Plays a sound to the player
+     *
+     * @param sound The sound to play
+     * @param volume The volume of the sound
+     * @param pitch The pitch of the sound
+     */
+    void playSound(Object sound, float volume, float pitch);
+
+    /**
+     *
      * Execute the commands as the player
      *
      * @param commands The commands to execute

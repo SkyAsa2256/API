@@ -6,6 +6,8 @@ import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.save.SaveManager;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.entity.Player;
@@ -68,6 +70,25 @@ public class SpigotEnvyPlayer extends AbstractEnvyPlayer<Player> {
         } else {
             throw new RuntimeException("Unsupported message type");
         }
+    }
+
+    @Override
+    public void playSound(String sound, float volume, float pitch) {
+        this.playSound(Sound.sound(Key.key(sound), Sound.Source.MASTER, volume, pitch), volume, pitch);
+    }
+
+    @Override
+    public void playSound(Object sound, float volume, float pitch) {
+        if (sound instanceof String) {
+            this.playSound((String) sound, volume, pitch);
+            return;
+        }
+
+        if (!(sound instanceof Sound)) {
+            throw new RuntimeException("Unsupported sound type");
+        }
+
+        this.parent.playSound((Sound) sound);
     }
 
     @Override

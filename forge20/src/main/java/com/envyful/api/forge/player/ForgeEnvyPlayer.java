@@ -7,9 +7,13 @@ import com.envyful.api.player.AbstractEnvyPlayer;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.save.SaveManager;
 import com.envyful.api.text.Placeholder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
 import java.util.List;
@@ -69,6 +73,25 @@ public class ForgeEnvyPlayer extends AbstractEnvyPlayer<ServerPlayer> {
         } else {
             throw new RuntimeException("Unsupported message type");
         }
+    }
+
+    @Override
+    public void playSound(String sound, float volume, float pitch) {
+        this.playSound(BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.tryParse(sound)), volume, pitch);
+    }
+
+    @Override
+    public void playSound(Object sound, float volume, float pitch) {
+        if (sound instanceof String) {
+            this.playSound((String) sound, volume, pitch);
+            return;
+        }
+
+        if (!(sound instanceof SoundEvent)) {
+            throw new RuntimeException("Unsupported sound type");
+        }
+
+        this.parent.playNotifySound((SoundEvent) sound, SoundSource.MASTER, volume, pitch);
     }
 
     @Override

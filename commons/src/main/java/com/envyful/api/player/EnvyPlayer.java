@@ -4,6 +4,7 @@ import com.envyful.api.config.ConfigLocation;
 import com.envyful.api.platform.PlatformProxy;
 import com.envyful.api.player.attribute.PlayerAttribute;
 import com.envyful.api.text.Placeholder;
+import com.envyful.api.text.parse.SimplePlaceholder;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -27,7 +28,7 @@ import java.util.concurrent.CompletableFuture;
  *
  * @param <T> The specific platform implementation of the player object.
  */
-public interface EnvyPlayer<T> {
+public interface EnvyPlayer<T> extends SimplePlaceholder {
 
     /**
      *
@@ -230,5 +231,8 @@ public interface EnvyPlayer<T> {
      */
     <A extends Attribute<B>, B> void removeAttribute(Class<A> attributeClass);
 
-
+    @Override
+    default String replace(String line) {
+        return line.replace("%player%", this.getName());
+    }
 }

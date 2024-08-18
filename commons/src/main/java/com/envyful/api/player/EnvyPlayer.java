@@ -233,6 +233,7 @@ public interface EnvyPlayer<T> extends SimplePlaceholder {
 
     @Override
     default String replace(String line) {
-        return line.replace("%player%", this.getName());
+        return line.replace("%player%", this.getName())
+                .replace("%uuid%", this.getUniqueId().toString());
     }
 }

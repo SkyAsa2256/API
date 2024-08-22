@@ -38,9 +38,21 @@ public class ConfigInterface {
      * @return The config interface
      */
     public static ConfigInterface defaultInterface(String title) {
+        return defaultInterface(title, 6);
+    }
+
+    /**
+     *
+     * Gets a default config interface with the given title and height
+     *
+     * @param title The title
+     * @param height The height
+     * @return The config interface
+     */
+    public static ConfigInterface defaultInterface(String title, int height) {
         return builder()
                 .title(title)
-                .height(6)
+                .height(height)
                 .fillType(FillType.BLOCK)
                 .fillerItem(ConfigItem.builder()
                         .type("minecraft:black_stained_glass_pane")

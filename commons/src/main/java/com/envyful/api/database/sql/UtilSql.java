@@ -142,8 +142,12 @@ public class UtilSql {
      */
     public static <T> List<T> executeQuery(Database database, String query, SQLFunction<ResultSet, T> converter, SqlType... data) {
         try (var resultSet = executeQuery(database, query, data)) {
+            if (resultSet == null) {
+                return List.of();
+            }
+
             List<T> convertedData = Lists.newArrayList();
-            
+
             while (resultSet.next()) {
                 var converted = converter.apply(resultSet);
 

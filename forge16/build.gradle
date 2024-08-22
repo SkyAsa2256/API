@@ -10,19 +10,14 @@ minecraft {
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
-repositories {
-    maven {
-        name = 'spongepowered-repo'
-        url = 'https://repo.spongepowered.org/maven'
-    }
-}
-
 dependencies {
     minecraft 'net.minecraftforge:forge:1.16.5-36.2.39'
 
     shadow group: 'org.spongepowered', name: 'configurate-yaml', version: '4.2.0-COMMENTS'
 
     shadow project(':commons')
+
+    implementation 'uk.co.envyware:helios:1.1-SNAPSHOT'
 }
 
 shadowJar {

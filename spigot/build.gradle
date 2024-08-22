@@ -21,6 +21,7 @@ dependencies {
     implementation("de.tr7zw:item-nbt-api:2.11.0")
 
     shadow project(':commons')
+    implementation 'uk.co.envyware:helios:1.1-SNAPSHOT'
 }
 
 shadowJar {

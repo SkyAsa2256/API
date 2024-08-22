@@ -38,6 +38,7 @@ dependencies {
     }
 
     implementation 'pixelmon:Pixelmon-1.16.5-9.1.7-server:9.1.7'
+    implementation 'uk.co.envyware:helios:1.1-SNAPSHOT'
 }
 
 shadowJar {

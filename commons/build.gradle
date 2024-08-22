@@ -12,6 +12,8 @@ dependencies {
     implementation 'io.lettuce:lettuce-core:6.2.2.RELEASE'
     implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.5'
     implementation group: 'org.spongepowered', name: 'configurate-yaml', version: '4.2.0-COMMENTS'
+
+    implementation 'uk.co.envyware:helios:1.1-SNAPSHOT'
 }
 
 shadowJar {

@@ -20,6 +20,7 @@ dependencies {
     shadow group: 'org.spongepowered', name: 'configurate-yaml', version: '4.0.0'
 
     shadow project(':commons')
+    implementation 'uk.co.envyware:helios:1.1-SNAPSHOT'
 
     annotationProcessor 'com.velocitypowered:velocity-api:3.1.2-SNAPSHOT'
 }

@@ -7,6 +7,7 @@ import com.envyful.api.database.SQLFunction;
 import com.envyful.api.type.ExceptionThrowingConsumer;
 import com.google.common.collect.Lists;
 import com.mysql.cj.jdbc.Driver;
+import uk.co.envyware.helios.RequiredMethod;
 
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -243,6 +244,9 @@ public class UtilSql {
             return this;
         }
 
+        @RequiredMethod({
+                "database", "query"
+        })
         public ResultSet execute() {
             if (this.database == null) {
                 throw new IllegalArgumentException("Database cannot be null");
@@ -251,6 +255,9 @@ public class UtilSql {
             return executeQuery(this.database, this.query, this.data.toArray(new SqlType[0]));
         }
 
+        @RequiredMethod({
+                "database", "query"
+        })
         public void execute(ExceptionThrowingConsumer<ResultSet, SQLException> consumer) {
             try (ResultSet resultSet = this.execute()) {
                 consumer.accept(resultSet);
@@ -259,6 +266,9 @@ public class UtilSql {
             }
         }
 
+        @RequiredMethod({
+                "database", "query", "converter"
+        })
         public List<T> executeWithConverter() {
             if (this.database == null) {
                 throw new IllegalArgumentException("Database cannot be null");
@@ -271,18 +281,30 @@ public class UtilSql {
             return executeQuery(this.database, this.query, this.converter, this.data.toArray(new SqlType[0]));
         }
 
+        @RequiredMethod({
+                "database", "query"
+        })
         public CompletableFuture<ResultSet> executeAsync() {
             return this.executeAsync(UtilConcurrency.SCHEDULED_EXECUTOR_SERVICE);
         }
 
+        @RequiredMethod({
+                "database", "query"
+        })
         public CompletableFuture<ResultSet> executeAsync(Executor executor) {
             return CompletableFuture.supplyAsync(this::execute, executor);
         }
 
+        @RequiredMethod({
+                "database", "query", "converter"
+        })
         public CompletableFuture<List<T>> executeAsyncWithConverter() {
             return this.executeAsyncWithConverter(UtilConcurrency.SCHEDULED_EXECUTOR_SERVICE);
         }
 
+        @RequiredMethod({
+                "database", "query", "converter"
+        })
         public CompletableFuture<List<T>> executeAsyncWithConverter(Executor executor) {
             return CompletableFuture.supplyAsync(this::executeWithConverter, executor);
         }
@@ -311,6 +333,9 @@ public class UtilSql {
             return this;
         }
 
+        @RequiredMethod({
+                "database", "query"
+        })
         public int execute() {
             if (this.database == null) {
                 throw new IllegalArgumentException("Database cannot be null");
@@ -319,10 +344,16 @@ public class UtilSql {
             return executeUpdate(this.database, this.query, this.data.toArray(new SqlType[0]));
         }
 
+        @RequiredMethod({
+                "database", "query"
+        })
         public CompletableFuture<Integer> executeAsync() {
             return this.executeAsync(UtilConcurrency.SCHEDULED_EXECUTOR_SERVICE);
         }
 
+        @RequiredMethod({
+                "database", "query"
+        })
         public CompletableFuture<Integer> executeAsync(Executor executor) {
             return CompletableFuture.supplyAsync(this::execute, executor);
         }
@@ -362,6 +393,9 @@ public class UtilSql {
             return this;
         }
 
+        @RequiredMethod({
+                "database", "query", "converter"
+        })
         public int[] execute() {
             if (this.database == null) {
                 throw new IllegalArgumentException("Database cannot be null");
@@ -374,10 +408,16 @@ public class UtilSql {
             return executeBatchUpdate(this.database, this.query, this.data, this.converter);
         }
 
+        @RequiredMethod({
+                "database", "query"
+        })
         public CompletableFuture<Integer[]> executeAsync() {
             return this.executeAsync(UtilConcurrency.SCHEDULED_EXECUTOR_SERVICE);
         }
 
+        @RequiredMethod({
+                "database", "query"
+        })
         public CompletableFuture<Integer[]> executeAsync(Executor executor) {
             return CompletableFuture.supplyAsync(() -> {
                 var result = this.execute();

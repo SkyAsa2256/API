@@ -11,7 +11,6 @@ import com.envyful.api.text.PlaceholderFactory;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.players.ServerOpListEntry;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.forgespi.language.ModFileScanData;
@@ -77,7 +76,13 @@ public class ForgePlatformHandler implements PlatformHandler<CommandSource> {
             return true;
         }
 
-        ServerOpListEntry entry = ServerLifecycleHooks.getCurrentServer().getPlayerList().getOps().get(((Player) sender).getGameProfile());
+        var server = ServerLifecycleHooks.getCurrentServer();
+
+        if (server == null) {
+            return false;
+        }
+
+        var entry = server.getPlayerList().getOps().get(((Player) sender).getGameProfile());
         return entry != null;
     }
 

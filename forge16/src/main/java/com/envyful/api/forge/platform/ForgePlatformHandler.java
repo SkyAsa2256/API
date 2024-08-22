@@ -10,7 +10,6 @@ import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
 import net.minecraft.command.ICommandSource;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.management.OpEntry;
 import net.minecraft.util.Util;
 import net.minecraft.util.concurrent.TickDelayedTask;
 import net.minecraft.util.text.ChatType;
@@ -68,7 +67,13 @@ public class ForgePlatformHandler implements PlatformHandler<ICommandSource> {
             return true;
         }
 
-        OpEntry entry = ServerLifecycleHooks.getCurrentServer().getPlayerList().getOps().get(((PlayerEntity) sender).getGameProfile());
+        var server = ServerLifecycleHooks.getCurrentServer();
+
+        if (server == null) {
+            return false;
+        }
+
+        var entry = server.getPlayerList().getOps().get(((PlayerEntity) sender).getGameProfile());
         return entry != null;
     }
 

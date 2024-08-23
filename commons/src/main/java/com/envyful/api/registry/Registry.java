@@ -1,7 +1,10 @@
 package com.envyful.api.registry;
 
-import com.envyful.api.registry.impl.MapBasedRegistry;
+import com.envyful.api.registry.config.KeySerializer;
+import com.envyful.api.registry.impl.ClassValueMapBasedRegistry;
+import com.envyful.api.registry.impl.StandardMapBasedRegistry;
 import com.google.common.collect.Maps;
+import org.spongepowered.configurate.serialize.TypeSerializer;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -17,6 +20,14 @@ import java.util.Set;
  * @param <B> The value type
  */
 public interface Registry<A, B> {
+
+    /**
+     *
+     * Gets the key serializer
+     *
+     * @return The key serializer
+     */
+    KeySerializer<A> keySerializer();
 
     /**
      *
@@ -101,14 +112,22 @@ public interface Registry<A, B> {
 
     /**
      *
+     * Gets the type serializer for the values
+     *
+     * @return The type serializer
+     */
+    <D> TypeSerializer<D> getTypeSerializer();
+
+    /**
+     *
      * Creates a new registry
      *
      * @param <A> The key type
      * @param <B> The value type
      * @return The new registry
      */
-    static <A, B> Registry<A, B> create() {
-        return new MapBasedRegistry<>(HashMap::new);
+    static <A, B> Registry<A, B> create(KeySerializer<A> keySerializer) {
+        return new StandardMapBasedRegistry<>(keySerializer, HashMap::new);
     }
 
     /**
@@ -119,7 +138,31 @@ public interface Registry<A, B> {
      * @param <B> The value type
      * @return The new registry
      */
-    static <A, B> Registry<A, B> concurrent() {
-        return new MapBasedRegistry<>(Maps::newConcurrentMap);
+    static <A, B> Registry<A, B> concurrent(KeySerializer<A> keySerializer) {
+        return new StandardMapBasedRegistry<>(keySerializer, Maps::newConcurrentMap);
+    }
+
+    /**
+     *
+     * Creates a new registry that has a class value
+     *
+     * @param <A> The key type
+     * @param <B> The value type
+     * @return The new registry
+     */
+    static <A, B, C extends Class<B>> Registry<A, C> classBased(KeySerializer<A> keySerializer) {
+        return new ClassValueMapBasedRegistry<>(keySerializer, HashMap::new);
+    }
+
+    /**
+     *
+     * Creates a new registry that has a class value
+     *
+     * @param <A> The key type
+     * @param <B> The value type
+     * @return The new registry
+     */
+    static <A, B, C extends Class<B>> Registry<A, C> concurrentClassBased(KeySerializer<A> keySerializer) {
+        return new ClassValueMapBasedRegistry<>(keySerializer, Maps::newConcurrentMap);
     }
 }

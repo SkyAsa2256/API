@@ -1,6 +1,7 @@
 package com.envyful.api.registry.impl;
 
 import com.envyful.api.registry.Registry;
+import com.envyful.api.registry.config.KeySerializer;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -9,12 +10,19 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 
-public class MapBasedRegistry<A, B> implements Registry<A, B> {
+public abstract class MapBasedRegistry<A, B> implements Registry<A, B> {
 
+    private final KeySerializer<A> keySerializer;
     private final Map<A, B> backing;
 
-    public MapBasedRegistry(Supplier<Map<A, B>> backingSupplier) {
+    protected MapBasedRegistry(KeySerializer<A> keySerializer, Supplier<Map<A, B>> backingSupplier) {
+        this.keySerializer = keySerializer;
         this.backing = backingSupplier.get();
+    }
+
+    @Override
+    public KeySerializer<A> keySerializer() {
+        return this.keySerializer;
     }
 
     @Nullable

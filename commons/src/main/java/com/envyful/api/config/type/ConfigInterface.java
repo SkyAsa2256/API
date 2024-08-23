@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
+import uk.co.envyware.helios.RequiredMethod;
 
 import java.util.List;
 import java.util.Map;
@@ -187,6 +188,11 @@ public class ConfigInterface {
             return this;
         }
 
+        @RequiredMethod({
+                "height",
+                "title",
+                "fillType"
+        })
         public ConfigInterface build() {
             return new ConfigInterface(this);
         }

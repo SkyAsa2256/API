@@ -1,5 +1,6 @@
 package com.envyful.api.database;
 
+import com.envyful.api.database.sql.UtilSql;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisURI;
 import io.lettuce.core.api.StatefulRedisConnection;
@@ -25,6 +26,41 @@ public interface Database {
     default Connection getConnection()
             throws SQLException,UnsupportedOperationException {
         throw new UnsupportedOperationException("Not an SQL database");
+    }
+
+    /**
+     *
+     * A shorthand method for creating a new query builder
+     *
+     * @param query The query
+     * @return The builder
+     * @param <T> The type of the query
+     */
+    default <T> UtilSql.QueryBuilder<T> query(String query) {
+        return UtilSql.<T>query(this).query(query);
+    }
+
+    /**
+     *
+     * A shorthand method for creating a new update builder
+     *
+     * @param query The query
+     * @return The builder
+     */
+    default UtilSql.UpdateBuilder update(String query) {
+        return UtilSql.update(this).query(query);
+    }
+
+    /**
+     *
+     * A shorthand method for creating a new batch update builder
+     *
+     * @param query The query
+     * @return The builder
+     * @param <T> The type of the query
+     */
+    default <T> UtilSql.BatchUpdateBuilder<T> batch(String query) {
+        return UtilSql.<T>batchUpdate().database(this).query(query);
     }
 
     /**

@@ -65,4 +65,14 @@ public interface Timed<T> {
         return new ImmutableTimedValue<>(value, expiry, timeUnit);
     }
 
+    /**
+     *
+     * Adds a new empty {@link Timed} instance
+     *
+     * @return the new empty {@link Timed} instance
+     * @param <A> the type of the value
+     */
+    static <A> Timed<A> empty() {
+        return new EmptyTimedValue<>();
+    }
 }

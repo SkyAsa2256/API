@@ -2,6 +2,12 @@ package com.envyful.api.type.timed;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ *
+ * An empty implementation of the {@link Timed} interface
+ *
+ * @param <T> the type of the value
+ */
 public class EmptyTimedValue<T> implements Timed<T> {
 
     @Override

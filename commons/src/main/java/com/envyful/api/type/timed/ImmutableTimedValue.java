@@ -3,6 +3,12 @@ package com.envyful.api.type.timed;
 import java.time.Instant;
 import java.util.concurrent.TimeUnit;
 
+/**
+ *
+ * A class extending {@link Timed} that can only ever store a single value
+ *
+ * @param <T> the type of the value
+ */
 public class ImmutableTimedValue<T> implements Timed<T> {
 
     private final T value;

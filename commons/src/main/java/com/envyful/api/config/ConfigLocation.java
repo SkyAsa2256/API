@@ -33,15 +33,30 @@ public class ConfigLocation {
         return this.worldName;
     }
 
+    @Deprecated
     public double getPosX() {
         return this.posX;
     }
 
+    @Deprecated
     public double getPosY() {
         return this.posY;
     }
 
+    @Deprecated
     public double getPosZ() {
+        return this.posZ;
+    }
+
+    public double getX() {
+        return this.posX;
+    }
+
+    public double getY() {
+        return this.posY;
+    }
+
+    public double getZ() {
         return this.posZ;
     }
 

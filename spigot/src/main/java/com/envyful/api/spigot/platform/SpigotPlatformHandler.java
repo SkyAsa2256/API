@@ -1,6 +1,8 @@
 package com.envyful.api.spigot.platform;
 
+import com.envyful.api.config.ConfigToast;
 import com.envyful.api.platform.PlatformHandler;
+import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
 import net.kyori.adventure.audience.Audience;
@@ -74,5 +76,15 @@ public class SpigotPlatformHandler implements PlatformHandler<Audience> {
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), handlePlaceholder);
             }
         }
+    }
+
+    @Override
+    public void sendToast(Audience player, ConfigToast configToast) {
+        //TODO:
+    }
+
+    @Override
+    public void sendToast(EnvyPlayer<Audience> player, ConfigToast configToast) {
+        //TODO:
     }
 }

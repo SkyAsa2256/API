@@ -1,6 +1,7 @@
 package com.envyful.api.platform;
 
 import com.envyful.api.concurrency.UtilLogger;
+import com.envyful.api.config.ConfigToast;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.text.Placeholder;
@@ -125,6 +126,38 @@ public class PlatformProxy {
         }
 
         return handler.isOP(player.getParent());
+    }
+
+    /**
+     *
+     * Sends a toast to the player
+     *
+     * @param player The player to send the toast to
+     * @param configToast The toast to send
+     */
+    public static void sendToast(Object player, ConfigToast configToast) {
+        if (handler == null) {
+            UtilLogger.logger().ifPresent(logger -> logger.error("No platform handler set but sendToast was called"));
+            return;
+        }
+
+        handler.sendToast(player, configToast);
+    }
+
+    /**
+     *
+     * Sends a toast to the player
+     *
+     * @param player The player to send the toast to
+     * @param configToast The toast to send
+     */
+    public static void sendToast(EnvyPlayer<?> player, ConfigToast configToast) {
+        if (handler == null) {
+            UtilLogger.logger().ifPresent(logger -> logger.error("No platform handler set but sendToast was called"));
+            return;
+        }
+
+        handler.sendToast(player, configToast);
     }
 
     public static void broadcastMessage(Collection<String> message, Placeholder... placeholders) {

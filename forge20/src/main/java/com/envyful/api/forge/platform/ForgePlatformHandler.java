@@ -1,11 +1,14 @@
 package com.envyful.api.forge.platform;
 
 import com.envyful.api.concurrency.UtilLogger;
+import com.envyful.api.config.ConfigToast;
 import com.envyful.api.forge.InitializationTask;
 import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.forge.player.util.UtilPlayer;
+import com.envyful.api.forge.player.util.UtilToast;
 import com.envyful.api.forge.server.UtilForgeServer;
 import com.envyful.api.platform.PlatformHandler;
+import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
 import net.minecraft.commands.CommandSource;
@@ -124,5 +127,19 @@ public class ForgePlatformHandler implements PlatformHandler<CommandSource> {
                 UtilForgeServer.executeCommand(handlePlaceholder);
             }
         }
+    }
+
+    @Override
+    public void sendToast(EnvyPlayer<CommandSource> player, ConfigToast configToast) {
+        sendToast(player.getParent(), configToast);
+    }
+
+    @Override
+    public void sendToast(CommandSource player, ConfigToast configToast) {
+        if (!(player instanceof ServerPlayer)) {
+            return;
+        }
+
+        UtilToast.sendToast((ServerPlayer) player, configToast);
     }
 }

@@ -1,5 +1,7 @@
 package com.envyful.api.platform;
 
+import com.envyful.api.config.ConfigToast;
+import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.text.Placeholder;
 
 import java.util.Collection;
@@ -88,5 +90,23 @@ public interface PlatformHandler<A> {
      * @param placeholders The placeholders to replace
      */
     void executeConsoleCommands(List<String> commands, Placeholder... placeholders);
+
+    /**
+     *
+     * Sends a toast to the player
+     *
+     * @param player The player to send the toast to
+     * @param configToast The toast to send
+     */
+    void sendToast(A player, ConfigToast configToast);
+
+    /**
+     *
+     * Sends a toast to the player
+     *
+     * @param player The player to send the toast to
+     * @param configToast The toast to send
+     */
+    void sendToast(EnvyPlayer<A> player, ConfigToast configToast);
 
 }

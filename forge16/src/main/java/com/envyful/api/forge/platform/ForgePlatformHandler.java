@@ -27,6 +27,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ *
+ * The Forge implementation of the {@link PlatformHandler} interface
+ *
+ */
 public class ForgePlatformHandler implements PlatformHandler<ICommandSource> {
 
     private static final Type DATA_ANNOTATION = Type.getType(Initialized.class);

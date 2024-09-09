@@ -5,6 +5,11 @@ import com.google.common.collect.Maps;
 import java.util.List;
 import java.util.Map;
 
+/**
+ *
+ * Static factory class for registering and retrieving {@link ConfigTypeSerializer} instances
+ *
+ */
 public class ConfigTypeSerializerRegistry {
 
     private static final Map<Class<?>, ConfigTypeSerializer<?>> REGISTRY = Maps.newHashMap();

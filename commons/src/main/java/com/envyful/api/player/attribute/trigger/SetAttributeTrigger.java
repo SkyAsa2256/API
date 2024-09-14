@@ -1,5 +1,6 @@
 package com.envyful.api.player.attribute.trigger;
 
+import com.envyful.api.concurrency.UtilConcurrency;
 import com.envyful.api.player.Attribute;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.attribute.AbstractAttributeTrigger;
@@ -11,19 +12,21 @@ public class SetAttributeTrigger<T> extends AbstractAttributeTrigger<T> {
 
     @Override
     public void trigger(EnvyPlayer<T> player) {
-        for (var data : this.attributes) {
-            if (!this.shouldLoad(player, data)) {
-                continue;
-            }
+        UtilConcurrency.runAsync(() -> {
+            for (var data : this.attributes) {
+                if (!this.shouldLoad(player, data)) {
+                    continue;
+                }
 
-            setAttribute(player, data.attributeClass(),
-                    this.getIdMapper(player, data).apply(player)
-                            .thenCompose(id -> loadAttribute(data.saveManager(), data.attributeClass(), id))
-                            .exceptionally(throwable -> {
-                                data.saveManager().getErrorHandler().accept(player, throwable);
-                                return null;
-                            }));
-        }
+                setAttribute(player, data.attributeClass(),
+                        this.getIdMapper(player, data).apply(player)
+                                .thenCompose(id -> loadAttribute(data.saveManager(), data.attributeClass(), id))
+                                .exceptionally(throwable -> {
+                                    data.saveManager().getErrorHandler().accept(player, throwable);
+                                    return null;
+                                }));
+            }
+        });
     }
 
     @SuppressWarnings("unchecked")

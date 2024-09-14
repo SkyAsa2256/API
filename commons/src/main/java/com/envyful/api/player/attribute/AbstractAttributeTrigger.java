@@ -2,7 +2,8 @@ package com.envyful.api.player.attribute;
 
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
-import com.envyful.api.type.AsyncFunction;
+import com.envyful.api.type.BiAsyncFunction;
+import com.envyful.api.type.map.KeyedMap;
 import com.google.common.collect.Lists;
 
 import java.util.List;
@@ -17,9 +18,9 @@ public abstract class AbstractAttributeTrigger<T> implements AttributeTrigger<T>
         this.attributes.add(attribute);
     }
 
-    protected boolean shouldLoad(EnvyPlayer<T> player, PlayerManager.AttributeData<?, ?, T> attributeData) {
+    protected boolean shouldLoad(EnvyPlayer<T> player, PlayerManager.AttributeData<?, ?, T> attributeData, KeyedMap map) {
         for (var predicate : attributeData.predicates()) {
-            if (!predicate.test(player)) {
+            if (!predicate.test(player, map)) {
                 return false;
             }
         }
@@ -27,9 +28,9 @@ public abstract class AbstractAttributeTrigger<T> implements AttributeTrigger<T>
         return true;
     }
 
-    protected AsyncFunction<EnvyPlayer<T>, Object> getIdMapper(EnvyPlayer<T> player, PlayerManager.AttributeData<?, ?, T> attributeData) {
+    protected BiAsyncFunction<EnvyPlayer<T>, KeyedMap, Object> getIdMapper(EnvyPlayer<T> player, PlayerManager.AttributeData<?, ?, T> attributeData) {
         if (attributeData.idMapper() == null) {
-            return t -> CompletableFuture.completedFuture(player.getUniqueId());
+            return (a, b) -> CompletableFuture.completedFuture(player.getUniqueId());
         }
         return attributeData.idMapper();
     }

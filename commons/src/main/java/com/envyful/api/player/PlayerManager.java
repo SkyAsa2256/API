@@ -3,12 +3,13 @@ package com.envyful.api.player;
 import com.envyful.api.player.attribute.AttributeTrigger;
 import com.envyful.api.player.attribute.SharedAttribute;
 import com.envyful.api.player.save.SaveManager;
-import com.envyful.api.type.AsyncFunction;
+import com.envyful.api.type.BiAsyncFunction;
+import com.envyful.api.type.map.KeyedMap;
 
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Predicate;
+import java.util.function.BiPredicate;
 import java.util.function.Supplier;
 
 /**
@@ -174,13 +175,13 @@ public interface PlayerManager<A extends EnvyPlayer<B>, B> {
           private final Class<A> attributeClass;
           private final boolean shared;
           private final Supplier<A> constructor;
-          private final AsyncFunction<EnvyPlayer<C>, Object> idMapper;
-          private final List<Predicate<EnvyPlayer<C>>> predicates;
+          private final BiAsyncFunction<EnvyPlayer<C>, KeyedMap, Object> idMapper;
+          private final List<BiPredicate<EnvyPlayer<C>, KeyedMap>> predicates;
           private final List<AttributeTrigger<C>> triggers;
           private final SaveManager<C> saveManager;
 
-          protected AttributeData(Class<A> attributeClass, boolean shared, Supplier<A> constructor, AsyncFunction<EnvyPlayer<C>, Object> idMapper,
-                                  List<Predicate<EnvyPlayer<C>>> predicates, List<AttributeTrigger<C>> triggers, SaveManager<C> saveManager) {
+          protected AttributeData(Class<A> attributeClass, boolean shared, Supplier<A> constructor, BiAsyncFunction<EnvyPlayer<C>, KeyedMap, Object>  idMapper,
+                                  List<BiPredicate<EnvyPlayer<C>, KeyedMap>> predicates, List<AttributeTrigger<C>> triggers, SaveManager<C> saveManager) {
                this.attributeClass = attributeClass;
                this.shared = shared;
                this.constructor = constructor;
@@ -202,11 +203,11 @@ public interface PlayerManager<A extends EnvyPlayer<B>, B> {
                return this.constructor;
           }
 
-          public AsyncFunction<EnvyPlayer<C>, Object> idMapper() {
+          public BiAsyncFunction<EnvyPlayer<C>, KeyedMap, Object>  idMapper() {
                return this.idMapper;
           }
 
-          public List<Predicate<EnvyPlayer<C>>> predicates() {
+          public List<BiPredicate<EnvyPlayer<C>, KeyedMap>> predicates() {
                return this.predicates;
           }
 

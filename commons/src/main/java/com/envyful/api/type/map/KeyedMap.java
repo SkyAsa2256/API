@@ -6,28 +6,22 @@ import java.util.Map;
 
 public class KeyedMap {
 
-    private final Map<String, Key<?>> map = new HashMap<>();
+    private final Map<Key<?>, Object> map = new HashMap<>();
 
     public KeyedMap() {
     }
 
-    public <T> void put(Key<T> key) {
-        this.map.put(key.getKey(), key);
-    }
-
-    public <T> Key<T> get(String key) {
-        return (Key<T>) this.map.get(key);
+    public <T> void put(Key<T> key, T value) {
+        this.map.put(key, value);
     }
 
     @Nullable
-    public <T> T getNullable(String key) {
-        var value = this.map.get(key);
-
-        if (value == null) {
+    public <T> T get(Key<T> key) {
+        if (!this.map.containsKey(key)) {
             return null;
         }
 
-        return (T) value.getValue();
+        return (T) this.map.get(key);
     }
 
 }

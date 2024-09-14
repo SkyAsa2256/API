@@ -13,6 +13,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -147,7 +148,7 @@ public class UtilSql {
                 return List.of();
             }
 
-            List<T> convertedData = Lists.newArrayList();
+            List<T> convertedData = new ArrayList<>();
 
             while (resultSet.next()) {
                 var converted = converter.apply(resultSet);
@@ -219,7 +220,7 @@ public class UtilSql {
 
         private Database database;
         private String query;
-        private List<SqlType> data = Lists.newArrayList();
+        private List<SqlType> data = new ArrayList<>();
         private SQLFunction<ResultSet, T> converter = null;
 
         private QueryBuilder() {}
@@ -314,7 +315,7 @@ public class UtilSql {
 
         private Database database;
         private String query;
-        private List<SqlType> data = Lists.newArrayList();
+        private List<SqlType> data = new ArrayList<>();
 
         private UpdateBuilder() {}
 
@@ -329,7 +330,7 @@ public class UtilSql {
         }
 
         public UpdateBuilder data(SqlType... data) {
-            this.data = Lists.newArrayList(data);
+            this.data = List.of(data);
             return this;
         }
 
@@ -363,7 +364,7 @@ public class UtilSql {
 
         private Database database;
         private String query;
-        private List<T> data = Lists.newArrayList();
+        private List<T> data = new ArrayList<>();
         private Function<T, List<SqlType>> converter;
 
         private BatchUpdateBuilder() {}
@@ -384,7 +385,7 @@ public class UtilSql {
         }
 
         public BatchUpdateBuilder<T> data(T... data) {
-            this.data.addAll(Lists.newArrayList(data));
+            this.data.addAll(List.of(data));
             return this;
         }
 

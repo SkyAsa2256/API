@@ -64,8 +64,8 @@ public class UtilConfigItem {
 
     public static boolean hasPermission(ServerPlayer player, ExtendedConfigItem permissibleConfigItem) {
         return !permissibleConfigItem.requiresPermission() ||
-                permissibleConfigItem.getPermission().isEmpty() ||
                 permissibleConfigItem.getPermission() == null ||
+                permissibleConfigItem.getPermission().isEmpty() ||
                 permissibleConfigItem.getPermission().equalsIgnoreCase("none") ||
                 UtilPlayer.hasPermission(player, permissibleConfigItem.getPermission());
     }

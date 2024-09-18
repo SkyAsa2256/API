@@ -18,6 +18,10 @@ public class SaveAttributeTrigger<T> extends AbstractAttributeTrigger<T> {
     public void trigger(EnvyPlayer<T> player) {
         UtilConcurrency.runAsync(() -> {
             for (var data : this.attributes) {
+                if (!player.hasAttribute(data.attributeClass())) {
+                    continue;
+                }
+
                 var attribute = player.getAttributeNow(data.attributeClass());
                 this.saveAttribute(data.saveManager(), attribute, attribute.getId().join());
             }

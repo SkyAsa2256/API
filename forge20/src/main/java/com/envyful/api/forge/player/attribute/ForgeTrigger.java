@@ -1,5 +1,6 @@
 package com.envyful.api.forge.player.attribute;
 
+import com.envyful.api.concurrency.UtilConcurrency;
 import com.envyful.api.forge.player.ForgeEnvyPlayer;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.attribute.AttributeTrigger;
@@ -88,6 +89,22 @@ public class ForgeTrigger {
     public static <A extends Event> AttributeTrigger<ServerPlayer> set(IEventBus eventBus, Class<A> event, Function<A, List<ForgeEnvyPlayer>> converter) {
         var trigger = new SetAttributeTrigger<ServerPlayer>();
         createHandler(eventBus, event, converter, trigger::trigger);
+        return trigger;
+    }
+
+    /**
+     *
+     * Creates a trigger to set the attribute for multiple players
+     *
+     * @param eventBus The event bus
+     * @param event The event
+     * @param converter The converter to convert the event to a list of players
+     * @return The trigger
+     * @param <A> The event type
+     */
+    public static <A extends Event> AttributeTrigger<ServerPlayer> asyncSet(IEventBus eventBus, Class<A> event, Function<A, List<ForgeEnvyPlayer>> converter) {
+        var trigger = new SetAttributeTrigger<ServerPlayer>();
+        createAsyncHandler(eventBus, event, converter, trigger::trigger);
         return trigger;
     }
 
@@ -212,7 +229,6 @@ public class ForgeTrigger {
         return save(MinecraftForge.EVENT_BUS, event, converter);
     }
 
-
     /**
      *
      * Creates a trigger to save the attribute data for multiple players
@@ -229,6 +245,22 @@ public class ForgeTrigger {
         return trigger;
     }
 
+    /**
+     *
+     * Creates a trigger to save the attribute data for multiple players
+     *
+     * @param eventBus The event bus
+     * @param event The event
+     * @param converter The converter to convert the event to a list of players
+     * @return The trigger
+     * @param <A> The event type
+     */
+    public static <A extends Event> AttributeTrigger<ServerPlayer> asyncSave(IEventBus eventBus, Class<A> event, Function<A, List<ForgeEnvyPlayer>> converter) {
+        var trigger = new SaveAttributeTrigger<ServerPlayer>();
+        createAsyncHandler(eventBus, event, converter, trigger::trigger);
+        return trigger;
+    }
+
     @SuppressWarnings("unchecked")
     private static <A extends Event> void createHandler(IEventBus eventBus, Class<A> eventClass, Function<A, List<ForgeEnvyPlayer>> converter, Consumer<EnvyPlayer<ServerPlayer>> trigger) {
         eventBus.addListener(event -> {
@@ -241,6 +273,23 @@ public class ForgeTrigger {
                     trigger.accept(player);
                 }
             }
+        });
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <A extends Event> void createAsyncHandler(IEventBus eventBus, Class<A> eventClass, Function<A, List<ForgeEnvyPlayer>> converter, Consumer<EnvyPlayer<ServerPlayer>> trigger) {
+        eventBus.addListener(event -> {
+            if (!eventClass.isAssignableFrom(event.getClass())) {
+                return;
+            }
+
+            UtilConcurrency.runAsync(() -> {
+                for (var player : converter.apply((A) event)) {
+                    if (player != null) {
+                        trigger.accept(player);
+                    }
+                }
+            });
         });
     }
 }

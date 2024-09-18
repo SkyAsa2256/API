@@ -1,6 +1,5 @@
 package com.envyful.api.player.attribute.trigger;
 
-import com.envyful.api.concurrency.UtilConcurrency;
 import com.envyful.api.player.Attribute;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.attribute.AbstractAttributeTrigger;
@@ -13,29 +12,27 @@ public class SetAttributeTrigger<T> extends AbstractAttributeTrigger<T> {
 
     @Override
     public void trigger(EnvyPlayer<T> player) {
-        UtilConcurrency.runAsync(() -> {
-            for (var data : this.attributes) {
-                var map = new KeyedMap();
+        for (var data : this.attributes) {
+            var map = new KeyedMap();
 
-                if (!this.shouldLoad(player, data, map)) {
-                    continue;
-                }
-
-                setAttribute(player, data.attributeClass(),
-                        this.getIdMapper(player, data).apply(player, map)
-                                .thenCompose(id -> {
-                                    if (id == null) {
-                                        return null;
-                                    }
-
-                                    return loadAttribute(data.saveManager(), data.attributeClass(), id);
-                                })
-                                .exceptionally(throwable -> {
-                                    data.saveManager().getErrorHandler().accept(player, throwable);
-                                    return null;
-                                }));
+            if (!this.shouldLoad(player, data, map)) {
+                continue;
             }
-        });
+
+            setAttribute(player, data.attributeClass(),
+                    this.getIdMapper(player, data).apply(player, map)
+                            .thenCompose(id -> {
+                                if (id == null) {
+                                    return null;
+                                }
+
+                                return loadAttribute(data.saveManager(), data.attributeClass(), id);
+                            })
+                            .exceptionally(throwable -> {
+                                data.saveManager().getErrorHandler().accept(player, throwable);
+                                return null;
+                            }));
+        }
     }
 
     @SuppressWarnings("unchecked")

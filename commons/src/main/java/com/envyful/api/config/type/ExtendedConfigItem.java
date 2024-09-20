@@ -226,14 +226,6 @@ public class ExtendedConfigItem {
             return this;
         }
 
-        public Builder nbt(ConfigItem.NBTValue... nbtData) {
-            for (ConfigItem.NBTValue nbtDatum : nbtData) {
-                this.nbt.put(this.nbt.size() + "", nbtDatum);
-            }
-
-            return this;
-        }
-
         public Builder nbt(String key, ConfigItem.NBTValue value) {
             this.nbt.put(key, value);
             return this;

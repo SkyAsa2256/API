@@ -50,6 +50,6 @@ public class ConfigBattleRule {
 
         battleRules.set(BattleRuleRegistry.CLAUSES, new ClausesValue(clauses));
 
-        return battleRules.set(BattleRuleRegistry.getProperty(this.battleRuleType), this.battleRuleValue);
+        return battleRules;
     }
 }

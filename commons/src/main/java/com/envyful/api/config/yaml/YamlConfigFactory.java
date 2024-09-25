@@ -111,7 +111,7 @@ public class YamlConfigFactory {
         }
 
         if (!configFiles.isDirectory()) {
-            throw new IOException("Invalid path provided - must be a directory");
+            throw new IOException("Invalid path provided - must be a directory `" + configDirectory + "`");
         }
 
         var style = getNodeStyle(configClass);

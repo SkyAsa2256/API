@@ -9,6 +9,11 @@ import org.spongepowered.configurate.serialize.TypeSerializer;
 
 import java.lang.reflect.Type;
 
+/**
+ *
+ * Type serializer for JEXL expressions
+ *
+ */
 public class JexlExpressionTypeSerializer implements TypeSerializer<JexlExpression> {
     @Override
     public JexlExpression deserialize(Type type, ConfigurationNode node) throws SerializationException {

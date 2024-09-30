@@ -1,9 +1,12 @@
 package com.envyful.api.config.type;
 
+import com.envyful.api.config.database.DatabaseDetailsConfig;
+import com.envyful.api.database.Database;
+import com.envyful.api.database.impl.SimpleHikariDatabase;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 @ConfigSerializable
-public  class SQLDatabaseDetails {
+public  class SQLDatabaseDetails implements DatabaseDetailsConfig {
 
     public static final SQLDatabaseDetails DEFAULT = new SQLDatabaseDetails(
             "pool-name", "0.0.0.0", 3306, "username", "password", "database"
@@ -76,5 +79,10 @@ public  class SQLDatabaseDetails {
 
     public boolean isDisableSSL() {
         return this.disableSSL;
+    }
+
+    @Override
+    public Database createDatabase() {
+        return new SimpleHikariDatabase(this);
     }
 }

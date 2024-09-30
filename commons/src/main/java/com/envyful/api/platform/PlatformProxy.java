@@ -2,6 +2,7 @@ package com.envyful.api.platform;
 
 import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.config.ConfigToast;
+import com.envyful.api.config.database.DatabaseDetailsRegistry;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.text.Placeholder;
@@ -19,6 +20,10 @@ import java.util.List;
  *
  */
 public class PlatformProxy {
+
+    static {
+        DatabaseDetailsRegistry.init();
+    }
 
     private static PlatformHandler handler;
     private static PlayerManager<?, ?> playerManager;

@@ -1,9 +1,12 @@
 package com.envyful.api.config.type;
 
+import com.envyful.api.config.database.DatabaseDetailsConfig;
+import com.envyful.api.database.Database;
+import com.envyful.api.database.impl.SimpleLettuceDatabase;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 @ConfigSerializable
-public  class RedisDatabaseDetails {
+public  class RedisDatabaseDetails implements DatabaseDetailsConfig {
 
     private String ip;
     private int port;
@@ -28,5 +31,10 @@ public  class RedisDatabaseDetails {
 
     public String getPassword() {
         return this.password;
+    }
+
+    @Override
+    public Database createDatabase() {
+        return new SimpleLettuceDatabase(this);
     }
 }

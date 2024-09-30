@@ -64,8 +64,6 @@ public interface SaveManager<T> {
     /**
      *
      * Deletes all player data at the given location using the given database
-     * <br>
-     * For example, in the {@link com.envyful.api.player.save.impl.SQLSaveManager} this would be the table name
      *
      * @param database The database to delete the data from
      * @param name The location to delete the data from
@@ -76,8 +74,6 @@ public interface SaveManager<T> {
     /**
      *
      * Deletes all player data at the given location
-     * <br>
-     * For example, in the {@link com.envyful.api.player.save.impl.SQLSaveManager} this would be the table name
      *
      * @param name The location to delete the data from
      * @return If the data was successfully deleted

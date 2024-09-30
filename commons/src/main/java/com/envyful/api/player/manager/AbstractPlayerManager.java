@@ -4,7 +4,7 @@ import com.envyful.api.player.Attribute;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.player.save.SaveManager;
-import com.envyful.api.player.save.impl.EmptySaveManager;
+import com.envyful.api.player.save.impl.StandardSaveManager;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -20,7 +20,7 @@ public abstract class AbstractPlayerManager<A extends EnvyPlayer<B>, B> implemen
     protected final Map<Class<? extends Attribute<?>>, AttributeData<?, ?, B>> attributeData = Maps.newHashMap();
     protected final Function<B, UUID> uuidGetter;
 
-    protected SaveManager<B> saveManager = new EmptySaveManager<>(this);
+    protected SaveManager<B> saveManager = new StandardSaveManager<>(this);
 
     protected AbstractPlayerManager(Function<B, UUID> uuidGetter) {
         this.uuidGetter = uuidGetter;

@@ -3,12 +3,12 @@ package com.envyful.api.command;
 import com.envyful.api.command.exception.CommandParseException;
 import com.envyful.api.command.injector.ArgumentInjector;
 import com.envyful.api.command.injector.TabCompleter;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 /**
@@ -20,8 +20,8 @@ import java.util.function.Function;
  */
 public abstract class InjectedCommandFactory<A, B> implements CommandFactory<A, B> {
 
-    protected final List<ArgumentInjector<?, B>> registeredInjectors = Lists.newArrayList();
-    protected final Map<Class<?>, TabCompleter<?>> registeredCompleters = Maps.newConcurrentMap();
+    protected final List<ArgumentInjector<?, B>> registeredInjectors = new ArrayList<>();
+    protected final Map<Class<?>, TabCompleter<?>> registeredCompleters = new ConcurrentHashMap<>();
     protected final CommandParser<? extends PlatformCommand<B>, B> commandParser;
 
     protected InjectedCommandFactory(Function<InjectedCommandFactory<A, B>, ? extends CommandParser<? extends PlatformCommand<B>, B>> commandParser) {

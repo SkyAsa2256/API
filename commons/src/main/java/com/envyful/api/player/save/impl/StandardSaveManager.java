@@ -12,13 +12,13 @@ import com.google.common.base.Preconditions;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 
-public class EmptySaveManager<T> extends AbstractSaveManager<T> {
+public class StandardSaveManager<T> extends AbstractSaveManager<T> {
 
-    public EmptySaveManager(PlayerManager<?, T> playerManager) {
+    public StandardSaveManager(PlayerManager<?, T> playerManager) {
         super(playerManager);
     }
 
-    public EmptySaveManager(PlayerManager<?, T> playerManager, BiConsumer<EnvyPlayer<T>, Throwable> errorHandler) {
+    public StandardSaveManager(PlayerManager<?, T> playerManager, BiConsumer<EnvyPlayer<T>, Throwable> errorHandler) {
         super(playerManager, errorHandler);
     }
 

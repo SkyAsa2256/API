@@ -10,6 +10,7 @@ dependencies {
 
     implementation 'org.xerial:sqlite-jdbc:3.46.1.3'
     implementation group: 'org.spongepowered', name: 'configurate-yaml', version: '4.2.0-COMMENTS'
+    implementation group: 'com.zaxxer', name: 'HikariCP', version: '4.0.1'
 
     implementation project(':commons')
 }

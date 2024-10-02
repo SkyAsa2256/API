@@ -6,6 +6,11 @@ import com.envyful.api.config.type.SQLDatabaseDetails;
 import com.envyful.api.registry.Registry;
 import com.envyful.api.registry.config.KeySerializer;
 
+/**
+ *
+ * Registry for the different types of database details
+ *
+ */
 public class DatabaseDetailsRegistry {
 
     private static final Registry<String, Class<DatabaseDetailsConfig>> REGISTRY = Registry.classBased(KeySerializer.identity());

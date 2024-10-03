@@ -36,6 +36,25 @@ public class UtilConfigInterface {
         }
     }
 
+    public static void fillBackground(SpigotEnvyPlayer player,
+                                      Pane pane, ConfigInterface settings,
+                                      Placeholder... transformers) {
+        for (var fillerItem : settings.getFillerItems()) {
+            if (!fillerItem.isEnabled()) {
+                continue;
+            }
+
+            pane.add(
+                    GuiFactory.displayable(
+                            UtilConfigItem.fromConfigItem(
+                                    fillerItem, transformers
+                            )));
+        }
+
+        for (var displayItem : settings.getDisplayItems()) {
+            UtilConfigItem.builder().extendedConfigItem(player, pane, displayItem, transformers);
+        }
+    }
 
     public static <T> PaginatedBuilder<T> paginatedBuilder(List<T> items) {
         return new PaginatedBuilder<T>().items(items);

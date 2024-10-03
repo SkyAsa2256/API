@@ -6,6 +6,7 @@ import com.google.common.collect.Maps;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import uk.co.envyware.helios.RequiredMethod;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +22,7 @@ public class ConfigInterface {
     protected int height = 6;
     protected String fillType = FillType.BLOCK.name();
     protected Map<String, ConfigItem> fillerItems = Maps.newHashMap(ImmutableMap.of("one", new ConfigItem()));
+    protected Map<String, ExtendedConfigItem> displayItems = new HashMap<>();
 
     public ConfigInterface() {}
 
@@ -83,6 +85,10 @@ public class ConfigInterface {
         return this.getFillType().convert(
                 Lists.newArrayList(this.fillerItems.values()),
                 this.getHeight());
+    }
+
+    public List<ExtendedConfigItem> getDisplayItems() {
+        return List.copyOf(this.displayItems.values());
     }
 
     public enum FillType {

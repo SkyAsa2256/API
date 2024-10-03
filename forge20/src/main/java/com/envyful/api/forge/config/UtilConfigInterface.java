@@ -22,6 +22,26 @@ import java.util.function.Function;
 
 public class UtilConfigInterface {
 
+    public static void fillBackground(ForgeEnvyPlayer player,
+                                      Pane pane, ConfigInterface settings,
+                                      Placeholder... transformers) {
+        for (var fillerItem : settings.getFillerItems()) {
+            if (!fillerItem.isEnabled()) {
+                continue;
+            }
+
+            pane.add(
+                    GuiFactory.displayable(
+                            UtilConfigItem.fromConfigItem(
+                                    fillerItem, transformers
+                            )));
+        }
+
+        for (var displayItem : settings.getDisplayItems()) {
+            UtilConfigItem.builder().extendedConfigItem(player, pane, displayItem, transformers);
+        }
+    }
+
     public static void fillBackground(Pane pane, ConfigInterface settings, Placeholder... transformers) {
         for (ConfigItem fillerItem : settings.getFillerItems()) {
             if (!fillerItem.isEnabled()) {

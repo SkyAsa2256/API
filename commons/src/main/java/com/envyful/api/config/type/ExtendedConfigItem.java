@@ -156,6 +156,32 @@ public class ExtendedConfigItem {
         return new Builder();
     }
 
+    public static Builder copy(ExtendedConfigItem configItem) {
+        var builder = builder()
+                .enable(configItem.enabled)
+                .type(configItem.type)
+                .amount(configItem.amount)
+                .name(configItem.name)
+                .flags(configItem.flags.toArray(new String[0]))
+                .lore(configItem.lore.toArray(new String[0]))
+                .enchants(configItem.enchants.values().toArray(new ConfigItem.EnchantData[0]))
+                .nbt(configItem.nbt)
+                .positions(configItem.positions.values().toArray(new Pair[0]))
+                .executeCommands(configItem.commandsExecuted.toArray(new String[0]));
+
+        if (configItem.requiresPermission) {
+            builder.requiresPermission(configItem.permission, configItem.elseItem);
+        }
+
+        if (builder.closeOnClick) {
+            builder.closeOnClick();
+        } else {
+            builder.remainOpenOnClick();
+        }
+
+        return builder;
+    }
+
     public static class Builder {
 
         private boolean enabled = true;
@@ -177,6 +203,11 @@ public class ExtendedConfigItem {
                 Maps.newHashMap();
 
         protected Builder() {
+        }
+
+        public Builder enable(boolean enabled) {
+            this.enabled = enabled;
+            return this;
         }
 
         public Builder enable() {
@@ -228,6 +259,11 @@ public class ExtendedConfigItem {
 
         public Builder nbt(String key, ConfigItem.NBTValue value) {
             this.nbt.put(key, value);
+            return this;
+        }
+
+        public Builder nbt(Map<String, ConfigItem.NBTValue> nbt) {
+            this.nbt.putAll(nbt);
             return this;
         }
 

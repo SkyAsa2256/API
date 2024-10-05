@@ -8,6 +8,11 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.concurrent.TimeUnit;
 
+/**
+ *
+ * SQLite implementation of the {@link Database} interface
+ *
+ */
 public class SQLiteDatabase implements Database {
 
     private final HikariDataSource hikari;

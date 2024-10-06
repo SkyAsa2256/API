@@ -7,6 +7,11 @@ import com.velocitypowered.api.proxy.Player;
 import java.lang.annotation.Annotation;
 import java.util.List;
 
+/**
+ *
+ * A tab completer for integer values
+ *
+ */
 public class IntegerTabCompleter implements TabCompleter<Player> {
 
     @Override

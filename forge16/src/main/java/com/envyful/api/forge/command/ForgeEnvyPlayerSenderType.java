@@ -6,6 +6,11 @@ import com.envyful.api.forge.player.ForgePlayerManager;
 import net.minecraft.command.ICommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
 
+/**
+ *
+ * Sender type for {@link ForgeEnvyPlayer}
+ *
+ */
 public class ForgeEnvyPlayerSenderType implements SenderType<ICommandSource, ForgeEnvyPlayer> {
 
     private final ForgePlayerManager playerManager;

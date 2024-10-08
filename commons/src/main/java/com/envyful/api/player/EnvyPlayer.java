@@ -1,13 +1,13 @@
 package com.envyful.api.player;
 
 import com.envyful.api.config.ConfigLocation;
+import com.envyful.api.platform.Messageable;
 import com.envyful.api.platform.PlatformProxy;
 import com.envyful.api.player.attribute.PlayerAttribute;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.parse.SimplePlaceholder;
 
 import javax.annotation.Nullable;
-import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -28,7 +28,7 @@ import java.util.concurrent.CompletableFuture;
  *
  * @param <T> The specific platform implementation of the player object.
  */
-public interface EnvyPlayer<T> extends SimplePlaceholder {
+public interface EnvyPlayer<T> extends SimplePlaceholder, Messageable {
 
     /**
      *
@@ -57,17 +57,6 @@ public interface EnvyPlayer<T> extends SimplePlaceholder {
 
     /**
      *
-     * Checks if the player has the permission
-     *
-     * @param permission The permission to check
-     * @return If the player has the permission
-     */
-    default boolean hasPermission(String permission) {
-        return PlatformProxy.hasPermission(this, permission);
-    }
-
-    /**
-     *
      * Checks if the player is an operator
      *
      * @return If the player is an operator
@@ -75,25 +64,6 @@ public interface EnvyPlayer<T> extends SimplePlaceholder {
     default boolean isOP() {
         return PlatformProxy.isOP(this);
     }
-
-    /**
-     *
-     * Sends messages to the player
-     *
-     * @param messages The messages to send
-     * @param placeholders The placeholders to replace in the messages
-     */
-    default void message(Collection<String> messages, Placeholder... placeholders) {
-        PlatformProxy.sendMessage(this, messages, placeholders);
-    }
-
-    /**
-     *
-     * Sends messages to the player
-     *
-     * @param messages The messages to send
-     */
-    void message(Object... messages);
 
     /**
      *

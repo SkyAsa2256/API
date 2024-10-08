@@ -17,7 +17,6 @@ import com.envyful.api.command.sender.SenderTypeFactory;
 import com.envyful.api.command.tab.TabHandler;
 import com.envyful.api.concurrency.UtilConcurrency;
 import com.envyful.api.concurrency.UtilLogger;
-import com.envyful.api.reflection.UtilReflection;
 import com.google.common.collect.Lists;
 
 import java.lang.annotation.Annotation;
@@ -318,22 +317,16 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
         Method commandProcessor = this.findCommandProcessor(commandInstance);
         boolean argCapture = this.shouldCaptureArgs(commandInstance, commandProcessor, commandProcessor.getParameterAnnotations(), commandProcessor.getParameterTypes());
         boolean[] hasTabCompleter = this.getHasTabCompleter(commandProcessor, argCapture);
-        List<TabCompleteAnnotations> tabCompleter = this.getParameterTabCompleters(commandInstance, commandProcessor, hasTabCompleter);
+        List<TabCompleteAnnotations<?>> tabCompleter = this.getParameterTabCompleters(commandInstance, commandProcessor, hasTabCompleter);
         Method tabHandlerMethod = this.findTabHandlerMethod(commandInstance);
 
         return (sender, args) -> {
             int currentPosition = Math.max(0, args.length - 1);
 
             if (currentPosition < hasTabCompleter.length && hasTabCompleter[currentPosition]) {
-                TabCompleteAnnotations data = tabCompleter.get(currentPosition);
-                var completerType = UtilReflection.getTypeParam(data.completer.getClass(), 0);
-                var senderType = SenderTypeFactory.getSenderType((Class<?>) completerType).orElse(null);
+                TabCompleteAnnotations<?> data = tabCompleter.get(currentPosition);
 
-                if (senderType == null) {
-                    throw new CommandParseException("Invalid sender type provided in Completer " + data.completer.getClass().getSimpleName());
-                }
-
-                return CompletableFuture.supplyAsync(() -> data.completer.getCompletions((B) senderType.getInstance(sender), args, data.annotations.toArray(new Annotation[0])),
+                return CompletableFuture.supplyAsync(() -> data.getCompletions(sender, args, data.annotations.toArray(new Annotation[0])),
                                 UtilConcurrency.SCHEDULED_EXECUTOR_SERVICE)
                         .exceptionally(throwable -> {
                             UtilLogger.logger().ifPresent(logger -> logger.error("Error when handling tab completions", throwable));
@@ -376,14 +369,14 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
         return hasTabCompleter;
     }
 
-    protected List<TabCompleteAnnotations> getParameterTabCompleters(Object commandInstance, Method commandProcessor, boolean[] hasTabCompleter) {
+    protected List<TabCompleteAnnotations<?>> getParameterTabCompleters(Object commandInstance, Method commandProcessor, boolean[] hasTabCompleter) {
         Annotation[][] parameterAnnotations = commandProcessor.getParameterAnnotations();
-        List<TabCompleteAnnotations> tabCompleters = Lists.newArrayList();
+        List<TabCompleteAnnotations<?>> tabCompleters = Lists.newArrayList();
 
         for (int i = 1; i < parameterAnnotations.length; i++) {
             if (hasTabCompleter[i - 1]) {
                 List<Annotation> annotations = Lists.newArrayList();
-                TabCompleter<B> completable = null;
+                TabCompleter<?> completable = null;
 
                 for (Annotation annotation : parameterAnnotations[i]) {
                     if (!(annotation instanceof Completable)) {
@@ -394,7 +387,9 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
                     completable = this.getCompleterInstance(commandInstance, commandProcessor, (Completable) annotation);
                 }
 
-                tabCompleters.add(new TabCompleteAnnotations(completable, annotations));
+                var senderType = SenderTypeFactory.getSenderType(commandProcessor.getParameterTypes()[i]).orElse(null);
+
+                tabCompleters.add(new TabCompleteAnnotations(completable, annotations, senderType));
             } else {
                 tabCompleters.add(null);
             }
@@ -404,8 +399,8 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
     }
 
     @SuppressWarnings("unchecked")
-    protected TabCompleter<B> getCompleterInstance(Object commandInstance, Method commandProcessor, Completable completable) {
-        var completer = (TabCompleter<B>) this.commandFactory.getRegisteredCompleter(completable.value());
+    protected TabCompleter<?> getCompleterInstance(Object commandInstance, Method commandProcessor, Completable completable) {
+        var completer = this.commandFactory.getRegisteredCompleter(completable.value());
 
         if (completer == null) {
             throw new CommandParseException("Unregistered tab completer instance found in " + commandInstance.getClass().getName() + " in method " + commandProcessor.getName());
@@ -432,14 +427,20 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
         return null;
     }
 
-    public class TabCompleteAnnotations {
+    public class TabCompleteAnnotations<A> {
 
-        protected final TabCompleter<B> completer;
+        protected final TabCompleter<A> completer;
         protected final List<Annotation> annotations;
+        private final SenderType<B, A> senderType;
 
-        public TabCompleteAnnotations(TabCompleter<B> completer, List<Annotation> annotations) {
+        public TabCompleteAnnotations(TabCompleter<A> completer, List<Annotation> annotations, SenderType<B, A> senderType) {
             this.completer = completer;
             this.annotations = annotations;
+            this.senderType = senderType;
+        }
+
+        public List<String> getCompletions(B sender, String[] currentData, Annotation... annotations) {
+            return this.completer.getCompletions(this.senderType.getInstance(sender), currentData, annotations);
         }
     }
 }

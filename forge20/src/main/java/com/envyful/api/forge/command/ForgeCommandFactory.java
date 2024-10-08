@@ -11,6 +11,7 @@ import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.forge.command.command.ForgePlatformCommand;
 import com.envyful.api.forge.command.command.sender.ConsoleSenderType;
 import com.envyful.api.forge.command.command.sender.ForgePlayerSenderType;
+import com.envyful.api.forge.command.command.sender.MessageableSenderType;
 import com.envyful.api.forge.command.completion.number.IntegerTabCompleter;
 import com.envyful.api.forge.command.completion.player.PlayerTabCompleter;
 import com.envyful.api.forge.command.injector.ForgeFunctionInjector;
@@ -66,7 +67,7 @@ public class ForgeCommandFactory extends InjectedCommandFactory<CommandDispatche
             @Nullable ForgePlayerManager playerManager) {
         super(commandParser);
 
-        SenderTypeFactory.register(new ConsoleSenderType(), new ForgePlayerSenderType());
+        SenderTypeFactory.register(new ConsoleSenderType(), new ForgePlayerSenderType(), new MessageableSenderType());
 
         if (playerManager != null) {
             SenderTypeFactory.register(new ForgeEnvyPlayerSenderType(playerManager));

@@ -8,12 +8,17 @@ import net.minecraft.util.text.ITextComponent;
 
 import java.util.List;
 
-public class ConsoleMessageable implements Messageable {
+public class ConsoleMessageable implements Messageable<ICommandSource> {
 
     private final ICommandSource source;
 
     public ConsoleMessageable(ICommandSource source) {
         this.source = source;
+    }
+
+    @Override
+    public ICommandSource getParent() {
+        return this.source;
     }
 
     @Override

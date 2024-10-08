@@ -7,12 +7,17 @@ import net.minecraft.network.chat.Component;
 
 import java.util.List;
 
-public class ConsoleMessageable implements Messageable {
+public class ConsoleMessageable implements Messageable<CommandSource> {
 
     private final CommandSource source;
 
     public ConsoleMessageable(CommandSource source) {
         this.source = source;
+    }
+
+    @Override
+    public CommandSource getParent() {
+        return this.source;
     }
 
     @Override

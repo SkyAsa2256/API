@@ -174,7 +174,7 @@ public class PlatformProxy {
         handler.broadcastMessage(message, placeholders);
     }
 
-    public static void sendMessage(EnvyPlayer<?> player, String... message) {
+    public static void sendMessage(Messageable<?> player, String... message) {
         sendMessage(player.getParent(), Lists.newArrayList(message));
     }
 
@@ -182,7 +182,7 @@ public class PlatformProxy {
         sendMessage(player, Lists.newArrayList(message));
     }
 
-    public static void sendMessage(EnvyPlayer<?> player, String message, Placeholder... placeholders) {
+    public static void sendMessage(Messageable<?> player, String message, Placeholder... placeholders) {
         sendMessage(player.getParent(), message, placeholders);
     }
 
@@ -190,7 +190,7 @@ public class PlatformProxy {
         sendMessage(player, Lists.newArrayList(message), placeholders);
     }
 
-    public static void sendMessage(EnvyPlayer<?> player, Collection<String> message, Placeholder... placeholders) {
+    public static void sendMessage(Messageable<?> player, Collection<String> message, Placeholder... placeholders) {
         sendMessage(player.getParent(), message, placeholders);
     }
 

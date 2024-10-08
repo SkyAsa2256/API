@@ -7,7 +7,6 @@ import com.envyful.api.player.attribute.PlayerAttribute;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.parse.SimplePlaceholder;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -28,7 +27,7 @@ import java.util.concurrent.CompletableFuture;
  *
  * @param <T> The specific platform implementation of the player object.
  */
-public interface EnvyPlayer<T> extends SimplePlaceholder, Messageable {
+public interface EnvyPlayer<T> extends SimplePlaceholder, Messageable<T> {
 
     /**
      *
@@ -45,15 +44,6 @@ public interface EnvyPlayer<T> extends SimplePlaceholder, Messageable {
      * @return The player's name
      */
     String getName();
-
-    /**
-     *
-     * Gets the platform relative representation of the player
-     *
-     * @return The parent
-     */
-    @Nullable
-    T getParent();
 
     /**
      *

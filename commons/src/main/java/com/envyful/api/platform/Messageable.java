@@ -2,6 +2,7 @@ package com.envyful.api.platform;
 
 import com.envyful.api.text.Placeholder;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
 
 /**
@@ -9,7 +10,16 @@ import java.util.Collection;
  * An interface to represent a command executor in a Minecraft setting
  *
  */
-public interface Messageable {
+public interface Messageable<T> {
+
+    /**
+     *
+     * Gets the platform relative representation of the player
+     *
+     * @return The parent
+     */
+    @Nullable
+    T getParent();
 
     /**
      *

@@ -82,6 +82,10 @@ public class UtilReflection {
      * @return The type
      */
     public static Type getTypeParam(Class<?> clazz, int index) {
+        if (!(clazz.getGenericSuperclass() instanceof ParameterizedType)) {
+            throw new IllegalArgumentException("Class does not have type parameters " + clazz.getSimpleName());
+        }
+
         ParameterizedType parameterizedType = (ParameterizedType) clazz.getGenericSuperclass();
         Type[] typeArguments = parameterizedType.getActualTypeArguments();
         return typeArguments[index];

@@ -387,8 +387,12 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
                     completable = this.getCompleterInstance(commandInstance, commandProcessor, (Completable) annotation);
                 }
 
-                var senderType = SenderTypeFactory.getSenderType(commandProcessor.getParameterTypes()[i]).orElse(null);
+                if (completable == null) {
+                    tabCompleters.add(null);
+                    continue;
+                }
 
+                var senderType = getSenderType(completable);
                 tabCompleters.add(new TabCompleteAnnotations(completable, annotations, senderType));
             } else {
                 tabCompleters.add(null);
@@ -396,6 +400,23 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
         }
 
         return tabCompleters;
+    }
+
+    private SenderType<?, ?> getSenderType(TabCompleter<?> completer) {
+        var completerClass = completer.getClass();
+
+        try {
+            for (Method declaredMethod : completerClass.getDeclaredMethods()) {
+                if (declaredMethod.getName().equalsIgnoreCase("getCompletions")) {
+                    var parameterTypes = declaredMethod.getParameterTypes();
+                    return SenderTypeFactory.getSenderType(parameterTypes[0]).orElse(null);
+                }
+            }
+
+            throw new CommandParseException("No getCompletions method found in tab completer " + completerClass.getName());
+        } catch (Exception e) {
+            throw new CommandParseException("Error when getting sender type for tab completer", e);
+        }
     }
 
     @SuppressWarnings("unchecked")

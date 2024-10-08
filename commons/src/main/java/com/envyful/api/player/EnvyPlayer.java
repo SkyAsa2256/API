@@ -150,6 +150,13 @@ public interface EnvyPlayer<T> extends SimplePlaceholder {
 
     /**
      *
+     * Closes the current inventory the player has open
+     *
+     */
+    void closeInventory();
+
+    /**
+     *
      * Teleports the player to the given location
      *
      * @param location The location to teleport the player to

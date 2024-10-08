@@ -107,4 +107,9 @@ public class SpigotEnvyPlayer extends AbstractEnvyPlayer<Player> {
     public void teleport(ConfigLocation location) {
         //TODO:
     }
+
+    @Override
+    public void closeInventory() {
+        this.getParent().closeInventory();
+    }
 }

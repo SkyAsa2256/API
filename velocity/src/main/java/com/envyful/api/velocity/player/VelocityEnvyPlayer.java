@@ -110,4 +110,9 @@ public class VelocityEnvyPlayer extends AbstractEnvyPlayer<Player> {
     public void teleport(ConfigLocation location) {
         throw new UnsupportedOperationException("Cannot teleport players on the proxy!");
     }
+
+    @Override
+    public void closeInventory() {
+        //TODO:
+    }
 }

@@ -113,4 +113,9 @@ public class ForgeEnvyPlayer extends AbstractEnvyPlayer<ServerPlayerEntity> {
         this.getParent().teleportTo((ServerWorld) UtilWorld.findWorld(location.getWorldName()),
                 location.getPosX(), location.getPosY(), location.getPosZ(), (float)location.getPitch(), (float)location.getYaw());
     }
+
+    @Override
+    public void closeInventory() {
+        this.getParent().closeContainer();
+    }
 }

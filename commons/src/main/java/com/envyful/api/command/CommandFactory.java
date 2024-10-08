@@ -112,4 +112,14 @@ public interface CommandFactory<A, B> {
      */
     void registerCompleter(TabCompleter<?> tabCompleter);
 
+    /**
+     *
+     * Gets the registered tab completer instance
+     *
+     * @param tabCompleterClass The tab completer class
+     * @return The registered instance
+     * @param <T> The sender type
+     */
+    <T> TabCompleter<T> getRegisteredCompleter(Class<?> tabCompleterClass);
+
 }

@@ -17,6 +17,7 @@ import com.envyful.api.command.sender.SenderTypeFactory;
 import com.envyful.api.command.tab.TabHandler;
 import com.envyful.api.concurrency.UtilConcurrency;
 import com.envyful.api.concurrency.UtilLogger;
+import com.envyful.api.reflection.UtilReflection;
 import com.google.common.collect.Lists;
 
 import java.lang.annotation.Annotation;
@@ -312,6 +313,7 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
         }
     }
 
+    @SuppressWarnings("unchecked")
     protected TabHandler<B> getTabHandler(Object commandInstance) {
         Method commandProcessor = this.findCommandProcessor(commandInstance);
         boolean argCapture = this.shouldCaptureArgs(commandInstance, commandProcessor, commandProcessor.getParameterAnnotations(), commandProcessor.getParameterTypes());
@@ -324,9 +326,14 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
 
             if (currentPosition < hasTabCompleter.length && hasTabCompleter[currentPosition]) {
                 TabCompleteAnnotations data = tabCompleter.get(currentPosition);
+                var completerType = UtilReflection.getTypeParam(data.completer.getClass(), 0);
+                var senderType = SenderTypeFactory.getSenderType((Class<?>) completerType).orElse(null);
 
-                return CompletableFuture.supplyAsync(() ->
-                                        data.completer.getCompletions(sender, args, data.annotations.toArray(new Annotation[0])),
+                if (senderType == null) {
+                    throw new CommandParseException("Invalid sender type provided in Completer " + data.completer.getClass().getSimpleName());
+                }
+
+                return CompletableFuture.supplyAsync(() -> data.completer.getCompletions((B) senderType.getInstance(sender), args, data.annotations.toArray(new Annotation[0])),
                                 UtilConcurrency.SCHEDULED_EXECUTOR_SERVICE)
                         .exceptionally(throwable -> {
                             UtilLogger.logger().ifPresent(logger -> logger.error("Error when handling tab completions", throwable));
@@ -398,12 +405,13 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
 
     @SuppressWarnings("unchecked")
     protected TabCompleter<B> getCompleterInstance(Object commandInstance, Method commandProcessor, Completable completable) {
-        try {
-            Constructor<? extends TabCompleter<?>> constructor = completable.value().getConstructor();
-            return (TabCompleter<B>) constructor.newInstance();
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new CommandParseException("Error creating tab completer instance for command " + commandInstance.getClass().getName() + " in method " + commandProcessor.getName(), e);
+        var completer = (TabCompleter<B>) this.commandFactory.getRegisteredCompleter(completable.value());
+
+        if (completer == null) {
+            throw new CommandParseException("Unregistered tab completer instance found in " + commandInstance.getClass().getName() + " in method " + commandProcessor.getName());
         }
+
+        return completer;
     }
 
     protected Method findTabHandlerMethod(Object commandInstance) {

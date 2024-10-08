@@ -93,4 +93,10 @@ public abstract class InjectedCommandFactory<A, B> implements CommandFactory<A, 
     public void registerCompleter(TabCompleter<?> tabCompleter) {
         this.registeredCompleters.put(tabCompleter.getClass(), tabCompleter);
     }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> TabCompleter<T> getRegisteredCompleter(Class<?> tabCompleterClass) {
+        return (TabCompleter<T>) this.registeredCompleters.get(tabCompleterClass);
+    }
 }

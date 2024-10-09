@@ -314,11 +314,12 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
 
     @SuppressWarnings("unchecked")
     protected TabHandler<B> getTabHandler(Object commandInstance) {
-        Method commandProcessor = this.findCommandProcessor(commandInstance);
-        boolean argCapture = this.shouldCaptureArgs(commandInstance, commandProcessor, commandProcessor.getParameterAnnotations(), commandProcessor.getParameterTypes());
-        boolean[] hasTabCompleter = this.getHasTabCompleter(commandProcessor, argCapture);
-        List<TabCompleteAnnotations<?>> tabCompleter = this.getParameterTabCompleters(commandInstance, commandProcessor, hasTabCompleter);
-        Method tabHandlerMethod = this.findTabHandlerMethod(commandInstance);
+        var commandProcessor = this.findCommandProcessor(commandInstance);
+        var argCapture = this.shouldCaptureArgs(commandInstance, commandProcessor, commandProcessor.getParameterAnnotations(), commandProcessor.getParameterTypes());
+        var hasTabCompleter = this.getHasTabCompleter(commandProcessor, argCapture);
+        var tabCompleter = this.getParameterTabCompleters(commandInstance, commandProcessor, hasTabCompleter);
+        var tabHandlerMethod = this.findTabHandlerMethod(commandInstance);
+        var tabHandlerSenderType = this.findTabHandlerSenderType(tabHandlerMethod);
 
         return (sender, args) -> {
             int currentPosition = Math.max(0, args.length - 1);
@@ -340,7 +341,7 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
 
             return CompletableFuture.supplyAsync(() -> {
                         try {
-                            return (List<String>) tabHandlerMethod.invoke(commandInstance, sender, args);
+                            return (List<String>) tabHandlerMethod.invoke(commandInstance, tabHandlerSenderType.getInstance(sender), args);
                         } catch (IllegalAccessException | InvocationTargetException e) {
                             throw new RuntimeException("Error when executing tab handler method " + tabHandlerMethod.getName() + " in class " + commandInstance.getClass().getName(), e);
                         }
@@ -443,6 +444,27 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
             }
 
             return declaredMethod;
+        }
+
+        return null;
+    }
+
+    protected SenderType<B, ?> findTabHandlerSenderType(Method tabHandlerMethod) {
+        if (tabHandlerMethod == null) {
+            return null;
+        }
+
+        var parameterTypes = tabHandlerMethod.getParameterTypes();
+        var annotations = tabHandlerMethod.getParameterAnnotations();
+
+        for (int i = 0; i < parameterTypes.length; i++) {
+            var parameterType = parameterTypes[i];
+
+            for (int y = 0; y < annotations[i].length; y++) {
+                if (annotations[i][y] instanceof Sender) {
+                    return (SenderType<B, ?>) SenderTypeFactory.getSenderType(parameterType).orElse(null);
+                }
+            }
         }
 
         return null;

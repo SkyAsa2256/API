@@ -19,7 +19,7 @@ public class SQLNameStore implements NameStore {
     public SQLNameStore(Database database) {
         this.database = database;
 
-        this.database.update("CREATE TABLE IT NOT EXISTS `envy_api_player_names`(" +
+        this.database.update("CREATE TABLE IF NOT EXISTS `envy_api_player_names`(" +
                 "id         INT         UNSIGNED        NOT NULL    AUTO_INCREMENT, " +
                 "name       VARCHAR(16) NOT NULL, " +
                 "uuid       VARCHAR(36) NOT NULL, " +

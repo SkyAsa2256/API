@@ -1,6 +1,7 @@
 package com.envyful.api.command;
 
 import com.envyful.api.command.exception.CommandParseException;
+import com.envyful.api.command.injector.ArgumentInjectionFunction;
 import com.envyful.api.command.injector.ArgumentInjector;
 import com.envyful.api.command.injector.TabCompleter;
 
@@ -71,6 +72,20 @@ public interface CommandFactory<A, B> {
     ) {
         this.registerInjector(parentClass, false, function);
     }
+
+    /**
+     *
+     * Default method for registering an
+     * injector where multiple args defaults to false.
+     * By default, uses the {@link CommandFactory#registerInjector(Class, boolean, BiFunction)} method with the
+     * multipleArgs flag as false (as this is the most common use-case)
+     *
+     * @param parentClass The converted class to be registered
+     * @param function The function converting
+     *                 the sender and args to the parentClass
+     */
+    <C> void registerInjector(Class<C> parentClass,
+                                  ArgumentInjectionFunction<C, B> function);
 
     /**
      *

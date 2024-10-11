@@ -1,5 +1,8 @@
 package com.envyful.api.command.injector;
 
+import java.lang.annotation.Annotation;
+import java.util.List;
+
 /**
  *
  * An interface for handling when the parameters of
@@ -35,12 +38,12 @@ public interface ArgumentInjector<A, B> {
 
     /**
      *
-     * Instantiates the new class from the sender, and the arguments supplied
+     * Instantiates the new class from the sender, the annotations on the method, and the arguments supplied
      *
      * @param sender The sender
+     * @param annotations The annotations on the method
      * @param arguments The argument(s) from the command
      * @return The new instantiated converted class
      */
-    A instantiateClass(B sender, String... arguments);
-
+    A instantiateClass(B sender, List<Annotation> annotations, String... arguments);
 }

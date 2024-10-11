@@ -48,6 +48,7 @@ public class SpigotPlayerManager extends AbstractPlayerManager<SpigotEnvyPlayer,
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <X extends Attribute<Y>, Y> void registerAttribute(AttributeBuilder<X, Y, Player> builder) {
         builder.triggers(
                 SpigotTrigger.singleSet(this.plugin, AsyncPlayerPreLoginEvent.class, event -> this.cachedPlayers.get(event.getUniqueId())),
@@ -55,6 +56,8 @@ public class SpigotPlayerManager extends AbstractPlayerManager<SpigotEnvyPlayer,
                 SpigotTrigger.save(this.plugin, WorldSaveEvent.class, event -> Lists.newArrayList(this.cachedPlayers.values())),
                 SpigotTrigger.save(this.plugin, ServerShutdownEvent.class, event -> Lists.newArrayList(this.cachedPlayers.values()))
         );
+
+        builder.offlineIdMapper(uuid -> (Y) uuid);
 
         super.registerAttribute(builder);
     }

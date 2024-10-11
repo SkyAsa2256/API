@@ -40,6 +40,7 @@ public class ForgePlayerManager extends AbstractPlayerManager<ForgeEnvyPlayer, S
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <X extends Attribute<Y>, Y> void registerAttribute(AttributeBuilder<X, Y, ServerPlayer> builder) {
         builder.triggers(
                 ForgeTrigger.singleSet(PlayerEvent.PlayerLoggedInEvent.class, event -> this.cachedPlayers.get(event.getEntity().getUUID())),
@@ -47,6 +48,8 @@ public class ForgePlayerManager extends AbstractPlayerManager<ForgeEnvyPlayer, S
                 ForgeTrigger.save(LevelEvent.Save.class, event -> Lists.newArrayList(this.cachedPlayers.values())),
                 ForgeTrigger.save(ServerStoppingEvent.class, event -> Lists.newArrayList(this.cachedPlayers.values()))
         );
+
+        builder.offlineIdMapper(uuid -> (Y) uuid);
 
         super.registerAttribute(builder);
     }

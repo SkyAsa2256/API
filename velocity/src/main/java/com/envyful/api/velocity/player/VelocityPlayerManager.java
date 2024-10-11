@@ -4,6 +4,7 @@ import com.envyful.api.player.Attribute;
 import com.envyful.api.player.AttributeBuilder;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.player.manager.AbstractPlayerManager;
+import com.envyful.api.player.name.NameStore;
 import com.envyful.api.velocity.player.attribute.VelocityTrigger;
 import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
@@ -34,6 +35,12 @@ public class VelocityPlayerManager extends AbstractPlayerManager<VelocityEnvyPla
         this.plugin = plugin;
 
         proxy.getEventManager().register(plugin, new PlayerListener());
+    }
+
+    public VelocityPlayerManager(Object plugin, ProxyServer proxy, NameStore nameStore) {
+        this(plugin, proxy);
+
+        this.nameStore = nameStore;
     }
 
     @Override

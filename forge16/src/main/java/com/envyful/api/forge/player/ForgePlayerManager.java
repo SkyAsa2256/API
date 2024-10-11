@@ -7,6 +7,7 @@ import com.envyful.api.player.Attribute;
 import com.envyful.api.player.AttributeBuilder;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.player.manager.AbstractPlayerManager;
+import com.envyful.api.player.name.NameStore;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.common.MinecraftForge;
@@ -30,9 +31,13 @@ public class ForgePlayerManager extends AbstractPlayerManager<ForgeEnvyPlayer, S
         super(ServerPlayerEntity::getUUID);
 
         MinecraftForge.EVENT_BUS.register(new PlayerListener());
-        UsernameFactory.init();
     }
 
+    public ForgePlayerManager(NameStore nameStore) {
+        this();
+
+        this.nameStore = nameStore;
+    }
 
     @Override
     public <X extends Attribute<Y>, Y> void registerAttribute(AttributeBuilder<X, Y, ServerPlayerEntity> builder) {

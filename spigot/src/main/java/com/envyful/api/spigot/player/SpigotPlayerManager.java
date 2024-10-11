@@ -6,6 +6,7 @@ import com.envyful.api.player.Attribute;
 import com.envyful.api.player.AttributeBuilder;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.player.manager.AbstractPlayerManager;
+import com.envyful.api.player.name.NameStore;
 import com.envyful.api.spigot.event.ServerShutdownEvent;
 import com.envyful.api.spigot.player.attribute.SpigotTrigger;
 import com.google.common.collect.Lists;
@@ -38,6 +39,12 @@ public class SpigotPlayerManager extends AbstractPlayerManager<SpigotEnvyPlayer,
         this.plugin = plugin;
 
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), plugin);
+    }
+
+    public SpigotPlayerManager(Plugin plugin, NameStore nameStore) {
+        this(plugin );
+
+        this.nameStore = nameStore;
     }
 
     @Override

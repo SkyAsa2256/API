@@ -97,6 +97,26 @@ public abstract class AbstractPlayerManager<A extends EnvyPlayer<B>, B> implemen
 
     @Override
     @SuppressWarnings("unchecked")
+    public <C, T extends Attribute<C>> C mapId(Class<T> attributeClass, UUID uuid) {
+        var player = this.getPlayer(uuid);
+
+        if (player != null && player.hasAttribute(attributeClass)) {
+            var attribute = player.getAttributeNow(attributeClass);
+
+            return attribute.getId();
+        }
+
+        var data = this.attributeData.get(attributeClass);
+
+        if (data == null) {
+            return null;
+        }
+
+        return (C) data.offlineIdMapper().apply(uuid);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
     public <X extends Attribute<Y>, Y> void registerAttribute(AttributeData<X, Y, B> attributeData) {
         for (var trigger : attributeData.triggers()) {
             trigger.addAttribute(attributeData);

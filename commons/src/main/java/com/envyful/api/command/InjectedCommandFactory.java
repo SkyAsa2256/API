@@ -1,9 +1,15 @@
 package com.envyful.api.command;
 
 import com.envyful.api.command.exception.CommandParseException;
+import com.envyful.api.command.injector.ArgumentInjectionFunction;
 import com.envyful.api.command.injector.ArgumentInjector;
+import com.envyful.api.command.injector.SimpleInjector;
 import com.envyful.api.command.injector.TabCompleter;
+import com.envyful.api.player.Attribute;
+import com.envyful.api.player.attribute.OfflineAttribute;
+import com.envyful.api.player.attribute.command.TargetAttribute;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -66,6 +72,31 @@ public abstract class InjectedCommandFactory<A, B> implements CommandFactory<A, 
 
             return null;
         }));
+
+        this.registerInjector(OfflineAttribute.class, (sender, annotations, args) -> {
+            var targetAttribute = this.getTargetAttribute(annotations);
+
+            if (targetAttribute == null) {
+                throw new CommandParseException("No TargetAttribute with paired OfflineAttribute injection found");
+            }
+
+            return offlineAttributeBouncer(targetAttribute.value(), args[0]);
+        });
+    }
+
+    private TargetAttribute getTargetAttribute(List<Annotation> annotations) {
+        for (Annotation annotation : annotations) {
+            if (annotation instanceof TargetAttribute) {
+                return (TargetAttribute) annotation;
+            }
+        }
+
+        return null;
+    }
+
+    @SuppressWarnings("unchecked")
+    private <A, B extends Attribute<A>> OfflineAttribute<A, B> offlineAttributeBouncer(Class<?> clazz, String name) {
+        return OfflineAttribute.fromName((Class<B>) clazz, name);
     }
 
     @Override
@@ -92,6 +123,11 @@ public abstract class InjectedCommandFactory<A, B> implements CommandFactory<A, 
     @Override
     public void registerCompleter(TabCompleter<?> tabCompleter) {
         this.registeredCompleters.put(tabCompleter.getClass(), tabCompleter);
+    }
+
+    @Override
+    public <C> void registerInjector(Class<C> parentClass, ArgumentInjectionFunction<C, B> function) {
+        this.registeredInjectors.add(new SimpleInjector<>(parentClass, function));
     }
 
     @Override

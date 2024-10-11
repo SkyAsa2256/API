@@ -7,6 +7,7 @@ import com.envyful.api.type.map.KeyedMap;
 import com.google.common.collect.Lists;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
@@ -20,6 +21,7 @@ public class AttributeBuilder<A extends Attribute<B>, B, C> {
     protected BiAsyncFunction<EnvyPlayer<C>, KeyedMap, Object> idMapper;
     protected List<BiPredicate<EnvyPlayer<C>, KeyedMap>> predicates = Lists.newArrayList();
     protected List<AttributeTrigger<C>> triggers = Lists.newArrayList();
+    protected Function<UUID, B> offlineIdMapper = uuid -> null;
 
     protected AttributeBuilder() {}
 
@@ -60,6 +62,11 @@ public class AttributeBuilder<A extends Attribute<B>, B, C> {
     @SafeVarargs
     public final AttributeBuilder<A, B, C> triggers(AttributeTrigger<C>... trigger) {
         this.triggers.addAll(Lists.newArrayList(trigger));
+        return this;
+    }
+
+    public AttributeBuilder<A, B, C> offlineIdMapper(Function<UUID, B> offlineIdMapper) {
+        this.offlineIdMapper = offlineIdMapper;
         return this;
     }
 

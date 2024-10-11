@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiPredicate;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -161,11 +162,24 @@ public interface PlayerManager<A extends EnvyPlayer<B>, B> {
                   builder.idMapper,
                   builder.predicates,
                   builder.triggers,
+                    builder.offlineIdMapper,
                   this.getSaveManager()
           );
 
           this.registerAttribute(data);
      }
+
+     /**
+      *
+      * Maps the given uuid to the id for the attribute
+      *
+      * @param attributeClass The class of the attribute
+      * @param uuid The id to map
+      * @param <C> The platform player type
+      * @param <T> The attribute type
+      * @return The attribute instance
+      */
+     <C, T extends Attribute<C>> C mapId(Class<T> attributeClass, UUID uuid);
 
      /**
       *
@@ -195,19 +209,23 @@ public interface PlayerManager<A extends EnvyPlayer<B>, B> {
           private final boolean shared;
           private final Supplier<A> constructor;
           private final BiAsyncFunction<EnvyPlayer<C>, KeyedMap, Object> idMapper;
+          private final Function<UUID, B> offlineIdMapper;
           private final List<BiPredicate<EnvyPlayer<C>, KeyedMap>> predicates;
           private final List<AttributeTrigger<C>> triggers;
           private final SaveManager<C> saveManager;
 
-          protected AttributeData(Class<A> attributeClass, boolean shared, Supplier<A> constructor, BiAsyncFunction<EnvyPlayer<C>, KeyedMap, Object>  idMapper,
-                                  List<BiPredicate<EnvyPlayer<C>, KeyedMap>> predicates, List<AttributeTrigger<C>> triggers, SaveManager<C> saveManager) {
+          protected AttributeData(Class<A> attributeClass, boolean shared, Supplier<A> constructor, BiAsyncFunction<EnvyPlayer<C>, KeyedMap, Object> idMapper,
+                                  List<BiPredicate<EnvyPlayer<C>, KeyedMap>> predicates, List<AttributeTrigger<C>> triggers,
+                                  Function<UUID, B> offlineIdMapper,
+                                  SaveManager<C> saveManager) {
                this.attributeClass = attributeClass;
                this.shared = shared;
                this.constructor = constructor;
                this.idMapper = idMapper;
                this.predicates = predicates;
                this.triggers = triggers;
-              this.saveManager = saveManager;
+               this.offlineIdMapper = offlineIdMapper;
+               this.saveManager = saveManager;
           }
 
           public Class<A> attributeClass() {
@@ -215,14 +233,14 @@ public interface PlayerManager<A extends EnvyPlayer<B>, B> {
           }
 
           public boolean shared() {
-                 return this.shared;
-            }
+               return this.shared;
+          }
 
           public Supplier<A> constructor() {
                return this.constructor;
           }
 
-          public BiAsyncFunction<EnvyPlayer<C>, KeyedMap, Object>  idMapper() {
+          public BiAsyncFunction<EnvyPlayer<C>, KeyedMap, Object> idMapper() {
                return this.idMapper;
           }
 
@@ -235,7 +253,11 @@ public interface PlayerManager<A extends EnvyPlayer<B>, B> {
           }
 
           public SaveManager<C> saveManager() {
-                 return this.saveManager;
-            }
+               return this.saveManager;
+          }
+
+          public Function<UUID, B> offlineIdMapper() {
+               return this.offlineIdMapper;
+          }
      }
 }

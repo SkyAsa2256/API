@@ -5,7 +5,6 @@ import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.forge.world.UtilWorld;
 import com.envyful.api.player.AbstractEnvyPlayer;
 import com.envyful.api.player.EnvyPlayer;
-import com.envyful.api.player.save.SaveManager;
 import com.envyful.api.text.Placeholder;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.ResourceLocation;
@@ -28,8 +27,8 @@ import java.util.UUID;
  */
 public class ForgeEnvyPlayer extends AbstractEnvyPlayer<ServerPlayerEntity> {
 
-    protected ForgeEnvyPlayer(SaveManager<ServerPlayerEntity> saveManager, ServerPlayerEntity player) {
-        super(saveManager);
+    protected ForgeEnvyPlayer(ServerPlayerEntity player) {
+        super();
 
         this.parent = player;
     }

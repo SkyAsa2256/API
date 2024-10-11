@@ -50,9 +50,14 @@ public class VelocityPlayerManager extends AbstractPlayerManager<VelocityEnvyPla
 
         @Subscribe(order = PostOrder.FIRST)
         public void onAsyncPrePlayerLogin(LoginEvent event) {
-            VelocityEnvyPlayer player = new VelocityEnvyPlayer(saveManager, proxyServer, event.getPlayer().getUniqueId());
+            VelocityEnvyPlayer player = new VelocityEnvyPlayer(proxyServer, event.getPlayer().getUniqueId());
             player.setParent(event.getPlayer());
             cachedPlayers.put(event.getPlayer().getUniqueId(), player);
+
+
+            if (VelocityPlayerManager.this.nameStore != null) {
+                VelocityPlayerManager.this.nameStore.updateStored(player.getUniqueId(), player.getName());
+            }
         }
 
         @Subscribe(order = PostOrder.LAST)

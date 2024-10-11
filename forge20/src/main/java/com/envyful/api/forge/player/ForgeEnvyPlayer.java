@@ -5,7 +5,6 @@ import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.forge.world.UtilWorld;
 import com.envyful.api.player.AbstractEnvyPlayer;
 import com.envyful.api.player.EnvyPlayer;
-import com.envyful.api.player.save.SaveManager;
 import com.envyful.api.text.Placeholder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -26,8 +25,8 @@ import java.util.UUID;
  */
 public class ForgeEnvyPlayer extends AbstractEnvyPlayer<ServerPlayer> {
 
-    protected ForgeEnvyPlayer(SaveManager<ServerPlayer> saveManager, ServerPlayer player) {
-        super(saveManager);
+    protected ForgeEnvyPlayer(ServerPlayer player) {
+        super();
 
         this.parent = player;
     }

@@ -2,7 +2,6 @@ package com.envyful.api.player;
 
 import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.player.attribute.PlayerAttribute;
-import com.envyful.api.player.save.SaveManager;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -31,13 +30,9 @@ public abstract class AbstractEnvyPlayer<T> implements EnvyPlayer<T> {
 
     protected final Map<Class<?>, AttributeInstance<?, ?>> attributes = Maps.newHashMap();
 
-    protected final SaveManager<T> saveManager;
-
     protected T parent;
 
-    protected AbstractEnvyPlayer(SaveManager<T> saveManager) {
-        this.saveManager = saveManager;
-    }
+    protected AbstractEnvyPlayer() {}
 
     @Override
     public T getParent() {

@@ -3,7 +3,6 @@ package com.envyful.api.spigot.player;
 import com.envyful.api.config.ConfigLocation;
 import com.envyful.api.player.AbstractEnvyPlayer;
 import com.envyful.api.player.EnvyPlayer;
-import com.envyful.api.player.save.SaveManager;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
 import net.kyori.adventure.key.Key;
@@ -23,8 +22,8 @@ public class SpigotEnvyPlayer extends AbstractEnvyPlayer<Player> {
 
     protected final UUID uuid;
 
-    protected SpigotEnvyPlayer(SaveManager<Player> saveManager, UUID uuid) {
-        super(saveManager);
+    protected SpigotEnvyPlayer(UUID uuid) {
+        super();
 
         this.uuid = uuid;
     }

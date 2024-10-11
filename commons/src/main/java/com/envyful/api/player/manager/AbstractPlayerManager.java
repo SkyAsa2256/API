@@ -3,11 +3,13 @@ package com.envyful.api.player.manager;
 import com.envyful.api.player.Attribute;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
+import com.envyful.api.player.name.NameStore;
 import com.envyful.api.player.save.SaveManager;
 import com.envyful.api.player.save.impl.StandardSaveManager;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +23,7 @@ public abstract class AbstractPlayerManager<A extends EnvyPlayer<B>, B> implemen
     protected final Function<B, UUID> uuidGetter;
 
     protected SaveManager<B> saveManager = new StandardSaveManager<>(this);
+    protected NameStore nameStore = null;
 
     protected AbstractPlayerManager(Function<B, UUID> uuidGetter) {
         this.uuidGetter = uuidGetter;
@@ -79,6 +82,17 @@ public abstract class AbstractPlayerManager<A extends EnvyPlayer<B>, B> implemen
     @Override
     public SaveManager<B> getSaveManager() {
         return this.saveManager;
+    }
+
+    @Nullable
+    @Override
+    public NameStore getNameStore() {
+        return this.nameStore;
+    }
+
+    @Override
+    public void setNameStore(NameStore nameStore) {
+        this.nameStore = nameStore;
     }
 
     @Override

@@ -2,10 +2,12 @@ package com.envyful.api.player;
 
 import com.envyful.api.player.attribute.AttributeTrigger;
 import com.envyful.api.player.attribute.SharedAttribute;
+import com.envyful.api.player.name.NameStore;
 import com.envyful.api.player.save.SaveManager;
 import com.envyful.api.type.BiAsyncFunction;
 import com.envyful.api.type.map.KeyedMap;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -93,6 +95,23 @@ public interface PlayerManager<A extends EnvyPlayer<B>, B> {
       * @return The save manager
       */
      SaveManager<B> getSaveManager();
+
+     /**
+      *
+      * Gets the name store for the player manager
+      *
+      * @return The name store
+      */
+     @Nullable
+     NameStore getNameStore();
+
+     /**
+      *
+      * Sets the name store for the player manager
+      *
+      * @param nameStore The new name store
+      */
+     void setNameStore(NameStore nameStore);
 
      /**
       *

@@ -3,7 +3,6 @@ package com.envyful.api.velocity.player;
 import com.envyful.api.config.ConfigLocation;
 import com.envyful.api.player.AbstractEnvyPlayer;
 import com.envyful.api.player.EnvyPlayer;
-import com.envyful.api.player.save.SaveManager;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
 import com.velocitypowered.api.proxy.Player;
@@ -25,8 +24,8 @@ public class VelocityEnvyPlayer extends AbstractEnvyPlayer<Player> {
     private final ProxyServer proxy;
     private final UUID uuid;
 
-    protected VelocityEnvyPlayer(SaveManager<Player> saveManager, ProxyServer proxy, UUID uuid) {
-        super(saveManager);
+    protected VelocityEnvyPlayer(ProxyServer proxy, UUID uuid) {
+        super();
 
         this.proxy = proxy;
         this.uuid = uuid;

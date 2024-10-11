@@ -21,13 +21,17 @@ public class AttributeBuilder<A extends Attribute<B>, B, C> {
     protected BiAsyncFunction<EnvyPlayer<C>, KeyedMap, Object> idMapper;
     protected List<BiPredicate<EnvyPlayer<C>, KeyedMap>> predicates = Lists.newArrayList();
     protected List<AttributeTrigger<C>> triggers = Lists.newArrayList();
-    protected Function<UUID, B> offlineIdMapper = uuid -> null;
+    protected Function<UUID, B> offlineIdMapper = null;
 
     protected AttributeBuilder() {}
 
     public AttributeBuilder<A, B, C> attributeClass(Class<A> attributeClass) {
         this.attributeClass = attributeClass;
         return this;
+    }
+
+    public Class<A> attributeClass() {
+        return this.attributeClass;
     }
 
     public AttributeBuilder<A, B, C> constructor(Supplier<A> constructor) {

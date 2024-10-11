@@ -240,9 +240,9 @@ public class UtilSql {
             return this;
         }
 
-        public QueryBuilder<T> converter(SQLFunction<ResultSet, T> converter) {
-            this.converter = converter;
-            return this;
+        public <A> QueryBuilder<A> converter(SQLFunction<ResultSet, A> converter) {
+            this.converter = (SQLFunction<ResultSet, T>) converter;
+            return (QueryBuilder<A>) this;
         }
 
         @RequiredMethod({

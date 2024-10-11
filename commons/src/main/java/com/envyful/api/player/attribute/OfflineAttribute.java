@@ -37,6 +37,11 @@ public class OfflineAttribute<A, B extends Attribute<A>> implements SimplePlaceh
         this.name = name;
 
         this.id = PlatformProxy.getPlayerManager().mapId(attributeClass, this.uuid);
+
+        if (this.id == null) {
+            throw new IllegalArgumentException("No id found for " + this.uuid + " of type " + attributeClass.getSimpleName());
+        }
+
         this.loadingAttribute = PlatformProxy.getPlayerManager().loadAttribute(attributeClass, this.id).thenApply(b -> this.cachedAttribute = b);
     }
 

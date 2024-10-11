@@ -7,19 +7,17 @@ import com.envyful.api.player.name.NameStore;
 import com.envyful.api.player.save.SaveManager;
 import com.envyful.api.player.save.impl.StandardSaveManager;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public abstract class AbstractPlayerManager<A extends EnvyPlayer<B>, B> implements PlayerManager<A, B> {
 
-    protected final Map<UUID, A> cachedPlayers = Maps.newConcurrentMap();
-    protected final Map<Class<? extends Attribute<?>>, AttributeData<?, ?, B>> attributeData = Maps.newHashMap();
+    protected final Map<UUID, A> cachedPlayers = new ConcurrentHashMap<>();
+    protected final Map<Class<? extends Attribute<?>>, AttributeData<?, ?, B>> attributeData = new HashMap<>();
     protected final Function<B, UUID> uuidGetter;
 
     protected SaveManager<B> saveManager = new StandardSaveManager<>(this);
@@ -109,7 +107,7 @@ public abstract class AbstractPlayerManager<A extends EnvyPlayer<B>, B> implemen
         var data = this.attributeData.get(attributeClass);
 
         if (data == null) {
-            return null;
+            throw new IllegalArgumentException("No attribute data found for " + attributeClass.getSimpleName() + " " + this.attributeData.keySet().stream().map(Class::getSimpleName).collect(Collectors.joining(", ")));
         }
 
         return (C) data.offlineIdMapper().apply(uuid);
@@ -122,7 +120,7 @@ public abstract class AbstractPlayerManager<A extends EnvyPlayer<B>, B> implemen
             trigger.addAttribute(attributeData);
         }
 
-        this.attributeData.put((Class<? extends Attribute<?>>) attributeData.getClass(), attributeData);
+        this.attributeData.put(attributeData.attributeClass(), attributeData);
 
         if (this.saveManager != null) {
             this.saveManager.registerAttribute(attributeData);

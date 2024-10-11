@@ -6,9 +6,16 @@ import java.util.Map;
 
 public class KeyedMap {
 
-    private final Map<Key<?>, Object> map = new HashMap<>();
+    private static final KeyedMap EMPTY = new KeyedMap(Map.of());
+
+    private final Map<Key<?>, Object> map;
 
     public KeyedMap() {
+        this(new HashMap<>());
+    }
+
+    public KeyedMap(Map<Key<?>, Object> backingMap) {
+        this.map = backingMap;
     }
 
     public <T> void put(Key<T> key, T value) {
@@ -24,4 +31,7 @@ public class KeyedMap {
         return (T) this.map.get(key);
     }
 
+    public static KeyedMap empty() {
+        return EMPTY;
+    }
 }

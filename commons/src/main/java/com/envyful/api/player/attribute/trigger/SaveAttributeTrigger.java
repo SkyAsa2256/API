@@ -23,7 +23,7 @@ public class SaveAttributeTrigger<T> extends AbstractAttributeTrigger<T> {
                 }
 
                 var attribute = player.getAttributeNow(data.attributeClass());
-                this.saveAttribute(data.saveManager(), attribute, attribute.getId().join());
+                this.saveAttribute(data.saveManager(), attribute, attribute.getId());
             }
         });
     }

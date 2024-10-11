@@ -2,8 +2,6 @@ package com.envyful.api.player;
 
 import com.envyful.api.player.save.SaveManager;
 
-import java.util.concurrent.CompletableFuture;
-
 
 /**
  *
@@ -20,7 +18,7 @@ public interface Attribute<A> {
      *
      * @return The unique identifier
      */
-    CompletableFuture<A> getId();
+    A getId();
 
     /**
      *

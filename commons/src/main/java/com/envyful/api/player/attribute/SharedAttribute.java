@@ -3,7 +3,6 @@ package com.envyful.api.player.attribute;
 import com.envyful.api.database.Database;
 import com.envyful.api.player.save.SaveManager;
 
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -55,8 +54,8 @@ public abstract class SharedAttribute<A, B> extends ManagedAttribute<A, B> {
     }
 
     @Override
-    public CompletableFuture<A> getId() {
-        return CompletableFuture.completedFuture(this.id);
+    public A getId() {
+        return this.id;
     }
 
     @Override

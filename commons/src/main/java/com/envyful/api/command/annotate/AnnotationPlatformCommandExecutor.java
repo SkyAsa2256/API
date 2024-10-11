@@ -7,6 +7,7 @@ import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.platform.PlatformProxy;
 import com.google.common.collect.Lists;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -54,7 +55,7 @@ public class AnnotationPlatformCommandExecutor<C> implements PlatformCommandExec
                 value = args[i];
             }
 
-            values[i + 1] = this.arguments.get(i).injector.instantiateClass(sender, value);
+            values[i + 1] = this.arguments.get(i).injector.instantiateClass(sender, this.arguments.get(i).annotations, value);
 
             if (values[i + 1] == null) {
                 return;
@@ -104,10 +105,12 @@ public class AnnotationPlatformCommandExecutor<C> implements PlatformCommandExec
 
         private final ArgumentInjector<?, A> injector;
         private final String defaultValue;
+        private final List<Annotation> annotations;
 
-        public Argument(ArgumentInjector<?, A> injector, String defaultValue) {
+        public Argument(ArgumentInjector<?, A> injector, List<Annotation> annotations, String defaultValue) {
             this.injector = injector;
             this.defaultValue = defaultValue;
+            this.annotations = annotations;
         }
     }
 

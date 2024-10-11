@@ -17,6 +17,7 @@ import com.envyful.api.command.sender.SenderTypeFactory;
 import com.envyful.api.command.tab.TabHandler;
 import com.envyful.api.concurrency.UtilConcurrency;
 import com.envyful.api.concurrency.UtilLogger;
+import com.envyful.api.type.Pair;
 import com.google.common.collect.Lists;
 
 import java.lang.annotation.Annotation;
@@ -24,6 +25,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -252,26 +254,32 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
                 throw new CommandParseException("Invalid parameter type found " + parameterTypes[i].getName() + " in method " + method.getName() + " in class " + commandInstance.getClass().getName());
             }
 
-            Argument argumentAnnotation = this.getArgumentAnnotation(parameterAnnotations[i]);
+            var annotationData = this.getArgumentAnnotationAndRemaining(parameterAnnotations[i]);
+            var argumentAnnotation = annotationData.getFirst();
 
             if (argumentAnnotation == null) {
                 throw new CommandParseException("Missing Argument annotation found for parameter " + i + " in method " + method.getName() + " in class " + commandInstance.getClass().getName());
             }
 
-            arguments.add(new AnnotationPlatformCommandExecutor.Argument<>(registeredInjector, argumentAnnotation.defaultValue()));
+            arguments.add(new AnnotationPlatformCommandExecutor.Argument<>(registeredInjector, annotationData.getSecond(), argumentAnnotation.defaultValue()));
         }
 
         return arguments;
     }
 
-    protected Argument getArgumentAnnotation(Annotation[] annotations) {
+    protected Pair<Argument, List<Annotation>> getArgumentAnnotationAndRemaining(Annotation[] annotations) {
+        List<Annotation> otherAnnotations = new ArrayList<>();
+        Argument argument = null;
+
         for (Annotation annotation : annotations) {
             if (annotation instanceof Argument) {
-                return (Argument) annotation;
+                argument = (Argument) annotation;
+            } else {
+                otherAnnotations.add(annotation);
             }
         }
 
-        return null;
+        return Pair.of(argument, otherAnnotations);
     }
 
     private boolean isInvalidSenderAnnotation(Annotation[][] annotations) {

@@ -3,6 +3,8 @@ package com.envyful.api.forge.command.injector;
 import com.envyful.api.command.injector.ArgumentInjector;
 import net.minecraft.commands.CommandSource;
 
+import java.lang.annotation.Annotation;
+import java.util.List;
 import java.util.function.BiFunction;
 
 /**
@@ -34,7 +36,7 @@ public class ForgeFunctionInjector<T> implements ArgumentInjector<T, CommandSour
     }
 
     @Override
-    public T instantiateClass(CommandSource sender, String... args) {
+    public T instantiateClass(CommandSource sender, List<Annotation> annotations, String... args) {
         return this.function.apply(sender, args);
     }
 }

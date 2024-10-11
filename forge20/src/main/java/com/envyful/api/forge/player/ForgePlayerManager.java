@@ -55,7 +55,7 @@ public class ForgePlayerManager extends AbstractPlayerManager<ForgeEnvyPlayer, S
 
         @SubscribeEvent(priority = EventPriority.HIGHEST)
         public void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
-            var player = new ForgeEnvyPlayer(saveManager, (ServerPlayer) event.getEntity());
+            var player = new ForgeEnvyPlayer((ServerPlayer) event.getEntity());
             cachedPlayers.put(event.getEntity().getUUID(), player);
 
             if (ForgePlayerManager.this.nameStore != null) {

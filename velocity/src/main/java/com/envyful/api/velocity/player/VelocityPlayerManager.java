@@ -51,7 +51,9 @@ public class VelocityPlayerManager extends AbstractPlayerManager<VelocityEnvyPla
                 VelocityTrigger.singleSave(proxyServer, plugin, DisconnectEvent.class, event -> this.cachedPlayers.get(event.getPlayer().getUniqueId()))
         );
 
-        builder.offlineIdMapper(uuid -> (Y) uuid);
+        if (builder.offlineIdMapper() == null) {
+            builder.offlineIdMapper(uuid -> (Y) uuid);
+        }
 
         super.registerAttribute(builder);
     }

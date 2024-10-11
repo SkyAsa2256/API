@@ -57,7 +57,9 @@ public class SpigotPlayerManager extends AbstractPlayerManager<SpigotEnvyPlayer,
                 SpigotTrigger.save(this.plugin, ServerShutdownEvent.class, event -> Lists.newArrayList(this.cachedPlayers.values()))
         );
 
-        builder.offlineIdMapper(uuid -> (Y) uuid);
+        if (builder.offlineIdMapper() == null) {
+            builder.offlineIdMapper(uuid -> (Y) uuid);
+        }
 
         super.registerAttribute(builder);
     }

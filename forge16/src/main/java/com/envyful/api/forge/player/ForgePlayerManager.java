@@ -49,7 +49,9 @@ public class ForgePlayerManager extends AbstractPlayerManager<ForgeEnvyPlayer, S
                 ForgeTrigger.save(FMLServerStoppingEvent.class, event -> Lists.newArrayList(this.cachedPlayers.values()))
         );
 
-        builder.offlineIdMapper(uuid -> (Y) uuid);
+        if (builder.offlineIdMapper() == null) {
+            builder.offlineIdMapper(uuid -> (Y) uuid);
+        }
 
         super.registerAttribute(builder);
     }

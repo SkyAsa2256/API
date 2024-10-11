@@ -70,6 +70,10 @@ public class AttributeBuilder<A extends Attribute<B>, B, C> {
         return this;
     }
 
+    public Function<UUID, B> offlineIdMapper() {
+        return this.offlineIdMapper;
+    }
+
     public void register(PlayerManager<?, C> playerManager) {
         playerManager.registerAttribute(this);
     }

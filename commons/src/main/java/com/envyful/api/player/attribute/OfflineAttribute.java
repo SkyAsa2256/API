@@ -17,31 +17,30 @@ import java.util.concurrent.CompletableFuture;
  *
  * Class representing an attribute of a player that is potentially offline
  *
- * @param <A> The type of the parent player
- * @param <B> The type of the attribute id
- * @param <C> The type of the attribute
+ * @param <A> The type of the attribute id
+ * @param <B> The type of the attribute
  */
-public class OfflineAttribute<A, B, C extends Attribute<B>> implements SimplePlaceholder, Messageable<EnvyPlayer<A>> {
+public class OfflineAttribute<A, B extends Attribute<A>> implements SimplePlaceholder, Messageable<EnvyPlayer<?>> {
 
-    private final Class<C> attributeClass;
+    private final Class<B> attributeClass;
     private final UUID uuid;
     private final String name;
 
-    private EnvyPlayer<A> cachedPlayer;
-    private B id;
-    private C cachedAttribute;
-    private CompletableFuture<C> loadingAttribute;
+    private EnvyPlayer<?> cachedPlayer;
+    private A id;
+    private B cachedAttribute;
+    private CompletableFuture<B> loadingAttribute;
 
-    private OfflineAttribute(Class<C> attributeClass, UUID uuid, String name) {
+    private OfflineAttribute(Class<B> attributeClass, UUID uuid, String name) {
         this.attributeClass = attributeClass;
         this.uuid = uuid;
         this.name = name;
 
         this.id = PlatformProxy.getPlayerManager().mapId(attributeClass, this.uuid);
-        this.loadingAttribute = PlatformProxy.getPlayerManager().loadAttribute(attributeClass, this.id).thenApply(c -> this.cachedAttribute = c);
+        this.loadingAttribute = PlatformProxy.getPlayerManager().loadAttribute(attributeClass, this.id).thenApply(b -> this.cachedAttribute = b);
     }
 
-    private OfflineAttribute(Class<C> attributeClass, EnvyPlayer<A> player) {
+    private OfflineAttribute(Class<B> attributeClass, EnvyPlayer<?> player) {
         this.attributeClass = attributeClass;
         this.uuid = player.getUniqueId();
         this.name = player.getName();
@@ -57,7 +56,7 @@ public class OfflineAttribute<A, B, C extends Attribute<B>> implements SimplePla
      *
      * @return The id
      */
-    public B getId() {
+    public A getId() {
         return this.id;
     }
 
@@ -87,7 +86,7 @@ public class OfflineAttribute<A, B, C extends Attribute<B>> implements SimplePla
      *
      * @return The attribute
      */
-    public C getAttribute() {
+    public B getAttribute() {
         if (this.cachedAttribute != null) {
             return this.cachedAttribute;
         }
@@ -139,9 +138,9 @@ public class OfflineAttribute<A, B, C extends Attribute<B>> implements SimplePla
 
     @Nullable
     @Override
-    public EnvyPlayer<A> getParent() {
+    public EnvyPlayer<?> getParent() {
         if (this.cachedPlayer == null) {
-            this.cachedPlayer = (EnvyPlayer<A>) PlatformProxy.getPlayerManager().getPlayer(this.uuid);
+            this.cachedPlayer = (EnvyPlayer<?>) PlatformProxy.getPlayerManager().getPlayer(this.uuid);
         }
 
         return this.cachedPlayer;
@@ -168,16 +167,15 @@ public class OfflineAttribute<A, B, C extends Attribute<B>> implements SimplePla
      * @param attributeClass The class of the attribute
      * @param name The name of the player
      * @return The attribute
-     * @param <X> The type of the attribute
-     * @param <Y> The type of the player
-     * @param <Z> The type of the attribute class
+     * @param <X> The type of the player
+     * @param <Y> The type of the attribute class
      */
     @SuppressWarnings("unchecked")
-    public static <X, Y, Z extends Attribute<Y>> OfflineAttribute<X, Y, Z> fromName(Class<Z> attributeClass, String name) {
+    public static <X, Y extends Attribute<X>> OfflineAttribute<X, Y> fromName(Class<Y> attributeClass, String name) {
         var player = PlatformProxy.getPlayerManager().getOnlinePlayer(name);
 
         if (player != null) {
-            return new OfflineAttribute<>(attributeClass, (EnvyPlayer<X>) player);
+            return new OfflineAttribute<>(attributeClass, player);
         }
 
         var uuid = PlatformProxy.getPlayerManager().getNameStore().getUUID(name).join();

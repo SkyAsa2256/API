@@ -25,7 +25,7 @@ public class SQLNameStore implements NameStore {
                 "uuid       VARCHAR(36) NOT NULL, " +
                 "UNIQUE(uuid), " +
                 "PRIMARY KEY(id)" +
-                ");");
+                ");").executeAsync();
     }
 
     @Override

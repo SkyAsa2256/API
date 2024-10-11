@@ -48,6 +48,6 @@ public interface Messageable<T> {
      * @return If the player has the permission
      */
     default boolean hasPermission(String permission) {
-        return PlatformProxy.hasPermission(this, permission);
+        return PlatformProxy.hasPermission(this.getParent(), permission);
     }
 }

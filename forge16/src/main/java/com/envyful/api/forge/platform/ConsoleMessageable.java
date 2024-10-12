@@ -8,6 +8,11 @@ import net.minecraft.util.text.ITextComponent;
 
 import java.util.List;
 
+/**
+ *
+ * A {@link Messageable} implementation for the console
+ *
+ */
 public class ConsoleMessageable implements Messageable<ICommandSource> {
 
     private final ICommandSource source;

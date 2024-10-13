@@ -7,6 +7,11 @@ import net.minecraft.network.chat.Component;
 
 import java.util.List;
 
+/**
+ *
+ * A {@link Messageable} implementation for the console
+ *
+ */
 public class ConsoleMessageable implements Messageable<CommandSource> {
 
     private final CommandSource source;

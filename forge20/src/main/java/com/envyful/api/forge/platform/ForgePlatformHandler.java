@@ -25,6 +25,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ *
+ * Platform handler for the Forge platform
+ *
+ */
 public class ForgePlatformHandler implements PlatformHandler<CommandSource> {
 
     private static final ForgePlatformHandler INSTANCE = new ForgePlatformHandler();

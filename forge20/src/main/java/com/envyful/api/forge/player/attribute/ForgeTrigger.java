@@ -263,11 +263,7 @@ public class ForgeTrigger {
 
     @SuppressWarnings("unchecked")
     private static <A extends Event> void createHandler(IEventBus eventBus, Class<A> eventClass, Function<A, List<ForgeEnvyPlayer>> converter, Consumer<EnvyPlayer<ServerPlayer>> trigger) {
-        eventBus.addListener(event -> {
-            if (!eventClass.isAssignableFrom(event.getClass())) {
-                return;
-            }
-
+        eventBus.addGenericListener(eventClass, event -> {
             for (var player : converter.apply((A) event)) {
                 if (player != null) {
                     trigger.accept(player);
@@ -278,7 +274,7 @@ public class ForgeTrigger {
 
     @SuppressWarnings("unchecked")
     private static <A extends Event> void createAsyncHandler(IEventBus eventBus, Class<A> eventClass, Function<A, List<ForgeEnvyPlayer>> converter, Consumer<EnvyPlayer<ServerPlayer>> trigger) {
-        eventBus.addListener(event -> {
+        eventBus.addGenericListener(eventClass, event -> {
             if (!eventClass.isAssignableFrom(event.getClass())) {
                 return;
             }

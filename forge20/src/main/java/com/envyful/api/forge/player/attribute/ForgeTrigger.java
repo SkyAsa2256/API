@@ -43,6 +43,19 @@ public class ForgeTrigger {
 
     /**
      *
+     * Creates a trigger to save the attribute data for multiple players
+     *
+     * @param event The event
+     * @param converter The converter to convert the event to a list of players
+     * @return The trigger
+     * @param <A> The event type
+     */
+    public static <A extends Event> AttributeTrigger<ServerPlayer> asyncSave(Class<A> event, Function<A, List<ForgeEnvyPlayer>> converter) {
+        return asyncSave(MinecraftForge.EVENT_BUS, event, converter);
+    }
+
+    /**
+     *
      * Creates a trigger to set the attribute for a single player
      *
      * @param eventBus The event bus

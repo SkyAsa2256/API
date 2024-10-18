@@ -45,8 +45,8 @@ public class ForgePlayerManager extends AbstractPlayerManager<ForgeEnvyPlayer, S
         builder.triggers(
                 ForgeTrigger.singleSet(PlayerEvent.PlayerLoggedInEvent.class, event -> this.cachedPlayers.get(event.getEntity().getUUID())),
                 ForgeTrigger.singleSave(PlayerEvent.PlayerLoggedOutEvent.class, event -> this.cachedPlayers.get(event.getEntity().getUUID())),
-                ForgeTrigger.save(LevelEvent.Save.class, event -> Lists.newArrayList(this.cachedPlayers.values())),
-                ForgeTrigger.save(ServerStoppingEvent.class, event -> Lists.newArrayList(this.cachedPlayers.values()))
+                ForgeTrigger.asyncSave(LevelEvent.Save.class, event -> Lists.newArrayList(this.cachedPlayers.values())),
+                ForgeTrigger.asyncSave(ServerStoppingEvent.class, event -> Lists.newArrayList(this.cachedPlayers.values()))
         );
 
         if (builder.offlineIdMapper() == null) {

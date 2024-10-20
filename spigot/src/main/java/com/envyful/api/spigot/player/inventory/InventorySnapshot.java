@@ -5,6 +5,11 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
 
+/**
+ *
+ * Class for storing a snapshot of a player's inventory
+ *
+ */
 public class InventorySnapshot {
 
     private final ItemStack[] items;

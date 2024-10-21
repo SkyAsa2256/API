@@ -10,6 +10,7 @@ import com.envyful.api.text.parse.SimplePlaceholder;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Predicate;
 
 /**
  *
@@ -154,6 +155,26 @@ public interface EnvyPlayer<T> extends SimplePlaceholder, Messageable<T> {
      * @param <B> The attribute id type
      */
     <A extends Attribute<B>, B> boolean hasAttribute(Class<A> attributeClass);
+
+    /**
+     *
+     * A method to test if the player has the attribute and if it passes the test
+     * <br>
+     * If the player does not have the attribute, this will return false
+     *
+     * @param attributeClass The attribute class
+     * @param test The test to run on the attribute
+     * @return If the player has the attribute and it passes the test
+     * @param <A> The attribute type
+     * @param <B> The attribute id type
+     */
+    default <A extends Attribute<B>, B> boolean testAttribute(Class<A> attributeClass, Predicate<A> test) {
+        if (!this.hasAttribute(attributeClass)) {
+            return false;
+        }
+
+        return test.test(this.getAttributeNow(attributeClass));
+    }
 
     /**
      *

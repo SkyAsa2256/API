@@ -128,6 +128,28 @@ public class SpigotTrigger {
 
     /**
      *
+     * Creates a trigger to save the attribute data for a single player
+     *
+     * @param plugin the plugin
+     * @param event the event
+     * @param converter the converter to convert the event to a player
+     * @return the trigger
+     * @param <A> the event type
+     */
+    public static <A extends Event> AttributeTrigger<Player> singleAsyncSave(Plugin plugin, Class<A> event, Function<A, SpigotEnvyPlayer> converter) {
+        return asyncSave(plugin, event, a -> {
+            var player = converter.apply(a);
+
+            if (player == null) {
+                return List.of();
+            }
+
+            return List.of(player);
+        });
+    }
+
+    /**
+     *
      * Creates a trigger to save the attribute data for multiple players
      *
      * @param plugin the plugin
@@ -139,6 +161,22 @@ public class SpigotTrigger {
     public static <A extends Event> AttributeTrigger<Player> save(Plugin plugin, Class<A> event, Function<A, List<SpigotEnvyPlayer>> converter) {
         var trigger = new SaveAttributeTrigger<Player>();
         createHandler(plugin, event, converter, trigger::trigger);
+        return trigger;
+    }
+
+    /**
+     *
+     * Creates a trigger to save the attribute data for multiple players
+     *
+     * @param plugin the plugin
+     * @param event the event
+     * @param converter the converter to convert the event to a list of players
+     * @return the trigger
+     * @param <A> the event type
+     */
+    public static <A extends Event> AttributeTrigger<Player> asyncSave(Plugin plugin, Class<A> event, Function<A, List<SpigotEnvyPlayer>> converter) {
+        var trigger = new SaveAttributeTrigger<Player>();
+        createAsyncHandler(plugin, event, converter, trigger::trigger);
         return trigger;
     }
 
@@ -161,6 +199,30 @@ public class SpigotTrigger {
                     trigger.accept(player);
                 }
             }
+        }, plugin);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <A extends Event> void createAsyncHandler(Plugin plugin, Class<A> eventClass, Function<A, List<SpigotEnvyPlayer>> converter, Consumer<EnvyPlayer<Player>> trigger) {
+        var listener = new GenericListener<A>() {
+            @Override
+            public void onEvent(A event) {
+                // Spigot requires this but we don't really need to do anything here
+            }
+        };
+
+        Bukkit.getPluginManager().registerEvent(eventClass, listener, EventPriority.NORMAL, (listener1, event) -> {
+            if (!(listener1 instanceof GenericListener<?>) || !eventClass.isAssignableFrom(event.getClass())) {
+                return;
+            }
+
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                for (var player : converter.apply((A) event)) {
+                    if (player != null) {
+                        trigger.accept(player);
+                    }
+                }
+            });
         }, plugin);
     }
 }

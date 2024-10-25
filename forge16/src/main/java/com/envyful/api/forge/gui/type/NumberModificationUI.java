@@ -15,7 +15,6 @@ import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.text.Placeholder;
-import com.envyful.api.type.Pair;
 import com.google.common.collect.Lists;
 import org.apache.logging.log4j.util.TriConsumer;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
@@ -39,7 +38,7 @@ public class NumberModificationUI {
 
         UtilConfigInterface.fillBackground(pane, config.config.getGuiSettings(), placeholders);
 
-        for (EditValueButton button : config.config.getButtons()) {
+        for (var button : config.config.getButtons()) {
             UtilConfigItem.builder()
                             .clickHandler((envyPlayer, clickType) -> {
                                 int newValue = config.currentValue + button.getAmountModifier();
@@ -71,7 +70,7 @@ public class NumberModificationUI {
                     config.confirm.open();
                 }).extendedConfigItem((ForgeEnvyPlayer) config.player, pane, config.config.getConfirmItem(), placeholders);
 
-        for (Pair<Integer, Integer> position : config.config.currentValue.getPositions()) {
+        for (var position : config.config.currentValue.getPositions()) {
             if (config.config.currentValue.isEnabled()) {
                 pane.set(position.getX(), position.getY(),
                          GuiFactory.displayable(new ItemBuilder(UtilConfigItem.fromConfigItem(config.config.currentValue, config.transformers))
@@ -84,11 +83,11 @@ public class NumberModificationUI {
             }
         }
 
-        for (ExtendedConfigItem displayItem : config.displayConfigItems) {
+        for (var displayItem : config.displayConfigItems) {
             UtilConfigItem.builder().extendedConfigItem((ForgeEnvyPlayer) config.player, pane, displayItem, placeholders);
         }
 
-        for (PositionableItem displayItem : config.displayItems) {
+        for (var displayItem : config.displayItems) {
             pane.set(displayItem.getPosX(), displayItem.getPosY(), GuiFactory.displayable(displayItem.getItemStack()));
         }
 
@@ -119,6 +118,10 @@ public class NumberModificationUI {
         private List<Placeholder> transformers = Lists.newArrayList();
 
         protected Builder() {}
+
+        public int currentValue() {
+            return this.currentValue;
+        }
 
         public Builder player(EnvyPlayer<?> player) {
             this.player = player;

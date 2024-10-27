@@ -24,5 +24,6 @@ Then in the dependencies section you'll need to add
 ```
 
 My API is designed to be shaded into the JAR file so if you need more information on how to do that please find it [here](https://imperceptiblethoughts.com/shadow/)
+You can also use it with the Forge IDE runs due to some recent changes.
 
 The latest version of my API can be found in my [Discord server](https://discord.envyware.co.uk/) in the #api-changelog channel. This channel is where I post detailed information about what changed between each version

@@ -16,6 +16,11 @@ import net.minecraft.world.item.ItemStack;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+/**
+ *
+ * A builder for creating {@link Displayable} instances from {@link ConfigItem} and {@link ExtendedConfigItem} instances
+ *
+ */
 public class ConfigItemBuilder extends ForgeSimpleDisplayable.Builder {
 
     protected ConfigItemBuilder() {

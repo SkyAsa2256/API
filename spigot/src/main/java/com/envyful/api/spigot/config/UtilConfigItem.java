@@ -112,19 +112,26 @@ public class UtilConfigItem {
         }
 
         NBTItem nbtItem = new NBTItem(itemBuilder.build());
+        var customModelData = -1;
 
         for (var nbtData : configItem.getNbt().entrySet()) {
             if (nbtData.getKey().equalsIgnoreCase("CustomModelData")) {
-                itemBuilder.updateItemMeta(itemMeta -> {
-                    itemMeta.setCustomModelData(Integer.parseInt(nbtData.getValue().getData()));
-                });
+                customModelData = Integer.parseInt(nbtData.getValue().getData());
                 continue;
             }
 
             addValue(nbtItem, nbtData.getKey(), nbtData.getValue());
         }
 
-        return nbtItem.getItem();
+        var item = itemBuilder.build();
+        var meta = item.getItemMeta();
+
+        if (meta != null) {
+            meta.setCustomModelData(customModelData);
+            item.setItemMeta(meta);
+        }
+
+        return item;
     }
 
     public static void addValue(NBTCompound nbtItem, String key, ConfigItem.NBTValue value) {

@@ -115,7 +115,9 @@ public class UtilConfigItem {
 
         for (Map.Entry<String, ConfigItem.NBTValue> nbtData : configItem.getNbt().entrySet()) {
             if (configItem.getName().equalsIgnoreCase("CustomModelData")) {
-                itemBuilder.getItemMeta().setCustomModelData(Integer.parseInt(nbtData.getValue().getData()));
+                itemBuilder.updateItemMeta(itemMeta -> {
+                    itemMeta.setCustomModelData(Integer.parseInt(nbtData.getValue().getData()));
+                });
                 continue;
             }
 

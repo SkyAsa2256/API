@@ -113,8 +113,8 @@ public class UtilConfigItem {
 
         NBTItem nbtItem = new NBTItem(itemBuilder.build());
 
-        for (Map.Entry<String, ConfigItem.NBTValue> nbtData : configItem.getNbt().entrySet()) {
-            if (configItem.getName().equalsIgnoreCase("CustomModelData")) {
+        for (var nbtData : configItem.getNbt().entrySet()) {
+            if (nbtData.getKey().equalsIgnoreCase("CustomModelData")) {
                 itemBuilder.updateItemMeta(itemMeta -> {
                     itemMeta.setCustomModelData(Integer.parseInt(nbtData.getValue().getData()));
                 });

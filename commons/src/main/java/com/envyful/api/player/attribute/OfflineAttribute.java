@@ -7,8 +7,8 @@ import com.envyful.api.player.Attribute;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.parse.SimplePlaceholder;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;

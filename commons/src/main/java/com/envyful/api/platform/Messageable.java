@@ -1,8 +1,8 @@
 package com.envyful.api.platform;
 
 import com.envyful.api.text.Placeholder;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.Collection;
 
 /**

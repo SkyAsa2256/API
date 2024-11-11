@@ -2,8 +2,8 @@ package com.envyful.api.player;
 
 import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.player.attribute.PlayerAttribute;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

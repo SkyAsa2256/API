@@ -3,8 +3,8 @@ package com.envyful.api.text;
 import com.envyful.api.text.parse.MultiPlaceholder;
 import com.envyful.api.text.parse.SimplePlaceholder;
 import com.envyful.api.text.placeholder.OptionalPlaceholder;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
-import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.BooleanSupplier;
@@ -25,8 +25,8 @@ public interface Placeholder {
      * @param line The results to parse
      * @return The new parse results
      */
-    @Nonnull
-    ParseResult replace(@Nonnull ParseResult line);
+    @NonNull
+    ParseResult replace(@NonNull ParseResult line);
 
     /**
      *

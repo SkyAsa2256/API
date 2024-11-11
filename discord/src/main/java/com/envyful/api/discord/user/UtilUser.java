@@ -4,8 +4,6 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.PrivateChannel;
 
-import javax.annotation.Nullable;
-
 public class UtilUser {
 
     /**
@@ -16,7 +14,6 @@ public class UtilUser {
      * @param user The user
      * @return The private message channel
      */
-    @Nullable
     public static PrivateChannel getDMs(User user) {
         try {
             return user.openPrivateChannel().complete();
@@ -33,7 +30,6 @@ public class UtilUser {
      * @param user The user
      * @return The private message channel
      */
-    @Nullable
     public static PrivateChannel getDMs(Member user) {
         return getDMs(user.getUser());
     }

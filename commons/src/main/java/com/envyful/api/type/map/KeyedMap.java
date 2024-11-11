@@ -1,6 +1,7 @@
 package com.envyful.api.type.map;
 
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import java.util.HashMap;
 import java.util.Map;
 

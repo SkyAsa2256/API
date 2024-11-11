@@ -1,8 +1,7 @@
 package com.envyful.api.gui.pane;
 
 import com.envyful.api.gui.item.Displayable;
-
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *

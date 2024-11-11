@@ -1,6 +1,7 @@
 package com.envyful.api.concurrency;
 
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
@@ -76,8 +77,7 @@ public class AsyncTaskBuilder {
      * @param cancelCondition The cancel condition
      * @return The builder
      */
-    public AsyncTaskBuilder cancelCondition(
-            @Nullable Supplier<Boolean> cancelCondition) {
+    public AsyncTaskBuilder cancelCondition(@Nullable Supplier<Boolean> cancelCondition) {
         this.cancelCondition = cancelCondition;
         return this;
     }

@@ -3,9 +3,9 @@ package com.envyful.api.registry;
 import com.envyful.api.registry.config.KeySerializer;
 import com.envyful.api.registry.impl.ClassValueMapBasedRegistry;
 import com.envyful.api.registry.impl.StandardMapBasedRegistry;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.configurate.serialize.TypeSerializer;
 
-import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;

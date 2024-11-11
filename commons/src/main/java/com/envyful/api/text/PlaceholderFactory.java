@@ -1,8 +1,8 @@
 package com.envyful.api.text;
 
 import com.envyful.api.text.results.OriginalParseResult;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -32,7 +32,7 @@ public class PlaceholderFactory {
      *
      * @param placeholder The placeholder being added
      */
-    public static void addGlobalPlaceholder(@Nonnull Placeholder placeholder) {
+    public static void addGlobalPlaceholder(@NonNull Placeholder placeholder) {
         GLOBAL_PLACEHOLDERS.add(placeholder);
     }
 
@@ -42,22 +42,22 @@ public class PlaceholderFactory {
      *
      * @return The global placeholders
      */
-    @Nonnull
+    @NonNull
     public static List<Placeholder> getGlobalPlaceholders() {
         return GLOBAL_PLACEHOLDERS;
     }
 
-    @Nonnull
+    @NonNull
     public static List<String> handlePlaceholders(String text, Placeholder... placeholders) {
         return handlePlaceholders(Collections.singletonList(text), placeholders);
     }
 
-    @Nonnull
+    @NonNull
     public static List<String> handlePlaceholders(String text, Collection<Placeholder> placeholders) {
         return handlePlaceholders(Collections.singletonList(text), placeholders);
     }
 
-    @Nonnull
+    @NonNull
     public static List<String> handlePlaceholders(List<String> text, Collection<Placeholder> placeholders) {
         return handlePlaceholders(text, placeholders.toArray(new Placeholder[0]));
     }
@@ -70,7 +70,7 @@ public class PlaceholderFactory {
      * @param placeholders The local placeholders to look for
      * @return The replaced text
      */
-    @Nonnull
+    @NonNull
     public static List<String> handlePlaceholders(List<String> text, Placeholder... placeholders) {
         List<String> computedText = new ArrayList<>();
 
@@ -95,7 +95,7 @@ public class PlaceholderFactory {
         return computedText;
     }
 
-    @Nonnull
+    @NonNull
     public static <T> List<T> handlePlaceholders(List<String> text, Function<String, T> mapper, Collection<Placeholder> placeholders) {
         return handlePlaceholders(text, mapper, placeholders.toArray(new Placeholder[0]));
     }
@@ -111,7 +111,7 @@ public class PlaceholderFactory {
      * @return The replaced text
      * @param <T> The type you're mapping to
      */
-    @Nonnull
+    @NonNull
     public static <T> List<T> handlePlaceholders(List<String> text, Function<String, T> mapper, Placeholder... placeholders) {
         List<T> computedText = new ArrayList<>();
 

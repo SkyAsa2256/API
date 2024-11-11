@@ -2,8 +2,8 @@ package com.envyful.api.text.placeholder;
 
 import com.envyful.api.text.ParseResult;
 import com.envyful.api.text.Placeholder;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
-import javax.annotation.Nonnull;
 import java.util.function.BooleanSupplier;
 
 /**
@@ -23,9 +23,9 @@ public class OptionalPlaceholder implements Placeholder {
         this.elsePlaceholder = elsePlaceholder;
     }
 
-    @Nonnull
+    @NonNull
     @Override
-    public ParseResult replace(@Nonnull ParseResult line) {
+    public ParseResult replace(@NonNull ParseResult line) {
         if (!this.test.getAsBoolean()) {
             if (this.elsePlaceholder != null) {
                 return this.elsePlaceholder.replace(line);

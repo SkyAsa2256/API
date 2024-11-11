@@ -2,8 +2,8 @@ package com.envyful.api.registry.impl;
 
 import com.envyful.api.registry.Registry;
 import com.envyful.api.registry.config.KeySerializer;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

@@ -5,8 +5,8 @@ import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
 import net.dv8tion.jda.api.hooks.IEventManager;
 import net.dv8tion.jda.internal.JDAImpl;
 import net.dv8tion.jda.internal.utils.ClassWalker;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
-import javax.annotation.Nonnull;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -30,27 +30,27 @@ public class ExtendedAnnotatedEventManager implements IEventManager {
     protected final Map<Class<?>, Map<Object, List<AnnotatedEventListener>>> methods = new ConcurrentHashMap<>();
 
     @Override
-    public void register(@Nonnull Object listener) {
+    public void register(@NonNull Object listener) {
         if (this.listeners.add(listener)) {
             this.updateMethods();
         }
     }
 
     @Override
-    public void unregister(@Nonnull Object listener) {
+    public void unregister(@NonNull Object listener) {
         if (this.listeners.remove(listener)) {
             this.updateMethods();
         }
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public List<Object> getRegisteredListeners() {
         return List.copyOf(this.listeners);
     }
 
     @Override
-    public void handle(@Nonnull GenericEvent event) {
+    public void handle(@NonNull GenericEvent event) {
         for (var eventClass : ClassWalker.walk(event.getClass())) {
             Map<Object, List<AnnotatedEventListener>> listeners = this.methods.getOrDefault(eventClass, Map.of());
 

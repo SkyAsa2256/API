@@ -4,9 +4,11 @@ import com.envyful.api.text.results.OriginalParseResult;
 import com.google.common.collect.Lists;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Function;
 
 /**
@@ -19,7 +21,7 @@ import java.util.function.Function;
  */
 public class PlaceholderFactory {
 
-    private static final List<Placeholder> GLOBAL_PLACEHOLDERS = Lists.newArrayList();
+    private static final List<Placeholder> GLOBAL_PLACEHOLDERS = new CopyOnWriteArrayList<>();
 
     private PlaceholderFactory() {
         throw new UnsupportedOperationException("This is a static factory class");
@@ -71,22 +73,20 @@ public class PlaceholderFactory {
      */
     @Nonnull
     public static List<String> handlePlaceholders(List<String> text, Placeholder... placeholders) {
-        List<String> computedText = Lists.newArrayList();
+        List<String> computedText = new ArrayList<>();
 
-        for (int i = 0; i < text.size(); i++) {
-            String line = text.get(i);
-
+        for (var line : text) {
             if (line == null) {
                 continue;
             }
 
-            ParseResult result = OriginalParseResult.of(line);
+            var result = OriginalParseResult.of(line);
 
-            for (Placeholder placeholder : placeholders) {
+            for (var placeholder : placeholders) {
                 result = placeholder.replace(result);
             }
 
-            for (Placeholder globalPlaceholder : getGlobalPlaceholders()) {
+            for (var globalPlaceholder : getGlobalPlaceholders()) {
                 result = globalPlaceholder.replace(result);
             }
 
@@ -95,6 +95,7 @@ public class PlaceholderFactory {
 
         return computedText;
     }
+
     @Nonnull
     public static <T> List<T> handlePlaceholders(List<String> text, Function<String, T> mapper, Collection<Placeholder> placeholders) {
         return handlePlaceholders(text, mapper, placeholders.toArray(new Placeholder[0]));
@@ -115,24 +116,22 @@ public class PlaceholderFactory {
     public static <T> List<T> handlePlaceholders(List<String> text, Function<String, T> mapper, Placeholder... placeholders) {
         List<T> computedText = Lists.newArrayList();
 
-        for (int i = 0; i < text.size(); i++) {
-            String line = text.get(i);
-
+        for (String line : text) {
             if (line == null) {
                 continue;
             }
 
-            ParseResult result = OriginalParseResult.of(line);
+            var result = OriginalParseResult.of(line);
 
-            for (Placeholder placeholder : placeholders) {
+            for (var placeholder : placeholders) {
                 result = placeholder.replace(result);
             }
 
-            for (Placeholder globalPlaceholder : getGlobalPlaceholders()) {
+            for (var globalPlaceholder : getGlobalPlaceholders()) {
                 result = globalPlaceholder.replace(result);
             }
 
-            for (String s : result.getCurrentResult()) {
+            for (var s : result.getCurrentResult()) {
                 if (s != null) {
                     computedText.add(mapper.apply(s));
                 }

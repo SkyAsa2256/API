@@ -11,7 +11,6 @@ import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.type.Pair;
-import com.google.common.collect.Lists;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.ClickType;
@@ -28,6 +27,7 @@ import net.minecraft.util.text.ITextComponent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  *
@@ -43,7 +43,7 @@ public class ForgeGui implements Gui {
     private final ForgeSimplePane[] panes;
     private final ContainerType<?> containerType;
 
-    private final List<ForgeGuiContainer> containers = Lists.newCopyOnWriteArrayList();
+    private final List<ForgeGuiContainer> containers = new CopyOnWriteArrayList<>();
 
     ForgeGui(ITextComponent title, int height,
              ForgeCloseConsumer closeConsumer, Pane... panes) {

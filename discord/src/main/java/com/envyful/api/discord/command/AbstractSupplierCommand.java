@@ -1,18 +1,18 @@
 package com.envyful.api.discord.command;
 
 import com.envyful.api.discord.permission.UtilRole;
-import com.google.common.collect.Maps;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 public abstract class AbstractSupplierCommand extends AbstractCommand {
 
-    private final Map<Long, Function<Guild, Role>> roleSuppliers = Maps.newConcurrentMap();
+    private final Map<Long, Function<Guild, Role>> roleSuppliers = new ConcurrentHashMap<>();
 
     protected AbstractSupplierCommand(CommandData commandData) {
         super(commandData);

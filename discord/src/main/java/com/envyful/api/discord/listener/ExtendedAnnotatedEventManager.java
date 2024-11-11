@@ -1,7 +1,6 @@
 package com.envyful.api.discord.listener;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
 import net.dv8tion.jda.api.hooks.IEventManager;
@@ -99,7 +98,7 @@ public class ExtendedAnnotatedEventManager implements IEventManager {
                 Class<?> eventClass = parameterTypes[0];
                 boolean receiveAcknowledged = m.getAnnotation(SubscribeEvent.class).receiveAcknowledged();
 
-                this.methods.computeIfAbsent(eventClass, ___ -> Maps.newConcurrentMap())
+                this.methods.computeIfAbsent(eventClass, ___ -> new ConcurrentHashMap<>())
                         .computeIfAbsent(listener, ___ -> new CopyOnWriteArrayList<>())
                         .add(new AnnotatedEventListener(m, receiveAcknowledged));
             }

@@ -1,7 +1,6 @@
 package com.envyful.api.discord.component;
 
 import com.envyful.api.discord.listener.SubscribeEvent;
-import com.google.common.collect.Maps;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
@@ -12,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
@@ -26,7 +26,7 @@ import java.util.function.Consumer;
 public class ModalFactory {
 
     private static final AtomicBoolean REGISTERED = new AtomicBoolean(false);
-    private static final Map<String, Builder> REGISTERED_MODALS = Maps.newConcurrentMap();
+    private static final Map<String, Builder> REGISTERED_MODALS = new ConcurrentHashMap<>();
 
     @SubscribeEvent
     public static void onModalInteract(ModalInteractionEvent event) {

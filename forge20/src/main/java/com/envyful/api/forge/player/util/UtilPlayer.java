@@ -3,7 +3,6 @@ package com.envyful.api.forge.player.util;
 import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.platform.PlatformProxy;
 import com.envyful.api.player.EnvyPlayer;
-import com.google.common.collect.Maps;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.ServerOpListEntry;
@@ -18,6 +17,7 @@ import net.minecraftforge.server.permission.nodes.PermissionTypes;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *
@@ -26,7 +26,7 @@ import java.util.UUID;
  */
 public class UtilPlayer {
 
-    private static final Map<String, PermissionNode<Boolean>> PERMISSION_NODES = Maps.newConcurrentMap();
+    private static final Map<String, PermissionNode<Boolean>> PERMISSION_NODES = new ConcurrentHashMap<>();
 
     static {
         MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false,

@@ -1,6 +1,5 @@
 package com.envyful.api.reforged.battle;
 
-import com.google.common.collect.Maps;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.enums.ExperienceGainType;
 import com.pixelmonmod.pixelmon.api.events.ExperienceGainEvent;
@@ -16,10 +15,11 @@ import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipan
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class BattleBuilderFactory {
 
-    private static Map<Integer, BattleBuilder> LISTENED_CONTROLLERS = Maps.newConcurrentMap();
+    private static Map<Integer, BattleBuilder> LISTENED_CONTROLLERS = new ConcurrentHashMap<>();
 
     static {
         Pixelmon.EVENT_BUS.register(new BattleBuilderFactory());

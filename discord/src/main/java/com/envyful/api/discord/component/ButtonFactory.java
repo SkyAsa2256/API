@@ -1,7 +1,6 @@
 package com.envyful.api.discord.component;
 
 import com.envyful.api.discord.listener.SubscribeEvent;
-import com.google.common.collect.Maps;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
@@ -11,6 +10,7 @@ import net.dv8tion.jda.internal.interactions.component.ButtonImpl;
 
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
@@ -25,7 +25,7 @@ import java.util.function.Consumer;
 public class ButtonFactory {
 
     private static final AtomicBoolean REGISTERED = new AtomicBoolean(false);
-    private static final Map<String, Builder> REGISTERED_BUTTONS = Maps.newConcurrentMap();
+    private static final Map<String, Builder> REGISTERED_BUTTONS = new ConcurrentHashMap<>();
 
     @SubscribeEvent
     public static void onButtonInteract(ButtonInteractionEvent event) {

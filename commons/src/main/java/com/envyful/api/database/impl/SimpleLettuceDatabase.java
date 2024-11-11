@@ -4,7 +4,6 @@ import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.config.type.RedisDatabaseDetails;
 import com.envyful.api.database.Database;
 import com.envyful.api.database.impl.redis.Subscribe;
-import com.google.common.collect.Maps;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisURI;
 import io.lettuce.core.api.StatefulRedisConnection;
@@ -17,18 +16,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 
 public class SimpleLettuceDatabase implements Database {
 
     private final RedisClient pool;
     private final RedisURI uri;
-    private final StatefulRedisPubSubConnection<String, String>
-            subscribeConnection;
-    private final StatefulRedisPubSubConnection<String, String>
-            publishConnection;
-    private final Map<String, List<BiConsumer<String, String>>>
-            subscriptions = Maps.newConcurrentMap();
+    private final StatefulRedisPubSubConnection<String, String> subscribeConnection;
+    private final StatefulRedisPubSubConnection<String, String> publishConnection;
+    private final Map<String, List<BiConsumer<String, String>>> subscriptions = new ConcurrentHashMap<>();
 
     public SimpleLettuceDatabase(RedisDatabaseDetails details) {
         this(details.getIp(), details.getPort(), details.getPassword());

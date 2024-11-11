@@ -5,17 +5,17 @@ import com.envyful.api.player.Attribute;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Maps;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 
 public abstract class AbstractSaveManager<T> implements SaveManager<T> {
 
-    protected final Map<Class<? extends Attribute<?>>, PlayerManager.AttributeData<?, ?, T>> registeredAttributes = Maps.newConcurrentMap();
-    protected final Map<Class<? extends Attribute<?>>, Map<Object, Attribute<?>>> sharedAttributes = Maps.newConcurrentMap();
+    protected final Map<Class<? extends Attribute<?>>, PlayerManager.AttributeData<?, ?, T>> registeredAttributes = new ConcurrentHashMap<>();
+    protected final Map<Class<? extends Attribute<?>>, Map<Object, Attribute<?>>> sharedAttributes = new ConcurrentHashMap<>();
 
     protected final PlayerManager<?, T> playerManager;
     protected BiConsumer<EnvyPlayer<T>, Throwable> errorHandler = (player, throwable) -> UtilLogger.logger().ifPresent(logger -> logger.error("Error loading data for " + player.getUniqueId() + " " + player.getName(), throwable));

@@ -2,14 +2,14 @@ package com.envyful.api.forge.gui;
 
 import com.envyful.api.concurrency.UtilConcurrency;
 import com.envyful.api.player.EnvyPlayer;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *
@@ -18,8 +18,8 @@ import java.util.UUID;
  */
 public class ForgeGuiTracker {
 
-    private static final Map<UUID, ForgeGui> OPEN_GUIS = Maps.newConcurrentMap();
-    private static final Set<UUID> REQUIRED_UPDATE = Sets.newConcurrentHashSet();
+    private static final Map<UUID, ForgeGui> OPEN_GUIS = new ConcurrentHashMap<>();
+    private static final Set<UUID> REQUIRED_UPDATE = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
     static {
         UtilConcurrency.runRepeatingTask(() -> {

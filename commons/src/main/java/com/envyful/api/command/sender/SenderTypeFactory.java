@@ -1,14 +1,13 @@
 package com.envyful.api.command.sender;
 
-import com.google.common.collect.Maps;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class SenderTypeFactory {
 
-    private static final Map<Class<?>, SenderType<?, ?>> REGISTERED_SENDER_TYPES = Maps.newConcurrentMap();
+    private static final Map<Class<?>, SenderType<?, ?>> REGISTERED_SENDER_TYPES = new ConcurrentHashMap<>();
 
     /**
      *

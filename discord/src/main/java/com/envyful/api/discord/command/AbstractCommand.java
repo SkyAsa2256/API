@@ -3,7 +3,6 @@ package com.envyful.api.discord.command;
 import com.envyful.api.discord.command.data.Permissible;
 import com.envyful.api.discord.listener.SubscribeEvent;
 import com.envyful.api.discord.permission.UtilRole;
-import com.google.common.collect.Maps;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
@@ -11,6 +10,7 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *
@@ -20,7 +20,7 @@ import java.util.Map;
 public abstract class AbstractCommand implements Command {
 
     private final CommandData commandData;
-    private final Map<Long, Role> guildToRole = Maps.newConcurrentMap();
+    private final Map<Long, Role> guildToRole = new ConcurrentHashMap<>();
 
     protected final Permissible permissible;
 

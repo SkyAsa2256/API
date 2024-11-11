@@ -2,7 +2,6 @@ package com.envyful.api.reforged.dialogue;
 
 import com.envyful.api.reforged.config.InputableDialogueConfig;
 import com.envyful.api.text.Placeholder;
-import com.google.common.collect.Maps;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.events.dialogue.DialogueInputEvent;
 import com.pixelmonmod.pixelmon.api.util.helpers.NetworkHelper;
@@ -13,11 +12,12 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 public class DialogueInputRegistry {
 
-    private static final Map<UUID, Builder> REGISTERED_DIALOGUES = Maps.newConcurrentMap();
+    private static final Map<UUID, Builder> REGISTERED_DIALOGUES = new ConcurrentHashMap<>();
 
     static {
         Pixelmon.EVENT_BUS.register(DialogueInputRegistry.class);

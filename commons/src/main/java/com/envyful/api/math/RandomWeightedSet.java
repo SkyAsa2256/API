@@ -1,9 +1,8 @@
 package com.envyful.api.math;
 
-import com.google.common.collect.Maps;
-
 import java.util.HashMap;
 import java.util.NavigableMap;
+import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -14,7 +13,7 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class RandomWeightedSet<A> extends HashMap<A, Double> {
 
-    protected final transient NavigableMap<Double, A> treeMap = Maps.newTreeMap();
+    protected final transient NavigableMap<Double, A> treeMap = new TreeMap<>();
     protected transient double totalWeight = 0;
 
     public RandomWeightedSet() {

@@ -1,7 +1,6 @@
 package com.envyful.api.text;
 
-import com.google.common.collect.Lists;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ThreadLocalRandom;
@@ -30,7 +29,7 @@ public class UtilString {
      * @return The matches found
      */
     public static List<String> getMatching(String text, List<String> potentialMatches) {
-        List<String> args = Lists.newArrayList();
+        List<String> args = new ArrayList<>();
 
         for (String s : potentialMatches) {
             if (s.toLowerCase(Locale.ROOT).startsWith(text.toLowerCase(Locale.ROOT))) {

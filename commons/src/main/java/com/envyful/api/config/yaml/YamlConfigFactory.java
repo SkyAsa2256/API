@@ -7,7 +7,6 @@ import com.envyful.api.config.data.ScalarSerializers;
 import com.envyful.api.config.yaml.data.YamlConfigStyle;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import io.leangen.geantyref.TypeToken;
 import org.spongepowered.configurate.CommentedConfigurationNode;
@@ -26,10 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  *
@@ -67,8 +63,7 @@ public class YamlConfigFactory {
 
         Class<T> configClass = (Class<T>) config.getClass();
         NodeStyle style = getNodeStyle(configClass);
-        List<Class<? extends ScalarSerializer<?>>> scalarSerializers =
-                Lists.newArrayList();
+        List<Class<? extends ScalarSerializer<?>>> scalarSerializers = new ArrayList<>();
         ScalarSerializers serializedScalarData = configClass.getAnnotation(ScalarSerializers.class);
 
         if (serializedScalarData != null) {
@@ -115,7 +110,7 @@ public class YamlConfigFactory {
         }
 
         var style = getNodeStyle(configClass);
-        List<Class<? extends ScalarSerializer<?>>> serializers = Lists.newArrayList();
+        List<Class<? extends ScalarSerializer<?>>> serializers = new ArrayList<>();
         var serializedData = configClass.getAnnotation(ScalarSerializers.class);
 
         if (serializedData != null) {
@@ -156,7 +151,7 @@ public class YamlConfigFactory {
     private static <T extends AbstractYamlConfig> List<T>
     loadDirectory(File file, List<Class<? extends ScalarSerializer<?>>> serializers,
                   NodeStyle style, Class<T> configClass) throws IOException {
-        List<T> loadedConfigs = Lists.newArrayList();
+        List<T> loadedConfigs = new ArrayList<>();
 
         for (File listFile : file.listFiles()) {
             if (listFile.isDirectory()) {
@@ -238,8 +233,7 @@ public class YamlConfigFactory {
             configFile.toFile().createNewFile();
         }
 
-        List<Class<? extends ScalarSerializer<?>>> serializers =
-                Lists.newArrayList();
+        List<Class<? extends ScalarSerializer<?>>> serializers = new ArrayList<>();
         ScalarSerializers serializedData = clazz.getAnnotation(ScalarSerializers.class);
 
         if (serializedData != null) {

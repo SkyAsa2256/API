@@ -1,6 +1,5 @@
 package com.envyful.api.reforged.pixelmon.config;
 
-import com.google.common.collect.Lists;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 import java.util.List;
@@ -12,7 +11,7 @@ public class SpriteConfig {
 
     private String name = "&b%species_name% %nickname%";
 
-    private List<String> lore = Lists.newArrayList(
+    private List<String> lore = List.of(
             "&7Level: &b%level%",
             "&7Shiny: &b%shiny%",
             "&7Palette: &b%palette%",

@@ -1,7 +1,6 @@
 package com.envyful.api.config.type;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
@@ -13,7 +12,7 @@ import java.util.stream.Collectors;
 @ConfigSerializable
 public class PaginatedConfigInterface extends ConfigInterface {
 
-    protected List<Integer> positions = Lists.newArrayList(
+    protected List<Integer> positions = List.of(
             0, 1, 2, 3, 4, 5, 6, 7, 8,
             9, 10, 11, 12, 13, 14, 15, 16, 17,
             18, 19, 20, 21, 22, 23, 24, 25, 26,
@@ -59,7 +58,7 @@ public class PaginatedConfigInterface extends ConfigInterface {
         private int height = 6;
         private FillType fillType = FillType.BLOCK;
         private Map<String, ConfigItem> fillerItems = Maps.newHashMap(ImmutableMap.of("one", ConfigItem.builder().type("minecraft:black_stained_glass_pane").amount(1).name(" ").build()));
-        private List<Integer> positions = Lists.newArrayList(
+        private List<Integer> positions = List.of(
                 0, 1, 2, 3, 4, 5, 6, 7, 8,
                 9, 10, 11, 12, 13, 14, 15, 16, 17,
                 18, 19, 20, 21, 22, 23, 24, 25, 26,

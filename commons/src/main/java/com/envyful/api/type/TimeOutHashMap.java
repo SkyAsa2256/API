@@ -1,6 +1,5 @@
 package com.envyful.api.type;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
@@ -94,7 +93,7 @@ public class TimeOutHashMap<K, V> implements Map<K, V> {
 
     @Override
     public Collection<V> values() {
-        List<V> values = Lists.newArrayList();
+        List<V> values = new ArrayList<>();
 
         for (Pair<Long, V> value : this.backingMap.values()) {
             if (!this.hasTimedOut(value.getX())) {

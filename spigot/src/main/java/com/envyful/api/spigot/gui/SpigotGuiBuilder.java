@@ -7,9 +7,9 @@ import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.spigot.gui.close.SpigotCloseConsumer;
 import com.envyful.api.spigot.player.SpigotPlayerManager;
-import com.google.common.collect.Lists;
 import net.kyori.adventure.text.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,7 +21,7 @@ public class SpigotGuiBuilder implements Gui.Builder {
 
     private Component title;
     private int height = 5;
-    private List<Pane> panes = Lists.newArrayList();
+    private List<Pane> panes = new ArrayList<>();
     private SpigotPlayerManager playerManager;
     private SpigotCloseConsumer closeConsumer = (SpigotCloseConsumer) GuiFactory.closeConsumerBuilder().build();
 

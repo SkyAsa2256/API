@@ -3,11 +3,11 @@ package com.envyful.api.spigot.config;
 import com.envyful.api.config.type.ExtendedConfigItem;
 import com.envyful.api.platform.PlatformProxy;
 import com.envyful.api.text.Placeholder;
-import com.google.common.collect.Lists;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -69,8 +69,8 @@ public class ConfigReward {
 
         protected String displayName = "Example Display Name";
         protected ExtendedConfigItem displayItem;
-        protected List<String> commands = Lists.newArrayList();
-        protected List<String> messages = Lists.newArrayList();
+        protected List<String> commands = new ArrayList<>();
+        protected List<String> messages = new ArrayList<>();
 
         protected Builder() {}
 
@@ -85,7 +85,7 @@ public class ConfigReward {
         }
 
         public Builder commands(String... commands) {
-            return this.commands(Lists.newArrayList(commands));
+            return this.commands(List.of(commands));
         }
 
         public Builder commands(List<String> commands) {
@@ -94,7 +94,7 @@ public class ConfigReward {
         }
 
         public Builder messages(String... messages) {
-            return this.messages(Lists.newArrayList(messages));
+            return this.messages(List.of(messages));
         }
 
         public Builder messages(List<String> messages) {

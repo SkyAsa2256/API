@@ -2,7 +2,6 @@ package com.envyful.api.forge.items;
 
 import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.text.Placeholder;
-import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
@@ -11,6 +10,7 @@ import net.minecraft.nbt.StringNBT;
 import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -35,7 +35,7 @@ public class UtilItemStack {
             return Collections.emptyList();
         }
 
-        List<String> lore = Lists.newArrayList();
+        List<String> lore = new ArrayList<>();
 
         ListNBT currentLore = itemStack.getOrCreateTagElement("display").getList("Lore", 8);
 
@@ -62,7 +62,7 @@ public class UtilItemStack {
             return Collections.emptyList();
         }
 
-        List<ITextComponent> lore = Lists.newArrayList();
+        List<ITextComponent> lore = new ArrayList<>();
 
         ListNBT currentLore = itemStack.getOrCreateTagElement("display").getList("Lore", 8);
 

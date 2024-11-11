@@ -1,7 +1,6 @@
 package com.envyful.api.discord.listener;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
@@ -13,7 +12,6 @@ import javax.annotation.Nonnull;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -50,12 +48,12 @@ public class ExtendedAnnotatedEventManager implements IEventManager {
     @Nonnull
     @Override
     public List<Object> getRegisteredListeners() {
-        return Collections.unmodifiableList(Lists.newArrayList(this.listeners));
+        return List.copyOf(this.listeners);
     }
 
     @Override
     public void handle(@Nonnull GenericEvent event) {
-        for (Class<?> eventClass : ClassWalker.walk(event.getClass())) {
+        for (var eventClass : ClassWalker.walk(event.getClass())) {
             Map<Object, List<AnnotatedEventListener>> listeners = this.methods.getOrDefault(eventClass, ImmutableMap.of());
 
             for (Map.Entry<Object, List<AnnotatedEventListener>> entry : listeners.entrySet()) {

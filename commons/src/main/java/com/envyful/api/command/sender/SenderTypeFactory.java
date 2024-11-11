@@ -1,6 +1,5 @@
 package com.envyful.api.command.sender;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import java.util.List;
@@ -58,6 +57,6 @@ public class SenderTypeFactory {
      * @return All registered types in a new list
      */
     public static List<SenderType<?, ?>> getAllRegisteredTypes() {
-        return Lists.newArrayList(REGISTERED_SENDER_TYPES.values());
+        return List.copyOf(REGISTERED_SENDER_TYPES.values());
     }
 }

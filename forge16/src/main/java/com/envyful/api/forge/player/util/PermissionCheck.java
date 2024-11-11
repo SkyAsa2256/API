@@ -2,7 +2,6 @@ package com.envyful.api.forge.player.util;
 
 import com.envyful.api.forge.player.ForgeEnvyPlayer;
 import com.envyful.api.platform.PlatformProxy;
-import com.google.common.collect.Lists;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
@@ -44,6 +43,6 @@ public class PermissionCheck {
     }
 
     public static PermissionCheck of(String permission, String... failureMessage) {
-        return new PermissionCheck(true, permission, Lists.newArrayList(failureMessage));
+        return new PermissionCheck(true, permission, List.of(failureMessage));
     }
 }

@@ -12,7 +12,6 @@ import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
 import com.envyful.api.type.Pair;
 import com.envyful.api.type.UtilParse;
-import com.google.common.collect.Lists;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
@@ -42,7 +41,7 @@ public class UtilConfigItem {
     }
 
     public static ItemStack fromPermissibleItem(ServerPlayerEntity player, ExtendedConfigItem permissibleConfigItem, Placeholder... placeholders) {
-        return fromPermissibleItem(player, permissibleConfigItem, Lists.newArrayList(placeholders));
+        return fromPermissibleItem(player, permissibleConfigItem, List.of(placeholders));
     }
 
     public static ItemStack fromPermissibleItem(ServerPlayerEntity player, ExtendedConfigItem permissibleConfigItem, List<Placeholder> placeholders) {
@@ -70,7 +69,7 @@ public class UtilConfigItem {
     }
 
     public static ItemStack fromConfigItem(ExtendedConfigItem configItem, Placeholder... placeholders) {
-        return fromConfigItem(configItem.asConfigItem(), Lists.newArrayList(placeholders));
+        return fromConfigItem(configItem.asConfigItem(), List.of(placeholders));
     }
 
     public static ItemStack fromConfigItem(ExtendedConfigItem configItem, List<Placeholder> placeholders) {
@@ -78,7 +77,7 @@ public class UtilConfigItem {
     }
 
     public static ItemStack fromConfigItem(ConfigItem configItem, Placeholder... placeholders) {
-        return fromConfigItem(configItem, Lists.newArrayList(placeholders));
+        return fromConfigItem(configItem, List.of(placeholders));
     }
 
     public static ItemStack fromConfigItem(ConfigItem configItem, List<Placeholder> placeholders) {

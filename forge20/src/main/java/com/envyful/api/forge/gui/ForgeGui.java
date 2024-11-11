@@ -25,6 +25,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -142,7 +143,7 @@ public class ForgeGui implements Gui {
 
         private ForgeGui gui;
         private final ServerPlayer player;
-        private final List<EmptySlot> emptySlots = Lists.newArrayList();
+        private final List<EmptySlot> emptySlots = new ArrayList<>();
         private final NonNullList<ItemStack> inventoryItemStacks = NonNullList.create();
 
         private boolean closed = false;

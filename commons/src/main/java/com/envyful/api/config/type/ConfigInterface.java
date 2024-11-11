@@ -1,11 +1,11 @@
 package com.envyful.api.config.type;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import uk.co.envyware.helios.RequiredMethod;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -83,7 +83,7 @@ public class ConfigInterface {
 
     public List<ConfigItem> getFillerItems() {
         return this.getFillType().convert(
-                Lists.newArrayList(this.fillerItems.values()),
+                List.copyOf(this.fillerItems.values()),
                 this.getHeight());
     }
 
@@ -97,7 +97,7 @@ public class ConfigInterface {
             @Override
             public List<ConfigItem> convert(List<ConfigItem> conversion,
                                             int height) {
-                List<ConfigItem> configItems = Lists.newArrayList();
+                List<ConfigItem> configItems = new ArrayList<>();
                 ConfigItem primary = conversion.get(0);
 
                 for(int y = 0; y < height; y++) {
@@ -120,7 +120,7 @@ public class ConfigInterface {
             @Override
             public List<ConfigItem> convert(List<ConfigItem> conversion,
                                             int height) {
-                List<ConfigItem> configItems = Lists.newArrayList();
+                List<ConfigItem> configItems = new ArrayList<>();
                 ConfigItem primary = conversion.get(0);
                 ConfigItem secondary = conversion.get(1);
 
@@ -141,7 +141,7 @@ public class ConfigInterface {
             @Override
             public List<ConfigItem> convert(List<ConfigItem> conversion,
                                             int height) {
-                List<ConfigItem> configItems = Lists.newArrayList();
+                List<ConfigItem> configItems = new ArrayList<>();
                 ConfigItem primary = conversion.get(0);
                 ConfigItem secondary = conversion.get(1);
 

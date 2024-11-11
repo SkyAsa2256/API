@@ -5,7 +5,6 @@ import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.database.Database;
 import com.envyful.api.database.SQLFunction;
 import com.envyful.api.type.ExceptionThrowingConsumer;
-import com.google.common.collect.Lists;
 import com.mysql.cj.jdbc.Driver;
 import uk.co.envyware.helios.RequiredMethod;
 
@@ -236,7 +235,8 @@ public class UtilSql {
         }
 
         public QueryBuilder<T> data(SqlType... data) {
-            this.data = Lists.newArrayList(data);
+            this.data = new ArrayList<>();
+            this.data.addAll(List.of(data));
             return this;
         }
 

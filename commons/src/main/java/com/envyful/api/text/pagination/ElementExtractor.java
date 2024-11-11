@@ -1,7 +1,6 @@
 package com.envyful.api.text.pagination;
 
-import com.google.common.collect.Lists;
-
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Function;
@@ -23,7 +22,7 @@ public class ElementExtractor<T> {
     }
 
     public List<String> extract() {
-        List<String> elements = Lists.newArrayList();
+        List<String> elements = new ArrayList<>();
 
         while (this.elements.hasNext()) {
             elements.add(this.extractor.apply(this.elements.next()));

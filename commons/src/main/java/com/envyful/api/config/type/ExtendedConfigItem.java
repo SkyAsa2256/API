@@ -4,13 +4,10 @@ import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
 import com.envyful.api.type.Pair;
 import com.envyful.api.type.UtilParse;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @ConfigSerializable
 public class ExtendedConfigItem {
@@ -20,8 +17,8 @@ public class ExtendedConfigItem {
     private String amount = "1";
     private String damage;
     private String name = " ";
-    private List<String> flags = Lists.newArrayList();
-    private List<String> lore = Lists.newArrayList();
+    private List<String> flags = new ArrayList<>();
+    private List<String> lore = new ArrayList<>();
     private Map<String, ConfigItem.EnchantData> enchants = Maps.newHashMap();
     private Map<String, ConfigItem.NBTValue> nbt = Maps.newHashMap();
     private Map<String, Pair<Integer, Integer>> positions = Maps.newHashMap();
@@ -123,7 +120,7 @@ public class ExtendedConfigItem {
     }
 
     public List<Pair<Integer, Integer>> getPositions() {
-        return Lists.newArrayList(this.positions.values());
+        return List.copyOf(this.positions.values());
     }
 
     public boolean requiresPermission() {
@@ -193,14 +190,12 @@ public class ExtendedConfigItem {
         private ConfigItem elseItem;
         private boolean closeOnClick = false;
 
-        private final Map<String, ConfigItem.EnchantData> enchants =
-                Maps.newHashMap();
-        private final List<String> commandsExecuted = Lists.newArrayList();
-        private final List<String> flags = Lists.newArrayList();
-        private final List<String> lore = Lists.newArrayList();
-        private final Map<String, ConfigItem.NBTValue> nbt = Maps.newHashMap();
-        private final Map<String, Pair<Integer, Integer>> positions =
-                Maps.newHashMap();
+        private final Map<String, ConfigItem.EnchantData> enchants = new HashMap<>();
+        private final List<String> commandsExecuted = new ArrayList<>();
+        private final List<String> flags = new ArrayList<>();
+        private final List<String> lore = new ArrayList<>();
+        private final Map<String, ConfigItem.NBTValue> nbt = new HashMap<>();
+        private final Map<String, Pair<Integer, Integer>> positions = new HashMap<>();
 
         protected Builder() {
         }
@@ -240,12 +235,12 @@ public class ExtendedConfigItem {
         }
 
         public Builder flags(String... flags) {
-            this.flags.addAll(Lists.newArrayList(flags));
+            this.flags.addAll(List.of(flags));
             return this;
         }
 
         public Builder lore(String... lore) {
-            this.lore.addAll(Lists.newArrayList(lore));
+            this.lore.addAll(List.of(lore));
             return this;
         }
 
@@ -307,7 +302,7 @@ public class ExtendedConfigItem {
         }
 
         public Builder executeCommands(String... commands) {
-            this.commandsExecuted.addAll(Lists.newArrayList(commands));
+            this.commandsExecuted.addAll(List.of(commands));
             return this;
         }
 

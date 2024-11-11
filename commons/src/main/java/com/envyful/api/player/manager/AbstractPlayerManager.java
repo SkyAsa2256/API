@@ -6,10 +6,12 @@ import com.envyful.api.player.PlayerManager;
 import com.envyful.api.player.name.NameStore;
 import com.envyful.api.player.save.SaveManager;
 import com.envyful.api.player.save.impl.StandardSaveManager;
-import com.google.common.collect.Lists;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -69,7 +71,7 @@ public abstract class AbstractPlayerManager<A extends EnvyPlayer<B>, B> implemen
 
     @Override
     public List<A> getOnlinePlayers() {
-        return Collections.unmodifiableList(Lists.newArrayList(this.cachedPlayers.values()));
+        return List.copyOf(this.cachedPlayers.values());
     }
 
     @Override

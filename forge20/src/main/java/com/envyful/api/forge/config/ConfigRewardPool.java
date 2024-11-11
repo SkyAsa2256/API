@@ -4,10 +4,10 @@ import com.envyful.api.config.type.ConfigRandomWeightedSet;
 import com.envyful.api.config.yaml.AbstractYamlConfig;
 import com.envyful.api.math.UtilRandom;
 import com.envyful.api.text.Placeholder;
-import com.google.common.collect.Lists;
 import net.minecraft.server.level.ServerPlayer;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @ConfigSerializable
@@ -31,7 +31,7 @@ public class ConfigRewardPool<T extends ConfigReward> extends AbstractYamlConfig
     }
 
     public List<T> getRandomRewards() {
-        List<T> randomlySelectedRewards = Lists.newArrayList();
+        List<T> randomlySelectedRewards = new ArrayList<>();
 
         if (UtilRandom.chance(this.chanceOfAdditionalRewards)) {
             for (int i = 0; i < UtilRandom.randomInteger(this.rewardRollsMin, this.rewardRollsMax); i++) {

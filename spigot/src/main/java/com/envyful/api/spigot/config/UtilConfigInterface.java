@@ -11,8 +11,8 @@ import com.envyful.api.spigot.gui.close.SpigotCloseConsumer;
 import com.envyful.api.spigot.player.SpigotEnvyPlayer;
 import com.envyful.api.spigot.player.SpigotPlayerManager;
 import com.envyful.api.text.Placeholder;
-import com.google.common.collect.Lists;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -63,12 +63,12 @@ public class UtilConfigInterface {
     public static class PaginatedBuilder<T> {
 
         private PaginatedConfigInterface configInterface;
-        private List<T> items = Lists.newArrayList();
+        private List<T> items = new ArrayList<>();
         private Function<T, ConfigItem> itemDisplayableConversion;
         private SpigotPlayerManager playerManager;
         private SpigotCloseConsumer closeConsumer = (SpigotCloseConsumer) GuiFactory.closeConsumerBuilder().build();
         private TriConsumer<SpigotEnvyPlayer, Displayable.ClickType, T> pageItemClickHandler = (forgeEnvyPlayer, clickType, t) -> {};
-        private List<BiConsumer<Pane, Integer>> extraItems = Lists.newArrayList();
+        private List<BiConsumer<Pane, Integer>> extraItems = new ArrayList<>();
 
         private PaginatedBuilder() {
             // Private constructor for static factory method

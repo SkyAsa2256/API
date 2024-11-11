@@ -4,8 +4,8 @@ import com.envyful.api.player.attribute.AttributeTrigger;
 import com.envyful.api.type.AsyncFunction;
 import com.envyful.api.type.BiAsyncFunction;
 import com.envyful.api.type.map.KeyedMap;
-import com.google.common.collect.Lists;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -19,8 +19,8 @@ public class AttributeBuilder<A extends Attribute<B>, B, C> {
     protected Class<A> attributeClass;
     protected Supplier<A> constructor;
     protected BiAsyncFunction<EnvyPlayer<C>, KeyedMap, Object> idMapper;
-    protected List<BiPredicate<EnvyPlayer<C>, KeyedMap>> predicates = Lists.newArrayList();
-    protected List<AttributeTrigger<C>> triggers = Lists.newArrayList();
+    protected List<BiPredicate<EnvyPlayer<C>, KeyedMap>> predicates = new ArrayList<>();
+    protected List<AttributeTrigger<C>> triggers = new ArrayList<>();
     protected Function<UUID, B> offlineIdMapper = null;
 
     protected AttributeBuilder() {}
@@ -65,7 +65,7 @@ public class AttributeBuilder<A extends Attribute<B>, B, C> {
 
     @SafeVarargs
     public final AttributeBuilder<A, B, C> triggers(AttributeTrigger<C>... trigger) {
-        this.triggers.addAll(Lists.newArrayList(trigger));
+        this.triggers.addAll(List.of(trigger));
         return this;
     }
 

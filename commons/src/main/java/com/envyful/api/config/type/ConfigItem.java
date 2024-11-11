@@ -3,14 +3,10 @@ package com.envyful.api.config.type;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
 import com.envyful.api.type.UtilParse;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  *
@@ -25,8 +21,8 @@ public class ConfigItem {
     private String amount = "1";
     private String damage;
     private String name = " ";
-    private List<String> flags = Lists.newArrayList();
-    private List<String> lore = Lists.newArrayList();
+    private List<String> flags = new ArrayList<>();
+    private List<String> lore = new ArrayList<>();
     private Map<String, EnchantData> enchants = Maps.newHashMap();
     private Map<String, NBTValue> nbt = Maps.newHashMap();
 
@@ -184,8 +180,8 @@ public class ConfigItem {
         private String amount = "1";
         private String damage;
         private String name = " ";
-        private List<String> flags = Lists.newArrayList();
-        private List<String> lore = Lists.newArrayList();
+        private List<String> flags = new ArrayList<>();
+        private List<String> lore = new ArrayList<>();
         private Map<String, EnchantData> enchants = Maps.newHashMap();
         private Map<String, NBTValue> nbt = Maps.newHashMap();
 
@@ -237,12 +233,13 @@ public class ConfigItem {
         }
 
         public Builder setLore(String... lore) {
-            this.lore = Lists.newArrayList(lore);
+            this.lore = new ArrayList<>();
+            this.lore.addAll(List.of(lore));
             return this;
         }
 
         public Builder lore(String... lore) {
-            this.lore.addAll(Arrays.asList(lore));
+            this.lore.addAll(List.of(lore));
             return this;
         }
 

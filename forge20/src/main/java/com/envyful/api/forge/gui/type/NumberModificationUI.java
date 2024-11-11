@@ -15,10 +15,10 @@ import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.text.Placeholder;
-import com.google.common.collect.Lists;
 import org.apache.logging.log4j.util.TriConsumer;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -111,11 +111,11 @@ public class NumberModificationUI {
         private BiConsumer<EnvyPlayer<?>, Displayable.ClickType> returnHandler = null;
         private TriConsumer<EnvyPlayer<?>, Displayable.ClickType, Integer> acceptHandler = null;
         private ConfirmationUI.Builder confirm = null;
-        private List<ExtendedConfigItem> displayConfigItems = Lists.newArrayList();
-        private List<PositionableItem> displayItems = Lists.newArrayList();
+        private List<ExtendedConfigItem> displayConfigItems = new ArrayList<>();
+        private List<PositionableItem> displayItems = new ArrayList<>();
         private int currentValue;
         private String key;
-        private List<Placeholder> transformers = Lists.newArrayList();
+        private List<Placeholder> transformers = new ArrayList<>();
 
         protected Builder() {}
 
@@ -264,7 +264,7 @@ public class NumberModificationUI {
         public NumberModificationConfig() {}
 
         public List<EditValueButton> getButtons() {
-            return Lists.newArrayList(this.editValueButtons.values());
+            return List.copyOf(this.editValueButtons.values());
         }
 
         public ExtendedConfigItem getConfirmItem() {

@@ -13,9 +13,9 @@ import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.platform.PlatformProxy;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.text.Placeholder;
-import com.google.common.collect.Lists;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -127,7 +127,7 @@ public class ConfirmationUI {
         private BiConsumer<EnvyPlayer<?>, Displayable.ClickType> confirmHandler;
         private BiConsumer<EnvyPlayer<?>, Displayable.ClickType> denyHandler;
         private BiConsumer<EnvyPlayer<?>, Displayable.ClickType> returnHandler;
-        private List<Placeholder> placeholders = Lists.newArrayList();
+        private List<Placeholder> placeholders = new ArrayList<>();
 
         private Builder(ConfirmationUI ui) {
             this.ui = ui;

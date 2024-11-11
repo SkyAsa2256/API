@@ -3,13 +3,13 @@ package com.envyful.api.discord.yaml;
 import com.envyful.api.config.yaml.AbstractYamlConfig;
 import com.envyful.api.discord.DiscordEmbed;
 import com.envyful.api.discord.JSONObject;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -63,7 +63,7 @@ public class DiscordEmbedConfig extends AbstractYamlConfig {
         Image writtenImage = this.image;
         Thumbnail writtenThumbnail = this.thumbnail;
         Author writtenAuthor = this.author;
-        List<Field> writtenFields = Lists.newArrayList(this.fields.values());
+        List<Field> writtenFields = List.copyOf(this.fields.values());
         Color writtenColor = this.color.getColor();
 
         if (writtenColor != null) {
@@ -279,7 +279,7 @@ public class DiscordEmbedConfig extends AbstractYamlConfig {
         private Thumbnail thumbnail;
         private Image image;
         private Author author;
-        private List<Field> fields = Lists.newArrayList();
+        private List<Field> fields = new ArrayList<>();
 
         protected Builder() {
             // Reduce access to static method

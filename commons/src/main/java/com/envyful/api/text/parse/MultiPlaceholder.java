@@ -3,9 +3,9 @@ package com.envyful.api.text.parse;
 import com.envyful.api.text.ParseResult;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.results.ListParseResult;
-import com.google.common.collect.Lists;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,7 +18,7 @@ public interface MultiPlaceholder extends Placeholder {
     @Nonnull
     @Override
     default ParseResult replace(@Nonnull ParseResult line) {
-        List<String> list = Lists.newArrayList();
+        List<String> list = new ArrayList<>();
 
         for (String s : line.getCurrentResult()) {
             list.addAll(replace(s));

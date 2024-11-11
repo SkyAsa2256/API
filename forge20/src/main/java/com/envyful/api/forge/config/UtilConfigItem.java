@@ -13,7 +13,6 @@ import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
 import com.envyful.api.type.Pair;
 import com.envyful.api.type.UtilParse;
-import com.google.common.collect.Lists;
 import net.minecraft.ResourceLocationException;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.*;
@@ -43,7 +42,7 @@ public class UtilConfigItem {
     }
 
     public static ItemStack fromPermissibleItem(ServerPlayer player, ExtendedConfigItem permissibleConfigItem, Placeholder... transformers) {
-        return fromPermissibleItem(player, permissibleConfigItem, Lists.newArrayList(transformers));
+        return fromPermissibleItem(player, permissibleConfigItem, List.of(transformers));
     }
 
     public static ItemStack fromPermissibleItem(ServerPlayer player, ExtendedConfigItem permissibleConfigItem, List<Placeholder> transformers) {
@@ -71,7 +70,7 @@ public class UtilConfigItem {
     }
 
     public static ItemStack fromConfigItem(ExtendedConfigItem configItem, Placeholder... transformers) {
-        return fromConfigItem(configItem.asConfigItem(), Lists.newArrayList(transformers));
+        return fromConfigItem(configItem.asConfigItem(), List.of(transformers));
     }
 
     public static ItemStack fromConfigItem(ExtendedConfigItem configItem, List<Placeholder> transformers) {
@@ -79,7 +78,7 @@ public class UtilConfigItem {
     }
 
     public static ItemStack fromConfigItem(ConfigItem configItem, Placeholder... transformers) {
-        return fromConfigItem(configItem, Lists.newArrayList(transformers));
+        return fromConfigItem(configItem, List.of(transformers));
     }
 
     public static ItemStack fromConfigItem(ConfigItem configItem, List<Placeholder> placeholders) {

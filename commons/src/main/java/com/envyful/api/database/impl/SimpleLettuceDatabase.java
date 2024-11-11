@@ -4,7 +4,6 @@ import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.config.type.RedisDatabaseDetails;
 import com.envyful.api.database.Database;
 import com.envyful.api.database.impl.redis.Subscribe;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisURI;
@@ -14,6 +13,7 @@ import io.lettuce.core.pubsub.StatefulRedisPubSubConnection;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -95,8 +95,7 @@ public class SimpleLettuceDatabase implements Database {
             this.subscribeConnection.async().subscribe(subscribe.value());
 
             for (String s : subscribe.value()) {
-                this.subscriptions.computeIfAbsent(s,
-                                unused -> Lists.newArrayList())
+                this.subscriptions.computeIfAbsent(s, unused -> new ArrayList<>())
                         .add((channel, message) -> {
                             try {
                                 declaredMethod.invoke(o, channel, message);

@@ -13,9 +13,9 @@ import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.text.Placeholder;
-import com.google.common.collect.Lists;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -98,9 +98,9 @@ public class TrueFalseSelectionUI {
         private BiConsumer<EnvyPlayer<?>, Displayable.ClickType> falseAcceptHandler = null;
         private ConfirmationUI.Builder confirm = null;
         private boolean startsTrue = true;
-        private List<ExtendedConfigItem> displayConfigItems = Lists.newArrayList();
-        private List<PositionableItem> displayItems = Lists.newArrayList();
-        private List<Placeholder> transformers = Lists.newArrayList();
+        private List<ExtendedConfigItem> displayConfigItems = new ArrayList<>();
+        private List<PositionableItem> displayItems = new ArrayList<>();
+        private List<Placeholder> transformers = new ArrayList<>();
 
         protected Builder() {}
 

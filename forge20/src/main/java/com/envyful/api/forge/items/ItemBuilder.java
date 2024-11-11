@@ -1,8 +1,6 @@
 package com.envyful.api.forge.items;
 
 import com.envyful.api.forge.chat.UtilChatColour;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -13,10 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -30,10 +25,10 @@ public class ItemBuilder implements Cloneable {
     private int amount = 1;
     private Component name = null;
     private boolean unbreakable = false;
-    private List<Component> lore = Lists.newArrayList();
-    private List<ItemFlag> itemFlags = Lists.newArrayList();
-    private Map<String, Tag> nbtData = Maps.newHashMap();
-    private Map<Enchantment, Integer> enchants = Maps.newHashMap();
+    private List<Component> lore = new ArrayList<>();
+    private List<ItemFlag> itemFlags = new ArrayList<>();
+    private Map<String, Tag> nbtData = new HashMap<>();
+    private Map<Enchantment, Integer> enchants = new HashMap<>();
 
     /**
      *
@@ -145,7 +140,8 @@ public class ItemBuilder implements Cloneable {
      * @return The builder
      */
     public ItemBuilder lore(Component... lore) {
-        this.lore = Lists.newArrayList(lore);
+        this.lore = new ArrayList<>();
+        this.lore.addAll(List.of(lore));
         return this;
     }
 
@@ -169,7 +165,7 @@ public class ItemBuilder implements Cloneable {
      * @return The builder
      */
     public ItemBuilder addLore(Component... lore) {
-        this.lore.addAll(Lists.newArrayList(lore));
+        this.lore.addAll(List.of(lore));
         return this;
     }
 

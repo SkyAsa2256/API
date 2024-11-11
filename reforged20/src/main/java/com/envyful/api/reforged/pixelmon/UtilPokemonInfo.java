@@ -1,6 +1,5 @@
 package com.envyful.api.reforged.pixelmon;
 
-import com.google.common.collect.Lists;
 import com.pixelmonmod.pixelmon.api.pokemon.species.Stats;
 import com.pixelmonmod.pixelmon.api.spawning.SpawnInfo;
 import com.pixelmonmod.pixelmon.api.spawning.SpawnSet;
@@ -9,6 +8,7 @@ import com.pixelmonmod.pixelmon.api.world.WorldTime;
 import com.pixelmonmod.pixelmon.spawning.PixelmonSpawning;
 import net.minecraft.tags.TagEntry;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,7 +19,7 @@ import java.util.List;
 public class UtilPokemonInfo {
 
     public static List<String> getSpawnBiomes(Stats pokemon) {
-        List<String> names = Lists.newArrayList();
+        List<String> names = new ArrayList<>();
 
         for (List<SpawnSet> spawnSet : PixelmonSpawning.getAll().values()) {
             for (SpawnSet set : spawnSet) {
@@ -49,7 +49,7 @@ public class UtilPokemonInfo {
     }
 
     public static List<String> getSpawnTimes(Stats pokemon) {
-        List<String> names = Lists.newArrayList();
+        List<String> names = new ArrayList<>();
 
         for (List<SpawnSet> spawnSet : PixelmonSpawning.getAll().values()) {
             for (SpawnSet set : spawnSet) {

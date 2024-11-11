@@ -4,7 +4,6 @@ import com.envyful.api.command.PlatformCommand;
 import com.envyful.api.command.PlatformCommandExecutor;
 import com.envyful.api.command.tab.TabHandler;
 import com.envyful.api.forge.chat.UtilChatColour;
-import com.google.common.collect.Lists;
 import net.minecraft.command.ICommandSource;
 import net.minecraft.util.Util;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
@@ -29,7 +28,7 @@ public class ForgePlatformCommand extends PlatformCommand<ICommandSource> {
 
     @Override
     protected List<String> getOnlinePlayerNames() {
-        return Lists.newArrayList(ServerLifecycleHooks.getCurrentServer().getPlayerNames());
+        return List.of(ServerLifecycleHooks.getCurrentServer().getPlayerNames());
     }
 
     public static Builder builder() {

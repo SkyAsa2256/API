@@ -25,6 +25,7 @@ import net.minecraft.network.play.server.SSetSlotPacket;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -140,7 +141,7 @@ public class ForgeGui implements Gui {
 
         private ForgeGui gui;
         private final ServerPlayerEntity player;
-        private final List<EmptySlot> emptySlots = Lists.newArrayList();
+        private final List<EmptySlot> emptySlots = new ArrayList<>();
 
         private boolean closed = false;
         private boolean init = false;

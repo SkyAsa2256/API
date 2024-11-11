@@ -1,7 +1,6 @@
 package com.envyful.api.text;
 
 import com.envyful.api.text.results.OriginalParseResult;
-import com.google.common.collect.Lists;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -114,7 +113,7 @@ public class PlaceholderFactory {
      */
     @Nonnull
     public static <T> List<T> handlePlaceholders(List<String> text, Function<String, T> mapper, Placeholder... placeholders) {
-        List<T> computedText = Lists.newArrayList();
+        List<T> computedText = new ArrayList<>();
 
         for (String line : text) {
             if (line == null) {

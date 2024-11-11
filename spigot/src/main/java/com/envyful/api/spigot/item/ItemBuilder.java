@@ -1,6 +1,5 @@
 package com.envyful.api.spigot.item;
 
-import com.google.common.collect.Lists;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -32,13 +31,13 @@ public class ItemBuilder extends ItemStack {
     }
 
     public ItemBuilder lore(Component... lore) {
-        this.lore(Lists.newArrayList(lore));
+        this.lore(List.of(lore));
         return this;
     }
 
     public ItemBuilder addLore(Component... lore) {
         List<Component> lore1 = this.lore();
-        lore1.addAll(Lists.newArrayList(lore));
+        lore1.addAll(List.of(lore));
         this.lore(lore1);
         return this;
     }

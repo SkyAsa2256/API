@@ -2,13 +2,13 @@ package com.envyful.api.database.leaderboard;
 
 import com.envyful.api.database.Database;
 import com.envyful.api.type.Pair;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +49,7 @@ public class SQLLeaderboard {
              PreparedStatement preparedStatement = connection.prepareStatement(this.getSQL())) {
             ResultSet resultSet = preparedStatement.executeQuery();
             int counter = 0;
-            List<String> data = Lists.newArrayList();
+            List<String> data = new ArrayList<>();
 
             while (resultSet.next()) {
                 if ((counter / perPage) == page) {

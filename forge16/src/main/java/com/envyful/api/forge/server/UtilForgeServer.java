@@ -3,7 +3,6 @@ package com.envyful.api.forge.server;
 import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
-import com.google.common.collect.Lists;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.ChatType;
@@ -63,7 +62,7 @@ public class UtilForgeServer {
      * @param messages The messages
      */
     public static void broadcast(String... messages) {
-        broadcast(Lists.newArrayList(messages));
+        broadcast(List.of(messages));
     }
 
     /**
@@ -94,7 +93,7 @@ public class UtilForgeServer {
      * @param messages The messages
      */
     public static void formattedBroadcast(ITextComponent... messages) {
-        formattedBroadcast(Lists.newArrayList(messages));
+        formattedBroadcast(List.of(messages));
     }
 
     /**

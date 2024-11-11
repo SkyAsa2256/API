@@ -12,8 +12,8 @@ import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.math.TriConsumer;
 import com.envyful.api.text.Placeholder;
-import com.google.common.collect.Lists;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -93,9 +93,8 @@ public class UtilConfigInterface {
         private TriConsumer<ForgeEnvyPlayer, Displayable.ClickType, T>
                 pageItemClickHandler = (forgeEnvyPlayer, clickType, t) -> {};
 
-        private final List<T> items = Lists.newArrayList();
-        private final List<BiConsumer<Pane, Integer>> extraItems =
-                Lists.newArrayList();
+        private final List<T> items = new ArrayList<>();
+        private final List<BiConsumer<Pane, Integer>> extraItems = new ArrayList<>();
 
         private PaginatedBuilder() {
             // Private constructor for static factory method

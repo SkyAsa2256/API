@@ -5,11 +5,11 @@ import com.envyful.api.command.injector.ArgumentInjector;
 import com.envyful.api.command.sender.SenderType;
 import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.platform.PlatformProxy;
-import com.google.common.collect.Lists;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -119,7 +119,7 @@ public class AnnotationPlatformCommandExecutor<C> implements PlatformCommandExec
         protected SenderType<C, ?> senderType;
         protected boolean argsCapture = false;
         protected boolean async = false;
-        protected List<Argument<C>> arguments = Lists.newArrayList();
+        protected List<Argument<C>> arguments = new ArrayList<>();
         protected Object instance;
         protected Method method;
 

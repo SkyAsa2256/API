@@ -15,7 +15,6 @@ import com.envyful.api.velocity.player.command.completion.number.IntegerTabCompl
 import com.envyful.api.velocity.player.command.completion.player.PlayerTabCompleter;
 import com.envyful.api.velocity.player.command.injector.VelocityFunctionInjector;
 import com.envyful.api.velocity.player.util.UtilPlayer;
-import com.google.common.collect.Lists;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
@@ -32,6 +31,7 @@ import com.velocitypowered.api.proxy.ProxyServer;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
@@ -153,7 +153,7 @@ public class VelocityCommandFactory extends InjectedCommandFactory<CommandManage
     private CompletableFuture<Suggestions> buildSuggestions(VelocityPlatformCommand command, CommandContext<CommandSource> context, SuggestionsBuilder builder) {
         String[] args = this.getArgs(context);
         return command.getTabCompletions(context.getSource(), args)
-                .exceptionally(throwable -> Lists.newArrayList())
+                .exceptionally(throwable -> List.of())
                 .thenApply(completions -> {
                     int lastArgPos = context.getInput().lastIndexOf(' ') + 1;
                     String lastArg = context.getInput().endsWith(" ") ? "" : args[args.length - 1];

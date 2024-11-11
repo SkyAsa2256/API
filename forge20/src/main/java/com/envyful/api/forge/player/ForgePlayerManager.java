@@ -8,7 +8,6 @@ import com.envyful.api.player.AttributeBuilder;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.player.manager.AbstractPlayerManager;
 import com.envyful.api.player.name.NameStore;
-import com.google.common.collect.Lists;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -16,6 +15,8 @@ import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+
+import java.util.List;
 
 /**
  *
@@ -45,8 +46,8 @@ public class ForgePlayerManager extends AbstractPlayerManager<ForgeEnvyPlayer, S
         builder.triggers(
                 ForgeTrigger.singleSet(PlayerEvent.PlayerLoggedInEvent.class, event -> this.cachedPlayers.get(event.getEntity().getUUID())),
                 ForgeTrigger.singleSave(PlayerEvent.PlayerLoggedOutEvent.class, event -> this.cachedPlayers.get(event.getEntity().getUUID())),
-                ForgeTrigger.asyncSave(LevelEvent.Save.class, event -> Lists.newArrayList(this.cachedPlayers.values())),
-                ForgeTrigger.asyncSave(ServerStoppingEvent.class, event -> Lists.newArrayList(this.cachedPlayers.values()))
+                ForgeTrigger.asyncSave(LevelEvent.Save.class, event -> List.copyOf(this.cachedPlayers.values())),
+                ForgeTrigger.asyncSave(ServerStoppingEvent.class, event -> List.copyOf(this.cachedPlayers.values()))
         );
 
         if (builder.offlineIdMapper() == null) {

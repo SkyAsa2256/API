@@ -3,7 +3,6 @@ package com.envyful.api.velocity.player.command.command;
 import com.envyful.api.command.PlatformCommand;
 import com.envyful.api.command.PlatformCommandExecutor;
 import com.envyful.api.command.tab.TabHandler;
-import com.google.common.collect.Lists;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
@@ -37,7 +36,7 @@ public class VelocityPlatformCommand extends PlatformCommand<CommandSource> {
 
     @Override
     protected List<String> getOnlinePlayerNames() {
-        return Lists.newArrayList(this.proxy.getAllPlayers().stream().map(Player::getUsername).collect(Collectors.toList()));
+        return this.proxy.getAllPlayers().stream().map(Player::getUsername).collect(Collectors.toList());
     }
 
     public static Builder builder() {

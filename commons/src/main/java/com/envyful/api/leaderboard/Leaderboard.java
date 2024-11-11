@@ -5,12 +5,12 @@ import com.envyful.api.database.Database;
 import com.envyful.api.database.SQLFunction;
 import com.envyful.api.database.leaderboard.Order;
 import com.envyful.api.type.TimeOutHashMap;
-import com.google.common.collect.Lists;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +52,7 @@ public class Leaderboard<A> {
              PreparedStatement preparedStatement = connection.prepareStatement(this.getSQL())) {
             ResultSet resultSet = preparedStatement.executeQuery();
             int counter = 0;
-            List<A> data = Lists.newArrayList();
+            List<A> data = new ArrayList<>();
 
             while (resultSet.next()) {
                 if ((counter / perPage) == page) {

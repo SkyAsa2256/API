@@ -1,7 +1,6 @@
 package com.envyful.api.reforged.pixelmon;
 
 import com.envyful.api.concurrency.UtilLogger;
-import com.google.common.collect.Lists;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.pokemon.export.PokemonConverterFactory;
 import com.pixelmonmod.pixelmon.api.pokemon.export.exception.PokemonImportException;
@@ -10,6 +9,7 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -39,7 +39,7 @@ public class PokePasteReader {
      * @return
      */
     public List<Pokemon> build() {
-        List<String> lines = Lists.newArrayList();
+        List<String> lines = new ArrayList<>();
         String currentLine;
 
         while((currentLine = this.readLine(this.reader)) != null) {

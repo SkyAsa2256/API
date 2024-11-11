@@ -4,8 +4,8 @@ import com.envyful.api.command.tab.TabHandler;
 import com.envyful.api.concurrency.UtilConcurrency;
 import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.text.UtilString;
-import com.google.common.collect.Lists;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -78,7 +78,7 @@ public abstract class PlatformCommand<C> {
     }
 
     protected void executeSync(C sender, String[] args) {
-        if (!this.checkPermission(sender, Lists.newArrayList(args))) {
+        if (!this.checkPermission(sender, List.of(args))) {
             this.sendNoPermission(sender);
             return;
         }
@@ -98,7 +98,7 @@ public abstract class PlatformCommand<C> {
         }
 
         if (this.descriptionProvider != null) {
-            List<String> apply = this.descriptionProvider.apply(sender, Lists.newArrayList(args));
+            List<String> apply = this.descriptionProvider.apply(sender, List.of(args));
             this.sendSystemMessage(sender, apply);
         }
     }
@@ -152,10 +152,10 @@ public abstract class PlatformCommand<C> {
                         return this.tabHandler.getCompletions(sender, args);
                     }
 
-                    return CompletableFuture.completedFuture(Lists.newArrayList());
+                    return CompletableFuture.completedFuture(new ArrayList<>());
                 }).thenApply(tabCompletions -> {
                     if (tabCompletions.isEmpty()) {
-                        tabCompletions.addAll(this.getAccessibleSubCommands(sender, Lists.newArrayList(args)));
+                        tabCompletions.addAll(this.getAccessibleSubCommands(sender, List.of(args)));
                     }
 
                     if (tabCompletions.isEmpty()) {
@@ -181,7 +181,7 @@ public abstract class PlatformCommand<C> {
     protected abstract List<String> getOnlinePlayerNames();
 
     protected List<String> getAccessibleSubCommands(C sender, List<String> args) {
-        List<String> subCommands = Lists.newArrayList();
+        List<String> subCommands = new ArrayList<>();
 
         for (PlatformCommand<C> subCommand : this.subCommands) {
             if (subCommand.checkPermission(sender, args)) {
@@ -198,10 +198,10 @@ public abstract class PlatformCommand<C> {
         protected BiFunction<C, List<String>, List<String>> descriptionProvider;
         protected BiPredicate<C, List<String>> permissionCheck;
         protected Function<C, List<String>> noPermissionProvider;
-        protected List<String> aliases = Lists.newArrayList();
+        protected List<String> aliases = new ArrayList<>();
         protected PlatformCommandExecutor<C> executor;
         protected TabHandler<C> tabHandler;
-        protected List<PlatformCommand<C>> subCommands = Lists.newArrayList();
+        protected List<PlatformCommand<C>> subCommands = new ArrayList<>();
         protected boolean includePlayersWithArguments;
 
         public Builder<C> name(String name) {

@@ -1,7 +1,6 @@
 package com.envyful.api.text.pagination;
 
-import com.google.common.collect.Lists;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
@@ -14,7 +13,7 @@ public class Paginator {
 
     private int pageSize;
     private PaginatorConfig config = new PaginatorConfig();
-    private List<String> elements = Lists.newArrayList();
+    private List<String> elements = new ArrayList<>();
 
     private Paginator() {}
 
@@ -34,12 +33,12 @@ public class Paginator {
     }
 
     public Paginator header(String... header) {
-        this.config.setHeader(Lists.newArrayList(header));
+        this.config.setHeader(List.of(header));
         return this;
     }
 
     public Paginator footer(String... footer) {
-        this.config.setFooter(Lists.newArrayList(footer));
+        this.config.setFooter(List.of(footer));
         return this;
     }
 
@@ -59,7 +58,7 @@ public class Paginator {
     }
 
     public Paginator elements(String... elements) {
-        this.elements.addAll(Lists.newArrayList(elements));
+        this.elements.addAll(List.of(elements));
         return this;
     }
 
@@ -69,7 +68,7 @@ public class Paginator {
     }
 
     public List<String> getPage(int page) {
-        List<String> pageText = Lists.newArrayList();
+        List<String> pageText = new ArrayList<>();
 
         for (String s : this.config.getHeader()) {
             pageText.add(s.replace("%title%", this.config.getTitle())
@@ -95,7 +94,7 @@ public class Paginator {
     }
 
     public <T> List<T> getPage(int page, Function<String, T> conversion) {
-        List<T> pageText = Lists.newArrayList();
+        List<T> pageText = new ArrayList<>();
 
         for (String s : this.config.getHeader()) {
             pageText.add(conversion.apply(s.replace("%title%", this.config.getTitle())

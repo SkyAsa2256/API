@@ -2,10 +2,10 @@ package com.envyful.api.player;
 
 import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.player.attribute.PlayerAttribute;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -120,7 +120,7 @@ public abstract class AbstractEnvyPlayer<T> implements EnvyPlayer<T> {
 
     @Override
     public List<Attribute<?>> getAttributes() {
-        List<Attribute<?>> attributes = Lists.newArrayList();
+        List<Attribute<?>> attributes = new ArrayList<>();
 
         for (var attribute : this.attributes.values()) {
             if (attribute.getAttributeNow() != null) {

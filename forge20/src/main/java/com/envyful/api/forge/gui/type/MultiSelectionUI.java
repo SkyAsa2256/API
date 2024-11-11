@@ -14,7 +14,6 @@ import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.text.Placeholder;
-import com.google.common.collect.Lists;
 import net.minecraft.world.item.ItemStack;
 import org.apache.logging.log4j.util.TriConsumer;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
@@ -132,10 +131,10 @@ public class MultiSelectionUI {
         private TriConsumer<EnvyPlayer<?>, Displayable.ClickType, String> acceptHandler = null;
         private TriConsumer<EnvyPlayer<?>, Displayable.ClickType, String> selectHandler = null;
         private ConfirmationUI.Builder confirm = null;
-        private List<ExtendedConfigItem> displayConfigItems = Lists.newArrayList();
-        private List<PositionableItem> displayItems = Lists.newArrayList();
+        private List<ExtendedConfigItem> displayConfigItems = new ArrayList<>();
+        private List<PositionableItem> displayItems = new ArrayList<>();
         private int page = 0;
-        private List<Placeholder> transformers = Lists.newArrayList();
+        private List<Placeholder> transformers = new ArrayList<>();
 
         protected Builder() {}
 

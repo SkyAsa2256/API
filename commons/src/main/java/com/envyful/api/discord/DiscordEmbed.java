@@ -1,12 +1,12 @@
 package com.envyful.api.discord;
 
-import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
@@ -24,7 +24,7 @@ public class DiscordEmbed {
     private Image image;
     private Author author;
 
-    private final List<Field> fields = Lists.newArrayList();
+    private final List<Field> fields = new ArrayList<>();
 
     public String getTitle() {
         return title;
@@ -429,7 +429,7 @@ public class DiscordEmbed {
         private Image image;
         private Author author;
 
-        private final List<Field> fields = Lists.newArrayList();
+        private final List<Field> fields = new ArrayList<>();
 
         protected Builder() {
             // Reduce access to static method

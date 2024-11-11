@@ -6,7 +6,6 @@ import com.envyful.api.config.database.DatabaseDetailsRegistry;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.text.Placeholder;
-import com.google.common.collect.Lists;
 
 import java.util.Collection;
 import java.util.List;
@@ -65,7 +64,7 @@ public class PlatformProxy {
      * @param commands The commands to execute
      */
     public static void executeConsoleCommands(String... commands) {
-        executeConsoleCommands(Lists.newArrayList(commands));
+        executeConsoleCommands(List.of(commands));
     }
 
     /**
@@ -175,11 +174,11 @@ public class PlatformProxy {
     }
 
     public static void sendMessage(Messageable<?> player, String... message) {
-        sendMessage(player.getParent(), Lists.newArrayList(message));
+        sendMessage(player.getParent(), List.of(message));
     }
 
     public static void sendMessage(Object player, String... message) {
-        sendMessage(player, Lists.newArrayList(message));
+        sendMessage(player, List.of(message));
     }
 
     public static void sendMessage(Messageable<?> player, String message, Placeholder... placeholders) {
@@ -187,7 +186,7 @@ public class PlatformProxy {
     }
 
     public static void sendMessage(Object player, String message, Placeholder... placeholders) {
-        sendMessage(player, Lists.newArrayList(message), placeholders);
+        sendMessage(player, List.of(message), placeholders);
     }
 
     public static void sendMessage(Messageable<?> player, Collection<String> message, Placeholder... placeholders) {

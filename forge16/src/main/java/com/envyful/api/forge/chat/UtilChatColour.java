@@ -2,7 +2,6 @@ package com.envyful.api.forge.chat;
 
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
-import com.google.common.collect.Lists;
 import net.minecraft.util.text.*;
 
 import javax.annotation.Nullable;
@@ -24,14 +23,7 @@ public class UtilChatColour {
     public static final Pattern STRIP_PATTERN = Pattern.compile("(?i)&([0-9A-FK-ORX]|#([A-F0-9]{6}|[A-F0-9]{3}))");
 
     public static List<ITextComponent> colour(Collection<String> text, Placeholder... placeholders) {
-        List<ITextComponent> components = Lists.newArrayList();
-        List<String> lines = PlaceholderFactory.handlePlaceholders(Lists.newArrayList(text), placeholders);
-
-        for (String line : lines) {
-            components.add(colour(line, placeholders));
-        }
-
-        return components;
+        return PlaceholderFactory.handlePlaceholders(List.copyOf(text), UtilChatColour::colour, placeholders);
     }
 
     /**

@@ -4,14 +4,14 @@ import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.type.BiAsyncFunction;
 import com.envyful.api.type.map.KeyedMap;
-import com.google.common.collect.Lists;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public abstract class AbstractAttributeTrigger<T> implements AttributeTrigger<T> {
 
-    protected List<PlayerManager.AttributeData<?, ?, T>> attributes = Lists.newArrayList();
+    protected List<PlayerManager.AttributeData<?, ?, T>> attributes = new ArrayList<>();
 
     @Override
     public void addAttribute(PlayerManager.AttributeData<?, ?, T> attribute) {

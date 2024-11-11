@@ -1,10 +1,10 @@
 package com.envyful.api.forge.chat;
 
-import com.google.common.collect.Lists;
 import net.minecraft.command.ICommandSource;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.StringTextComponent;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
@@ -19,7 +19,7 @@ public class PageBuilder<T> {
     private String mainColor = "§e";
     private String offColor = "§e";
     private int pageSize = 5;
-    private List<T> values = Lists.newArrayList();
+    private List<T> values = new ArrayList<>();
     private Function<T, String> converter = null;
 
     /**

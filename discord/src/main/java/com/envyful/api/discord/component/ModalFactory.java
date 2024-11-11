@@ -1,7 +1,6 @@
 package com.envyful.api.discord.component;
 
 import com.envyful.api.discord.listener.SubscribeEvent;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
@@ -70,7 +69,7 @@ public class ModalFactory {
         }
 
         public Builder rows(ActionRow... rows) {
-            this.components.addAll(Lists.newArrayList(rows));
+            this.components.addAll(List.of(rows));
             return this;
         }
 

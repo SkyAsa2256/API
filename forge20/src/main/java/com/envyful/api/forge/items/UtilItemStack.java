@@ -2,7 +2,6 @@ package com.envyful.api.forge.items;
 
 import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.text.Placeholder;
-import com.google.common.collect.Lists;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
@@ -10,6 +9,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -31,14 +31,14 @@ public class UtilItemStack {
      */
     public static List<String> getLore(ItemStack itemStack) {
         if (itemStack == null) {
-            return Collections.emptyList();
+            return List.of();
         }
 
-        List<String> lore = Lists.newArrayList();
+        List<String> lore = new ArrayList<>();
 
-        ListTag currentLore = itemStack.getOrCreateTagElement("display").getList("Lore", 8);
+        var currentLore = itemStack.getOrCreateTagElement("display").getList("Lore", 8);
 
-        for (Tag nbtBase : currentLore) {
+        for (var nbtBase : currentLore) {
             if (nbtBase instanceof StringTag) {
                 lore.add(nbtBase.getAsString());
             }
@@ -61,7 +61,7 @@ public class UtilItemStack {
             return Collections.emptyList();
         }
 
-        List<Component> lore = Lists.newArrayList();
+        List<Component> lore = new ArrayList<>();
 
         ListTag currentLore = itemStack.getOrCreateTagElement("display").getList("Lore", 8);
 

@@ -18,7 +18,6 @@ import com.envyful.api.command.tab.TabHandler;
 import com.envyful.api.concurrency.UtilConcurrency;
 import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.type.Pair;
-import com.google.common.collect.Lists;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -63,7 +62,7 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
 
         return (A) this.commandFactory.commandBuilder()
                 .name(commandData.value()[0])
-                .aliases(Lists.newArrayList(commandData.value()))
+                .aliases(List.of(commandData.value()))
                 .permissionCheck(permissionCheck)
                 .descriptionProvider(descriptionProvider)
                 .noPermissionProvider(b -> Collections.singletonList("&c&l(!) &cYou do not have permission to use this command!"))
@@ -133,7 +132,7 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
         Description description = o.getClass().getAnnotation(Description.class);
 
         if (description != null) {
-            return (sender, args) -> Lists.newArrayList(description.value());
+            return (sender, args) -> List.of(description.value());
         }
 
         for (Method declaredMethod : o.getClass().getDeclaredMethods()) {
@@ -245,7 +244,7 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
     }
 
     protected List<AnnotationPlatformCommandExecutor.Argument<B>> buildArguments(Object commandInstance, Method method, Annotation[][] parameterAnnotations, Class<?>[] parameterTypes, boolean captureArgs) {
-        List<AnnotationPlatformCommandExecutor.Argument<B>> arguments = Lists.newArrayList();
+        List<AnnotationPlatformCommandExecutor.Argument<B>> arguments = new ArrayList<>();
 
         for (int i = 1; i < parameterTypes.length - (captureArgs ? 1 : 0); ++i) {
             ArgumentInjector<?, B> registeredInjector = this.commandFactory.getRegisteredInjector(parameterTypes[i]);
@@ -301,7 +300,7 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
             return Collections.emptyList();
         }
 
-        List<PlatformCommand<B>> platformCommands = Lists.newArrayList();
+        List<PlatformCommand<B>> platformCommands = new ArrayList<>();
 
         for (Class<?> subCommandClass : subCommands.value()) {
             Object instance = getSubCommandInstance(subCommandClass);
@@ -339,12 +338,12 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
                                 UtilConcurrency.SCHEDULED_EXECUTOR_SERVICE)
                         .exceptionally(throwable -> {
                             UtilLogger.logger().ifPresent(logger -> logger.error("Error when handling tab completions", throwable));
-                            return Lists.newArrayList();
+                            return new ArrayList<>();
                         });
             }
 
             if (tabHandlerMethod == null) {
-                return CompletableFuture.completedFuture(Lists.newArrayList());
+                return CompletableFuture.completedFuture(new ArrayList<>());
             }
 
             return CompletableFuture.supplyAsync(() -> {
@@ -356,7 +355,7 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
                     }, UtilConcurrency.SCHEDULED_EXECUTOR_SERVICE)
                     .exceptionally(throwable -> {
                         UtilLogger.logger().ifPresent(logger -> logger.error("Error when handling tab completions", throwable));
-                        return Lists.newArrayList();
+                        return new ArrayList<>();
                     });
         };
     }
@@ -380,11 +379,11 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
 
     protected List<TabCompleteAnnotations<?>> getParameterTabCompleters(Object commandInstance, Method commandProcessor, boolean[] hasTabCompleter) {
         Annotation[][] parameterAnnotations = commandProcessor.getParameterAnnotations();
-        List<TabCompleteAnnotations<?>> tabCompleters = Lists.newArrayList();
+        List<TabCompleteAnnotations<?>> tabCompleters = new ArrayList<>();
 
         for (int i = 1; i < parameterAnnotations.length; i++) {
             if (hasTabCompleter[i - 1]) {
-                List<Annotation> annotations = Lists.newArrayList();
+                List<Annotation> annotations = new ArrayList<>();
                 TabCompleter<?> completable = null;
 
                 for (Annotation annotation : parameterAnnotations[i]) {

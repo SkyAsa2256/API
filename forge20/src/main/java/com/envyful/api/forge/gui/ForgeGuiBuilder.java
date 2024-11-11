@@ -8,10 +8,10 @@ import com.envyful.api.gui.close.CloseConsumer;
 import com.envyful.api.gui.factory.GuiFactory;
 import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.player.PlayerManager;
-import com.google.common.collect.Lists;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,7 +27,7 @@ public class ForgeGuiBuilder implements Gui.Builder {
     private ForgeCloseConsumer closeConsumer =
             (ForgeCloseConsumer) GuiFactory.empty();
 
-    private final List<Pane> panes = Lists.newArrayList();
+    private final List<Pane> panes = new ArrayList<>();
 
     @Override
     public Gui.Builder title(Object title) {

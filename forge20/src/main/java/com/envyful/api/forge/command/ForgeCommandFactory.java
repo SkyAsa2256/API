@@ -19,7 +19,6 @@ import com.envyful.api.forge.command.parser.ForgeAnnotationCommandParser;
 import com.envyful.api.forge.player.ForgeEnvyPlayer;
 import com.envyful.api.forge.player.ForgePlayerManager;
 import com.envyful.api.platform.PlatformProxy;
-import com.google.common.collect.Lists;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -36,6 +35,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
@@ -171,7 +171,7 @@ public class ForgeCommandFactory extends InjectedCommandFactory<CommandDispatche
         return command.getTabCompletions(context.getSource().source, args)
                 .exceptionally(throwable -> {
                     UtilLogger.logger().ifPresent(logger -> logger.error("Error when tab completing command", throwable));
-                    return Lists.newArrayList();
+                    return new ArrayList<>();
                 })
                 .thenApply(completions -> {
                     int lastArgPos = context.getInput().lastIndexOf(' ') + 1;

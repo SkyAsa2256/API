@@ -1,7 +1,6 @@
 package com.envyful.api.reforged.pixelmon.config;
 
 import com.envyful.api.forge.player.util.UtilPlayer;
-import com.google.common.collect.Sets;
 import com.pixelmonmod.api.Specification;
 import com.pixelmonmod.api.pokemon.PokemonSpecificationProxy;
 import net.minecraft.server.level.ServerPlayer;
@@ -12,7 +11,7 @@ import java.util.Set;
 @ConfigSerializable
 public class PokeSpecPricing implements Comparable<PokeSpecPricing> {
 
-    private static final Set<String> PRIORITY_OPERATORS = Sets.newHashSet("+", "-");
+    private static final Set<String> PRIORITY_OPERATORS = Set.of("+", "-");
 
     private String spec;
     private MathHandler minPrice;

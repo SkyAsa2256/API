@@ -1,14 +1,14 @@
 package com.envyful.api.jexl.context;
 
-import com.google.common.collect.Maps;
 import org.apache.commons.jexl3.JexlContext;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
 public class SuppliableContext implements JexlContext {
 
-    private final Map<String, Object> context = Maps.newHashMap();
+    private final Map<String, Object> context = new HashMap<>();
 
     public SuppliableContext() {
     }

@@ -2,10 +2,10 @@ package com.envyful.api.player;
 
 import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.player.attribute.PlayerAttribute;
-import com.google.common.collect.Maps;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -28,7 +28,7 @@ import java.util.concurrent.CompletableFuture;
  */
 public abstract class AbstractEnvyPlayer<T> implements EnvyPlayer<T> {
 
-    protected final Map<Class<?>, AttributeInstance<?, ?>> attributes = Maps.newHashMap();
+    protected final Map<Class<?>, AttributeInstance<?, ?>> attributes = new HashMap<>();
 
     protected T parent;
 

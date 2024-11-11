@@ -1,7 +1,5 @@
 package com.envyful.api.config.type;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import uk.co.envyware.helios.RequiredMethod;
 
@@ -21,7 +19,7 @@ public class ConfigInterface {
     protected String title = "";
     protected int height = 6;
     protected String fillType = FillType.BLOCK.name();
-    protected Map<String, ConfigItem> fillerItems = Maps.newHashMap(ImmutableMap.of("one", new ConfigItem()));
+    protected Map<String, ConfigItem> fillerItems = Map.of("one", new ConfigItem());
     protected Map<String, ExtendedConfigItem> displayItems = new HashMap<>();
 
     public ConfigInterface() {}
@@ -170,7 +168,7 @@ public class ConfigInterface {
         protected String title;
         protected int height;
         protected FillType fillType;
-        protected Map<String, ConfigItem> fillerItems = Maps.newHashMap();
+        protected Map<String, ConfigItem> fillerItems = new HashMap<>();
 
         private Builder() {}
 

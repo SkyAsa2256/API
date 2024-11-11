@@ -2,10 +2,10 @@ package com.envyful.api.database;
 
 import com.envyful.api.database.impl.SimpleHikariDatabase;
 import com.envyful.api.database.impl.SimpleLettuceDatabase;
-import com.google.common.collect.Maps;
 import org.spongepowered.configurate.ConfigurationNode;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -43,8 +43,7 @@ public enum DatabaseType {
 
     ;
 
-    private static final Map<String, DatabaseType> DATABASES =
-            Maps.newHashMap();
+    private static final Map<String, DatabaseType> DATABASES = new HashMap<>();
 
     static {
         Arrays.stream(values()).forEach(type ->

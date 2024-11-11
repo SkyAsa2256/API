@@ -1,16 +1,16 @@
 package com.envyful.api.config.type;
 
 import com.envyful.api.math.RandomWeightedSet;
-import com.google.common.collect.Maps;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 @ConfigSerializable
 public class ConfigRandomWeightedSet<A> implements Serializable {
 
-    private Map<String, WeightedObject<A>> entries = Maps.newHashMap();
+    private Map<String, WeightedObject<A>> entries = new HashMap<>();
     private transient RandomWeightedSet<A> weightedSet = null;
 
     public ConfigRandomWeightedSet(Map<String, WeightedObject<A>> entries) {
@@ -18,7 +18,7 @@ public class ConfigRandomWeightedSet<A> implements Serializable {
     }
 
     public ConfigRandomWeightedSet(WeightedObject<A>... entries) {
-        this.entries = Maps.newHashMap();
+        this.entries = new HashMap<>();
 
         for (WeightedObject<A> entry : entries) {
             this.entries.put(String.valueOf(this.entries.size()), entry);
@@ -78,7 +78,7 @@ public class ConfigRandomWeightedSet<A> implements Serializable {
 
     public static class Builder<A> {
 
-        private Map<String, WeightedObject<A>> entries = Maps.newHashMap();
+        private Map<String, WeightedObject<A>> entries = new HashMap<>();
 
         protected Builder() {
         }

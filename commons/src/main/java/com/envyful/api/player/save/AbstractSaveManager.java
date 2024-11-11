@@ -8,6 +8,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 
 import javax.annotation.Nullable;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
@@ -45,11 +46,11 @@ public abstract class AbstractSaveManager<T> implements SaveManager<T> {
 
     @SuppressWarnings("unchecked")
     protected <A> Attribute<A> getSharedAttribute(Class<? extends A> attributeClass, Object o) {
-        return (Attribute<A>) this.sharedAttributes.computeIfAbsent((Class<? extends Attribute<?>>) attributeClass, ___ -> Maps.newHashMap()).get(o);
+        return (Attribute<A>) this.sharedAttributes.computeIfAbsent((Class<? extends Attribute<?>>) attributeClass, ___ -> new HashMap<>()).get(o);
     }
 
     @SuppressWarnings("unchecked")
     protected void addSharedAttribute(Object key, Attribute<?> attribute) {
-        this.sharedAttributes.computeIfAbsent((Class<? extends Attribute<?>>) attribute.getClass(), ___ -> Maps.newHashMap()).put(key, attribute);
+        this.sharedAttributes.computeIfAbsent((Class<? extends Attribute<?>>) attribute.getClass(), ___ -> new HashMap<>()).put(key, attribute);
     }
 }

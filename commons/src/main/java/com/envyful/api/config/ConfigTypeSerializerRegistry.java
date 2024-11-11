@@ -1,7 +1,6 @@
 package com.envyful.api.config;
 
-import com.google.common.collect.Maps;
-
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,7 +11,7 @@ import java.util.Map;
  */
 public class ConfigTypeSerializerRegistry {
 
-    private static final Map<Class<?>, ConfigTypeSerializer<?>> REGISTRY = Maps.newHashMap();
+    private static final Map<Class<?>, ConfigTypeSerializer<?>> REGISTRY = new HashMap<>();
 
     public static void register(ConfigTypeSerializer<?> serializer) {
         REGISTRY.put(serializer.clazz(), serializer);

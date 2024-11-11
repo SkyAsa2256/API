@@ -1,14 +1,10 @@
 package com.envyful.api.spigot.gui;
 
 import com.envyful.api.player.EnvyPlayer;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  *
@@ -17,8 +13,8 @@ import java.util.UUID;
  */
 public class SpigotGuiTracker {
 
-    private static final Map<UUID, InventoryDetails> OPEN_GUIS = Maps.newHashMap();
-    private static final Set<UUID> REQUIRED_UPDATE = Sets.newHashSet();
+    private static final Map<UUID, InventoryDetails> OPEN_GUIS = new HashMap<>();
+    private static final Set<UUID> REQUIRED_UPDATE = new HashSet<>();
 
     public static void addGui(EnvyPlayer<?> player, SpigotGui gui, Inventory inventory) {
         if (player == null) {

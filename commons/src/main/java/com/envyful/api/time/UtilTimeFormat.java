@@ -2,13 +2,13 @@ package com.envyful.api.time;
 
 import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.config.type.TimeFormatConfig;
-import com.google.common.collect.Maps;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -26,8 +26,7 @@ public class UtilTimeFormat {
     private static final long SECONDS_PER_DAY = SECONDS_PER_HOUR * 24;
     private static final Pattern PLACEHOLDER_PATTERN = Pattern.compile("\\%([a-z]+)\\%");
 
-    private static final Map<String, DateFormat> DATE_FORMATS =
-            Maps.newHashMap();
+    private static final Map<String, DateFormat> DATE_FORMATS = new HashMap<>();
 
     public static String format(Duration duration, TimeFormatConfig config) {
         return format(duration.toMillis(), config);

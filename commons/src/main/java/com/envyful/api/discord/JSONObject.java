@@ -1,7 +1,5 @@
 package com.envyful.api.discord;
 
-import com.google.common.collect.Maps;
-
 import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,7 +7,7 @@ import java.util.Set;
 
 public class JSONObject {
 
-    private final Map<String, Object> map = Maps.newHashMap();
+    private final Map<String, Object> map = new HashMap<>();
 
     public JSONObject() {}
 

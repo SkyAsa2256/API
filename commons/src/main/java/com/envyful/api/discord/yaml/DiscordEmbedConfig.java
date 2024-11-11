@@ -3,16 +3,13 @@ package com.envyful.api.discord.yaml;
 import com.envyful.api.config.yaml.AbstractYamlConfig;
 import com.envyful.api.discord.DiscordEmbed;
 import com.envyful.api.discord.JSONObject;
-import com.google.common.collect.Maps;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @ConfigSerializable
 public class DiscordEmbedConfig extends AbstractYamlConfig {
@@ -39,7 +36,7 @@ public class DiscordEmbedConfig extends AbstractYamlConfig {
         this.thumbnail = builder.thumbnail;
         this.image = builder.image;
         this.author = builder.author;
-        this.fields = Maps.newHashMap();
+        this.fields = new HashMap<>();
 
         for (Field field : builder.fields) {
             this.fields.put("example-" + (this.fields.size() + 1), field);

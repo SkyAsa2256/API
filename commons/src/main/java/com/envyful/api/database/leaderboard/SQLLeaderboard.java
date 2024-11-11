@@ -2,16 +2,12 @@ package com.envyful.api.database.leaderboard;
 
 import com.envyful.api.database.Database;
 import com.envyful.api.type.Pair;
-import com.google.common.collect.Maps;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SQLLeaderboard {
 
@@ -24,7 +20,7 @@ public class SQLLeaderboard {
     private final String extraClauses;
     private final SQLBiFunction<ResultSet, Integer, String> formatter;
 
-    private final Map<Integer, Pair<Long, List<String>>> cachedEntries = Maps.newHashMap();
+    private final Map<Integer, Pair<Long, List<String>>> cachedEntries = new HashMap<>();
 
     private SQLLeaderboard(Database database, String table, Order order, String orderColumn, int perPage,
                            long cacheDuration, String extraClauses, SQLBiFunction<ResultSet, Integer, String> formatter) {

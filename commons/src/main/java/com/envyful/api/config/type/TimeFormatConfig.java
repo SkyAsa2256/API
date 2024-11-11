@@ -1,9 +1,9 @@
 package com.envyful.api.config.type;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -71,7 +71,7 @@ public class TimeFormatConfig {
     public static class Builder {
 
         private String format;
-        private Map<String, String> placeholders = Maps.newHashMap();
+        private Map<String, String> placeholders = new HashMap<>();
 
         private Builder() {}
 

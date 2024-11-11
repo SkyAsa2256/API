@@ -1,10 +1,10 @@
 package com.envyful.api.reforged.pixelmon.config;
 
-import com.google.common.collect.Sets;
 import com.pixelmonmod.pixelmon.api.pokemon.species.Species;
 import com.pixelmonmod.pixelmon.api.registries.PixelmonSpecies;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -60,7 +60,7 @@ public class PokemonGeneratorConfig {
 
     public Set<Species> getBlockedTypes() {
         if (this.blockedSpecies == null) {
-            Set<Species> blockedSpecies = Sets.newHashSet();
+            Set<Species> blockedSpecies = new HashSet<>();
 
             for (String blockedType : this.blockedTypes) {
                 blockedSpecies.add(PixelmonSpecies.fromNameOrDex(blockedType).orElse(null));

@@ -4,7 +4,6 @@ import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
 import com.envyful.api.type.Pair;
 import com.envyful.api.type.UtilParse;
-import com.google.common.collect.Maps;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 import java.util.*;
@@ -19,9 +18,9 @@ public class ExtendedConfigItem {
     private String name = " ";
     private List<String> flags = new ArrayList<>();
     private List<String> lore = new ArrayList<>();
-    private Map<String, ConfigItem.EnchantData> enchants = Maps.newHashMap();
-    private Map<String, ConfigItem.NBTValue> nbt = Maps.newHashMap();
-    private Map<String, Pair<Integer, Integer>> positions = Maps.newHashMap();
+    private Map<String, ConfigItem.EnchantData> enchants = new HashMap<>();
+    private Map<String, ConfigItem.NBTValue> nbt = new HashMap<>();
+    private Map<String, Pair<Integer, Integer>> positions = new HashMap<>();
     private boolean requiresPermission;
     private String permission;
     private ConfigItem elseItem;

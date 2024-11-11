@@ -7,7 +7,6 @@ import com.envyful.api.config.data.ScalarSerializers;
 import com.envyful.api.config.yaml.data.YamlConfigStyle;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
-import com.google.common.collect.Sets;
 import io.leangen.geantyref.TypeToken;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
@@ -305,7 +304,7 @@ public class YamlConfigFactory {
                             UtilLogger.logger().ifPresent(logger -> logger.error("Error creating serializer for config " + configFile.getFileName(), e));
                         }
                     }).nativeTypes(
-                            Sets.newHashSet(
+                            Set.of(
                                     String.class,
                                     Integer.class,
                                     Byte.class,

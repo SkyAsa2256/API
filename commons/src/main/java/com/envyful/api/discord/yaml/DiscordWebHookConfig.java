@@ -3,7 +3,6 @@ package com.envyful.api.discord.yaml;
 import com.envyful.api.config.yaml.AbstractYamlConfig;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
-import com.google.common.collect.Maps;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
@@ -33,7 +32,7 @@ public class DiscordWebHookConfig extends AbstractYamlConfig {
         this.username = builder.username;
         this.avatarUrl = builder.avatarUrl;
         this.tts = builder.tts;
-        this.embeds = Maps.newHashMap();
+        this.embeds = new HashMap<>();
 
         for (DiscordEmbedConfig embed : builder.embeds) {
             this.embeds.put("example-" + this.embeds.size(), embed);

@@ -1,10 +1,10 @@
 package com.envyful.api.discord.yaml;
 
-import com.google.common.collect.Maps;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 @ConfigSerializable
@@ -20,7 +20,7 @@ public class TriggerableDiscordWebHookConfig extends DiscordWebHookConfig {
         this.username = builder.username;
         this.avatarUrl = builder.avatarUrl;
         this.tts = builder.tts;
-        this.embeds = Maps.newHashMap();
+        this.embeds = new HashMap<>();
 
         for (DiscordEmbedConfig embed : builder.embeds) {
             this.embeds.put("example-" + this.embeds.size(), embed);

@@ -1,7 +1,6 @@
 package com.envyful.api.reforged.battle;
 
 import com.envyful.api.concurrency.UtilLogger;
-import com.google.common.collect.Sets;
 import com.pixelmonmod.pixelmon.battles.api.rules.BattleRuleRegistry;
 import com.pixelmonmod.pixelmon.battles.api.rules.BattleRules;
 import com.pixelmonmod.pixelmon.battles.api.rules.clauses.BattleClause;
@@ -9,6 +8,7 @@ import com.pixelmonmod.pixelmon.battles.api.rules.clauses.BattleClauseRegistry;
 import com.pixelmonmod.pixelmon.battles.api.rules.value.ClausesValue;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @ConfigSerializable
@@ -35,7 +35,7 @@ public class ConfigBattleRule {
 
     public BattleRules with(BattleRules battleRules) {
         var property = BattleRuleRegistry.getProperty(this.battleRuleType);
-        Set<BattleClause> clauses = Sets.newHashSet(battleRules.getClauseList());
+        Set<BattleClause> clauses = new HashSet<>(battleRules.getClauseList());
 
         if (property != null) {
             battleRules.set(property, this.battleRuleValue);

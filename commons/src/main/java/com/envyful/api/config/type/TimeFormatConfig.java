@@ -1,6 +1,5 @@
 package com.envyful.api.config.type;
 
-import com.google.common.collect.ImmutableMap;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 import java.util.HashMap;
@@ -37,7 +36,7 @@ public class TimeFormatConfig {
             .build();
 
     private String format = "%days%%hours%%minutes%%seconds%";
-    private Map<String, String> placeholders = ImmutableMap.of(
+    private Map<String, String> placeholders = Map.of(
             "days", "%days_value% days ",
             "hours", "%hours_value% hours ",
             "minutes", "%minutes_value% minutes ",

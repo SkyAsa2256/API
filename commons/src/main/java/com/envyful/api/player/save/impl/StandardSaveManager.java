@@ -7,7 +7,6 @@ import com.envyful.api.player.Attribute;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.player.save.AbstractSaveManager;
-import com.google.common.base.Preconditions;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
@@ -25,8 +24,8 @@ public class StandardSaveManager<T> extends AbstractSaveManager<T> {
     @Override
     @SuppressWarnings("unchecked")
     public <A extends Attribute<B>, B> CompletableFuture<A> loadAttribute(Class<? extends A> attributeClass, B id) {
-        Preconditions.checkNotNull(attributeClass, "Cannot load attribute with null class");
-        Preconditions.checkNotNull(id, "Cannot load attribute with null id");
+        assert attributeClass != null : "Cannot load attribute with null class";
+        assert id != null : "Cannot load attribute with null id";
 
         return CompletableFuture.supplyAsync(() -> {
                     var data = this.registeredAttributes.get(attributeClass);

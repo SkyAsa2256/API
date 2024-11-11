@@ -4,8 +4,8 @@ import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.player.Attribute;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
-import com.google.common.base.Preconditions;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,8 +39,7 @@ public abstract class AbstractSaveManager<T> implements SaveManager<T> {
     }
 
     @Override
-    public <A extends Attribute<B>, B> void registerAttribute(PlayerManager.AttributeData<A, B, T> attribute) {
-        Preconditions.checkNotNull(attribute, "Cannot register null attribute");
+    public <A extends Attribute<B>, B> void registerAttribute(@Nonnull PlayerManager.AttributeData<A, B, T> attribute) {
         this.registeredAttributes.put(attribute.attributeClass(), attribute);
     }
 

@@ -3,7 +3,6 @@ package com.envyful.api.registry;
 import com.envyful.api.registry.config.KeySerializer;
 import com.envyful.api.registry.impl.ClassValueMapBasedRegistry;
 import com.envyful.api.registry.impl.StandardMapBasedRegistry;
-import com.google.common.collect.Maps;
 import org.spongepowered.configurate.serialize.TypeSerializer;
 
 import javax.annotation.Nullable;
@@ -11,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *
@@ -139,7 +139,7 @@ public interface Registry<A, B> {
      * @return The new registry
      */
     static <A, B> Registry<A, B> concurrent(KeySerializer<A> keySerializer) {
-        return new StandardMapBasedRegistry<>(keySerializer, Maps::newConcurrentMap);
+        return new StandardMapBasedRegistry<>(keySerializer, ConcurrentHashMap::new);
     }
 
     /**
@@ -163,6 +163,6 @@ public interface Registry<A, B> {
      * @return The new registry
      */
     static <A, B, C extends Class<B>> Registry<A, C> concurrentClassBased(KeySerializer<A> keySerializer) {
-        return new ClassValueMapBasedRegistry<>(keySerializer, Maps::newConcurrentMap);
+        return new ClassValueMapBasedRegistry<>(keySerializer, ConcurrentHashMap::new);
     }
 }

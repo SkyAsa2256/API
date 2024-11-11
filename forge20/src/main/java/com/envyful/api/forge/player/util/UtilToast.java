@@ -4,7 +4,6 @@ import com.envyful.api.config.ConfigToast;
 import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.forge.config.UtilConfigItem;
 import com.envyful.api.text.Placeholder;
-import com.google.common.base.Preconditions;
 import net.minecraft.advancements.*;
 import net.minecraft.advancements.critereon.ImpossibleTrigger;
 import net.minecraft.network.chat.Component;
@@ -92,9 +91,9 @@ public class UtilToast {
         }
 
         public void send(ServerPlayer... players) {
-            Preconditions.checkNotNull(message, "Message cannot be null");
-            Preconditions.checkNotNull(display, "Display cannot be null");
-            Preconditions.checkNotNull(frameType, "FrameType cannot be null");
+            assert message != null : "Message cannot be null";
+            assert display != null : "Display cannot be null";
+            assert frameType != null : "FrameType cannot be null";
 
             for (var player : players) {
                 if (player == null) {

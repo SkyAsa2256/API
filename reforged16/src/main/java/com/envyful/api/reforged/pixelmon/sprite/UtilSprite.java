@@ -208,19 +208,19 @@ public class UtilSprite {
         placeholders.add(Placeholder.simple("%level%", pokemon.getPokemonLevel() + ""));
         placeholders.add(Placeholder.simple("%gender%", pokemon.getGender() == Gender.MALE ? config.getMaleFormat() : pokemon.getGender() == Gender.NONE ? config.getNoneFormat() : config.getFemaleFormat()));
         placeholders.add(Placeholder.simple("%breedable%", pokemon.hasFlag(Flags.UNBREEDABLE) ?
-                        config.getUnbreedableTrueFormat() : config.getUnbreedableFalseFormat()));
+                config.getUnbreedableTrueFormat() : config.getUnbreedableFalseFormat()));
         placeholders.add(Placeholder.simple("%nature%", config.getNatureFormat().replace("%nature_name%",
-                                pokemon.getMintNature() != null ?
-                                        pokemon.getBaseNature().getLocalizedName() :
-                                        pokemon.getNature().getLocalizedName())
-                        .replace("%mint_nature%", pokemon.getMintNature() != null ?
-                                config.getMintNatureFormat().replace("%mint_nature_name%", pokemon.getMintNature().getLocalizedName()) : "")));
+                        pokemon.getMintNature() != null ?
+                                pokemon.getBaseNature().getLocalizedName() :
+                                pokemon.getNature().getLocalizedName())
+                .replace("%mint_nature%", pokemon.getMintNature() != null ?
+                        config.getMintNatureFormat().replace("%mint_nature_name%", pokemon.getMintNature().getLocalizedName()) : "")));
         placeholders.add(Placeholder.simple("%ability%", config.getAbilityFormat()
-                        .replace("%ability_name%", pokemon.getAbility().getLocalizedName())
-                        .replace("%ability_ha%", pokemon.hasHiddenAbility() ? config.getHaFormat() : "")));
+                .replace("%ability_name%", pokemon.getAbility().getLocalizedName())
+                .replace("%ability_ha%", pokemon.hasHiddenAbility() ? config.getHaFormat() : "")));
         placeholders.add(Placeholder.simple("%friendship%", pokemon.getFriendship() + ""));
         placeholders.add(Placeholder.simple("%untradeable%", pokemon.hasFlag("untradeable") ?
-                        config.getUntrdeableTrueFormat() : config.getUntradeableFalseFormat()));
+                config.getUntrdeableTrueFormat() : config.getUntradeableFalseFormat()));
         placeholders.add(Placeholder.simple("%iv_percentage%", percentage + ""));
         placeholders.add(Placeholder.simple("%iv_hp%", getColour(config, iVs, BattleStatsType.HP) + ((int) ivHP) + ""));
         placeholders.add(Placeholder.simple("%iv_attack%", getColour(config, iVs, BattleStatsType.ATTACK) + ((int) ivAtk) + ""));
@@ -243,13 +243,25 @@ public class UtilSprite {
         placeholders.add(Placeholder.simple("%size%", pokemon.getGrowth().getLocalizedName()));
         placeholders.add(Placeholder.simple("%friendship%", pokemon.getFriendship() + ""));
 
-        placeholders.add(Placeholder.require(() -> extraStats instanceof MewStats)
-                .placeholder(Placeholder.simple(s -> s.replace("%mew_cloned%", config.getMewClonedFormat()
-                        .replace("%cloned%", ((MewStats) extraStats).numCloned + "")))).build());
+        placeholders.add(
+                Placeholder.require(() -> extraStats instanceof MewStats)
+                        .placeholder(Placeholder.simple(s -> s
+                                .replace("%mew_cloned%", config.getMewClonedFormat())
+                                .replace("%cloned%", ((MewStats) extraStats).numCloned + ""))
+                        )
+                        .elsePlaceholder(Placeholder.simple(s -> null))
+                        .build()
+        );
 
-        placeholders.add(Placeholder.require(() -> extraStats instanceof LakeTrioStats)
-                .placeholder(Placeholder.simple(s -> s.replace("%trio_gemmed%", config.getGemmedFormat()
-                        .replace("%gemmed%", ((LakeTrioStats)extraStats).numEnchanted + "")))).build());
+        placeholders.add(
+                Placeholder.require(() -> extraStats instanceof LakeTrioStats)
+                        .placeholder(Placeholder.simple(s -> s
+                                .replace("%trio_gemmed%", config.getGemmedFormat())
+                                .replace("%gemmed%", ((LakeTrioStats) extraStats).numEnchanted + ""))
+                        )
+                        .elsePlaceholder(Placeholder.simple(s -> null))
+                        .build()
+        );
 
         return placeholders;
     }

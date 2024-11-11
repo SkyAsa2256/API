@@ -244,13 +244,25 @@ public class UtilSprite {
         placeholders.add(Placeholder.simple("%size%", pokemon.getGrowth().getLocalizedName()));
         placeholders.add(Placeholder.simple("%friendship%", pokemon.getFriendship() + ""));
 
-        placeholders.add(Placeholder.require(() -> extraStats instanceof MewStats)
-                .placeholder(Placeholder.simple(s -> s.replace("%mew_cloned%", config.getMewClonedFormat()
-                        .replace("%cloned%", ((MewStats) extraStats).numCloned + "")))).build());
+        placeholders.add(
+                Placeholder.require(() -> extraStats instanceof MewStats)
+                        .placeholder(Placeholder.simple(s -> s
+                                .replace("%mew_cloned%", config.getMewClonedFormat())
+                                .replace("%cloned%", ((MewStats) extraStats).numCloned + ""))
+                        )
+                        .elsePlaceholder(Placeholder.simple(s -> null))
+                        .build()
+        );
 
-        placeholders.add(Placeholder.require(() -> extraStats instanceof LakeTrioStats)
-                .placeholder(Placeholder.simple(s -> s.replace("%trio_gemmed%", config.getGemmedFormat()
-                        .replace("%gemmed%", ((LakeTrioStats)extraStats).numEnchanted + "")))).build());
+        placeholders.add(
+                Placeholder.require(() -> extraStats instanceof LakeTrioStats)
+                        .placeholder(Placeholder.simple(s -> s
+                                .replace("%trio_gemmed%", config.getGemmedFormat())
+                                .replace("%gemmed%", ((LakeTrioStats) extraStats).numEnchanted + ""))
+                        )
+                        .elsePlaceholder(Placeholder.simple(s -> null))
+                        .build()
+        );
 
         return placeholders;
     }

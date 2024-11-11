@@ -16,16 +16,22 @@ public class OptionalPlaceholder implements Placeholder {
 
     protected final BooleanSupplier test;
     protected final Placeholder placeholder;
+    protected final Placeholder elsePlaceholder;
 
-    protected OptionalPlaceholder(BooleanSupplier test, Placeholder placeholder) {
+    protected OptionalPlaceholder(BooleanSupplier test, Placeholder placeholder, Placeholder elsePlaceholder) {
         this.test = test;
         this.placeholder = placeholder;
+        this.elsePlaceholder = elsePlaceholder;
     }
 
     @Nonnull
     @Override
     public ParseResult replace(@Nonnull ParseResult line) {
         if (!this.test.getAsBoolean()) {
+            if (this.elsePlaceholder != null) {
+                return this.elsePlaceholder.replace(line);
+            }
+
             return line;
         }
 
@@ -36,6 +42,7 @@ public class OptionalPlaceholder implements Placeholder {
 
         protected BooleanSupplier test;
         protected Placeholder placeholder;
+        protected Placeholder elsePlaceholder;
 
         public Builder() {}
 
@@ -49,8 +56,13 @@ public class OptionalPlaceholder implements Placeholder {
             return this;
         }
 
+        public Builder elsePlaceholder(Placeholder elsePlaceholder) {
+            this.elsePlaceholder = elsePlaceholder;
+            return this;
+        }
+
         public OptionalPlaceholder build() {
-            return new OptionalPlaceholder(this.test, this.placeholder);
+            return new OptionalPlaceholder(this.test, this.placeholder, this.elsePlaceholder);
         }
     }
 }

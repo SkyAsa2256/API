@@ -8,8 +8,7 @@ import java.util.function.BooleanSupplier;
 
 /**
  *
- * A placeholder that will only replace the line if the test is true
- * otherwise it will remove the line from the result
+ * A placeholder that will only call the placeholder if the test is true otherwise it will call the else placeholder
  *
  */
 public class OptionalPlaceholder implements Placeholder {

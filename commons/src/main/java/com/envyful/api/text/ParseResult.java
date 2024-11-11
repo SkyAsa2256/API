@@ -1,5 +1,7 @@
 package com.envyful.api.text;
 
+import com.envyful.api.text.results.EmptyParseResult;
+
 import java.util.List;
 
 /**
@@ -24,5 +26,26 @@ public interface ParseResult {
      * @return The result
      */
     List<String> getCurrentResult();
+
+    /**
+     *
+     * Checks if the result is empty
+     *
+     * @return If the result is empty
+     */
+    default boolean isEmpty() {
+        return this.getCurrentResult().isEmpty();
+    }
+
+    /**
+     *
+     * Gets an empty parse result
+     *
+     * @param original The original text
+     * @return The empty parse result
+     */
+    static ParseResult empty(String original) {
+        return EmptyParseResult.of(original);
+    }
 
 }

@@ -60,6 +60,8 @@ public class SpriteConfig {
     private String mintNatureFormat = "&7(%mint_nature_name%&7)";
     private String normalIvColour = "&b";
     private String hyperIvColour = "&e";
+    private String gmaxFactorTrueFormat = "&aTRUE";
+    private String gmaxFactorFalseFormat = "&cFALSE";
 
     public SpriteConfig() {}
 
@@ -137,5 +139,13 @@ public class SpriteConfig {
 
     public String getShinyFalseFormat() {
         return this.shinyFalseFormat;
+    }
+
+    public String getGmaxFactorFalseFormat() {
+        return this.gmaxFactorFalseFormat;
+    }
+
+    public String getGmaxFactorTrueFormat() {
+        return this.gmaxFactorTrueFormat;
     }
 }

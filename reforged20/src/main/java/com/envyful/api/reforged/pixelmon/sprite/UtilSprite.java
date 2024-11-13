@@ -243,6 +243,7 @@ public class UtilSprite {
         placeholders.add(Placeholder.simple("%form%", pokemon.getForm().getLocalizedName()));
         placeholders.add(Placeholder.simple("%size%", pokemon.getGrowth().getLocalizedName()));
         placeholders.add(Placeholder.simple("%friendship%", pokemon.getFriendship() + ""));
+        placeholders.add(Placeholder.simple("%gmaxfactory%", pokemon.hasGigantamaxFactor() ? config.getGmaxFactorTrueFormat() : config.getGmaxFactorFalseFormat()));
         placeholders.add(
                 Placeholder.require(() -> pokemon.getOriginalTrainer() != null)
                         .placeholder(Placeholder.simple("%original_trainer%", pokemon.getOriginalTrainer()))

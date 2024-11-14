@@ -86,10 +86,16 @@ public class UtilConfigItem {
             return null;
         }
 
-        String name = configItem.getName();
+        var name = configItem.getName();
+        var type = PlaceholderFactory.handlePlaceholders(configItem.getType(), placeholders);
+
+        if (type.isEmpty()) {
+            UtilLogger.logger().ifPresent(logger -> logger.error("Invalid type provided for config item: {}", configItem.getType()));
+            return null;
+        }
 
         ItemBuilder itemBuilder = new ItemBuilder()
-                .type(fromNameOrId(PlaceholderFactory.handlePlaceholders(configItem.getType(), placeholders).get(0)))
+                .type(fromNameOrId(type.get(0)))
                 .amount(configItem.getAmount(placeholders));
 
         itemBuilder.lore(PlaceholderFactory.handlePlaceholders(configItem.getLore(), UtilChatColour::colour, placeholders));

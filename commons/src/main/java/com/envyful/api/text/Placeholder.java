@@ -1,5 +1,6 @@
 package com.envyful.api.text;
 
+import com.envyful.api.text.parse.ComposedPlaceholder;
 import com.envyful.api.text.parse.MultiPlaceholder;
 import com.envyful.api.text.parse.SimplePlaceholder;
 import com.envyful.api.text.placeholder.OptionalPlaceholder;
@@ -49,6 +50,34 @@ public interface Placeholder {
      */
     static Placeholder simple(String key, String result) {
         return simple(s -> s.replace(key, result));
+    }
+
+    /**
+     *
+     * Creates a Placeholder that will return null if the key is found
+     *
+     * @param key The key to check for
+     * @return The placeholder instance
+     */
+    static Placeholder empty(String key) {
+        return simple(s -> {
+            if (s.contains(key)) {
+                return null;
+            } else {
+                return s;
+            }
+        });
+    }
+
+    /**
+     *
+     * Composes multiple placeholders into a single placeholder
+     *
+     * @param placeholders The placeholders to compose
+     * @return The composed placeholder
+     */
+    static Placeholder composition(Placeholder... placeholders) {
+       return ComposedPlaceholder.of(placeholders);
     }
 
     /**

@@ -248,7 +248,7 @@ public class UtilSprite {
         placeholders.add(
                 Placeholder.require(() -> pokemon.getOriginalTrainer() != null)
                         .placeholder(Placeholder.simple("%original_trainer%", pokemon.getOriginalTrainer()))
-                        .elsePlaceholder(Placeholder.simple(s -> null))
+                        .elsePlaceholder(Placeholder.empty("%original_trainer%"))
                         .build()
         );
 
@@ -258,7 +258,7 @@ public class UtilSprite {
                                 .replace("%mew_cloned%", config.getMewClonedFormat())
                                 .replace("%cloned%", ((MewStats) extraStats).numCloned + ""))
                         )
-                        .elsePlaceholder(Placeholder.simple(s -> null))
+                        .elsePlaceholder(Placeholder.composition(Placeholder.empty("%mew_cloned%"), Placeholder.empty("%cloned%")))
                         .build()
         );
 
@@ -268,7 +268,7 @@ public class UtilSprite {
                                 .replace("%trio_gemmed%", config.getGemmedFormat())
                                 .replace("%gemmed%", ((LakeTrioStats) extraStats).numEnchanted + ""))
                         )
-                        .elsePlaceholder(Placeholder.simple(s -> null))
+                        .elsePlaceholder(Placeholder.composition(Placeholder.empty("%trio_gemmed%"), Placeholder.empty("%gemmed%")))
                         .build()
         );
 

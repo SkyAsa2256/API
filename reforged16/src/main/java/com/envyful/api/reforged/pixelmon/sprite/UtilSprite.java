@@ -203,6 +203,7 @@ public class UtilSprite {
 
         placeholders.add(Placeholder.simple("%nickname%", pokemon.getDisplayName()));
         placeholders.add(Placeholder.simple("%held_item%", pokemon.getHeldItem().getHoverName().getString()));
+        placeholders.add(Placeholder.simple("%type%", getType(pokemon)));
         placeholders.add(Placeholder.simple("%palette%", pokemon.getPalette().getLocalizedName()));
         placeholders.add(Placeholder.simple("%species_name%", pokemon.isEgg() ? "Egg" : pokemon.getSpecies().getLocalizedName()));
         placeholders.add(Placeholder.simple("%level%", pokemon.getPokemonLevel() + ""));
@@ -271,6 +272,17 @@ public class UtilSprite {
         );
 
         return placeholders;
+    }
+
+    private static String getType(Pokemon pokemon) {
+        var types = pokemon.getForm().getTypes();
+        var typeInfo = new StringBuilder();
+
+        for (var type : types) {
+            typeInfo.append(type.getLocalizedName()).append(" ");
+        }
+
+        return typeInfo.toString();
     }
 
     private static String getColour(SpriteConfig config, IVStore ivStore, BattleStatsType statsType) {

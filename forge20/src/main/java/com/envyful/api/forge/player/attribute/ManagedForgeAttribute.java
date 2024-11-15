@@ -4,6 +4,8 @@ import com.envyful.api.forge.player.ForgeEnvyPlayer;
 import com.envyful.api.player.attribute.PlayerAttribute;
 import net.minecraft.server.level.ServerPlayer;
 
+import java.util.UUID;
+
 /**
  *
  * Abstract class for Forge attributes
@@ -13,9 +15,7 @@ import net.minecraft.server.level.ServerPlayer;
 public abstract class ManagedForgeAttribute<A>
         extends PlayerAttribute<A, ForgeEnvyPlayer, ServerPlayer> {
 
-    protected ManagedForgeAttribute(
-            A manager
-    ) {
-        super(manager);
+    protected ManagedForgeAttribute(UUID id, A manager) {
+        super(id, manager);
     }
 }

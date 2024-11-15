@@ -2,6 +2,7 @@ package com.envyful.api.sqlite.config;
 
 import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.config.database.DatabaseDetailsConfig;
+import com.envyful.api.config.database.DatabaseDetailsRegistry;
 import com.envyful.api.database.Database;
 import com.envyful.api.sqlite.SQLiteDatabase;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
@@ -12,10 +13,16 @@ import java.io.IOException;
 @ConfigSerializable
 public class SQLiteDatabaseDetailsConfig implements DatabaseDetailsConfig {
 
+    public static final String ID = "sqlite";
+
     private String filePath;
 
     public SQLiteDatabaseDetailsConfig(String filePath) {
         this.filePath = filePath;
+    }
+
+    public static void register() {
+        DatabaseDetailsRegistry.register(ID, SQLiteDatabaseDetailsConfig.class);
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.envyful.api.player.attribute;
 import com.envyful.api.player.Attribute;
 
 import java.io.Serializable;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -12,19 +13,30 @@ import java.io.Serializable;
  * @param <A> The attribute ID type
  * @param <B> The manager instance for the attribute
  */
-public abstract class ManagedAttribute<A, B>
-        implements Attribute<A>, Serializable {
+public abstract class ManagedAttribute<A, B> implements Attribute<A>, Serializable {
 
+    private static final long ONE_MINUTE = TimeUnit.MINUTES.toMillis(1);
+
+    protected final transient A id;
     protected final transient B manager;
+    protected transient long lastSave = -1L;
 
-    protected transient A id;
-
-    protected ManagedAttribute(B manager) {
+    protected ManagedAttribute(A id, B manager) {
+        this.id = id;
         this.manager = manager;
     }
 
-    protected abstract void load();
+    @Override
+    public A getId() {
+        return this.id;
+    }
 
-    protected abstract void save();
+    @Override
+    public boolean shouldSave() {
+        if (this.lastSave == -1L) {
+            return true;
+        }
 
+        return (System.currentTimeMillis() - this.lastSave) >= ONE_MINUTE;
+    }
 }

@@ -1,8 +1,6 @@
 package com.envyful.api.player.attribute;
 
-import com.envyful.api.database.Database;
 import com.envyful.api.player.EnvyPlayer;
-import com.envyful.api.player.save.SaveManager;
 
 import java.util.UUID;
 
@@ -19,50 +17,13 @@ import java.util.UUID;
 public abstract class PlayerAttribute<A, B extends EnvyPlayer<C>, C>
         extends ManagedAttribute<UUID, A> {
 
-    protected transient Database database;
     protected transient B parent;
 
-    protected PlayerAttribute(A manager) {
-        super(manager);
+    protected PlayerAttribute(UUID id, A manager) {
+        super(id, manager);
     }
 
     public void setParent(B parent) {
         this.parent = parent;
-    }
-
-    @Override
-    public UUID getId() {
-        return this.id;
-    }
-
-    public UUID getUuid() {
-        return this.id;
-    }
-
-    @Override
-    public void save(UUID id) {
-        this.id = id;
-
-        if (!this.shouldSave()) {
-            return;
-        }
-
-        this.save();
-    }
-
-    @Override
-    public void load(UUID id) {
-        this.id = id;
-
-        this.load();
-    }
-
-    @Override
-    public void deleteAll(SaveManager<?> saveManager) {
-        //TODO:
-    }
-
-    protected Database getDatabase() {
-        return this.database;
     }
 }

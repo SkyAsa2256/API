@@ -10,6 +10,7 @@ import com.envyful.api.text.parse.SimplePlaceholder;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
@@ -147,6 +148,27 @@ public interface EnvyPlayer<T> extends SimplePlaceholder, Messageable<T> {
 
     /**
      *
+     * Get the attribute for the player
+     * <br>
+     * Returns a completable future that is completed once the full attribute has been loaded
+     *
+     * @param attributeClass The attribute class
+     * @param consumer The consumer to accept the attribute
+     * @param <A> The attribute type
+     * @param <B> The attribute id type
+     */
+    default <A extends Attribute<B>, B> void getAttribute(Class<A> attributeClass, Consumer<A> consumer) {
+        var loading = this.getAttribute(attributeClass);
+
+        if (loading == null) {
+            return;
+        }
+
+        loading.thenAccept(consumer);
+    }
+
+    /**
+     *
      * Checks if the player has the attribute
      *
      * @param attributeClass The attribute class
@@ -217,7 +239,7 @@ public interface EnvyPlayer<T> extends SimplePlaceholder, Messageable<T> {
      * @param <A> The attribute type
      * @param <B> The attribute id type
      */
-    <A extends Attribute<B>, B> void removeAttribute(Class<A> attributeClass);
+    <A extends Attribute<B>, B> A removeAttribute(Class<A> attributeClass);
 
     @Override
     default String replace(String line) {

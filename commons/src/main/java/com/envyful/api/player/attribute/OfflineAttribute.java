@@ -119,7 +119,7 @@ public class OfflineAttribute<A, B extends Attribute<A>> implements SimplePlaceh
             return;
         }
 
-        UtilConcurrency.runAsync(() -> this.getAttribute().save(this.id));
+        UtilConcurrency.runAsync(() -> PlatformProxy.getPlayerManager().getSaveManager().saveData(this.id, this.getAttribute()));
     }
 
 
@@ -145,7 +145,7 @@ public class OfflineAttribute<A, B extends Attribute<A>> implements SimplePlaceh
     @Override
     public EnvyPlayer<?> getParent() {
         if (this.cachedPlayer == null) {
-            this.cachedPlayer = (EnvyPlayer<?>) PlatformProxy.getPlayerManager().getPlayer(this.uuid);
+            this.cachedPlayer = PlatformProxy.getPlayerManager().getPlayer(this.uuid);
         }
 
         return this.cachedPlayer;

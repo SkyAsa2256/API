@@ -3,6 +3,7 @@ package com.envyful.api.text;
 import com.envyful.api.text.parse.ComposedPlaceholder;
 import com.envyful.api.text.parse.MultiPlaceholder;
 import com.envyful.api.text.parse.SimplePlaceholder;
+import com.envyful.api.text.placeholder.EmptyPlaceholder;
 import com.envyful.api.text.placeholder.OptionalPlaceholder;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -60,13 +61,7 @@ public interface Placeholder {
      * @return The placeholder instance
      */
     static Placeholder empty(String key) {
-        return simple(s -> {
-            if (s.contains(key)) {
-                return null;
-            } else {
-                return s;
-            }
-        });
+        return EmptyPlaceholder.of(key);
     }
 
     /**

@@ -2,6 +2,7 @@ package com.envyful.api.player;
 
 import com.envyful.api.player.attribute.AttributeTrigger;
 import com.envyful.api.player.attribute.SharedAttribute;
+import com.envyful.api.player.attribute.adapter.AttributeAdapter;
 import com.envyful.api.player.name.NameStore;
 import com.envyful.api.player.save.SaveManager;
 import com.envyful.api.type.BiAsyncFunction;
@@ -9,11 +10,11 @@ import com.envyful.api.type.map.KeyedMap;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  *
@@ -138,7 +139,7 @@ public interface PlayerManager<A extends EnvyPlayer<B>, B> {
       *
       * @param attribute The class of the attribute being registered
       */
-     default <X extends Attribute<Y>, Y> void registerAttribute(Class<X> attribute, Supplier<X> constructor) {
+     default <X extends Attribute<Y>, Y> void registerAttribute(Class<X> attribute, Function<Y, X> constructor) {
           this.registerAttribute(Attribute.<X, Y, B>builder(attribute).constructor(constructor));
      }
 
@@ -163,10 +164,15 @@ public interface PlayerManager<A extends EnvyPlayer<B>, B> {
                   builder.predicates,
                   builder.triggers,
                     builder.offlineIdMapper,
-                  this.getSaveManager()
+                  this.getSaveManager(),
+                  builder.registeredAdapters
           );
 
           this.registerAttribute(data);
+
+          if (builder.overrideSaveMode != null) {
+               this.getSaveManager().overrideSaveMode(builder.attributeClass, builder.overrideSaveMode);
+          }
      }
 
      /**
@@ -207,25 +213,27 @@ public interface PlayerManager<A extends EnvyPlayer<B>, B> {
 
           private final Class<A> attributeClass;
           private final boolean shared;
-          private final Supplier<A> constructor;
+          private final Function<B, A> constructor;
           private final BiAsyncFunction<EnvyPlayer<C>, KeyedMap, Object> idMapper;
           private final Function<UUID, B> offlineIdMapper;
           private final List<BiPredicate<EnvyPlayer<C>, KeyedMap>> predicates;
           private final List<AttributeTrigger<C>> triggers;
           private final SaveManager<C> saveManager;
+          private final Map<String, AttributeAdapter<A, B>> adapters;
 
-          protected AttributeData(Class<A> attributeClass, boolean shared, Supplier<A> constructor, BiAsyncFunction<EnvyPlayer<C>, KeyedMap, Object> idMapper,
+          protected AttributeData(Class<A> attributeClass, boolean shared, Function<B, A> constructor, BiAsyncFunction<EnvyPlayer<C>, KeyedMap, Object> idMapper,
                                   List<BiPredicate<EnvyPlayer<C>, KeyedMap>> predicates, List<AttributeTrigger<C>> triggers,
                                   Function<UUID, B> offlineIdMapper,
-                                  SaveManager<C> saveManager) {
+                                  SaveManager<C> saveManager, Map<String, AttributeAdapter<A, B>> adapters) {
                this.attributeClass = attributeClass;
                this.shared = shared;
                this.constructor = constructor;
                this.idMapper = idMapper;
-               this.predicates = predicates;
-               this.triggers = triggers;
+               this.predicates = List.copyOf(predicates);
+               this.triggers = List.copyOf(triggers);
                this.offlineIdMapper = offlineIdMapper;
                this.saveManager = saveManager;
+              this.adapters = Map.copyOf(adapters);
           }
 
           public Class<A> attributeClass() {
@@ -236,7 +244,7 @@ public interface PlayerManager<A extends EnvyPlayer<B>, B> {
                return this.shared;
           }
 
-          public Supplier<A> constructor() {
+          public Function<B, A> constructor() {
                return this.constructor;
           }
 
@@ -259,5 +267,9 @@ public interface PlayerManager<A extends EnvyPlayer<B>, B> {
           public Function<UUID, B> offlineIdMapper() {
                return this.offlineIdMapper;
           }
+
+            public Map<String, AttributeAdapter<A, B>> adapters() {
+                 return this.adapters;
+            }
      }
 }

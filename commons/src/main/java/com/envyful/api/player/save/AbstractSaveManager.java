@@ -1,6 +1,7 @@
 package com.envyful.api.player.save;
 
 import com.envyful.api.concurrency.UtilLogger;
+import com.envyful.api.config.type.SQLDatabaseDetails;
 import com.envyful.api.player.Attribute;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
@@ -22,7 +23,7 @@ public abstract class AbstractSaveManager<T> implements SaveManager<T> {
     protected final PlayerManager<?, T> playerManager;
     protected BiConsumer<EnvyPlayer<T>, Throwable> errorHandler = (player, throwable) -> UtilLogger.logger().ifPresent(logger -> logger.error("Error loading data for " + player.getUniqueId() + " " + player.getName(), throwable));
 
-    protected String saveMode;
+    protected String saveMode = SQLDatabaseDetails.ID;
 
     protected AbstractSaveManager(PlayerManager<?, T> playerManager) {
         this(playerManager, null);

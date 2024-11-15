@@ -8,6 +8,8 @@ import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 @ConfigSerializable
 public  class SQLDatabaseDetails implements DatabaseDetailsConfig {
 
+    public static final String ID = "sql";
+
     public static final SQLDatabaseDetails DEFAULT = new SQLDatabaseDetails(
             "pool-name", "0.0.0.0", 3306, "username", "password", "database"
     );

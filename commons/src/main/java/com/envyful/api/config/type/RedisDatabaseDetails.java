@@ -6,7 +6,9 @@ import com.envyful.api.database.impl.SimpleLettuceDatabase;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 @ConfigSerializable
-public  class RedisDatabaseDetails implements DatabaseDetailsConfig {
+public class RedisDatabaseDetails implements DatabaseDetailsConfig {
+
+    public static final String ID = "redis";
 
     private String ip;
     private int port;

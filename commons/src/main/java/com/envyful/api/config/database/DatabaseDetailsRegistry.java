@@ -16,8 +16,8 @@ public class DatabaseDetailsRegistry {
     private static final Registry<String, Class<DatabaseDetailsConfig>> REGISTRY = Registry.classBased(KeySerializer.identity());
 
     public static void init() {
-        register("sql", SQLDatabaseDetails.class);
-        register("redis", RedisDatabaseDetails.class);
+        register(SQLDatabaseDetails.ID, SQLDatabaseDetails.class);
+        register(RedisDatabaseDetails.ID, RedisDatabaseDetails.class);
 
         ConfigTypeSerializer.register(REGISTRY.getTypeSerializer(), DatabaseDetailsConfig.class);
     }

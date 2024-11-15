@@ -1,8 +1,5 @@
 package com.envyful.api.player;
 
-import com.envyful.api.player.save.SaveManager;
-
-
 /**
  *
  * An interface representing data stored about something, typically a player
@@ -32,14 +29,6 @@ public interface Attribute<A> {
 
     /**
      *
-     * Loads the data into the attribute from the given id
-     *
-     * @param id The id to load from
-     */
-    void load(A id);
-
-    /**
-     *
      * This method is called when all the registered attributes have finished their
      * loading logic. This is useful for when you need to perform logic that requires
      * other attributes to be loaded first.
@@ -49,19 +38,10 @@ public interface Attribute<A> {
 
     /**
      *
-     * Saves the data from the attribute using the given id
+     * This method is called when the player logs out of the server
      *
-     * @param id the id to save to
      */
-    void save(A id);
-
-    /**
-     *
-     * Deletes all data from the attribute
-     *
-     * @param saveManager The save manager to delete from
-     */
-    void deleteAll(SaveManager<?> saveManager);
+    default void onPlayerQuit() {}
 
     /**
      *

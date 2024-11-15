@@ -322,7 +322,9 @@ public class UtilSprite {
                     }
 
                     return pokemon.getMoveset().attacks[pos] != null;
-                }).placeholder(Placeholder.simple("%move_" + (pos + 1) + "%", getMove(pokemon, pos)))
+                })
+                .placeholder(Placeholder.simple("%move_" + (pos + 1) + "%", getMove(pokemon, pos)))
+                .elsePlaceholder(Placeholder.empty("%move_" + (pos + 1) + "%"))
                 .build();
     }
 

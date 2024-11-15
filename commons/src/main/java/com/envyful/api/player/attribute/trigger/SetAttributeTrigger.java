@@ -23,7 +23,6 @@ public class SetAttributeTrigger<T> extends AbstractAttributeTrigger<T> {
                 continue;
             }
 
-
             var future = this.getIdMapper(player, data).apply(player, map)
                     .thenCompose(id -> {
                         if (id == null) {

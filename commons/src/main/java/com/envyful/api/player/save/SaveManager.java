@@ -1,6 +1,5 @@
 package com.envyful.api.player.save;
 
-import com.envyful.api.database.Database;
 import com.envyful.api.player.Attribute;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
@@ -15,6 +14,33 @@ import java.util.function.BiConsumer;
  * @param <T> The player type
  */
 public interface SaveManager<T> {
+
+    /**
+     *
+     * Gets the key used to identify the type of save mode globally used
+     *
+     * @return The save mode key
+     */
+    String getSaveMode();
+
+    /**
+     *
+     * Sets the save mode for this save manager
+     *
+     * @param saveMode The save mode key
+     */
+    void setSaveMode(String saveMode);
+
+    /**
+     *
+     * Overrides the save mode for a specific attribute
+     *
+     * @param attributeClass The class of the attribute
+     * @param saveMode The save mode key
+     * @param <A> The attribute type
+     * @param <B> The id type
+     */
+    <A extends Attribute<B>, B> void overrideSaveMode(Class<A> attributeClass, String saveMode);
 
     /**
      *
@@ -60,24 +86,5 @@ public interface SaveManager<T> {
      * @param <B> The id type
      */
     <A extends Attribute<B>, B> CompletableFuture<A> loadAttribute(Class<? extends A> attributeClass, B id);
-
-    /**
-     *
-     * Deletes all player data at the given location using the given database
-     *
-     * @param database The database to delete the data from
-     * @param name The location to delete the data from
-     * @return If the data was successfully deleted
-     */
-    boolean delete(Database database, String name);
-
-    /**
-     *
-     * Deletes all player data at the given location
-     *
-     * @param name The location to delete the data from
-     * @return If the data was successfully deleted
-     */
-    boolean delete(String name);
 
 }

@@ -2,7 +2,6 @@ package com.envyful.api.player.save.impl;
 
 import com.envyful.api.concurrency.UtilConcurrency;
 import com.envyful.api.concurrency.UtilLogger;
-import com.envyful.api.database.Database;
 import com.envyful.api.player.Attribute;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
@@ -34,16 +33,13 @@ public class StandardSaveManager<T> extends AbstractSaveManager<T> {
                         A sharedAttribute = (A) this.getSharedAttribute(attributeClass, id);
 
                         if (sharedAttribute == null) {
-                            sharedAttribute = (A) data.constructor().get();
-                            sharedAttribute.load(id);
+                            sharedAttribute = this.loadAttributeFromDataGeneric(data, id);
                             this.addSharedAttribute(id, sharedAttribute);
                         }
 
                         return sharedAttribute;
                     } else {
-                        A attribute = (A) data.constructor().get();
-                        attribute.load(id);
-                        return attribute;
+                        return this.loadAttributeFromDataGeneric(data, id);
                     }
                 }, UtilConcurrency.SCHEDULED_EXECUTOR_SERVICE)
                 .exceptionally(throwable -> {
@@ -54,16 +50,12 @@ public class StandardSaveManager<T> extends AbstractSaveManager<T> {
 
     @Override
     public <A> void saveData(A id, Attribute<A> attribute) {
-        attribute.save(id);
-    }
+        var data = this.registeredAttributes.get(attribute.getClass());
 
-    @Override
-    public boolean delete(String name) {
-        return false;
-    }
+        if (data == null) {
+            return;
+        }
 
-    @Override
-    public boolean delete(Database database, String name) {
-        return false;
+        this.saveAttributeFromDataGeneric(data, attribute);
     }
 }

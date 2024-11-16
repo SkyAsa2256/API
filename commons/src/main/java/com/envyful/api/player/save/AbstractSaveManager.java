@@ -68,6 +68,18 @@ public abstract class AbstractSaveManager<T> implements SaveManager<T> {
     }
 
     @Override
+    public <A extends Attribute<B>, B> String getSaveMode(Class<A> attributeClass) {
+        return this.attributeSaveModes.getOrDefault(attributeClass, this.saveMode);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <A extends Attribute<B>, B> AttributeAdapter<A, B> getAdapter(Class<A> attributeClass) {
+        var data = this.registeredAttributes.get(attributeClass);
+        return (AttributeAdapter<A, B>) this.getAdapter(data);
+    }
+
+    @Override
     public <A extends Attribute<B>, B> void overrideSaveMode(Class<A> attributeClass, String saveMode) {
         this.attributeSaveModes.put(attributeClass, saveMode);
     }

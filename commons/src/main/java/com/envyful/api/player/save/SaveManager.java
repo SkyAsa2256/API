@@ -3,6 +3,7 @@ package com.envyful.api.player.save;
 import com.envyful.api.player.Attribute;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
+import com.envyful.api.player.attribute.adapter.AttributeAdapter;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
@@ -30,6 +31,28 @@ public interface SaveManager<T> {
      * @param saveMode The save mode key
      */
     void setSaveMode(String saveMode);
+
+    /**
+     *
+     * Gets the save mode for a specific attribute
+     *
+     * @param attributeClass The class of the attribute
+     * @param <A> The attribute type
+     * @param <B> The id type
+     * @return The save mode key
+     */
+    <A extends Attribute<B>, B> String getSaveMode(Class<A> attributeClass);
+
+    /**
+     *
+     * Gets the adapter for a specific attribute
+     *
+     * @param attributeClass The class of the attribute
+     * @param <A> The attribute type
+     * @param <B> The id type
+     * @return The adapter
+     */
+    <A extends Attribute<B>, B> AttributeAdapter<A, B> getAdapter(Class<A> attributeClass);
 
     /**
      *

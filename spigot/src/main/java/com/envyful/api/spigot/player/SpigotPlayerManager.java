@@ -71,15 +71,15 @@ public class SpigotPlayerManager extends AbstractPlayerManager<SpigotEnvyPlayer,
         public void onAsyncPrePlayerLogin(AsyncPlayerPreLoginEvent event) {
             var player = new SpigotEnvyPlayer(event.getUniqueId());
             cachedPlayers.put(event.getUniqueId(), player);
-
-            if (SpigotPlayerManager.this.nameStore != null) {
-                SpigotPlayerManager.this.nameStore.updateStored(player.getUniqueId(), player.getName());
-            }
         }
 
         @EventHandler(priority = EventPriority.LOWEST)
         public void onPlayerJoin(PlayerLoginEvent event) {
             cachedPlayers.get(event.getPlayer().getUniqueId()).setParent(event.getPlayer());
+
+            if (SpigotPlayerManager.this.nameStore != null) {
+                SpigotPlayerManager.this.nameStore.updateStored(event.getPlayer().getUniqueId(), event.getPlayer().getName());
+            }
         }
 
         @EventHandler(priority = EventPriority.MONITOR)

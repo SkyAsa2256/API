@@ -148,4 +148,132 @@ public class SpriteConfig {
     public String getGmaxFactorTrueFormat() {
         return this.gmaxFactorTrueFormat;
     }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+
+        private SpriteConfig config = new SpriteConfig();
+
+        public Builder name(String name) {
+            this.config.name = name;
+            return this;
+        }
+
+        public Builder lore(List<String> lore) {
+            this.config.lore = lore;
+            return this;
+        }
+
+        public Builder lore(String... lore) {
+            this.config.lore = List.of(lore);
+            return this;
+        }
+
+        public Builder addLore(String... lore) {
+            this.config.lore.addAll(List.of(lore));
+            return this;
+        }
+
+        public Builder untrdeableTrueFormat(String untrdeableTrueFormat) {
+            this.config.untrdeableTrueFormat = untrdeableTrueFormat;
+            return this;
+        }
+
+        public Builder untradeableFalseFormat(String untradeableFalseFormat) {
+            this.config.untradeableFalseFormat = untradeableFalseFormat;
+            return this;
+        }
+
+        public Builder abilityFormat(String abilityFormat) {
+            this.config.abilityFormat = abilityFormat;
+            return this;
+        }
+
+        public Builder haFormat(String haFormat) {
+            this.config.haFormat = haFormat;
+            return this;
+        }
+
+        public Builder maleFormat(String maleFormat) {
+            this.config.maleFormat = maleFormat;
+            return this;
+        }
+
+        public Builder femaleFormat(String femaleFormat) {
+            this.config.femaleFormat = femaleFormat;
+            return this;
+        }
+
+        public Builder noneFormat(String noneFormat) {
+            this.config.noneFormat = noneFormat;
+            return this;
+        }
+
+        public Builder shinyTrueFormat(String shinyTrueFormat) {
+            this.config.shinyTrueFormat = shinyTrueFormat;
+            return this;
+        }
+
+        public Builder shinyFalseFormat(String shinyFalseFormat) {
+            this.config.shinyFalseFormat = shinyFalseFormat;
+            return this;
+        }
+
+        public Builder unbreedableTrueFormat(String unbreedableTrueFormat) {
+            this.config.unbreedableTrueFormat = unbreedableTrueFormat;
+            return this;
+        }
+
+        public Builder unbreedableFalseFormat(String unbreedableFalseFormat) {
+            this.config.unbreedableFalseFormat = unbreedableFalseFormat;
+            return this;
+        }
+
+        public Builder mewClonedFormat(String mewClonedFormat) {
+            this.config.mewClonedFormat = mewClonedFormat;
+            return this;
+        }
+
+        public Builder gemmedFormat(String gemmedFormat) {
+            this.config.gemmedFormat = gemmedFormat;
+            return this;
+        }
+
+        public Builder natureFormat(String natureFormat) {
+            this.config.natureFormat = natureFormat;
+            return this;
+        }
+
+        public Builder mintNatureFormat(String mintNatureFormat) {
+            this.config.mintNatureFormat = mintNatureFormat;
+            return this;
+        }
+
+        public Builder normalIvColour(String normalIvColour) {
+            this.config.normalIvColour = normalIvColour;
+            return this;
+        }
+
+        public Builder hyperIvColour(String hyperIvColour) {
+            this.config.hyperIvColour = hyperIvColour;
+            return this;
+        }
+
+        public Builder gmaxFactorTrueFormat(String gmaxFactorTrueFormat) {
+            this.config.gmaxFactorTrueFormat = gmaxFactorTrueFormat;
+            return this;
+        }
+
+        public Builder gmaxFactorFalseFormat(String gmaxFactorFalseFormat) {
+            this.config.gmaxFactorFalseFormat = gmaxFactorFalseFormat;
+            return this;
+        }
+
+        public SpriteConfig build() {
+            return this.config;
+        }
+    }
 }

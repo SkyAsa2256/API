@@ -21,6 +21,10 @@ public class SQLiteDatabaseDetailsConfig implements DatabaseDetailsConfig {
         this.filePath = filePath;
     }
 
+    public SQLiteDatabaseDetailsConfig() {
+
+    }
+
     public static void register() {
         DatabaseDetailsRegistry.register(ID, SQLiteDatabaseDetailsConfig.class);
     }

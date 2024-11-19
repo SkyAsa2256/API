@@ -2,6 +2,8 @@ package com.envyful.api.player.attribute.adapter;
 
 import com.envyful.api.player.Attribute;
 
+import java.util.concurrent.CompletableFuture;
+
 /**
  *
  * Interface for handling the serialization of attributes
@@ -17,7 +19,7 @@ public interface AttributeAdapter<A extends Attribute<B>, B> {
      *
      * @param attribute The attribute being saved
      */
-    void save(A attribute);
+    CompletableFuture<Void> save(A attribute);
 
     /**
      *
@@ -33,14 +35,14 @@ public interface AttributeAdapter<A extends Attribute<B>, B> {
      *
      * @param attribute The attribute being deleted
      */
-    void delete(A attribute);
+    CompletableFuture<Void> delete(A attribute);
 
     /**
      *
      * Deletes all attributes
      *
      */
-    void deleteAll();
+    CompletableFuture<Void> deleteAll();
 
     /**
      *

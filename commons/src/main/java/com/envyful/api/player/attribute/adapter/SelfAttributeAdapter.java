@@ -1,6 +1,9 @@
 package com.envyful.api.player.attribute.adapter;
 
+import com.envyful.api.concurrency.UtilConcurrency;
 import com.envyful.api.player.Attribute;
+
+import java.util.concurrent.CompletableFuture;
 
 /**
  *
@@ -12,8 +15,8 @@ import com.envyful.api.player.Attribute;
 public interface SelfAttributeAdapter<A> extends AttributeAdapter<SelfAttributeAdapter<A>, A>, Attribute<A> {
 
     @Override
-    default void save(SelfAttributeAdapter<A> attribute) {
-        this.save();
+    default CompletableFuture<Void> save(SelfAttributeAdapter<A> attribute) {
+        return UtilConcurrency.runAsync(this::save);
     }
 
     void save();
@@ -26,13 +29,13 @@ public interface SelfAttributeAdapter<A> extends AttributeAdapter<SelfAttributeA
     void load();
 
     @Override
-    default void delete(SelfAttributeAdapter<A> attribute) {
-
+    default CompletableFuture<Void> delete(SelfAttributeAdapter<A> attribute) {
+        return CompletableFuture.completedFuture(null);
     }
 
     @Override
-    default void deleteAll() {
-
+    default CompletableFuture<Void> deleteAll() {
+        return CompletableFuture.completedFuture(null);
     }
 
     @Override

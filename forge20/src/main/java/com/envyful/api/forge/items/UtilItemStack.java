@@ -30,13 +30,18 @@ public class UtilItemStack {
      * @return The lore of the item
      */
     public static List<String> getLore(ItemStack itemStack) {
-        if (itemStack == null) {
+        if (itemStack == null || !itemStack.hasTag()) {
             return List.of();
         }
 
         List<String> lore = new ArrayList<>();
+        var tag = itemStack.getTag();
 
-        var currentLore = itemStack.getOrCreateTagElement("display").getList("Lore", 8);
+        if (!tag.contains("display")) {
+            return List.of();
+        }
+
+        var currentLore = itemStack.getTagElement("display").getList("Lore", 8);
 
         for (var nbtBase : currentLore) {
             if (nbtBase instanceof StringTag) {
@@ -57,13 +62,18 @@ public class UtilItemStack {
      * @return The lore of the item
      */
     public static List<Component> getRealLore(ItemStack itemStack) {
-        if (itemStack == null) {
-            return Collections.emptyList();
+        if (itemStack == null || !itemStack.hasTag()) {
+            return List.of();
         }
 
         List<Component> lore = new ArrayList<>();
+        var tag = itemStack.getTag();
 
-        ListTag currentLore = itemStack.getOrCreateTagElement("display").getList("Lore", 8);
+        if (!tag.contains("display")) {
+            return List.of();
+        }
+
+        var currentLore = itemStack.getTagElement("display").getList("Lore", 8);
 
         for (Tag nbtBase : currentLore) {
             if (nbtBase instanceof StringTag) {

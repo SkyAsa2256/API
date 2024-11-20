@@ -31,15 +31,20 @@ public class UtilItemStack {
      * @return The lore of the item
      */
     public static List<String> getLore(ItemStack itemStack) {
-        if (itemStack == null) {
-            return Collections.emptyList();
+        if (itemStack == null || !itemStack.hasTag()) {
+            return List.of();
         }
 
         List<String> lore = new ArrayList<>();
+        var tag = itemStack.getTag();
 
-        ListNBT currentLore = itemStack.getOrCreateTagElement("display").getList("Lore", 8);
+        if (!tag.contains("display")) {
+            return List.of();
+        }
 
-        for (INBT nbtBase : currentLore) {
+        var currentLore = itemStack.getTagElement("display").getList("Lore", 8);
+
+        for (var nbtBase : currentLore) {
             if (nbtBase instanceof StringNBT) {
                 lore.add(nbtBase.getAsString());
             }
@@ -58,13 +63,18 @@ public class UtilItemStack {
      * @return The lore of the item
      */
     public static List<ITextComponent> getRealLore(ItemStack itemStack) {
-        if (itemStack == null) {
-            return Collections.emptyList();
+        if (itemStack == null || !itemStack.hasTag()) {
+            return List.of();
         }
 
         List<ITextComponent> lore = new ArrayList<>();
+        var tag = itemStack.getTag();
 
-        ListNBT currentLore = itemStack.getOrCreateTagElement("display").getList("Lore", 8);
+        if (!tag.contains("display")) {
+            return List.of();
+        }
+
+        var currentLore = itemStack.getTagElement("display").getList("Lore", 8);
 
         for (INBT nbtBase : currentLore) {
             if (nbtBase instanceof StringNBT) {

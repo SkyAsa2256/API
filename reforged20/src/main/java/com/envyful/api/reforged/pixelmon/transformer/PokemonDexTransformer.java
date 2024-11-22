@@ -4,6 +4,11 @@ import com.envyful.api.text.parse.SimplePlaceholder;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.pokemon.species.Species;
 
+/**
+ *
+ * Transformer that replaces %pokedex% with the dex number of the Pokemon
+ *
+ */
 public class PokemonDexTransformer implements SimplePlaceholder {
 
     private final int ndex;

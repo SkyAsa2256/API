@@ -1,6 +1,6 @@
 package com.envyful.api.forge.items;
 
-import com.envyful.api.forge.chat.UtilChatColour;
+import com.envyful.api.platform.PlatformProxy;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -100,7 +100,7 @@ public class ItemBuilder implements Cloneable {
             return this;
         }
 
-        return this.name(UtilChatColour.colour(name));
+        return this.name(PlatformProxy.<ITextComponent>parse(name));
     }
 
     /**

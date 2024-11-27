@@ -1,8 +1,8 @@
 package com.envyful.api.forge.player.util;
 
 import com.envyful.api.config.ConfigToast;
-import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.forge.config.UtilConfigItem;
+import com.envyful.api.platform.PlatformProxy;
 import com.envyful.api.text.Placeholder;
 import net.minecraft.advancements.*;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -28,7 +28,7 @@ public class UtilToast {
 
     public static void sendToast(ServerPlayerEntity player, ConfigToast toast, Placeholder... placeholders) {
         sendToast(player, FrameType.valueOf(toast.getType()),
-                UtilChatColour.colour(toast.getMessage(), placeholders),
+                PlatformProxy.<ITextComponent>parse(toast.getMessage(), placeholders).get(0),
                 UtilConfigItem.fromConfigItem(toast.getItem(), placeholders));
     }
 

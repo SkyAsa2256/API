@@ -8,7 +8,6 @@ import com.envyful.api.command.exception.CommandParseException;
 import com.envyful.api.command.injector.TabCompleter;
 import com.envyful.api.command.sender.SenderTypeFactory;
 import com.envyful.api.concurrency.UtilLogger;
-import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.forge.command.command.ForgePlatformCommand;
 import com.envyful.api.forge.command.command.sender.ConsoleSenderType;
 import com.envyful.api.forge.command.command.sender.ForgePlayerSenderType;
@@ -20,6 +19,7 @@ import com.envyful.api.forge.command.parser.ForgeAnnotationCommandParser;
 import com.envyful.api.forge.player.ForgeEnvyPlayer;
 import com.envyful.api.forge.player.ForgePlayerManager;
 import com.envyful.api.forge.player.util.UtilPlayer;
+import com.envyful.api.platform.PlatformProxy;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -76,7 +76,7 @@ public class ForgeCommandFactory extends InjectedCommandFactory<CommandDispatche
                 var player = playerManager.getOnlinePlayer(args[0]);
 
                 if (player == null) {
-                    sender.sendMessage(UtilChatColour.colour("&c&l(!) &cCannot find player with name " + args[0]), Util.NIL_UUID);
+                    sender.sendMessage(PlatformProxy.parse("&c&l(!) &cCannot find player with name " + args[0]), Util.NIL_UUID);
                 }
 
                 return player;

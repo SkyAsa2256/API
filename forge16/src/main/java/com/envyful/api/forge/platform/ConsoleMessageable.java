@@ -1,7 +1,7 @@
 package com.envyful.api.forge.platform;
 
-import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.platform.Messageable;
+import com.envyful.api.platform.PlatformProxy;
 import net.minecraft.command.ICommandSource;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
@@ -30,7 +30,7 @@ public class ConsoleMessageable implements Messageable<ICommandSource> {
     public void message(Object... messages) {
         for (Object message : messages) {
             if (message instanceof String) {
-                this.source.sendMessage(UtilChatColour.colour((String) message), Util.NIL_UUID);
+                this.source.sendMessage(PlatformProxy.parse((String) message), Util.NIL_UUID);
             } else if (message instanceof ITextComponent) {
                 this.source.sendMessage((ITextComponent) message, Util.NIL_UUID);
             } else if (message instanceof List) {

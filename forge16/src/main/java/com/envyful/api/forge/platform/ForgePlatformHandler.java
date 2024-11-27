@@ -4,10 +4,10 @@ import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.config.ConfigToast;
 import com.envyful.api.forge.InitializationTask;
 import com.envyful.api.forge.Initialized;
-import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.forge.player.util.UtilToast;
 import com.envyful.api.forge.server.UtilForgeServer;
 import com.envyful.api.platform.PlatformHandler;
+import com.envyful.api.platform.PlatformProxy;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
@@ -17,6 +17,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.Util;
 import net.minecraft.util.concurrent.TickDelayedTask;
 import net.minecraft.util.text.ChatType;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.forgespi.language.ModFileScanData;
@@ -88,14 +89,18 @@ public class ForgePlatformHandler implements PlatformHandler<ICommandSource> {
 
     @Override
     public void broadcastMessage(Collection<String> message, Placeholder... placeholders) {
-        for (var parsedMessage : UtilChatColour.colour(message, placeholders)) {
+        List<ITextComponent> components = PlatformProxy.parse(message, placeholders);
+
+        for (var parsedMessage : components) {
             ServerLifecycleHooks.getCurrentServer().getPlayerList().broadcastMessage(parsedMessage, ChatType.SYSTEM, Util.NIL_UUID);
         }
     }
 
     @Override
     public void sendMessage(ICommandSource player, Collection<String> message, Placeholder... placeholders) {
-        for (var parsedMessage : UtilChatColour.colour(message, placeholders)) {
+        List<ITextComponent> components = PlatformProxy.parse(message, placeholders);
+
+        for (var parsedMessage : components) {
             player.sendMessage(parsedMessage, Util.NIL_UUID);
         }
     }

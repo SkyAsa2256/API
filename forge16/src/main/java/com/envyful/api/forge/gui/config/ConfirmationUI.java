@@ -3,7 +3,6 @@ package com.envyful.api.forge.gui.config;
 import com.envyful.api.config.type.ConfigInterface;
 import com.envyful.api.config.type.ConfigItem;
 import com.envyful.api.config.type.ExtendedConfigItem;
-import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.forge.config.UtilConfigInterface;
 import com.envyful.api.forge.config.UtilConfigItem;
 import com.envyful.api.forge.player.ForgeEnvyPlayer;
@@ -102,7 +101,7 @@ public class ConfirmationUI {
                 .setPlayerManager(PlatformProxy.getPlayerManager())
                 .addPane(pane)
                 .height(this.guiSettings.getHeight())
-                .title(UtilChatColour.colour(this.guiSettings.getTitle()))
+                .title(PlatformProxy.parse(this.guiSettings.getTitle(), placeholders).get(0))
                 .build().open(player);
     }
 

@@ -1,16 +1,14 @@
 package com.envyful.api.reforged.config;
 
-import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.forge.config.ConfigCost;
+import com.envyful.api.platform.PlatformProxy;
 import com.envyful.api.text.Placeholder;
-import com.envyful.api.text.PlaceholderFactory;
 import com.pixelmonmod.pixelmon.api.economy.BankAccount;
 import com.pixelmonmod.pixelmon.api.economy.BankAccountProxy;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.Util;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
-import java.util.Collections;
+import java.util.List;
 
 @ConfigSerializable
 public class MoneyConfigCost implements ConfigCost {
@@ -38,10 +36,7 @@ public class MoneyConfigCost implements ConfigCost {
     public void take(ServerPlayerEntity player, Placeholder... placeholders) {
         BankAccount bankAccount = BankAccountProxy.getBankAccountUnsafe(player);
         bankAccount.take(this.amount);
-
-        for (String handlePlaceholder : PlaceholderFactory.handlePlaceholders(Collections.singletonList(this.successMessage), placeholders)) {
-            player.sendMessage(UtilChatColour.colour(handlePlaceholder), Util.NIL_UUID);
-        }
+        PlatformProxy.sendMessage(player, List.of(this.successMessage), placeholders);
     }
 
     @Override

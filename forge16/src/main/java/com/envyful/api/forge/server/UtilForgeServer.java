@@ -1,8 +1,7 @@
 package com.envyful.api.forge.server;
 
-import com.envyful.api.forge.chat.UtilChatColour;
+import com.envyful.api.platform.PlatformProxy;
 import com.envyful.api.text.Placeholder;
-import com.envyful.api.text.PlaceholderFactory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.ChatType;
@@ -10,14 +9,15 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 /**
  *
  * Static utility class for handling forge server function
  *
+ * @deprecated Use {@link com.envyful.api.platform.PlatformProxy} instead
  */
+@Deprecated
 public class UtilForgeServer {
 
     /**
@@ -73,17 +73,7 @@ public class UtilForgeServer {
      * @param placeholders Placeholders
      */
     public static void broadcast(Collection<String> messages, Placeholder... placeholders) {
-        for (String message : messages) {
-            List<String> parsedMessage = PlaceholderFactory.handlePlaceholders(Collections.singletonList(message), placeholders);
-
-            for (String parsed : parsedMessage) {
-                ServerLifecycleHooks.getCurrentServer().getPlayerList().broadcastMessage(
-                        UtilChatColour.colour(parsed),
-                        ChatType.CHAT,
-                        Util.NIL_UUID
-                );
-            }
-        }
+        PlatformProxy.broadcastMessage(messages, placeholders);
     }
 
     /**

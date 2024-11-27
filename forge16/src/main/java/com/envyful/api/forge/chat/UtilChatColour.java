@@ -9,14 +9,15 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  *
  * Static utility methods relating to colour codes
  *
+ * @deprecated Use {@link com.envyful.api.platform.PlatformProxy#parse(String, Placeholder...)} instead
  */
+@Deprecated
 public class UtilChatColour {
 
     public static final Pattern COLOUR_PATTERN = Pattern.compile("&(#\\w{6}|[\\da-zA-Z])");
@@ -40,8 +41,9 @@ public class UtilChatColour {
             } catch (Exception ignored) {}
         }
 
-        Matcher matcher = COLOUR_PATTERN.matcher(text);
-        IFormattableTextComponent textComponent = new StringTextComponent("");
+        var matcher = COLOUR_PATTERN.matcher(text);
+        var textComponent = new StringTextComponent("");
+
         TextFormatting nextApply = null;
         int lastEnd = 0;
         Color lastColor = null;

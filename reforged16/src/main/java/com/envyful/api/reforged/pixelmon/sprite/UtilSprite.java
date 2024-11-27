@@ -1,6 +1,6 @@
 package com.envyful.api.reforged.pixelmon.sprite;
 
-import com.envyful.api.forge.chat.UtilChatColour;
+import com.envyful.api.platform.PlatformProxy;
 import com.envyful.api.reforged.pixelmon.config.SpriteConfig;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
@@ -56,7 +56,7 @@ public class UtilSprite {
             lore.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(s)));
         }
 
-        ITextComponent colour = PlaceholderFactory.handlePlaceholders(Collections.singletonList(config.getName()), UtilChatColour::colour, pokemonPlaceholders).get(0);
+        ITextComponent colour = PlaceholderFactory.handlePlaceholders(Collections.singletonList(config.getName()), PlatformProxy::<ITextComponent>parse, pokemonPlaceholders).get(0);
 
         if (colour instanceof IFormattableTextComponent) {
             colour = ((IFormattableTextComponent) colour).setStyle(colour.getStyle().withItalic(false));
@@ -89,7 +89,7 @@ public class UtilSprite {
     }
 
     public static List<ITextComponent> getPokemonDesc(SpriteConfig config, List<Placeholder> placeholders) {
-        return PlaceholderFactory.handlePlaceholders(config.getLore(), UtilChatColour::colour, placeholders);
+        return PlaceholderFactory.handlePlaceholders(config.getLore(), PlatformProxy::parse, placeholders);
     }
 
     public static String replacePokemonPlaceholders(String line, Pokemon pokemon, SpriteConfig config) {

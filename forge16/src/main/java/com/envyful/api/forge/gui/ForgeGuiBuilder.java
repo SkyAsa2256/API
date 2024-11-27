@@ -1,12 +1,12 @@
 package com.envyful.api.forge.gui;
 
-import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.forge.gui.close.ForgeCloseConsumer;
 import com.envyful.api.forge.player.ForgeEnvyPlayer;
 import com.envyful.api.gui.Gui;
 import com.envyful.api.gui.close.CloseConsumer;
 import com.envyful.api.gui.factory.GuiFactory;
 import com.envyful.api.gui.pane.Pane;
+import com.envyful.api.platform.PlatformProxy;
 import com.envyful.api.player.PlayerManager;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.text.ITextComponent;
@@ -34,7 +34,7 @@ public class ForgeGuiBuilder implements Gui.Builder {
         if (title instanceof ITextComponent) {
             this.title = (ITextComponent) title;
         } else if (title instanceof String) {
-            this.title = UtilChatColour.colour((String) title);
+            this.title = PlatformProxy.parse((String) title);
         } else {
             throw new IllegalArgumentException("Unsupported title type given");
         }

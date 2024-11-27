@@ -10,6 +10,7 @@ import com.envyful.api.text.Placeholder;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  *
@@ -252,5 +253,26 @@ public class PlatformProxy {
     @SuppressWarnings("unchecked")
     public static <T> List<T> parse(List<String> text, Placeholder... placeholders) {
         return (List<T>) textFormatter.parse(text, placeholders);
+    }
+
+    public static <T> T flatParse(String text, Placeholder... placeholders) {
+        List<T> parsed = parse(text, placeholders);
+
+        if (parsed.isEmpty() || parsed.size() > 1) {
+            return null;
+        }
+
+        return parsed.get(0);
+    }
+
+    public static <T> T flatParse(String text, Consumer<String> errorHandler, Placeholder... placeholders) {
+        List<T> parsed = parse(text, placeholders);
+
+        if (parsed.isEmpty() || parsed.size() > 1) {
+            errorHandler.accept(text);
+            return null;
+        }
+
+        return parsed.get(0);
     }
 }

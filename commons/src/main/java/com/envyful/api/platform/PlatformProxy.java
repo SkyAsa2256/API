@@ -275,4 +275,17 @@ public class PlatformProxy {
 
         return parsed.get(0);
     }
+
+    @SuppressWarnings("unchecked")
+    public static <T> String unresolve(T object) {
+        return unresolve((TextFormatter<T>) textFormatter, object);
+    }
+
+    private static <T> String unresolve(TextFormatter<T> textFormatter, T object) {
+        return textFormatter.unresolve(object);
+    }
+
+    public static String strip(String text) {
+        return textFormatter.strip(text);
+    }
 }

@@ -18,6 +18,16 @@ public interface TextFormatter<T> {
         public String parse(String text) {
             return text;
         }
+
+        @Override
+        public String unresolve(String text) {
+            return text;
+        }
+
+        @Override
+        public String strip(String text) {
+            return text;
+        }
     };
 
     default List<T> parse(String text, Placeholder... placeholders) {
@@ -31,6 +41,10 @@ public interface TextFormatter<T> {
     List<T> parse(List<String> text, Placeholder... placeholders);
 
     T parse(String text);
+
+    String unresolve(T text);
+
+    String strip(String text);
 
     static TextFormatter<String> plain() {
         return PLAIN;

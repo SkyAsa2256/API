@@ -22,6 +22,16 @@ public class ComponentTextFormatter implements TextFormatter<Component> {
         return UtilChatColour.colour(text);
     }
 
+    @Override
+    public String unresolve(Component text) {
+        return text.getString();
+    }
+
+    @Override
+    public String strip(String text) {
+        return UtilChatColour.stripColor(text);
+    }
+
     public static ComponentTextFormatter getInstance() {
         return INSTANCE;
     }

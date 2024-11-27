@@ -3,12 +3,12 @@ package com.envyful.api.forge.config;
 import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.config.type.ConfigItem;
 import com.envyful.api.config.type.ExtendedConfigItem;
-import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.forge.items.ItemBuilder;
 import com.envyful.api.forge.items.ItemFlag;
 import com.envyful.api.forge.player.ForgeEnvyPlayer;
 import com.envyful.api.forge.player.util.UtilPlayer;
 import com.envyful.api.gui.pane.Pane;
+import com.envyful.api.platform.PlatformProxy;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
 import com.envyful.api.type.Pair;
@@ -16,6 +16,7 @@ import com.envyful.api.type.UtilParse;
 import net.minecraft.ResourceLocationException;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.*;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
@@ -98,11 +99,11 @@ public class UtilConfigItem {
                 .type(fromNameOrId(type.get(0)))
                 .amount(configItem.getAmount(placeholders));
 
-        itemBuilder.lore(PlaceholderFactory.handlePlaceholders(configItem.getLore(), UtilChatColour::colour, placeholders));
+        itemBuilder.lore(PlaceholderFactory.handlePlaceholders(configItem.getLore(), PlatformProxy::<Component>parse, placeholders));
         itemBuilder.itemFlags(PlaceholderFactory.handlePlaceholders(configItem.getFlags(), s -> ItemFlag.valueOf(s.toUpperCase(Locale.ROOT)), placeholders));
 
         if (!name.isEmpty()) {
-            itemBuilder.name(PlaceholderFactory.handlePlaceholders(Collections.singletonList(name), UtilChatColour::colour, placeholders).get(0));
+            itemBuilder.name(PlaceholderFactory.handlePlaceholders(Collections.singletonList(name), PlatformProxy::<Component>parse, placeholders).get(0));
         }
 
         for (ConfigItem.EnchantData value : configItem.getEnchants().values()) {

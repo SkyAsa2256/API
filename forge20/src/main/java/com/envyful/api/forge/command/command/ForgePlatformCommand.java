@@ -3,8 +3,9 @@ package com.envyful.api.forge.command.command;
 import com.envyful.api.command.PlatformCommand;
 import com.envyful.api.command.PlatformCommandExecutor;
 import com.envyful.api.command.tab.TabHandler;
-import com.envyful.api.forge.chat.UtilChatColour;
+import com.envyful.api.platform.PlatformProxy;
 import net.minecraft.commands.CommandSource;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
 import java.util.List;
@@ -20,7 +21,9 @@ public class ForgePlatformCommand extends PlatformCommand<CommandSource> {
 
     @Override
     protected void sendSystemMessage(CommandSource sender, List<String> message) {
-        for (var encodedMessage : UtilChatColour.colour(message)) {
+        List<Component> components = PlatformProxy.parse(message);
+
+        for (var encodedMessage : components) {
             sender.sendSystemMessage(encodedMessage);
         }
     }

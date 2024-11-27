@@ -2,7 +2,6 @@ package com.envyful.api.forge.gui.type;
 
 import com.envyful.api.config.type.ConfigInterface;
 import com.envyful.api.config.type.ExtendedConfigItem;
-import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.forge.config.UtilConfigInterface;
 import com.envyful.api.forge.config.UtilConfigItem;
 import com.envyful.api.forge.gui.item.PositionableItem;
@@ -10,6 +9,7 @@ import com.envyful.api.forge.player.ForgeEnvyPlayer;
 import com.envyful.api.gui.factory.GuiFactory;
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
+import com.envyful.api.platform.PlatformProxy;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.text.Placeholder;
@@ -80,7 +80,7 @@ public class TrueFalseSelectionUI {
                 .setPlayerManager(config.playerManager)
                 .addPane(pane)
                 .height(config.config.guiSettings.getHeight())
-                .title(UtilChatColour.colour(config.config.guiSettings.getTitle()))
+                .title(PlatformProxy.parse(config.config.guiSettings.getTitle(), placeholders).get(0))
                 .build().open(config.player);
     }
 

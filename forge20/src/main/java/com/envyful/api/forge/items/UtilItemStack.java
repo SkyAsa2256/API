@@ -1,6 +1,6 @@
 package com.envyful.api.forge.items;
 
-import com.envyful.api.forge.chat.UtilChatColour;
+import com.envyful.api.platform.PlatformProxy;
 import com.envyful.api.text.Placeholder;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -98,12 +98,15 @@ public class UtilItemStack {
         var newLore = new ListTag();
 
         lore.forEach(s -> {
-            var component = UtilChatColour.colour(s, placeholders);
-            if (component instanceof MutableComponent) {
-                component = ((MutableComponent) component).setStyle(component.getStyle().withItalic(false));
-            }
+            List<Component> components = PlatformProxy.parse(s, placeholders);
 
-            newLore.add(StringTag.valueOf(Component.Serializer.toJson(component)));
+            for (var component : components) {
+                if (component instanceof MutableComponent) {
+                    component = ((MutableComponent) component).setStyle(component.getStyle().withItalic(false));
+                }
+
+                newLore.add(StringTag.valueOf(Component.Serializer.toJson(component)));
+            }
         });
 
         display.put("Lore", newLore);

@@ -7,7 +7,6 @@ import com.envyful.api.command.PlatformCommand;
 import com.envyful.api.command.exception.CommandParseException;
 import com.envyful.api.command.sender.SenderTypeFactory;
 import com.envyful.api.concurrency.UtilLogger;
-import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.forge.command.command.ForgePlatformCommand;
 import com.envyful.api.forge.command.command.sender.ConsoleSenderType;
 import com.envyful.api.forge.command.command.sender.ForgePlayerSenderType;
@@ -75,7 +74,7 @@ public class ForgeCommandFactory extends InjectedCommandFactory<CommandDispatche
                 var player = playerManager.getOnlinePlayer(args[0]);
 
                 if (player == null) {
-                    sender.sendSystemMessage(UtilChatColour.colour("&c&l(!) &cCannot find player with name " + args[0]));
+                    sender.sendSystemMessage(PlatformProxy.parse("&c&l(!) &cCannot find player with name " + args[0]));
                 }
 
                 return player;

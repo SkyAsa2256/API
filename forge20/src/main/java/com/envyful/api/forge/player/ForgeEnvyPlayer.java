@@ -1,8 +1,8 @@
 package com.envyful.api.forge.player;
 
 import com.envyful.api.config.ConfigLocation;
-import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.forge.world.UtilWorld;
+import com.envyful.api.platform.PlatformProxy;
 import com.envyful.api.player.AbstractEnvyPlayer;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.text.Placeholder;
@@ -45,7 +45,7 @@ public class ForgeEnvyPlayer extends AbstractEnvyPlayer<ServerPlayer> {
     public void message(Object... messages) {
         for (Object message : messages) {
             if (message instanceof String) {
-                this.getParent().sendSystemMessage(UtilChatColour.colour((String) message));
+                this.getParent().sendSystemMessage(PlatformProxy.parse((String) message));
             } else if (message instanceof Component) {
                 this.getParent().sendSystemMessage((Component) message);
             } else if (message instanceof List) {
@@ -60,7 +60,7 @@ public class ForgeEnvyPlayer extends AbstractEnvyPlayer<ServerPlayer> {
 
     @Override
     public void actionBar(String message, Placeholder... placeholders) {
-        this.actionBar(UtilChatColour.colour(message, placeholders));
+        this.actionBar(PlatformProxy.parse(message, placeholders).get(0));
     }
 
     @Override

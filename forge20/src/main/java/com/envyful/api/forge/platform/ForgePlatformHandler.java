@@ -3,15 +3,16 @@ package com.envyful.api.forge.platform;
 import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.config.ConfigToast;
 import com.envyful.api.forge.InitializationTask;
-import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.forge.player.util.UtilPlayer;
 import com.envyful.api.forge.player.util.UtilToast;
 import com.envyful.api.forge.server.UtilForgeServer;
 import com.envyful.api.platform.PlatformHandler;
+import com.envyful.api.platform.PlatformProxy;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
 import net.minecraft.commands.CommandSource;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -96,15 +97,19 @@ public class ForgePlatformHandler implements PlatformHandler<CommandSource> {
 
     @Override
     public void broadcastMessage(Collection<String> message, Placeholder... placeholders) {
-        for (var parsedMessage : UtilChatColour.colour(message, placeholders)) {
-            ServerLifecycleHooks.getCurrentServer().getPlayerList().broadcastSystemMessage(parsedMessage, false);
+        List<Component> components = PlatformProxy.parse(message, placeholders);
+
+        for (var encodedMessage : components) {
+            ServerLifecycleHooks.getCurrentServer().getPlayerList().broadcastSystemMessage(encodedMessage, false);
         }
     }
 
     @Override
     public void sendMessage(CommandSource player, Collection<String> message, Placeholder... placeholders) {
-        for (var parsedMessage : UtilChatColour.colour(message, placeholders)) {
-            player.sendSystemMessage(parsedMessage);
+        List<Component> components = PlatformProxy.parse(message, placeholders);
+
+        for (var encodedMessage : components) {
+            player.sendSystemMessage(encodedMessage);
         }
     }
 

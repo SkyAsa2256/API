@@ -1,21 +1,21 @@
 package com.envyful.api.forge.server;
 
-import com.envyful.api.forge.chat.UtilChatColour;
+import com.envyful.api.platform.PlatformProxy;
 import com.envyful.api.text.Placeholder;
-import com.envyful.api.text.PlaceholderFactory;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 /**
  *
  * Static utility class for handling forge server function
  *
+ * @deprecated Use {@link com.envyful.api.platform.PlatformProxy}
  */
+@Deprecated
 public class UtilForgeServer {
 
     /**
@@ -71,15 +71,7 @@ public class UtilForgeServer {
      * @param placeholders Placeholders
      */
     public static void broadcast(Collection<String> messages, Placeholder... placeholders) {
-        for (String message : messages) {
-            List<String> parsedMessage = PlaceholderFactory.handlePlaceholders(Collections.singletonList(message), placeholders);
-
-            for (String parsed : parsedMessage) {
-                ServerLifecycleHooks.getCurrentServer().getPlayerList().broadcastSystemMessage(
-                        UtilChatColour.colour(parsed), false
-                );
-            }
-        }
+        PlatformProxy.broadcastMessage(messages, placeholders);
     }
 
     /**

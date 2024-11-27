@@ -20,7 +20,9 @@ import java.util.regex.Pattern;
  *
  * Static utility methods relating to colour codes
  *
+ * @deprecated Use {@link com.envyful.api.platform.PlatformProxy#parse(String, Placeholder...)} instead
  */
+@Deprecated
 public class UtilChatColour {
 
     public static final Pattern COLOUR_PATTERN = Pattern.compile("&(#\\w{6}|[\\da-zA-Z])");

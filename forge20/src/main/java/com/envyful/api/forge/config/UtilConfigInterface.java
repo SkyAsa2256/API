@@ -3,7 +3,6 @@ package com.envyful.api.forge.config;
 import com.envyful.api.config.type.ConfigInterface;
 import com.envyful.api.config.type.ConfigItem;
 import com.envyful.api.config.type.PaginatedConfigInterface;
-import com.envyful.api.forge.chat.UtilChatColour;
 import com.envyful.api.forge.gui.close.ForgeCloseConsumer;
 import com.envyful.api.forge.player.ForgeEnvyPlayer;
 import com.envyful.api.forge.player.ForgePlayerManager;
@@ -11,6 +10,7 @@ import com.envyful.api.gui.factory.GuiFactory;
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.math.TriConsumer;
+import com.envyful.api.platform.PlatformProxy;
 import com.envyful.api.text.Placeholder;
 
 import java.util.ArrayList;
@@ -197,7 +197,7 @@ public class UtilConfigInterface {
                     .addPane(pane)
                     .height(this.configInterface.getHeight())
                     .closeConsumer(this.closeConsumer)
-                    .title(UtilChatColour.colour(this.configInterface.getTitle()))
+                    .title(PlatformProxy.parse(this.configInterface.getTitle(), placeholders).get(0))
                     .build().open(player);
         }
 

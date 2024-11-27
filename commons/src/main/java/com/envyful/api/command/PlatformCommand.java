@@ -7,7 +7,6 @@ import com.envyful.api.text.UtilString;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
@@ -130,15 +129,15 @@ public abstract class PlatformCommand<C> {
     public CompletableFuture<List<String>> getTabCompletions(C sender, String[] args) {
         if (sender == null) {
             UtilLogger.logger().ifPresent(logger -> logger.error("No sender provided for command {}", this.name));
-            return CompletableFuture.completedFuture(Collections.emptyList());
+            return CompletableFuture.completedFuture(new ArrayList<>());
         }
 
         if (args == null) {
             UtilLogger.logger().ifPresent(logger -> logger.error("No args provided for command {}", this.name));
-            return CompletableFuture.completedFuture(Collections.emptyList());
+            return CompletableFuture.completedFuture(new ArrayList<>());
         }
 
-        return CompletableFuture.supplyAsync(Collections::<String>emptyList, UtilConcurrency.SCHEDULED_EXECUTOR_SERVICE)
+        return CompletableFuture.supplyAsync(ArrayList::new, UtilConcurrency.SCHEDULED_EXECUTOR_SERVICE)
                 .thenCompose(ignore -> {
                     if (args.length > 0) {
                         for (PlatformCommand<C> subCommand : this.subCommands) {

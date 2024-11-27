@@ -3,6 +3,7 @@ package com.envyful.api.platform;
 import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.config.ConfigToast;
 import com.envyful.api.config.database.DatabaseDetailsRegistry;
+import com.envyful.api.platform.text.TextFormatter;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.text.Placeholder;
@@ -26,6 +27,7 @@ public class PlatformProxy {
 
     private static PlatformHandler handler;
     private static PlayerManager<?, ?> playerManager;
+    private static TextFormatter<?> textFormatter;
 
     /**
      *
@@ -45,6 +47,10 @@ public class PlatformProxy {
      */
     public static void setPlayerManager(PlayerManager<?, ?> playerManager) {
         PlatformProxy.playerManager = playerManager;
+    }
+
+    public static void setTextFormatter(TextFormatter<?> textFormatter) {
+        PlatformProxy.textFormatter = textFormatter;
     }
 
     /**
@@ -227,5 +233,24 @@ public class PlatformProxy {
         }
 
         return handler.getTPS();
+    }
+
+    public static <T> T parse(String text) {
+        return (T) textFormatter.parse(text);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> List<T> parse(String text, Placeholder... placeholders) {
+        return (List<T>) textFormatter.parse(text, placeholders);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> List<T> parse(Collection<String> text, Placeholder... placeholders) {
+        return (List<T>) textFormatter.parse(text, placeholders);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> List<T> parse(List<String> text, Placeholder... placeholders) {
+        return (List<T>) textFormatter.parse(text, placeholders);
     }
 }

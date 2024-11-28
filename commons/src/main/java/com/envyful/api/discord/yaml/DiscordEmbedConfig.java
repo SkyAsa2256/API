@@ -64,7 +64,10 @@ public class DiscordEmbedConfig extends AbstractYamlConfig {
         Color writtenColor = this.color.getColor();
 
         if (writtenColor != null) {
-            jsonEmbed.addProperty("color", writtenColor.getRGB());
+            int rgb = writtenColor.getRed();
+            rgb = (rgb << 8) + writtenColor.getGreen();
+            rgb = (rgb << 8) + writtenColor.getBlue();
+            jsonEmbed.addProperty("color", rgb);
         }
 
         if (writtenFooter != null) {

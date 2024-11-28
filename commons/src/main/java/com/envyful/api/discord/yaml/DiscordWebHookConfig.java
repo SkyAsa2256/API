@@ -1,5 +1,6 @@
 package com.envyful.api.discord.yaml;
 
+import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.config.yaml.AbstractYamlConfig;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
@@ -9,7 +10,6 @@ import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -59,23 +59,22 @@ public class DiscordWebHookConfig extends AbstractYamlConfig {
             );
         }
 
-        JsonObject json = this.toJson();
-        String text = PlaceholderFactory.handlePlaceholders(Collections.singletonList(json.toString()), placeholders).get(0);
-
-        URL url = new URL(this.url);
-        HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+        var json = this.toJson();
+        var text = PlaceholderFactory.handlePlaceholders(Collections.singletonList(json.toString()), placeholders).get(0);
+        var url = new URL(this.url);
+        var connection = (HttpsURLConnection) url.openConnection();
         connection.addRequestProperty("Content-Type", "application/json");
         connection.addRequestProperty("User-Agent", "EnvyWare");
         connection.setDoOutput(true);
         connection.setRequestMethod("POST");
 
-        OutputStream stream = connection.getOutputStream();
-        stream.write(text.getBytes(StandardCharsets.UTF_8));
-        stream.flush();
-        stream.close();
-
-        connection.getInputStream().close();
-        connection.disconnect();
+        try (var outputStream = connection.getOutputStream()) {
+            outputStream.write(text.getBytes(StandardCharsets.UTF_8));
+            connection.getInputStream().close();
+            connection.disconnect();
+        } catch (IOException e) {
+            UtilLogger.logger().ifPresent(logger -> logger.error("Error executing Discord WebHook: '" + this.url + "' JSON: '" + text + "'", e));
+        }
     }
 
     public JsonObject toJson() {

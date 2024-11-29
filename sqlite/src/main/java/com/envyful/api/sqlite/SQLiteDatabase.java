@@ -1,12 +1,12 @@
 package com.envyful.api.sqlite;
 
+import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.database.Database;
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
+import com.envyful.api.database.sql.NonCloseableConnection;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -15,42 +15,23 @@ import java.util.concurrent.TimeUnit;
  */
 public class SQLiteDatabase implements Database {
 
-    private final HikariDataSource hikari;
+    private final NonCloseableConnection connection;
 
-    public SQLiteDatabase(String filePath) {
-        var config = new HikariConfig();
-
-        config.setMaximumPoolSize(1);
-        config.setPoolName("SQLITE");
-        config.setJdbcUrl("jdbc:sqlite:" + filePath);
-        config.addDataSourceProperty("databaseName", "envyware");
-        config.addDataSourceProperty("cachePrepStmts", true);
-        config.addDataSourceProperty("prepStmtCacheSize", 250);
-        config.addDataSourceProperty("prepStmtCacheSqlLimit", 2048);
-        config.addDataSourceProperty("useServerPrepStmts", true);
-        config.addDataSourceProperty("cacheCallableStmts", true);
-        config.addDataSourceProperty("alwaysSendSetIsolation", false);
-        config.addDataSourceProperty("cacheServerConfiguration", true);
-        config.addDataSourceProperty("elideSetAutoCommits", true);
-        config.addDataSourceProperty("useLocalSessionState", true);
-        config.addDataSourceProperty("characterEncoding","utf8");
-        config.addDataSourceProperty("useUnicode","true");
-        config.addDataSourceProperty("maxLifetime", TimeUnit.SECONDS.toMillis(30));
-        config.setMaxLifetime(TimeUnit.SECONDS.toMillis(30));
-        config.setConnectionTimeout(TimeUnit.SECONDS.toMillis(30));
-        config.setLeakDetectionThreshold(TimeUnit.SECONDS.toMillis(60));
-        config.setConnectionTestQuery("/* Ping */ SELECT 1");
-
-        this.hikari = new HikariDataSource(config);
+    public SQLiteDatabase(String filePath) throws SQLException {
+        this.connection = new NonCloseableConnection(DriverManager.getConnection("jdbc:sqlite:" + filePath));
     }
 
     @Override
     public Connection getConnection() throws SQLException {
-        return this.hikari.getConnection();
+        return this.connection;
     }
 
     @Override
     public void close() {
-        this.hikari.close();
+        try {
+            this.connection.forceClose();
+        } catch (SQLException e) {
+            UtilLogger.logger().ifPresent(logger -> logger.error("Failed to close H2 connection", e));
+        }
     }
 }

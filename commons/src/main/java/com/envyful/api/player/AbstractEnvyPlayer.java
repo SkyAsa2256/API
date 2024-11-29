@@ -116,7 +116,13 @@ public abstract class AbstractEnvyPlayer<T> implements EnvyPlayer<T> {
     @Override
     @SuppressWarnings("unchecked")
     public <A extends Attribute<B>, B> A removeAttribute(Class<A> attributeClass) {
-        return (A) this.attributes.remove(attributeClass);
+        var instance = this.attributes.remove(attributeClass);
+
+        if (instance == null) {
+            return null;
+        }
+
+        return (A) instance.getAttributeNow();
     }
 
     @Override

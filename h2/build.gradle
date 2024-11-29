@@ -8,7 +8,7 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter:5.7.1'
 
     implementation group: 'org.spongepowered', name: 'configurate-yaml', version: '4.2.0-COMMENTS'
-    implementation 'com.h2database:h2:2.3.232'
+    implementation group: 'com.h2database', name: 'h2', version: '1.4.200'
     implementation group: 'com.zaxxer', name: 'HikariCP', version: '4.0.1'
 
     implementation project(':commons')

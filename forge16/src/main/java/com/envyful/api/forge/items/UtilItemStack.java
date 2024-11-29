@@ -39,7 +39,7 @@ public class UtilItemStack {
         var tag = itemStack.getTag();
 
         if (!tag.contains("display")) {
-            return List.of();
+            return lore;
         }
 
         var currentLore = itemStack.getTagElement("display").getList("Lore", 8);
@@ -71,7 +71,7 @@ public class UtilItemStack {
         var tag = itemStack.getTag();
 
         if (!tag.contains("display")) {
-            return List.of();
+            return lore;
         }
 
         var currentLore = itemStack.getTagElement("display").getList("Lore", 8);

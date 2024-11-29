@@ -25,6 +25,7 @@ include 'spigot'
 include 'velocity'
 include 'jexl'
 include 'sqlite'
+include 'h2'
 //include 'fabric'
 
 // Mods

@@ -31,7 +31,7 @@ public class UtilItemStack {
      */
     public static List<String> getLore(ItemStack itemStack) {
         if (itemStack == null || !itemStack.hasTag()) {
-            return List.of();
+            return new ArrayList<>();
         }
 
         List<String> lore = new ArrayList<>();
@@ -63,7 +63,7 @@ public class UtilItemStack {
      */
     public static List<Component> getRealLore(ItemStack itemStack) {
         if (itemStack == null || !itemStack.hasTag()) {
-            return List.of();
+            return new ArrayList<>();
         }
 
         List<Component> lore = new ArrayList<>();

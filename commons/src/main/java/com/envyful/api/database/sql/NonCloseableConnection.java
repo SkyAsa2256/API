@@ -15,7 +15,7 @@ public class NonCloseableConnection implements Connection {
 
     /**
      *
-     * Closes the connection - required because {@link this#close()} does nothing
+     * Closes the connection - required because {@link NonCloseableConnection#close()} does nothing
      * so that we can use try-with-resources statements
      *
      * @throws SQLException Thrown if an SQL error occurs

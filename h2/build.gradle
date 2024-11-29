@@ -9,7 +9,6 @@ dependencies {
 
     implementation group: 'org.spongepowered', name: 'configurate-yaml', version: '4.2.0-COMMENTS'
     implementation group: 'com.h2database', name: 'h2', version: '1.4.200'
-    implementation group: 'com.zaxxer', name: 'HikariCP', version: '4.0.1'
 
     implementation project(':commons')
 }

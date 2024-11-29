@@ -142,24 +142,27 @@ public class UtilSql {
      * @return The int after running
      */
     public static <T> List<T> executeQuery(Database database, String query, SQLFunction<ResultSet, T> converter, SqlType... data) {
-        try (var resultSet = executeQuery(database, query, data)) {
-            if (resultSet == null) {
-                return List.of();
+        try (var connection = database.getConnection();
+             var preparedStatement = connection.prepareStatement(query)) {
+            for (int i = 0; i < data.length; i++) {
+                data[i].add(i + 1, preparedStatement);
             }
 
-            List<T> convertedData = new ArrayList<>();
+            try (var resultSet = preparedStatement.executeQuery()) {
+                List<T> convertedData = new ArrayList<>();
 
-            while (resultSet.next()) {
-                var converted = converter.apply(resultSet);
+                while (resultSet.next()) {
+                    var converted = converter.apply(resultSet);
 
-                if (converted == null) {
-                    continue;
+                    if (converted == null) {
+                        continue;
+                    }
+
+                    convertedData.add(converted);
                 }
 
-                convertedData.add(converted);
+                return convertedData;
             }
-            
-            return convertedData;
         } catch (SQLException e) {
             UtilLogger.logger().ifPresent(logger -> logger.error("Error executing SQL (" + query + ")", e));
         }

@@ -2,7 +2,7 @@ package com.envyful.api.sqlite;
 
 import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.database.Database;
-import com.envyful.api.database.sql.NonCloseableConnection;
+import com.envyful.api.database.sql.util.NonCloseableConnection;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

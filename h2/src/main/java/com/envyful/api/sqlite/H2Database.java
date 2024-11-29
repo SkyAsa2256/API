@@ -2,7 +2,7 @@ package com.envyful.api.sqlite;
 
 import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.database.Database;
-import com.envyful.api.database.sql.NonCloseableConnection;
+import com.envyful.api.database.sql.util.NonCloseableConnection;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -15,7 +15,7 @@ import java.sql.SQLException;
  */
 public class H2Database implements Database {
 
-    private final NonCloseableConnection connection;
+    private NonCloseableConnection connection;
 
     public H2Database(String filePath) throws SQLException {
         this.loadDriver();
@@ -32,6 +32,10 @@ public class H2Database implements Database {
 
     @Override
     public Connection getConnection() throws SQLException {
+        if (this.connection.isClosed()) {
+            this.connection = new NonCloseableConnection(DriverManager.getConnection(this.connection.getMetaData().getURL()));
+        }
+
         return this.connection;
     }
 

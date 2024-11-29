@@ -1,4 +1,4 @@
-package com.envyful.api.database.sql;
+package com.envyful.api.database.sql.util;
 
 import java.sql.*;
 import java.util.Map;
@@ -29,6 +29,8 @@ public class NonCloseableConnection implements Connection {
         // no-op
     }
 
+
+
     @Override
     @SuppressWarnings("unchecked")
     public <T> T unwrap(Class<T> interfaceClass) throws SQLException {
@@ -42,6 +44,8 @@ public class NonCloseableConnection implements Connection {
     public final boolean isWrapperFor(Class<?> interfaceClass) throws SQLException {
         return interfaceClass.isInstance(this.connection) || this.connection.isWrapperFor(interfaceClass);
     }
+
+
 
     @Override
     public Statement createStatement() throws SQLException {

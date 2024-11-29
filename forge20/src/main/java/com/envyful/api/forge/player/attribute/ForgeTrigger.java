@@ -5,6 +5,7 @@ import com.envyful.api.forge.player.ForgeEnvyPlayer;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.attribute.AttributeTrigger;
 import com.envyful.api.player.attribute.trigger.ClearAttributeTrigger;
+import com.envyful.api.player.attribute.trigger.ComposedAttributeTrigger;
 import com.envyful.api.player.attribute.trigger.SaveAttributeTrigger;
 import com.envyful.api.player.attribute.trigger.SetAttributeTrigger;
 import net.minecraft.server.level.ServerPlayer;
@@ -39,6 +40,48 @@ public class ForgeTrigger {
      */
     public static <A extends Event> AttributeTrigger<ServerPlayer> singleSet(Class<A> event, Function<A, ForgeEnvyPlayer> converter) {
         return singleSet(MinecraftForge.EVENT_BUS, event, converter);
+    }
+
+    /**
+     *
+     * Creates a trigger to save the attribute data for multiple players
+     *
+     * @param event The event
+     * @param converter The converter to convert the event to a list of players
+     * @return The trigger
+     * @param <A> The event type
+     */
+    public static <A extends Event> AttributeTrigger<ServerPlayer> asyncSingleSave(Class<A> event, Function<A, ForgeEnvyPlayer> converter) {
+        return asyncSave(MinecraftForge.EVENT_BUS, event, a -> {
+            var player = converter.apply(a);
+
+            if (player == null) {
+                return List.of();
+            }
+
+            return List.of(player);
+        });
+    }
+
+    /**
+     *
+     * Creates a trigger to save the attribute data for multiple players
+     *
+     * @param event The event
+     * @param converter The converter to convert the event to a list of players
+     * @return The trigger
+     * @param <A> The event type
+     */
+    public static <A extends Event> AttributeTrigger<ServerPlayer> asyncSingleSaveAndClear(Class<A> event, Function<A, ForgeEnvyPlayer> converter) {
+        return asyncSave(MinecraftForge.EVENT_BUS, event, a -> {
+            var player = converter.apply(a);
+
+            if (player == null) {
+                return List.of();
+            }
+
+            return List.of(player);
+        });
     }
 
     /**
@@ -270,6 +313,50 @@ public class ForgeTrigger {
      */
     public static <A extends Event> AttributeTrigger<ServerPlayer> asyncSave(IEventBus eventBus, Class<A> event, Function<A, List<ForgeEnvyPlayer>> converter) {
         var trigger = new SaveAttributeTrigger<ServerPlayer>();
+        createAsyncHandler(eventBus, event, converter, trigger::trigger);
+        return trigger;
+    }
+
+    /**
+     *
+     * Creates a trigger to save the attribute data for multiple players
+     *
+     * @param eventBus The event bus
+     * @param event The event
+     * @param converter The converter to convert the event to a list of players
+     * @return The trigger
+     * @param <A> The event type
+     */
+    public static <A extends Event> AttributeTrigger<ServerPlayer> asyncSingleSaveAndClear(IEventBus eventBus, Class<A> event, Function<A, ForgeEnvyPlayer> converter) {
+        var saveTrigger = new SaveAttributeTrigger<ServerPlayer>();
+        var clearTrigger = new ClearAttributeTrigger<ServerPlayer>();
+        var trigger = new ComposedAttributeTrigger<>(List.of(saveTrigger, clearTrigger));
+        createAsyncHandler(eventBus, event, a -> {
+            var player = converter.apply(a);
+
+            if (player == null) {
+                return List.of();
+            }
+
+            return List.of(player);
+        }, trigger::trigger);
+        return trigger;
+    }
+
+    /**
+     *
+     * Creates a trigger to save the attribute data for multiple players
+     *
+     * @param eventBus The event bus
+     * @param event The event
+     * @param converter The converter to convert the event to a list of players
+     * @return The trigger
+     * @param <A> The event type
+     */
+    public static <A extends Event> AttributeTrigger<ServerPlayer> asyncSaveAndClear(IEventBus eventBus, Class<A> event, Function<A, List<ForgeEnvyPlayer>> converter) {
+        var saveTrigger = new SaveAttributeTrigger<ServerPlayer>();
+        var clearTrigger = new ClearAttributeTrigger<ServerPlayer>();
+        var trigger = new ComposedAttributeTrigger<>(List.of(saveTrigger, clearTrigger));
         createAsyncHandler(eventBus, event, converter, trigger::trigger);
         return trigger;
     }

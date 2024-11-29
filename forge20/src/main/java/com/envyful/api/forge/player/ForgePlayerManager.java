@@ -45,7 +45,7 @@ public class ForgePlayerManager extends AbstractPlayerManager<ForgeEnvyPlayer, S
     public <X extends Attribute<Y>, Y> void registerAttribute(AttributeBuilder<X, Y, ServerPlayer> builder) {
         builder.triggers(
                 ForgeTrigger.singleSet(PlayerEvent.PlayerLoggedInEvent.class, event -> this.cachedPlayers.get(event.getEntity().getUUID())),
-                ForgeTrigger.singleSave(PlayerEvent.PlayerLoggedOutEvent.class, event -> this.cachedPlayers.get(event.getEntity().getUUID())),
+                ForgeTrigger.asyncSingleSaveAndClear(PlayerEvent.PlayerLoggedOutEvent.class, event -> this.cachedPlayers.get(event.getEntity().getUUID())),
                 ForgeTrigger.asyncSave(LevelEvent.Save.class, event -> List.copyOf(this.cachedPlayers.values())),
                 ForgeTrigger.asyncSave(ServerStoppingEvent.class, event -> List.copyOf(this.cachedPlayers.values()))
         );

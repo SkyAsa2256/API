@@ -18,7 +18,16 @@ public class SQLiteDatabase implements Database {
     private final NonCloseableConnection connection;
 
     public SQLiteDatabase(String filePath) throws SQLException {
+        this.loadDriver();
         this.connection = new NonCloseableConnection(DriverManager.getConnection("jdbc:sqlite:" + filePath));
+    }
+
+    private void loadDriver() {
+        try {
+            Class.forName("org.sqlite.JDBC");
+        } catch (ClassNotFoundException e) {
+            UtilLogger.logger().ifPresent(logger -> logger.error("Failed to load H2 driver"));
+        }
     }
 
     @Override

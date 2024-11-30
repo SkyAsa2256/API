@@ -11,6 +11,7 @@ public class SpriteConfig {
     public static final transient SpriteConfig DEFAULT = new SpriteConfig();
 
     private String name = "&b%species_name% %nickname%";
+    private String eggName = "Egg";
 
     private List<String> lore = Lists.newArrayList(
             "&7Level: &b%level%",
@@ -44,17 +45,22 @@ public class SpriteConfig {
             "%trio_gemmed%"
     );
 
+    private List<String> eggLore = Lists.newArrayList(
+            "&aEgg Cycles: %egg_cycles%"
+    );
+
     private String untrdeableTrueFormat = "&aTRUE";
     private String untradeableFalseFormat = "&cFALSE";
     private String abilityFormat = "%ability_name% %ability_ha%";
     private String haFormat = "&7(&c&lHA&7)";
+    private String notHaFormat = "";
     private String maleFormat = "&bMale";
     private String femaleFormat = "&dFemale";
     private String noneFormat = "&fNONE";
     private String shinyTrueFormat = "&aTRUE";
     private String shinyFalseFormat = "&cFALSE";
-    private String unbreedableTrueFormat = "&aTRUE";
-    private String unbreedableFalseFormat = "&cFALSE";
+    private String breedableTrueFormat = "&aTRUE";
+    private String breedableFalseFormat = "&cFALSE";
     private String mewClonedFormat = "&7Times Cloned: %cloned%";
     private String gemmedFormat = "&7Gemmed: %gemmed%";
     private String natureFormat = "%nature_name% %mint_nature%";
@@ -68,6 +74,10 @@ public class SpriteConfig {
 
     public String getHaFormat() {
         return this.haFormat;
+    }
+
+    public String getNotHaFormat() {
+        return this.notHaFormat;
     }
 
     public String getAbilityFormat() {
@@ -98,12 +108,12 @@ public class SpriteConfig {
         return this.femaleFormat;
     }
 
-    public String getUnbreedableTrueFormat() {
-        return this.unbreedableTrueFormat;
+    public String getBreedableTrueFormat() {
+        return this.breedableTrueFormat;
     }
 
-    public String getUnbreedableFalseFormat() {
-        return this.unbreedableFalseFormat;
+    public String getBreedableFalseFormat() {
+        return this.breedableFalseFormat;
     }
 
     public String getNoneFormat() {
@@ -148,6 +158,14 @@ public class SpriteConfig {
 
     public String getGmaxFactorTrueFormat() {
         return this.gmaxFactorTrueFormat;
+    }
+
+    public List<String> getEggLore() {
+        return this.eggLore;
+    }
+
+    public String getEggName() {
+        return this.eggName;
     }
 
     public static Builder builder() {
@@ -224,12 +242,12 @@ public class SpriteConfig {
         }
 
         public Builder unbreedableTrueFormat(String unbreedableTrueFormat) {
-            this.config.unbreedableTrueFormat = unbreedableTrueFormat;
+            this.config.breedableTrueFormat = unbreedableTrueFormat;
             return this;
         }
 
         public Builder unbreedableFalseFormat(String unbreedableFalseFormat) {
-            this.config.unbreedableFalseFormat = unbreedableFalseFormat;
+            this.config.breedableFalseFormat = unbreedableFalseFormat;
             return this;
         }
 

@@ -16,14 +16,14 @@ public class ComposedAttributeTrigger<T> implements AttributeTrigger<T> {
 
     @Override
     public void addAttribute(PlayerManager.AttributeData<?, ?, T> attribute) {
-        for (AttributeTrigger<T> trigger : this.triggers) {
+        for (var trigger : this.triggers) {
             trigger.addAttribute(attribute);
         }
     }
 
     @Override
     public void trigger(EnvyPlayer<T> player) {
-        for (AttributeTrigger<T> trigger : this.triggers) {
+        for (var trigger : this.triggers) {
             trigger.trigger(player);
         }
     }

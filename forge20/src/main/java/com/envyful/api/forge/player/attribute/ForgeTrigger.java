@@ -73,7 +73,7 @@ public class ForgeTrigger {
      * @param <A> The event type
      */
     public static <A extends Event> AttributeTrigger<ServerPlayer> asyncSingleSaveAndClear(Class<A> event, Function<A, ForgeEnvyPlayer> converter) {
-        return asyncSave(MinecraftForge.EVENT_BUS, event, a -> {
+        return asyncSaveAndClear(MinecraftForge.EVENT_BUS, event, a -> {
             var player = converter.apply(a);
 
             if (player == null) {

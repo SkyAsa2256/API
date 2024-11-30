@@ -1,6 +1,5 @@
 package com.envyful.api.player.attribute.trigger;
 
-import com.envyful.api.concurrency.UtilConcurrency;
 import com.envyful.api.player.Attribute;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.attribute.AbstractAttributeTrigger;
@@ -16,16 +15,14 @@ public class SaveAttributeTrigger<T> extends AbstractAttributeTrigger<T> {
 
     @Override
     public void trigger(EnvyPlayer<T> player) {
-        UtilConcurrency.runAsync(() -> {
-            for (var data : this.attributes) {
-                if (!player.hasAttribute(data.attributeClass())) {
-                    continue;
-                }
-
-                var attribute = player.getAttributeNow(data.attributeClass());
-                this.saveAttribute(data.saveManager(), attribute, attribute.getId());
+        for (var data : this.attributes) {
+            if (!player.hasAttribute(data.attributeClass())) {
+                continue;
             }
-        });
+
+            var attribute = player.getAttributeNow(data.attributeClass());
+            this.saveAttribute(data.saveManager(), attribute, attribute.getId());
+        }
     }
 
     @SuppressWarnings("unchecked")

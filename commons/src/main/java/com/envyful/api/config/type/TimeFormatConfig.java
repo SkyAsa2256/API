@@ -1,7 +1,10 @@
 package com.envyful.api.config.type;
 
+import com.envyful.api.text.Placeholder;
+import com.envyful.api.time.UtilTimeFormat;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -61,6 +64,18 @@ public class TimeFormatConfig {
 
     public static TimeFormatConfig getDefault() {
         return DEFAULT;
+    }
+
+    public Placeholder wrap(Duration duration) {
+        return this.wrap("%time%", duration.toMillis());
+    }
+
+    public Placeholder wrap(long time) {
+        return this.wrap("%time%", time);
+    }
+
+    public Placeholder wrap(String key, long time) {
+        return Placeholder.simple(key, UtilTimeFormat.format(time, this));
     }
 
     public static Builder builder() {

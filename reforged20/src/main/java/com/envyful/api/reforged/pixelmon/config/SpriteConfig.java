@@ -23,7 +23,7 @@ public class SpriteConfig {
             "&7Nature: &b%nature%",
             "&7Form: &b%form%",
             "&7Growth: &b%size%",
-            "&7Ability: &b%ability%",
+            "&7Ability: &b%ability_name%%ability_ha%",
             "&7Friendship: &b%friendship%",
             "&7Untradeable: &b%untradeable%",
             " ",
@@ -46,13 +46,14 @@ public class SpriteConfig {
     );
 
     private List<String> eggLore = Lists.newArrayList(
-            "&aEgg Cycles: %egg_cycles%"
+            "&aEgg Cycles: %egg_cycles%",
+            "&aEgg Steps: %egg_steps%",
+            "&aEgg Description: %egg_description%"
     );
 
     private String untrdeableTrueFormat = "&aTRUE";
     private String untradeableFalseFormat = "&cFALSE";
-    private String abilityFormat = "%ability_name% %ability_ha%";
-    private String haFormat = "&7(&c&lHA&7)";
+    private String haFormat = " &7(&c&lHA&7)";
     private String notHaFormat = "";
     private String maleFormat = "&bMale";
     private String femaleFormat = "&dFemale";
@@ -78,10 +79,6 @@ public class SpriteConfig {
 
     public String getNotHaFormat() {
         return this.notHaFormat;
-    }
-
-    public String getAbilityFormat() {
-        return this.abilityFormat;
     }
 
     public String getName() {
@@ -203,11 +200,6 @@ public class SpriteConfig {
 
         public Builder untradeableFalseFormat(String untradeableFalseFormat) {
             this.config.untradeableFalseFormat = untradeableFalseFormat;
-            return this;
-        }
-
-        public Builder abilityFormat(String abilityFormat) {
-            this.config.abilityFormat = abilityFormat;
             return this;
         }
 

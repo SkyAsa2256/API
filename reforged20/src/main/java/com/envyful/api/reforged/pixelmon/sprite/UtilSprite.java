@@ -108,7 +108,6 @@ public class UtilSprite {
                                 pokemon.getNature().getLocalizedName())
                 .replace("%mint_nature%", pokemon.getMintNature() != null ?
                         config.getMintNatureFormat().replace("%mint_nature_name%", pokemon.getMintNature().getLocalizedName()) : "")));
-        placeholders.add(Placeholder.simple("%ability%", config.getAbilityFormat()));
         placeholders.add(Placeholder.simple("%ability_name%", pokemon.getAbility().getLocalizedName()));
         placeholders.add(Placeholder.simple("%ability_ha%", pokemon.hasHiddenAbility() ? config.getHaFormat() : config.getNotHaFormat()));
         placeholders.add(Placeholder.simple("%friendship%", pokemon.getFriendship()));

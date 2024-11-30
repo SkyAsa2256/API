@@ -112,4 +112,25 @@ public class UtilItemStack {
         display.put("Lore", newLore);
         itemStack.addTagElement("display", display);
     }
+
+    public static void setLore(ItemStack itemStack, List<Component> lore) {
+        var display = itemStack.getOrCreateTagElement("display");
+        var newLore = new ListTag();
+
+        lore.forEach(component -> {
+            if (component instanceof MutableComponent) {
+                component = ((MutableComponent) component).setStyle(component.getStyle().withItalic(false));
+            }
+
+            newLore.add(StringTag.valueOf(Component.Serializer.toJson(component)));
+        });
+
+        display.put("Lore", newLore);
+        itemStack.addTagElement("display", display);
+    }
+
+    public static void setName(ItemStack itemStack, Component name) {
+        var display = itemStack.getOrCreateTagElement("display");
+        display.putString("Name", Component.Serializer.toJson(name));
+    }
 }

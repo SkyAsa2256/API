@@ -113,4 +113,32 @@ public class UtilItemStack {
         display.put("Lore", newLore);
         itemStack.addTagElement("display", display);
     }
+
+    /**
+     *
+     * Sets the lore of the specified itemstack to the given list
+     *
+     * @param itemStack The itemstack to update the lore of
+     * @param lore The new lore
+     */
+    public static void setLore(ItemStack itemStack, List<ITextComponent> lore) {
+        var display = itemStack.getOrCreateTagElement("display");
+        var newLore = new ListNBT();
+
+        lore.forEach(component -> {
+            if (component instanceof IFormattableTextComponent) {
+                component = ((IFormattableTextComponent) component).setStyle(component.getStyle().withItalic(false));
+            }
+
+            newLore.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(component)));
+        });
+
+        display.put("Lore", newLore);
+        itemStack.addTagElement("display", display);
+    }
+
+    public static void setName(ItemStack itemStack, ITextComponent name) {
+        var display = itemStack.getOrCreateTagElement("display");
+        display.putString("Name", ITextComponent.Serializer.toJson(name));
+    }
 }

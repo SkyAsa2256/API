@@ -55,6 +55,54 @@ public interface Placeholder {
 
     /**
      *
+     * Gets a simple placeholder instance for the given key and result
+     *
+     * @param key The key to replace in the text
+     * @param result The result to replace the key with
+     * @return The placeholder instance
+     */
+    static Placeholder simple(String key, int result) {
+        return simple(key, String.valueOf(result));
+    }
+
+    /**
+     *
+     * Gets a simple placeholder instance for the given key and result
+     *
+     * @param key The key to replace in the text
+     * @param result The result to replace the key with
+     * @return The placeholder instance
+     */
+    static Placeholder simple(String key, long result) {
+        return simple(key, String.valueOf(result));
+    }
+
+    /**
+     *
+     * Gets a simple placeholder instance for the given key and result
+     *
+     * @param key The key to replace in the text
+     * @param result The result to replace the key with
+     * @return The placeholder instance
+     */
+    static Placeholder simple(String key, double result) {
+        return simple(key, String.valueOf(result));
+    }
+
+    /**
+     *
+     * Gets a simple placeholder instance for the given key and result
+     *
+     * @param key The key to replace in the text
+     * @param result The result to replace the key with
+     * @return The placeholder instance
+     */
+    static Placeholder simple(String key, float result) {
+        return simple(key, String.valueOf(result));
+    }
+
+    /**
+     *
      * Creates a Placeholder that will return null if the key is found
      *
      * @param key The key to check for

@@ -4,6 +4,7 @@ import com.envyful.api.gui.Gui;
 import com.envyful.api.gui.close.CloseConsumer;
 import com.envyful.api.gui.factory.GuiFactory;
 import com.envyful.api.gui.pane.Pane;
+import com.envyful.api.platform.PlatformProxy;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.spigot.gui.close.SpigotCloseConsumer;
 import com.envyful.api.spigot.player.SpigotPlayerManager;
@@ -29,6 +30,8 @@ public class SpigotGuiBuilder implements Gui.Builder {
     public Gui.Builder title(Object title) {
         if (title instanceof Component component) {
             this.title = component;
+        } else if (title instanceof String text) {
+            this.title = PlatformProxy.parse(text);
         } else {
             throw new RuntimeException("Unsupported title type given");
         }

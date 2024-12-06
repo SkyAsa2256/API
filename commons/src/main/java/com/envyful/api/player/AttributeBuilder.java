@@ -12,6 +12,15 @@ import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+/**
+ *
+ *
+ * A builder for creating {@link Attribute} types to be registered with the {@link PlayerManager}
+ *
+ * @param <A> The attribute type
+ * @param <B> The id type
+ * @param <C> The player type
+ */
 public class AttributeBuilder<A extends Attribute<B>, B, C> {
 
     protected Class<A> attributeClass;

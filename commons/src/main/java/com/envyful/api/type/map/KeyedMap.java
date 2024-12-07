@@ -5,6 +5,13 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ *
+ *
+ * A map that utilises generics, with the key, to cast the value to the
+ * desired type and hide the casting from the user
+ *
+ */
 public class KeyedMap {
 
     private static final KeyedMap EMPTY = new KeyedMap(Map.of());

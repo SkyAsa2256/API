@@ -2,6 +2,12 @@ package com.envyful.api.type.map;
 
 import java.util.Objects;
 
+/**
+ *
+ * The key for the {@link KeyedMap}
+ *
+ * @param <T> The type of the value
+ */
 public class Key<T> {
 
     private final String key;

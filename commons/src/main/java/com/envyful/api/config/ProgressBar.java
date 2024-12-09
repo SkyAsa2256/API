@@ -2,6 +2,11 @@ package com.envyful.api.config;
 
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
+/**
+ *
+ * Configuration class for creating a progress bar
+ *
+ */
 @ConfigSerializable
 public class ProgressBar {
 

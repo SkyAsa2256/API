@@ -1,6 +1,7 @@
 package com.envyful.api.spigot.player;
 
 import com.envyful.api.config.ConfigLocation;
+import com.envyful.api.platform.PlatformProxy;
 import com.envyful.api.player.AbstractEnvyPlayer;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.text.Placeholder;
@@ -43,8 +44,8 @@ public class SpigotEnvyPlayer extends AbstractEnvyPlayer<Player> {
         for (Object message : messages) {
             if (message instanceof Component) {
                 this.getParent().sendMessage((Component) message);
-            } else if (message instanceof String) {
-                //TODO: convert
+            } else if (message instanceof String text) {
+                this.getParent().sendMessage(PlatformProxy.<Component>parse(text));
             }
         }
     }

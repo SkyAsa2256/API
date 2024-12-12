@@ -19,6 +19,11 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 
+/**
+ *
+ * Simple Lettuce implementation of the {@link Database} interface
+ *
+ */
 public class SimpleLettuceDatabase implements Database {
 
     private final RedisClient pool;

@@ -7,7 +7,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraft.world.storage.ServerWorldInfo;
+import net.minecraft.world.storage.IServerWorldInfo;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 /**
@@ -105,10 +105,10 @@ public class UtilWorld {
      * @return The name of the world
      */
     public static String getName(World world) {
-        if (!(world instanceof ServerWorld) || !(world.getLevelData() instanceof ServerWorldInfo)) {
+        if (!(world instanceof ServerWorld) || !(world.getLevelData() instanceof IServerWorldInfo)) {
             return "NONE";
         }
 
-        return ((ServerWorldInfo) world.getLevelData()).getLevelName();
+        return ((IServerWorldInfo) world.getLevelData()).getLevelName();
     }
 }

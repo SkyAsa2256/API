@@ -51,7 +51,7 @@ public class OfflineAttribute<B extends Attribute> implements SimplePlaceholder,
 
         this.cachedPlayer = player;
         this.cachedAttribute = player.getAttributeNow(attributeClass);
-        this.id = cachedAttribute.getId();
+        this.id = cachedAttribute.getUniqueId();
     }
 
     /**
@@ -118,7 +118,7 @@ public class OfflineAttribute<B extends Attribute> implements SimplePlaceholder,
             return;
         }
 
-        UtilConcurrency.runAsync(() -> PlatformProxy.getPlayerManager().getSaveManager().saveData(this.getAttribute()));
+        UtilConcurrency.runAsync(() -> PlatformProxy.getPlayerManager().saveAttribute(this.getAttribute()));
     }
 
 

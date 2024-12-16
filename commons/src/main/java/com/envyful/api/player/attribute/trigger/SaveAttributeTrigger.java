@@ -19,7 +19,7 @@ public class SaveAttributeTrigger<T extends AttributeHolder> extends AbstractAtt
             }
 
             var attribute = holder.getAttributeNow(data.attributeClass());
-            data.saveManager().saveData(attribute);
+            data.manager().saveAttribute(attribute);
         }
     }
 }

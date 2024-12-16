@@ -4,7 +4,7 @@ import com.envyful.api.player.Attribute;
 import com.envyful.api.player.attribute.AttributeHolder;
 import com.envyful.api.player.attribute.AttributeTrigger;
 import com.envyful.api.player.attribute.adapter.AttributeAdapter;
-import com.envyful.api.player.save.SaveManager;
+import com.envyful.api.player.attribute.manager.AttributeManager;
 import com.envyful.api.type.BiAsyncFunction;
 import com.envyful.api.type.map.KeyedMap;
 
@@ -30,13 +30,13 @@ public class AttributeData<A extends Attribute, B extends AttributeHolder> {
     private final UnaryOperator<UUID> offlineIdMapper;
     private final List<BiPredicate<B, KeyedMap>> predicates;
     private final List<AttributeTrigger<B>> triggers;
-    private final SaveManager<B> saveManager;
+    private final AttributeManager<B> manager;
     private final Map<String, AttributeAdapter<A>> adapters;
 
     public AttributeData(Class<A> attributeClass, boolean shared, Function<UUID, A> constructor, BiAsyncFunction<B, KeyedMap, UUID> idMapper,
                          List<BiPredicate<B, KeyedMap>> predicates, List<AttributeTrigger<B>> triggers,
                          UnaryOperator<UUID> offlineIdMapper,
-                         SaveManager<B> saveManager, Map<String, AttributeAdapter<A>> adapters) {
+                         AttributeManager<B> manager, Map<String, AttributeAdapter<A>> adapters) {
         this.attributeClass = attributeClass;
         this.shared = shared;
         this.constructor = constructor;
@@ -44,7 +44,7 @@ public class AttributeData<A extends Attribute, B extends AttributeHolder> {
         this.predicates = List.copyOf(predicates);
         this.triggers = List.copyOf(triggers);
         this.offlineIdMapper = offlineIdMapper;
-        this.saveManager = saveManager;
+        this.manager = manager;
         this.adapters = Map.copyOf(adapters);
     }
 
@@ -72,8 +72,8 @@ public class AttributeData<A extends Attribute, B extends AttributeHolder> {
         return this.triggers;
     }
 
-    public SaveManager<B> saveManager() {
-        return this.saveManager;
+    public AttributeManager<B> manager() {
+        return this.manager;
     }
 
     public UnaryOperator<UUID> offlineIdMapper() {

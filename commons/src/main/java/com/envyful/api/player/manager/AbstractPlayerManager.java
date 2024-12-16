@@ -5,8 +5,6 @@ import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.player.attribute.manager.PlatformAgnosticAttributeManager;
 import com.envyful.api.player.name.NameStore;
-import com.envyful.api.player.save.SaveManager;
-import com.envyful.api.player.save.impl.StandardSaveManager;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.List;
@@ -19,13 +17,11 @@ public abstract class AbstractPlayerManager<A extends EnvyPlayer<B>, B> extends 
 
     protected final Map<UUID, A> cachedPlayers = new ConcurrentHashMap<>();
     protected final Function<B, UUID> uuidGetter;
-
-    protected SaveManager<A> saveManager = new StandardSaveManager<>();
     protected NameStore nameStore = null;
 
-    protected AbstractPlayerManager(SaveManager<A> saveManager, Function<B, UUID> uuidGetter) {
-        super(saveManager);
-        
+    protected AbstractPlayerManager(Function<B, UUID> uuidGetter) {
+        super();
+
         this.uuidGetter = uuidGetter;
     }
 
@@ -72,16 +68,6 @@ public abstract class AbstractPlayerManager<A extends EnvyPlayer<B>, B> extends 
     @Override
     public List<A> getOnlinePlayers() {
         return List.copyOf(this.cachedPlayers.values());
-    }
-
-    @Override
-    public void setSaveManager(SaveManager<A> saveManager) {
-        this.saveManager = saveManager;
-    }
-
-    @Override
-    public SaveManager<A> getSaveManager() {
-        return this.saveManager;
     }
 
     @Nullable

@@ -5,8 +5,6 @@ import com.envyful.api.player.AttributeBuilder;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.player.manager.AbstractPlayerManager;
 import com.envyful.api.player.name.NameStore;
-import com.envyful.api.player.save.SaveManager;
-import com.envyful.api.player.save.impl.StandardSaveManager;
 import com.envyful.api.velocity.player.attribute.VelocityTrigger;
 import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
@@ -31,11 +29,7 @@ public class VelocityPlayerManager extends AbstractPlayerManager<VelocityEnvyPla
     private final Object plugin;
 
     public VelocityPlayerManager(Object plugin, ProxyServer proxy) {
-        this(new StandardSaveManager<>(), plugin, proxy);
-    }
-
-    public VelocityPlayerManager(SaveManager<VelocityEnvyPlayer> saveManager, Object plugin, ProxyServer proxy) {
-        super(saveManager, Player::getUniqueId);
+        super(Player::getUniqueId);
 
         this.proxyServer = proxy;
         this.plugin = plugin;

@@ -28,11 +28,7 @@ public class SetAttributeTrigger<T extends AttributeHolder> extends AbstractAttr
                             return null;
                         }
 
-                        return data.saveManager().loadAttribute(data.attributeClass(), id);
-                    })
-                    .exceptionally(throwable -> {
-                        data.saveManager().getErrorHandler().accept(player, throwable);
-                        return null;
+                        return data.manager().loadAttribute(data.attributeClass(), id);
                     });
 
             setAttribute(player, data.attributeClass(), future);

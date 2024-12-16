@@ -162,7 +162,7 @@ public interface PlayerManager<A extends EnvyPlayer<B>, B> {
      default <X extends Attribute> void registerAttribute(AttributeBuilder<X, A> builder) {
           var data = new AttributeData<>(
                   builder.attributeClass(),
-                  builder.shared(),
+                  builder.isShared(),
                   builder.constructor,
                   builder.idMapper,
                   builder.predicates,

@@ -95,11 +95,26 @@ public class AttributeBuilder<A extends Attribute, C extends AttributeHolder> {
         return this;
     }
 
+    public AttributeBuilder<A, C> shared() {
+        this.shared = true;
+        return this;
+    }
+
+    public AttributeBuilder<A, C> notShared() {
+        this.shared = false;
+        return this;
+    }
+
+    public AttributeBuilder<A, C> setShared(boolean shared) {
+        this.shared = shared;
+        return this;
+    }
+
     public Function<UUID, UUID> offlineIdMapper() {
         return this.offlineIdMapper;
     }
 
-    public boolean shared() {
+    public boolean isShared() {
         return this.shared;
     }
 }

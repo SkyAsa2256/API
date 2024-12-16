@@ -3,6 +3,7 @@ package com.envyful.api.player;
 import com.envyful.api.player.attribute.AttributeHolder;
 import com.envyful.api.player.attribute.AttributeTrigger;
 import com.envyful.api.player.attribute.adapter.AttributeAdapter;
+import com.envyful.api.player.attribute.manager.AttributeManager;
 import com.envyful.api.type.AsyncFunction;
 import com.envyful.api.type.BiAsyncFunction;
 import com.envyful.api.type.map.KeyedMap;
@@ -108,6 +109,10 @@ public class AttributeBuilder<A extends Attribute, C extends AttributeHolder> {
     public AttributeBuilder<A, C> setShared(boolean shared) {
         this.shared = shared;
         return this;
+    }
+
+    public void register(AttributeManager<C> manager) {
+        manager.registerAttribute(this);
     }
 
     public String overrideSaveMode() {

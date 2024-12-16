@@ -1,13 +1,8 @@
 package com.envyful.api.player;
 
-import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.player.attribute.PlayerAttribute;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import com.envyful.api.player.attribute.holder.PlatformAgnosticAttributeHolder;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -26,9 +21,7 @@ import java.util.concurrent.CompletableFuture;
  *
  * @param <T> The specific platform implementation of the player object.
  */
-public abstract class AbstractEnvyPlayer<T> implements EnvyPlayer<T> {
-
-    protected final Map<Class<?>, AttributeInstance<?, ?>> attributes = new HashMap<>();
+public abstract class AbstractEnvyPlayer<T> extends PlatformAgnosticAttributeHolder implements EnvyPlayer<T> {
 
     protected T parent;
 
@@ -44,51 +37,6 @@ public abstract class AbstractEnvyPlayer<T> implements EnvyPlayer<T> {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <A extends Attribute<B>, B> CompletableFuture<A> getAttribute(Class<A> attributeClass) {
-        if (!this.attributes.containsKey(attributeClass)) {
-            return null;
-        }
-
-        AttributeInstance<A, B> instance = (AttributeInstance<A, B>) this.attributes.get(attributeClass);
-        return instance.getAttribute();
-    }
-
-    @Override
-    public <A extends Attribute<B>, B> boolean hasAttribute(Class<A> attributeClass) {
-        var instance = this.attributes.get(attributeClass);
-
-        if (instance == null) {
-            return false;
-        }
-
-        if (instance.attribute != null) {
-            return true;
-        }
-
-        return instance.loadingAttribute != null && instance.loadingAttribute.isDone();
-    }
-
-    @Override
-    public <A extends Attribute<B>, B> A getAttributeNow(Class<A> attributeClass) {
-        if (!this.attributes.containsKey(attributeClass)) {
-            return null;
-        }
-
-        var instance = (AttributeInstance<A, B>) this.attributes.get(attributeClass);
-
-        if (instance.attribute != null) {
-            return instance.attribute;
-        }
-
-        if (instance.loadingAttribute == null) {
-            return null;
-        }
-
-        return instance.loadingAttribute.join();
-    }
-
-    @Override
     public <A extends Attribute<B>, B> void setAttribute(A attribute) {
         if (attribute == null) {
             return;
@@ -98,12 +46,7 @@ public abstract class AbstractEnvyPlayer<T> implements EnvyPlayer<T> {
             this.attemptSetParent(attribute);
         }
 
-        this.attributes.put(attribute.getClass(), new AttributeInstance<>(attribute));
-    }
-
-    @SuppressWarnings("unchecked")
-    private <A extends Attribute<B>, B, C extends EnvyPlayer<T>> void attemptSetParent(A attribute) {
-        ((PlayerAttribute<?, C, T>) attribute).setParent((C) this);
+        super.setAttribute(attribute);
     }
 
     @Override
@@ -113,63 +56,12 @@ public abstract class AbstractEnvyPlayer<T> implements EnvyPlayer<T> {
                 this.attemptSetParent(a);
             }
         });
-        this.attributes.put(attributeClass, new AttributeInstance<>(attribute));
+
+        super.setAttribute(attributeClass, attribute);
     }
 
-    @Override
     @SuppressWarnings("unchecked")
-    public <A extends Attribute<B>, B> A removeAttribute(Class<A> attributeClass) {
-        var instance = this.attributes.remove(attributeClass);
-
-        if (instance == null) {
-            return null;
-        }
-
-        return (A) instance.getAttributeNow();
-    }
-
-    @Override
-    public List<Attribute<?>> getAttributes() {
-        List<Attribute<?>> attributes = new ArrayList<>();
-
-        for (var attribute : this.attributes.values()) {
-            if (attribute.getAttributeNow() != null) {
-                attributes.add(attribute.getAttributeNow());
-            }
-        }
-
-        return attributes;
-    }
-
-    protected static class AttributeInstance<A extends Attribute<B>, B> {
-
-        private A attribute;
-        private CompletableFuture<A> loadingAttribute;
-
-        AttributeInstance(A attribute) {
-            this.attribute = attribute;
-            this.loadingAttribute = null;
-        }
-
-        AttributeInstance(CompletableFuture<A> loadingAttribute) {
-            this.attribute = null;
-            this.loadingAttribute = loadingAttribute.whenComplete((a, throwable) -> {
-                if (throwable != null) {
-                    UtilLogger.logger().ifPresent(logger -> logger.error("Failed to load attribute", throwable));
-                } else {
-                    this.attribute = a;
-                    this.loadingAttribute = null;
-                }
-            });
-        }
-
-        CompletableFuture<A> getAttribute() {
-            return this.loadingAttribute == null ? CompletableFuture.completedFuture(this.attribute) : this.loadingAttribute;
-        }
-
-        @Nullable
-        A getAttributeNow() {
-            return this.attribute;
-        }
+    private <A extends Attribute<B>, B, C extends EnvyPlayer<T>> void attemptSetParent(A attribute) {
+        ((PlayerAttribute<?, C, T>) attribute).setParent((C) this);
     }
 }

@@ -110,11 +110,35 @@ public class AttributeBuilder<A extends Attribute, C extends AttributeHolder> {
         return this;
     }
 
-    public Function<UUID, UUID> offlineIdMapper() {
+    public String overrideSaveMode() {
+        return this.overrideSaveMode;
+    }
+
+    public UnaryOperator<UUID> offlineIdMapper() {
         return this.offlineIdMapper;
     }
 
     public boolean isShared() {
         return this.shared;
+    }
+
+    public Function<UUID, A> constructor() {
+        return this.constructor;
+    }
+
+    public BiAsyncFunction<C, KeyedMap, UUID> idMapper() {
+        return this.idMapper;
+    }
+
+    public List<BiPredicate<C, KeyedMap>> predicates() {
+        return this.predicates;
+    }
+
+    public List<AttributeTrigger<C>> triggers() {
+        return this.triggers;
+    }
+
+    public Map<String, AttributeAdapter<A>> registeredAdapters() {
+        return this.registeredAdapters;
     }
 }

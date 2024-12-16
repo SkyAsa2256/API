@@ -3,30 +3,29 @@ package com.envyful.api.player.manager;
 import com.envyful.api.player.Attribute;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
-import com.envyful.api.player.attribute.data.AttributeData;
+import com.envyful.api.player.attribute.manager.PlatformAgnosticAttributeManager;
 import com.envyful.api.player.name.NameStore;
 import com.envyful.api.player.save.SaveManager;
 import com.envyful.api.player.save.impl.StandardSaveManager;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
-public abstract class AbstractPlayerManager<A extends EnvyPlayer<B>, B> implements PlayerManager<A, B> {
+public abstract class AbstractPlayerManager<A extends EnvyPlayer<B>, B> extends PlatformAgnosticAttributeManager<A> implements PlayerManager<A, B> {
 
     protected final Map<UUID, A> cachedPlayers = new ConcurrentHashMap<>();
-    protected final Map<Class<? extends Attribute>, AttributeData<?, A>> attributeData = new HashMap<>();
     protected final Function<B, UUID> uuidGetter;
 
     protected SaveManager<A> saveManager = new StandardSaveManager<>();
     protected NameStore nameStore = null;
 
-    protected AbstractPlayerManager(Function<B, UUID> uuidGetter) {
+    protected AbstractPlayerManager(SaveManager<A> saveManager, Function<B, UUID> uuidGetter) {
+        super(saveManager);
+        
         this.uuidGetter = uuidGetter;
     }
 
@@ -103,29 +102,9 @@ public abstract class AbstractPlayerManager<A extends EnvyPlayer<B>, B> implemen
         if (player != null && player.hasAttribute(attributeClass)) {
             var attribute = player.getAttributeNow(attributeClass);
 
-            return attribute.getId();
+            return attribute.getUniqueId();
         }
 
-        var data = this.attributeData.get(attributeClass);
-
-        if (data == null) {
-            throw new IllegalArgumentException("No attribute data found for " + attributeClass.getSimpleName() + " " + this.attributeData.keySet().stream().map(Class::getSimpleName).collect(Collectors.joining(", ")));
-        }
-
-        return data.offlineIdMapper().apply(uuid);
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <X extends Attribute> void registerAttribute(AttributeData<X, A> attributeData) {
-        for (var trigger : attributeData.triggers()) {
-            trigger.addAttribute(attributeData);
-        }
-
-        this.attributeData.put(attributeData.attributeClass(), attributeData);
-
-        if (this.saveManager != null) {
-            this.saveManager.registerAttribute(attributeData);
-        }
+        return super.mapId(attributeClass, uuid);
     }
 }

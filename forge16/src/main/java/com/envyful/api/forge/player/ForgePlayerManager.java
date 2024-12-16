@@ -8,6 +8,8 @@ import com.envyful.api.player.AttributeBuilder;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.player.manager.AbstractPlayerManager;
 import com.envyful.api.player.name.NameStore;
+import com.envyful.api.player.save.SaveManager;
+import com.envyful.api.player.save.impl.StandardSaveManager;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -29,7 +31,11 @@ import java.util.List;
 public class ForgePlayerManager extends AbstractPlayerManager<ForgeEnvyPlayer, ServerPlayerEntity> {
 
     public ForgePlayerManager() {
-        super(ServerPlayerEntity::getUUID);
+        this(new StandardSaveManager<>());
+    }
+
+    public ForgePlayerManager(SaveManager<ForgeEnvyPlayer> saveManager) {
+        super(saveManager, ServerPlayerEntity::getUUID);
 
         MinecraftForge.EVENT_BUS.register(new PlayerListener());
     }

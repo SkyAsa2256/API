@@ -7,6 +7,8 @@ import com.envyful.api.player.AttributeBuilder;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.player.manager.AbstractPlayerManager;
 import com.envyful.api.player.name.NameStore;
+import com.envyful.api.player.save.SaveManager;
+import com.envyful.api.player.save.impl.StandardSaveManager;
 import com.envyful.api.spigot.event.ServerShutdownEvent;
 import com.envyful.api.spigot.player.attribute.SpigotTrigger;
 import org.bukkit.Bukkit;
@@ -35,7 +37,11 @@ public class SpigotPlayerManager extends AbstractPlayerManager<SpigotEnvyPlayer,
     protected final Plugin plugin;
 
     public SpigotPlayerManager(Plugin plugin) {
-        super(Player::getUniqueId);
+        this(new StandardSaveManager<>(), plugin);
+    }
+
+    public SpigotPlayerManager(SaveManager<SpigotEnvyPlayer> saveManager, Plugin plugin) {
+        super(saveManager, Player::getUniqueId);
 
         this.plugin = plugin;
 

@@ -17,8 +17,20 @@ public interface Attribute {
      * Gets the unique identifier for the attribute
      *
      * @return The unique identifier
+     * @deprecated Use {@link Attribute#getUniqueId()} instead
      */
-    UUID getId();
+    @Deprecated(forRemoval = true, since = "7.2.8")
+    default UUID getId() {
+        return this.getUniqueId();
+    }
+
+    /**
+     *
+     * Gets the unique identifier for the attribute
+     *
+     * @return The unique identifier
+     */
+    UUID getUniqueId();
 
     /**
      *

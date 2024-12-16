@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 public abstract class AbstractPlayerManager<A extends EnvyPlayer<B>, B> extends PlatformAgnosticAttributeManager<A> implements PlayerManager<A, B> {
@@ -18,6 +19,12 @@ public abstract class AbstractPlayerManager<A extends EnvyPlayer<B>, B> extends 
     protected final Map<UUID, A> cachedPlayers = new ConcurrentHashMap<>();
     protected final Function<B, UUID> uuidGetter;
     protected NameStore nameStore = null;
+
+    protected AbstractPlayerManager(BiConsumer<UUID, Throwable> errorHandler, Function<B, UUID> uuidGetter) {
+        super(errorHandler);
+
+        this.uuidGetter = uuidGetter;
+    }
 
     protected AbstractPlayerManager(Function<B, UUID> uuidGetter) {
         super();

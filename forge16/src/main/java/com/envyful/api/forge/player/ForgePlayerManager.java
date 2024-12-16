@@ -17,6 +17,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 
 import java.util.List;
+import java.util.UUID;
+import java.util.function.BiConsumer;
 
 /**
  *
@@ -30,12 +32,22 @@ public class ForgePlayerManager extends AbstractPlayerManager<ForgeEnvyPlayer, S
 
     public ForgePlayerManager() {
         super(ServerPlayerEntity::getUUID);
+    }
+
+    public ForgePlayerManager(BiConsumer<UUID, Throwable> errorHandler) {
+        super(errorHandler, ServerPlayerEntity::getUUID);
 
         MinecraftForge.EVENT_BUS.register(new PlayerListener());
     }
 
     public ForgePlayerManager(NameStore nameStore) {
         this();
+
+        this.nameStore = nameStore;
+    }
+
+    public ForgePlayerManager(BiConsumer<UUID, Throwable> errorHandler, NameStore nameStore) {
+        this(errorHandler);
 
         this.nameStore = nameStore;
     }

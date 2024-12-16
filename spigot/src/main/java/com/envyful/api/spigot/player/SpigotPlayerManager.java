@@ -21,6 +21,8 @@ import org.bukkit.event.world.WorldSaveEvent;
 import org.bukkit.plugin.Plugin;
 
 import java.util.List;
+import java.util.UUID;
+import java.util.function.BiConsumer;
 
 /**
  *
@@ -34,6 +36,14 @@ public class SpigotPlayerManager extends AbstractPlayerManager<SpigotEnvyPlayer,
 
     protected final Plugin plugin;
 
+    public SpigotPlayerManager(Plugin plugin, BiConsumer<UUID, Throwable> errorHandler) {
+        super(errorHandler, Player::getUniqueId);
+
+        this.plugin = plugin;
+
+        Bukkit.getPluginManager().registerEvents(new PlayerListener(), plugin);
+    }
+
     public SpigotPlayerManager(Plugin plugin) {
         super(Player::getUniqueId);
 
@@ -43,7 +53,7 @@ public class SpigotPlayerManager extends AbstractPlayerManager<SpigotEnvyPlayer,
     }
 
     public SpigotPlayerManager(Plugin plugin, NameStore nameStore) {
-        this(plugin );
+        this(plugin);
 
         this.nameStore = nameStore;
     }

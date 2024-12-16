@@ -7,6 +7,7 @@ import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  *
@@ -41,5 +42,15 @@ public class ConsoleMessageable implements Messageable<ICommandSource> {
                 throw new RuntimeException("Unsupported message type");
             }
         }
+    }
+
+    @Override
+    public UUID getUniqueId() {
+        return Util.NIL_UUID;
+    }
+
+    @Override
+    public String getName() {
+        return "Console";
     }
 }

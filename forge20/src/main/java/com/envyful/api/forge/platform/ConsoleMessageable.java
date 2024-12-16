@@ -2,10 +2,12 @@ package com.envyful.api.forge.platform;
 
 import com.envyful.api.platform.Messageable;
 import com.envyful.api.platform.PlatformProxy;
+import net.minecraft.Util;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.network.chat.Component;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  *
@@ -40,5 +42,15 @@ public class ConsoleMessageable implements Messageable<CommandSource> {
                 throw new RuntimeException("Unsupported message type");
             }
         }
+    }
+
+    @Override
+    public UUID getUniqueId() {
+        return Util.NIL_UUID;
+    }
+
+    @Override
+    public String getName() {
+        return "Console";
     }
 }

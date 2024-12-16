@@ -1,5 +1,6 @@
 package com.envyful.api.platform;
 
+import com.envyful.api.player.Identifiable;
 import com.envyful.api.text.Placeholder;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -10,7 +11,7 @@ import java.util.Collection;
  * An interface to represent a command executor in a Minecraft setting
  *
  */
-public interface Messageable<T> {
+public interface Messageable<T> extends Identifiable {
 
     /**
      *

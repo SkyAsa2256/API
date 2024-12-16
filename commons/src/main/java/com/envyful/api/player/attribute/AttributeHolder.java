@@ -2,6 +2,7 @@ package com.envyful.api.player.attribute;
 
 import com.envyful.api.player.Attribute;
 import com.envyful.api.player.EnvyPlayer;
+import com.envyful.api.player.Identifiable;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -15,7 +16,7 @@ import java.util.function.Predicate;
  * The only example in this API is {@link EnvyPlayer} and it's implementations
  *
  */
-public interface AttributeHolder {
+public interface AttributeHolder extends Identifiable {
 
     /**
      *

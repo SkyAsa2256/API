@@ -8,8 +8,6 @@ import com.envyful.api.player.attribute.PlayerAttribute;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.parse.SimplePlaceholder;
 
-import java.util.UUID;
-
 /**
  *
  * This interface is designed to provide basic useful
@@ -27,22 +25,6 @@ import java.util.UUID;
  * @param <T> The specific platform implementation of the player object.
  */
 public interface EnvyPlayer<T> extends SimplePlaceholder, Messageable<T>, AttributeHolder {
-
-    /**
-     *
-     * Gets the player's UUID from Mojang
-     *
-     * @return The player's UUID
-     */
-    UUID getUniqueId();
-
-    /**
-     *
-     * Gets a String representation fo the player's name
-     *
-     * @return The player's name
-     */
-    String getName();
 
     /**
      *

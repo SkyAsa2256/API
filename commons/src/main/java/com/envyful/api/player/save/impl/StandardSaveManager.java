@@ -3,26 +3,26 @@ package com.envyful.api.player.save.impl;
 import com.envyful.api.concurrency.UtilConcurrency;
 import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.player.Attribute;
-import com.envyful.api.player.EnvyPlayer;
-import com.envyful.api.player.PlayerManager;
+import com.envyful.api.player.attribute.AttributeHolder;
 import com.envyful.api.player.save.AbstractSaveManager;
 
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 
-public class StandardSaveManager<T> extends AbstractSaveManager<T> {
+public class StandardSaveManager<T extends AttributeHolder> extends AbstractSaveManager<T> {
 
-    public StandardSaveManager(PlayerManager<?, T> playerManager) {
-        super(playerManager);
+    public StandardSaveManager() {
+        super();
     }
 
-    public StandardSaveManager(PlayerManager<?, T> playerManager, BiConsumer<EnvyPlayer<T>, Throwable> errorHandler) {
-        super(playerManager, errorHandler);
+    public StandardSaveManager(BiConsumer<T, Throwable> errorHandler) {
+        super(errorHandler);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <A extends Attribute<B>, B> CompletableFuture<A> loadAttribute(Class<? extends A> attributeClass, B id) {
+    public <A extends Attribute> CompletableFuture<A> loadAttribute(Class<? extends A> attributeClass, UUID id) {
         assert attributeClass != null : "Cannot load attribute with null class";
         assert id != null : "Cannot load attribute with null id";
 
@@ -49,7 +49,7 @@ public class StandardSaveManager<T> extends AbstractSaveManager<T> {
     }
 
     @Override
-    public <A> void saveData(A id, Attribute<A> attribute) {
+    public void saveData(Attribute attribute) {
         var data = this.registeredAttributes.get(attribute.getClass());
 
         if (data == null) {

@@ -6,7 +6,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.concurrent.CompletableFuture;
 
-public class AttributeInstance<A extends Attribute<B>, B> {
+public class AttributeInstance<A extends Attribute> {
 
     private A attribute;
     private CompletableFuture<A> loadingAttribute;

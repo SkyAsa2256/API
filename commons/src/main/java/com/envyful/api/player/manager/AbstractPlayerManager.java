@@ -3,6 +3,7 @@ package com.envyful.api.player.manager;
 import com.envyful.api.player.Attribute;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
+import com.envyful.api.player.attribute.data.AttributeData;
 import com.envyful.api.player.name.NameStore;
 import com.envyful.api.player.save.SaveManager;
 import com.envyful.api.player.save.impl.StandardSaveManager;
@@ -19,10 +20,10 @@ import java.util.stream.Collectors;
 public abstract class AbstractPlayerManager<A extends EnvyPlayer<B>, B> implements PlayerManager<A, B> {
 
     protected final Map<UUID, A> cachedPlayers = new ConcurrentHashMap<>();
-    protected final Map<Class<? extends Attribute<?>>, AttributeData<?, ?, B>> attributeData = new HashMap<>();
+    protected final Map<Class<? extends Attribute>, AttributeData<?, A>> attributeData = new HashMap<>();
     protected final Function<B, UUID> uuidGetter;
 
-    protected SaveManager<B> saveManager = new StandardSaveManager<>(this);
+    protected SaveManager<A> saveManager = new StandardSaveManager<>();
     protected NameStore nameStore = null;
 
     protected AbstractPlayerManager(Function<B, UUID> uuidGetter) {
@@ -75,12 +76,12 @@ public abstract class AbstractPlayerManager<A extends EnvyPlayer<B>, B> implemen
     }
 
     @Override
-    public void setSaveManager(SaveManager<B> saveManager) {
+    public void setSaveManager(SaveManager<A> saveManager) {
         this.saveManager = saveManager;
     }
 
     @Override
-    public SaveManager<B> getSaveManager() {
+    public SaveManager<A> getSaveManager() {
         return this.saveManager;
     }
 
@@ -96,8 +97,7 @@ public abstract class AbstractPlayerManager<A extends EnvyPlayer<B>, B> implemen
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <C, T extends Attribute<C>> C mapId(Class<T> attributeClass, UUID uuid) {
+    public <T extends Attribute> UUID mapId(Class<T> attributeClass, UUID uuid) {
         var player = this.getPlayer(uuid);
 
         if (player != null && player.hasAttribute(attributeClass)) {
@@ -112,12 +112,12 @@ public abstract class AbstractPlayerManager<A extends EnvyPlayer<B>, B> implemen
             throw new IllegalArgumentException("No attribute data found for " + attributeClass.getSimpleName() + " " + this.attributeData.keySet().stream().map(Class::getSimpleName).collect(Collectors.joining(", ")));
         }
 
-        return (C) data.offlineIdMapper().apply(uuid);
+        return data.offlineIdMapper().apply(uuid);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <X extends Attribute<Y>, Y> void registerAttribute(AttributeData<X, Y, B> attributeData) {
+    public <X extends Attribute> void registerAttribute(AttributeData<X, A> attributeData) {
         for (var trigger : attributeData.triggers()) {
             trigger.addAttribute(attributeData);
         }

@@ -12,7 +12,7 @@ import java.util.concurrent.CompletableFuture;
  *
  * @param <A> The type of the attribute
  */
-public interface SelfAttributeAdapter<A> extends AttributeAdapter<SelfAttributeAdapter<A>, A>, Attribute<A> {
+public interface SelfAttributeAdapter<A> extends AttributeAdapter<SelfAttributeAdapter<A>>, Attribute {
 
     @Override
     default CompletableFuture<Void> save(SelfAttributeAdapter<A> attribute) {

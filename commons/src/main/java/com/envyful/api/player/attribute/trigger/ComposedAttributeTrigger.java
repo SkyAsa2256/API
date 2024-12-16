@@ -1,12 +1,12 @@
 package com.envyful.api.player.attribute.trigger;
 
-import com.envyful.api.player.EnvyPlayer;
-import com.envyful.api.player.PlayerManager;
+import com.envyful.api.player.attribute.AttributeHolder;
 import com.envyful.api.player.attribute.AttributeTrigger;
+import com.envyful.api.player.attribute.data.AttributeData;
 
 import java.util.List;
 
-public class ComposedAttributeTrigger<T> implements AttributeTrigger<T> {
+public class ComposedAttributeTrigger<T extends AttributeHolder> implements AttributeTrigger<T> {
 
     private final List<AttributeTrigger<T>> triggers;
 
@@ -15,16 +15,16 @@ public class ComposedAttributeTrigger<T> implements AttributeTrigger<T> {
     }
 
     @Override
-    public void addAttribute(PlayerManager.AttributeData<?, ?, T> attribute) {
+    public void addAttribute(AttributeData<?, T> attribute) {
         for (var trigger : this.triggers) {
             trigger.addAttribute(attribute);
         }
     }
 
     @Override
-    public void trigger(EnvyPlayer<T> player) {
+    public void trigger(T holder) {
         for (var trigger : this.triggers) {
-            trigger.trigger(player);
+            trigger.trigger(holder);
         }
     }
 }

@@ -1,10 +1,11 @@
 package com.envyful.api.player.save;
 
 import com.envyful.api.player.Attribute;
-import com.envyful.api.player.EnvyPlayer;
-import com.envyful.api.player.PlayerManager;
+import com.envyful.api.player.attribute.AttributeHolder;
 import com.envyful.api.player.attribute.adapter.AttributeAdapter;
+import com.envyful.api.player.attribute.data.AttributeData;
 
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 
@@ -14,7 +15,7 @@ import java.util.function.BiConsumer;
  *
  * @param <T> The player type
  */
-public interface SaveManager<T> {
+public interface SaveManager<T extends AttributeHolder> {
 
     /**
      *
@@ -38,10 +39,9 @@ public interface SaveManager<T> {
      *
      * @param attributeClass The class of the attribute
      * @param <A> The attribute type
-     * @param <B> The id type
      * @return The save mode key
      */
-    <A extends Attribute<B>, B> String getSaveMode(Class<A> attributeClass);
+    <A extends Attribute> String getSaveMode(Class<A> attributeClass);
 
     /**
      *
@@ -49,10 +49,9 @@ public interface SaveManager<T> {
      *
      * @param attributeClass The class of the attribute
      * @param <A> The attribute type
-     * @param <B> The id type
      * @return The adapter
      */
-    <A extends Attribute<B>, B> AttributeAdapter<A, B> getAdapter(Class<A> attributeClass);
+    <A extends Attribute> AttributeAdapter<A> getAdapter(Class<A> attributeClass);
 
     /**
      *
@@ -61,9 +60,8 @@ public interface SaveManager<T> {
      * @param attributeClass The class of the attribute
      * @param saveMode The save mode key
      * @param <A> The attribute type
-     * @param <B> The id type
      */
-    <A extends Attribute<B>, B> void overrideSaveMode(Class<A> attributeClass, String saveMode);
+    <A extends Attribute> void overrideSaveMode(Class<A> attributeClass, String saveMode);
 
     /**
      *
@@ -71,9 +69,8 @@ public interface SaveManager<T> {
      *
      * @param attribute The class of the attribute being registered
      * @param <A> The attribute type
-     * @param <B> The id type
      */
-    <A extends Attribute<B>, B> void registerAttribute(PlayerManager.AttributeData<A, B, T> attribute);
+    <A extends Attribute> void registerAttribute(AttributeData<A, T> attribute);
 
     /**
      *
@@ -87,16 +84,15 @@ public interface SaveManager<T> {
      *
      * @return The error handler
      */
-    BiConsumer<EnvyPlayer<T>, Throwable> getErrorHandler();
+    BiConsumer<T, Throwable> getErrorHandler();
 
     /**
      *
      * Saves the player's data from the given attribute
      *
-     * @param id The unique ID of the attribute
      * @param attribute The attribute being saved
      */
-    <A> void saveData(A id, Attribute<A> attribute);
+    void saveData(Attribute attribute);
 
     /**
      *
@@ -106,8 +102,7 @@ public interface SaveManager<T> {
      * @param id The id to load the data using
      * @return The attribute instance
      * @param <A> The attribute type
-     * @param <B> The id type
      */
-    <A extends Attribute<B>, B> CompletableFuture<A> loadAttribute(Class<? extends A> attributeClass, B id);
+    <A extends Attribute> CompletableFuture<A> loadAttribute(Class<? extends A> attributeClass, UUID id);
 
 }

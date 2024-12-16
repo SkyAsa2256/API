@@ -95,8 +95,8 @@ public abstract class InjectedCommandFactory<A, B> implements CommandFactory<A, 
     }
 
     @SuppressWarnings("unchecked")
-    private <A, B extends Attribute<A>> OfflineAttribute<A, B> offlineAttributeBouncer(Class<?> clazz, String name) {
-        return OfflineAttribute.fromName((Class<B>) clazz, name);
+    private <A extends Attribute> OfflineAttribute<A> offlineAttributeBouncer(Class<?> clazz, String name) {
+        return OfflineAttribute.fromName((Class<A>) clazz, name);
     }
 
     @Override

@@ -1,9 +1,7 @@
 package com.envyful.api.player.attribute.trigger;
 
-import com.envyful.api.player.Attribute;
-import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.attribute.AbstractAttributeTrigger;
-import com.envyful.api.player.save.SaveManager;
+import com.envyful.api.player.attribute.AttributeHolder;
 
 /**
  *
@@ -11,23 +9,17 @@ import com.envyful.api.player.save.SaveManager;
  *
  * @param <T> The type of the player
  */
-public class SaveAttributeTrigger<T> extends AbstractAttributeTrigger<T> {
+public class SaveAttributeTrigger<T extends AttributeHolder> extends AbstractAttributeTrigger<T> {
 
     @Override
-    public void trigger(EnvyPlayer<T> player) {
+    public void trigger(AttributeHolder holder) {
         for (var data : this.attributes) {
-            if (!player.hasAttribute(data.attributeClass())) {
+            if (!holder.hasAttribute(data.attributeClass())) {
                 continue;
             }
 
-            var attribute = player.getAttributeNow(data.attributeClass());
-            this.saveAttribute(data.saveManager(), attribute, attribute.getId());
+            var attribute = holder.getAttributeNow(data.attributeClass());
+            data.saveManager().saveData(attribute);
         }
-    }
-
-    @SuppressWarnings("unchecked")
-    private <A extends Attribute<B>, B> void saveAttribute(
-            SaveManager<T> saveManager, A attribute, Object id) {
-        saveManager.saveData((B) id, attribute);
     }
 }

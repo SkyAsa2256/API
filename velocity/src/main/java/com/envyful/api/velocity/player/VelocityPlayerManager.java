@@ -2,7 +2,6 @@ package com.envyful.api.velocity.player;
 
 import com.envyful.api.player.Attribute;
 import com.envyful.api.player.AttributeBuilder;
-import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.player.manager.AbstractPlayerManager;
 import com.envyful.api.player.name.NameStore;
@@ -46,15 +45,11 @@ public class VelocityPlayerManager extends AbstractPlayerManager<VelocityEnvyPla
 
     @Override
     @SuppressWarnings("unchecked")
-    public <X extends Attribute<Y>, Y> void registerAttribute(AttributeBuilder<X, Y, EnvyPlayer<Player>> builder) {
+    public <X extends Attribute> void registerAttribute(AttributeBuilder<X, VelocityEnvyPlayer> builder) {
         builder.triggers(
                 VelocityTrigger.singleSet(proxyServer, plugin, LoginEvent.class, event -> this.cachedPlayers.get(event.getPlayer().getUniqueId())),
                 VelocityTrigger.singleSave(proxyServer, plugin, DisconnectEvent.class, event -> this.cachedPlayers.get(event.getPlayer().getUniqueId()))
         );
-
-        if (builder.offlineIdMapper() == null) {
-            builder.offlineIdMapper(uuid -> (Y) uuid);
-        }
 
         super.registerAttribute(builder);
     }

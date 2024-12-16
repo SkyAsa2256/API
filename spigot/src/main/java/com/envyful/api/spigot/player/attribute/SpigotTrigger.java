@@ -1,6 +1,5 @@
 package com.envyful.api.spigot.player.attribute;
 
-import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.attribute.AttributeTrigger;
 import com.envyful.api.player.attribute.trigger.ClearAttributeTrigger;
 import com.envyful.api.player.attribute.trigger.SaveAttributeTrigger;
@@ -8,7 +7,6 @@ import com.envyful.api.player.attribute.trigger.SetAttributeTrigger;
 import com.envyful.api.spigot.listener.GenericListener;
 import com.envyful.api.spigot.player.SpigotEnvyPlayer;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.Plugin;
@@ -38,7 +36,7 @@ public class SpigotTrigger {
      * @return the trigger
      * @param <A> the event type
      */
-    public static <A extends Event> AttributeTrigger<Player> singleSet(Plugin plugin, Class<A> event, Function<A, SpigotEnvyPlayer> converter) {
+    public static <A extends Event> AttributeTrigger<SpigotEnvyPlayer> singleSet(Plugin plugin, Class<A> event, Function<A, SpigotEnvyPlayer> converter) {
         return set(plugin, event, a -> {
             var player = converter.apply(a);
 
@@ -60,8 +58,8 @@ public class SpigotTrigger {
      * @return the trigger
      * @param <A> the event type
      */
-    public static <A extends Event> AttributeTrigger<Player> set(Plugin plugin, Class<A> event, Function<A, List<SpigotEnvyPlayer>> converter) {
-        var trigger = new SetAttributeTrigger<Player>();
+    public static <A extends Event> AttributeTrigger<SpigotEnvyPlayer> set(Plugin plugin, Class<A> event, Function<A, List<SpigotEnvyPlayer>> converter) {
+        var trigger = new SetAttributeTrigger<SpigotEnvyPlayer>();
         createHandler(plugin, event, converter, trigger::trigger);
         return trigger;
     }
@@ -76,7 +74,7 @@ public class SpigotTrigger {
      * @return the trigger
      * @param <A> the event type
      */
-    public static <A extends Event> AttributeTrigger<Player> singleClear(Plugin plugin, Class<A> event, Function<A, SpigotEnvyPlayer> converter) {
+    public static <A extends Event> AttributeTrigger<SpigotEnvyPlayer> singleClear(Plugin plugin, Class<A> event, Function<A, SpigotEnvyPlayer> converter) {
         return clear(plugin, event, a -> {
             var player = converter.apply(a);
 
@@ -98,8 +96,8 @@ public class SpigotTrigger {
      * @return the trigger
      * @param <A> the event type
      */
-    public static <A extends Event> AttributeTrigger<Player> clear(Plugin plugin, Class<A> event, Function<A, List<SpigotEnvyPlayer>> converter) {
-        var trigger = new ClearAttributeTrigger<Player>();
+    public static <A extends Event> AttributeTrigger<SpigotEnvyPlayer> clear(Plugin plugin, Class<A> event, Function<A, List<SpigotEnvyPlayer>> converter) {
+        var trigger = new ClearAttributeTrigger<SpigotEnvyPlayer>();
         createHandler(plugin, event, converter, trigger::trigger);
         return trigger;
     }
@@ -114,7 +112,7 @@ public class SpigotTrigger {
      * @return the trigger
      * @param <A> the event type
      */
-    public static <A extends Event> AttributeTrigger<Player> singleSave(Plugin plugin, Class<A> event, Function<A, SpigotEnvyPlayer> converter) {
+    public static <A extends Event> AttributeTrigger<SpigotEnvyPlayer> singleSave(Plugin plugin, Class<A> event, Function<A, SpigotEnvyPlayer> converter) {
         return save(plugin, event, a -> {
             var player = converter.apply(a);
 
@@ -136,7 +134,7 @@ public class SpigotTrigger {
      * @return the trigger
      * @param <A> the event type
      */
-    public static <A extends Event> AttributeTrigger<Player> singleAsyncSave(Plugin plugin, Class<A> event, Function<A, SpigotEnvyPlayer> converter) {
+    public static <A extends Event> AttributeTrigger<SpigotEnvyPlayer> singleAsyncSave(Plugin plugin, Class<A> event, Function<A, SpigotEnvyPlayer> converter) {
         return asyncSave(plugin, event, a -> {
             var player = converter.apply(a);
 
@@ -158,8 +156,8 @@ public class SpigotTrigger {
      * @return the trigger
      * @param <A> the event type
      */
-    public static <A extends Event> AttributeTrigger<Player> save(Plugin plugin, Class<A> event, Function<A, List<SpigotEnvyPlayer>> converter) {
-        var trigger = new SaveAttributeTrigger<Player>();
+    public static <A extends Event> AttributeTrigger<SpigotEnvyPlayer> save(Plugin plugin, Class<A> event, Function<A, List<SpigotEnvyPlayer>> converter) {
+        var trigger = new SaveAttributeTrigger<SpigotEnvyPlayer>();
         createHandler(plugin, event, converter, trigger::trigger);
         return trigger;
     }
@@ -174,14 +172,14 @@ public class SpigotTrigger {
      * @return the trigger
      * @param <A> the event type
      */
-    public static <A extends Event> AttributeTrigger<Player> asyncSave(Plugin plugin, Class<A> event, Function<A, List<SpigotEnvyPlayer>> converter) {
-        var trigger = new SaveAttributeTrigger<Player>();
+    public static <A extends Event> AttributeTrigger<SpigotEnvyPlayer> asyncSave(Plugin plugin, Class<A> event, Function<A, List<SpigotEnvyPlayer>> converter) {
+        var trigger = new SaveAttributeTrigger<SpigotEnvyPlayer>();
         createAsyncHandler(plugin, event, converter, trigger::trigger);
         return trigger;
     }
 
     @SuppressWarnings("unchecked")
-    private static <A extends Event> void createHandler(Plugin plugin, Class<A> eventClass, Function<A, List<SpigotEnvyPlayer>> converter, Consumer<EnvyPlayer<Player>> trigger) {
+    private static <A extends Event> void createHandler(Plugin plugin, Class<A> eventClass, Function<A, List<SpigotEnvyPlayer>> converter, Consumer<SpigotEnvyPlayer> trigger) {
         var listener = new GenericListener<A>() {
             @Override
             public void onEvent(A event) {
@@ -203,7 +201,7 @@ public class SpigotTrigger {
     }
 
     @SuppressWarnings("unchecked")
-    private static <A extends Event> void createAsyncHandler(Plugin plugin, Class<A> eventClass, Function<A, List<SpigotEnvyPlayer>> converter, Consumer<EnvyPlayer<Player>> trigger) {
+    private static <A extends Event> void createAsyncHandler(Plugin plugin, Class<A> eventClass, Function<A, List<SpigotEnvyPlayer>> converter, Consumer<SpigotEnvyPlayer> trigger) {
         var listener = new GenericListener<A>() {
             @Override
             public void onEvent(A event) {

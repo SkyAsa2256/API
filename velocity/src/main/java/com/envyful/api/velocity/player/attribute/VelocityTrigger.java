@@ -1,13 +1,11 @@
 package com.envyful.api.velocity.player.attribute;
 
-import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.attribute.AttributeTrigger;
 import com.envyful.api.player.attribute.trigger.ClearAttributeTrigger;
 import com.envyful.api.player.attribute.trigger.SaveAttributeTrigger;
 import com.envyful.api.player.attribute.trigger.SetAttributeTrigger;
 import com.envyful.api.velocity.player.VelocityEnvyPlayer;
 import com.velocitypowered.api.event.PostOrder;
-import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 
 import java.util.List;
@@ -36,7 +34,7 @@ public class VelocityTrigger {
      * @return the trigger
      * @param <A> the event type
      */
-    public static <A> AttributeTrigger<Player> singleSet(ProxyServer server, Object plugin, Class<A> event, Function<A, VelocityEnvyPlayer> converter) {
+    public static <A> AttributeTrigger<VelocityEnvyPlayer> singleSet(ProxyServer server, Object plugin, Class<A> event, Function<A, VelocityEnvyPlayer> converter) {
         return set(server, plugin, event, a -> List.of(converter.apply(a)));
     }
 
@@ -51,8 +49,8 @@ public class VelocityTrigger {
      * @return the trigger
      * @param <A> the event type
      */
-    public static <A> AttributeTrigger<Player> set(ProxyServer server, Object plugin, Class<A> event, Function<A, List<VelocityEnvyPlayer>> converter) {
-        var trigger = new SetAttributeTrigger<Player>();
+    public static <A> AttributeTrigger<VelocityEnvyPlayer> set(ProxyServer server, Object plugin, Class<A> event, Function<A, List<VelocityEnvyPlayer>> converter) {
+        var trigger = new SetAttributeTrigger<VelocityEnvyPlayer>();
         createHandler(server, plugin, event, converter, trigger::trigger);
         return trigger;
     }
@@ -68,7 +66,7 @@ public class VelocityTrigger {
      * @return the trigger
      * @param <A> the event type
      */
-    public static <A> AttributeTrigger<Player> singleClear(ProxyServer server, Object plugin, Class<A> event, Function<A, VelocityEnvyPlayer> converter) {
+    public static <A> AttributeTrigger<VelocityEnvyPlayer> singleClear(ProxyServer server, Object plugin, Class<A> event, Function<A, VelocityEnvyPlayer> converter) {
         return clear(server, plugin, event, a -> List.of(converter.apply(a)));
     }
 
@@ -83,8 +81,8 @@ public class VelocityTrigger {
      * @return the trigger
      * @param <A> the event type
      */
-    public static <A> AttributeTrigger<Player> clear(ProxyServer server, Object plugin, Class<A> event, Function<A, List<VelocityEnvyPlayer>> converter) {
-        var trigger = new ClearAttributeTrigger<Player>();
+    public static <A> AttributeTrigger<VelocityEnvyPlayer> clear(ProxyServer server, Object plugin, Class<A> event, Function<A, List<VelocityEnvyPlayer>> converter) {
+        var trigger = new ClearAttributeTrigger<VelocityEnvyPlayer>();
         createHandler(server, plugin, event, converter, trigger::trigger);
         return trigger;
     }
@@ -100,7 +98,7 @@ public class VelocityTrigger {
      * @return the trigger
      * @param <A> the event type
      */
-    public static <A> AttributeTrigger<Player> singleSave(ProxyServer server, Object plugin, Class<A> event, Function<A, VelocityEnvyPlayer> converter) {
+    public static <A> AttributeTrigger<VelocityEnvyPlayer> singleSave(ProxyServer server, Object plugin, Class<A> event, Function<A, VelocityEnvyPlayer> converter) {
         return save(server, plugin, event, a -> List.of(converter.apply(a)));
     }
 
@@ -115,20 +113,20 @@ public class VelocityTrigger {
      * @return the trigger
      * @param <A> the event type
      */
-    public static <A> AttributeTrigger<Player> save(ProxyServer server, Object plugin, Class<A> event, Function<A, List<VelocityEnvyPlayer>> converter) {
-        var trigger = new SaveAttributeTrigger<Player>();
+    public static <A> AttributeTrigger<VelocityEnvyPlayer> save(ProxyServer server, Object plugin, Class<A> event, Function<A, List<VelocityEnvyPlayer>> converter) {
+        var trigger = new SaveAttributeTrigger<VelocityEnvyPlayer>();
         createHandler(server, plugin, event, converter, trigger::trigger);
         return trigger;
     }
 
     @SuppressWarnings("unchecked")
-    private static <A> void createHandler(ProxyServer server, Object plugin, Class<A> eventClass, Function<A, List<VelocityEnvyPlayer>> converter, Consumer<EnvyPlayer<Player>> trigger) {
+    private static <A> void createHandler(ProxyServer server, Object plugin, Class<A> eventClass, Function<A, List<VelocityEnvyPlayer>> converter, Consumer<VelocityEnvyPlayer> trigger) {
         server.getEventManager().register(plugin, eventClass, PostOrder.LAST, event -> {
             if (!eventClass.isAssignableFrom(event.getClass())) {
                 return;
             }
 
-            for (var player : converter.apply((A) event)) {
+            for (var player : converter.apply(event)) {
                 if (player != null) {
                     trigger.accept(player);
                 }

@@ -2,13 +2,11 @@ package com.envyful.api.forge.player.attribute;
 
 import com.envyful.api.concurrency.UtilConcurrency;
 import com.envyful.api.forge.player.ForgeEnvyPlayer;
-import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.attribute.AttributeTrigger;
 import com.envyful.api.player.attribute.trigger.ClearAttributeTrigger;
 import com.envyful.api.player.attribute.trigger.ComposedAttributeTrigger;
 import com.envyful.api.player.attribute.trigger.SaveAttributeTrigger;
 import com.envyful.api.player.attribute.trigger.SetAttributeTrigger;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -38,7 +36,7 @@ public class ForgeTrigger {
      * @return the trigger
      * @param <A> the event type
      */
-    public static <A extends Event> AttributeTrigger<ServerPlayerEntity> singleSet(Class<A> event, Function<A, ForgeEnvyPlayer> converter) {
+    public static <A extends Event> AttributeTrigger<ForgeEnvyPlayer> singleSet(Class<A> event, Function<A, ForgeEnvyPlayer> converter) {
         return singleSet(MinecraftForge.EVENT_BUS, event, converter);
     }
 
@@ -52,7 +50,7 @@ public class ForgeTrigger {
      * @return The trigger
      * @param <A> The event type
      */
-    public static <A extends Event> AttributeTrigger<ServerPlayerEntity> singleSet(IEventBus eventBus, Class<A> event, Function<A, ForgeEnvyPlayer> converter) {
+    public static <A extends Event> AttributeTrigger<ForgeEnvyPlayer> singleSet(IEventBus eventBus, Class<A> event, Function<A, ForgeEnvyPlayer> converter) {
         return set(eventBus, event, a -> {
             var player = converter.apply(a);
 
@@ -73,7 +71,7 @@ public class ForgeTrigger {
      * @return the trigger
      * @param <A> the event type
      */
-    public static <A extends Event> AttributeTrigger<ServerPlayerEntity> set(Class<A> event, Function<A, List<ForgeEnvyPlayer>> converter) {
+    public static <A extends Event> AttributeTrigger<ForgeEnvyPlayer> set(Class<A> event, Function<A, List<ForgeEnvyPlayer>> converter) {
         return set(MinecraftForge.EVENT_BUS, event, converter);
     }
 
@@ -87,8 +85,8 @@ public class ForgeTrigger {
      * @return The trigger
      * @param <A> The event type
      */
-    public static <A extends Event> AttributeTrigger<ServerPlayerEntity> set(IEventBus eventBus, Class<A> event, Function<A, List<ForgeEnvyPlayer>> converter) {
-        var trigger = new SetAttributeTrigger<ServerPlayerEntity>();
+    public static <A extends Event> AttributeTrigger<ForgeEnvyPlayer> set(IEventBus eventBus, Class<A> event, Function<A, List<ForgeEnvyPlayer>> converter) {
+        var trigger = new SetAttributeTrigger<ForgeEnvyPlayer>();
         createHandler(eventBus, event, converter, trigger::trigger);
         return trigger;
     }
@@ -103,8 +101,8 @@ public class ForgeTrigger {
      * @return The trigger
      * @param <A> The event type
      */
-    public static <A extends Event> AttributeTrigger<ServerPlayerEntity> asyncSet(IEventBus eventBus, Class<A> event, Function<A, List<ForgeEnvyPlayer>> converter) {
-        var trigger = new SetAttributeTrigger<ServerPlayerEntity>();
+    public static <A extends Event> AttributeTrigger<ForgeEnvyPlayer> asyncSet(IEventBus eventBus, Class<A> event, Function<A, List<ForgeEnvyPlayer>> converter) {
+        var trigger = new SetAttributeTrigger<ForgeEnvyPlayer>();
         createAsyncHandler(eventBus, event, converter, trigger::trigger);
         return trigger;
     }
@@ -118,7 +116,7 @@ public class ForgeTrigger {
      * @return the trigger
      * @param <A> the event type
      */
-    public static <A extends Event> AttributeTrigger<ServerPlayerEntity> singleClear(Class<A> event, Function<A, ForgeEnvyPlayer> converter) {
+    public static <A extends Event> AttributeTrigger<ForgeEnvyPlayer> singleClear(Class<A> event, Function<A, ForgeEnvyPlayer> converter) {
         return singleClear(MinecraftForge.EVENT_BUS, event, converter);
     }
 
@@ -132,7 +130,7 @@ public class ForgeTrigger {
      * @return The trigger
      * @param <A> The event type
      */
-    public static <A extends Event> AttributeTrigger<ServerPlayerEntity> singleClear(IEventBus eventBus, Class<A> event, Function<A, ForgeEnvyPlayer> converter) {
+    public static <A extends Event> AttributeTrigger<ForgeEnvyPlayer> singleClear(IEventBus eventBus, Class<A> event, Function<A, ForgeEnvyPlayer> converter) {
         return clear(eventBus, event, a -> {
             var player = converter.apply(a);
 
@@ -153,7 +151,7 @@ public class ForgeTrigger {
      * @return the trigger
      * @param <A> the event type
      */
-    public static <A extends Event> AttributeTrigger<ServerPlayerEntity> clear(Class<A> event, Function<A, List<ForgeEnvyPlayer>> converter) {
+    public static <A extends Event> AttributeTrigger<ForgeEnvyPlayer> clear(Class<A> event, Function<A, List<ForgeEnvyPlayer>> converter) {
         return clear(MinecraftForge.EVENT_BUS, event, converter);
     }
 
@@ -167,8 +165,8 @@ public class ForgeTrigger {
      * @return The trigger
      * @param <A> The event type
      */
-    public static <A extends Event> AttributeTrigger<ServerPlayerEntity> clear(IEventBus eventBus, Class<A> event, Function<A, List<ForgeEnvyPlayer>> converter) {
-        var trigger = new ClearAttributeTrigger<ServerPlayerEntity>();
+    public static <A extends Event> AttributeTrigger<ForgeEnvyPlayer> clear(IEventBus eventBus, Class<A> event, Function<A, List<ForgeEnvyPlayer>> converter) {
+        var trigger = new ClearAttributeTrigger<ForgeEnvyPlayer>();
         createHandler(eventBus, event, converter, trigger::trigger);
         return trigger;
     }
@@ -182,7 +180,7 @@ public class ForgeTrigger {
      * @return the trigger
      * @param <A> the event type
      */
-    public static <A extends Event> AttributeTrigger<ServerPlayerEntity> singleSave(Class<A> event, Function<A, ForgeEnvyPlayer> converter) {
+    public static <A extends Event> AttributeTrigger<ForgeEnvyPlayer> singleSave(Class<A> event, Function<A, ForgeEnvyPlayer> converter) {
         return save(MinecraftForge.EVENT_BUS, event, a -> {
             var player = converter.apply(a);
 
@@ -205,7 +203,7 @@ public class ForgeTrigger {
      * @return The trigger
      * @param <A> The event type
      */
-    public static <A extends Event> AttributeTrigger<ServerPlayerEntity> singleSave(IEventBus eventBus, Class<A> event, Function<A, ForgeEnvyPlayer> converter) {
+    public static <A extends Event> AttributeTrigger<ForgeEnvyPlayer> singleSave(IEventBus eventBus, Class<A> event, Function<A, ForgeEnvyPlayer> converter) {
         return save(eventBus, event, a -> {
             var player = converter.apply(a);
 
@@ -226,7 +224,7 @@ public class ForgeTrigger {
      * @return the trigger
      * @param <A> the event type
      */
-    public static <A extends Event> AttributeTrigger<ServerPlayerEntity> save(Class<A> event, Function<A, List<ForgeEnvyPlayer>> converter) {
+    public static <A extends Event> AttributeTrigger<ForgeEnvyPlayer> save(Class<A> event, Function<A, List<ForgeEnvyPlayer>> converter) {
         return save(MinecraftForge.EVENT_BUS, event, converter);
     }
 
@@ -240,8 +238,8 @@ public class ForgeTrigger {
      * @return The trigger
      * @param <A> The event type
      */
-    public static <A extends Event> AttributeTrigger<ServerPlayerEntity> save(IEventBus eventBus, Class<A> event, Function<A, List<ForgeEnvyPlayer>> converter) {
-        var trigger = new SaveAttributeTrigger<ServerPlayerEntity>();
+    public static <A extends Event> AttributeTrigger<ForgeEnvyPlayer> save(IEventBus eventBus, Class<A> event, Function<A, List<ForgeEnvyPlayer>> converter) {
+        var trigger = new SaveAttributeTrigger<ForgeEnvyPlayer>();
         createHandler(eventBus, event, converter, trigger::trigger);
         return trigger;
     }
@@ -255,7 +253,7 @@ public class ForgeTrigger {
      * @return The trigger
      * @param <A> The event type
      */
-    public static <A extends Event> AttributeTrigger<ServerPlayerEntity> asyncSave(Class<A> event, Function<A, List<ForgeEnvyPlayer>> converter) {
+    public static <A extends Event> AttributeTrigger<ForgeEnvyPlayer> asyncSave(Class<A> event, Function<A, List<ForgeEnvyPlayer>> converter) {
         return asyncSave(MinecraftForge.EVENT_BUS, event, converter);
     }
 
@@ -269,13 +267,13 @@ public class ForgeTrigger {
      * @return The trigger
      * @param <A> The event type
      */
-    public static <A extends Event> AttributeTrigger<ServerPlayerEntity> asyncSave(IEventBus eventBus, Class<A> event, Function<A, List<ForgeEnvyPlayer>> converter) {
-        var trigger = new SaveAttributeTrigger<ServerPlayerEntity>();
+    public static <A extends Event> AttributeTrigger<ForgeEnvyPlayer> asyncSave(IEventBus eventBus, Class<A> event, Function<A, List<ForgeEnvyPlayer>> converter) {
+        var trigger = new SaveAttributeTrigger<ForgeEnvyPlayer>();
         createAsyncHandler(eventBus, event, converter, trigger::trigger);
         return trigger;
     }
 
-    public static <A extends Event> AttributeTrigger<ServerPlayerEntity> asyncSingleSaveAndClear(Class<A> event, Function<A, ForgeEnvyPlayer> converter) {
+    public static <A extends Event> AttributeTrigger<ForgeEnvyPlayer> asyncSingleSaveAndClear(Class<A> event, Function<A, ForgeEnvyPlayer> converter) {
         return asyncSingleSaveAndClear(MinecraftForge.EVENT_BUS, event, converter);
     }
 
@@ -289,9 +287,9 @@ public class ForgeTrigger {
      * @return The trigger
      * @param <A> The event type
      */
-    public static <A extends Event> AttributeTrigger<ServerPlayerEntity> asyncSingleSaveAndClear(IEventBus eventBus, Class<A> event, Function<A, ForgeEnvyPlayer> converter) {
-        var saveTrigger = new SaveAttributeTrigger<ServerPlayerEntity>();
-        var clearTrigger = new ClearAttributeTrigger<ServerPlayerEntity>();
+    public static <A extends Event> AttributeTrigger<ForgeEnvyPlayer> asyncSingleSaveAndClear(IEventBus eventBus, Class<A> event, Function<A, ForgeEnvyPlayer> converter) {
+        var saveTrigger = new SaveAttributeTrigger<ForgeEnvyPlayer>();
+        var clearTrigger = new ClearAttributeTrigger<ForgeEnvyPlayer>();
         var trigger = new ComposedAttributeTrigger<>(List.of(saveTrigger, clearTrigger));
         createAsyncHandler(eventBus, event, a -> {
             var player = converter.apply(a);
@@ -315,16 +313,16 @@ public class ForgeTrigger {
      * @return The trigger
      * @param <A> The event type
      */
-    public static <A extends Event> AttributeTrigger<ServerPlayerEntity> asyncSaveAndClear(IEventBus eventBus, Class<A> event, Function<A, List<ForgeEnvyPlayer>> converter) {
-        var saveTrigger = new SaveAttributeTrigger<ServerPlayerEntity>();
-        var clearTrigger = new ClearAttributeTrigger<ServerPlayerEntity>();
+    public static <A extends Event> AttributeTrigger<ForgeEnvyPlayer> asyncSaveAndClear(IEventBus eventBus, Class<A> event, Function<A, List<ForgeEnvyPlayer>> converter) {
+        var saveTrigger = new SaveAttributeTrigger<ForgeEnvyPlayer>();
+        var clearTrigger = new ClearAttributeTrigger<ForgeEnvyPlayer>();
         var trigger = new ComposedAttributeTrigger<>(List.of(saveTrigger, clearTrigger));
         createAsyncHandler(eventBus, event, converter, trigger::trigger);
         return trigger;
     }
 
     @SuppressWarnings("unchecked")
-    private static <A extends Event> void createHandler(IEventBus eventBus, Class<A> eventClass, Function<A, List<ForgeEnvyPlayer>> converter, Consumer<EnvyPlayer<ServerPlayerEntity>> trigger) {
+    private static <A extends Event> void createHandler(IEventBus eventBus, Class<A> eventClass, Function<A, List<ForgeEnvyPlayer>> converter, Consumer<ForgeEnvyPlayer> trigger) {
         eventBus.addListener(event -> {
             if (!eventClass.isAssignableFrom(event.getClass())) {
                 return;
@@ -339,7 +337,7 @@ public class ForgeTrigger {
     }
 
     @SuppressWarnings("unchecked")
-    private static <A extends Event> void createAsyncHandler(IEventBus eventBus, Class<A> eventClass, Function<A, List<ForgeEnvyPlayer>> converter, Consumer<EnvyPlayer<ServerPlayerEntity>> trigger) {
+    private static <A extends Event> void createAsyncHandler(IEventBus eventBus, Class<A> eventClass, Function<A, List<ForgeEnvyPlayer>> converter, Consumer<ForgeEnvyPlayer> trigger) {
         eventBus.addListener(event -> {
             if (!eventClass.isAssignableFrom(event.getClass())) {
                 return;

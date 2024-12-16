@@ -89,25 +89,28 @@ public abstract class AbstractEnvyPlayer<T> implements EnvyPlayer<T> {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <A extends Attribute<B>, B, C extends EnvyPlayer<T>> void setAttribute(A attribute) {
+    public <A extends Attribute<B>, B> void setAttribute(A attribute) {
         if (attribute == null) {
             return;
         }
 
         if (attribute instanceof PlayerAttribute) {
-            ((PlayerAttribute<?, C, T>) attribute).setParent((C) this);
+            this.attemptSetParent(attribute);
         }
 
         this.attributes.put(attribute.getClass(), new AttributeInstance<>(attribute));
     }
 
-    @Override
     @SuppressWarnings("unchecked")
-    public <A extends Attribute<B>, B, C extends EnvyPlayer<T>> void setAttribute(Class<A> attributeClass, CompletableFuture<A> attribute) {
+    private <A extends Attribute<B>, B, C extends EnvyPlayer<T>> void attemptSetParent(A attribute) {
+        ((PlayerAttribute<?, C, T>) attribute).setParent((C) this);
+    }
+
+    @Override
+    public <A extends Attribute<B>, B> void setAttribute(Class<A> attributeClass, CompletableFuture<A> attribute) {
         attribute.whenComplete((a, throwable) -> {
             if (a instanceof PlayerAttribute) {
-                ((PlayerAttribute<?, C, T>) a).setParent((C) this);
+                this.attemptSetParent(a);
             }
         });
         this.attributes.put(attributeClass, new AttributeInstance<>(attribute));

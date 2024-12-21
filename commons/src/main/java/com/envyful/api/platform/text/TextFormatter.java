@@ -6,6 +6,18 @@ import com.envyful.api.text.PlaceholderFactory;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ *
+ * An interface for handling text formatting and conversion
+ * <br>
+ * This is used to handle the conversion of standard text to a specific type
+ * such as a Component for Forge, or MiniMessage for Spigot.
+ * <br>
+ * This interface allows the internal conversion logic to be replaced by
+ * the implementer, allowing for custom text formatting to be used.
+ *
+ * @param <T> The type of text to convert to
+ */
 public interface TextFormatter<T> {
 
     TextFormatter<String> PLAIN = new TextFormatter<String>() {

@@ -15,6 +15,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ *
+ * Static utility class for formatting date time instances and the TimeFormatConfig
+ *
+ */
 public class UtilTimeFormat {
 
     private static final DateFormat DATE_FORMATTER =

@@ -37,6 +37,16 @@ public class UtilTimeFormat {
         return format(duration.toMillis(), config);
     }
 
+    /**
+     *
+     * Formats the duration, converting it into milliseconds from the specified
+     * unit, to the specified format in the {@link TimeFormatConfig} provided.
+     *
+     * @param time The time duration
+     * @param timeUnit The time unit
+     * @param config The format config
+     * @return The formatted duration
+     */
     public static String format(long time, TimeUnit timeUnit, TimeFormatConfig config) {
         return format(timeUnit.toMillis(time), config);
     }

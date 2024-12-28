@@ -4,6 +4,11 @@ import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 import java.util.List;
 
+/**
+ *
+ * Config for the {@link Paginator}
+ *
+ */
 @ConfigSerializable
 public class PaginatorConfig {
 

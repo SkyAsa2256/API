@@ -5,6 +5,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ *
+ * Simple representation of a JSON object
+ *
+ */
 public class JSONObject {
 
     private final Map<String, Object> map = new HashMap<>();

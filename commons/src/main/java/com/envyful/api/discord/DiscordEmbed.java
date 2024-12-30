@@ -5,13 +5,17 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+/**
+ * 
+ * Simple Discord Embed class
+ * 
+ */
 @SuppressWarnings({"unused", "UnusedReturnValue"})
 public class DiscordEmbed {
 

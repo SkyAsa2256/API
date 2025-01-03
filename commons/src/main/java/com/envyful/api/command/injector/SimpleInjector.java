@@ -3,6 +3,13 @@ package com.envyful.api.command.injector;
 import java.lang.annotation.Annotation;
 import java.util.List;
 
+/**
+ *
+ * A simple implementation of the {@link ArgumentInjector} interface that allows for easy creation of new injectors
+ *
+ * @param <A> The type of the class to be injected
+ * @param <B> The type of the sender
+ */
 public class SimpleInjector<A, B> implements ArgumentInjector<A, B> {
 
     private final Class<A> injectedClass;

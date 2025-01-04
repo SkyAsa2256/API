@@ -15,6 +15,13 @@ public class SimpleInjector<A, B> implements ArgumentInjector<A, B> {
     private final Class<A> injectedClass;
     private final ArgumentInjectionFunction<A, B> argumentInjector;
 
+    /**
+     *
+     * Constructor for the simple injector
+     *
+     * @param injectedClass The class to be injected
+     * @param argumentInjector The function to be used to inject the class
+     */
     public SimpleInjector(Class<A> injectedClass, ArgumentInjectionFunction<A, B> argumentInjector) {
         this.injectedClass = injectedClass;
         this.argumentInjector = argumentInjector;

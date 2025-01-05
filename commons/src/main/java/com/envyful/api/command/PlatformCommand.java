@@ -191,6 +191,12 @@ public abstract class PlatformCommand<C> {
         return subCommands;
     }
 
+    /**
+     *
+     * Builder for the PlatformCommand
+     *
+     * @param <C> The sender type
+     */
     public static abstract class Builder<C> {
 
         protected String name;

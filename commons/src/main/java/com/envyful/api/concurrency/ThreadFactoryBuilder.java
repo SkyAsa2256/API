@@ -4,6 +4,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicLong;
 
+/**
+ *
+ * Static factory for creating {@link ThreadFactory} instances
+ *
+ */
 public class ThreadFactoryBuilder {
     private String nameFormat = null;
     private Boolean daemon = null;

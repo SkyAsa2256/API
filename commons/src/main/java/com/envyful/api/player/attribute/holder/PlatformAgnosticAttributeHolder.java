@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-public class PlatformAgnosticAttributeHolder implements AttributeHolder {
+public abstract class PlatformAgnosticAttributeHolder implements AttributeHolder {
 
     protected final Map<Class<?>, AttributeInstance<?, ?>> attributes = new HashMap<>();
 

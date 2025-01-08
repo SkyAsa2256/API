@@ -1,5 +1,7 @@
 package com.envyful.api.config.type;
 
+import com.envyful.api.gui.factory.GuiFactory;
+import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
 import com.envyful.api.type.UtilParse;
@@ -102,6 +104,14 @@ public class ConfigItem {
 
     public Map<String, NBTValue> getNbt() {
         return this.nbt;
+    }
+
+    public Displayable toDisplayable(Placeholder... placeholders) {
+        return GuiFactory.convertConfigItem(this, placeholders);
+    }
+
+    public <T> Displayable.Builder<T> toDisplayableBuilder(Placeholder... placeholders) {
+        return GuiFactory.convertConfigItemBuilder(this, placeholders);
     }
 
     public static Builder builder() {

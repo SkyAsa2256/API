@@ -1,12 +1,14 @@
 package com.envyful.api.gui.factory;
 
 import com.envyful.api.config.type.ConfigInterface;
+import com.envyful.api.config.type.ConfigItem;
 import com.envyful.api.gui.Gui;
 import com.envyful.api.gui.close.CloseConsumer;
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.gui.pane.TickHandler;
 import com.envyful.api.player.PlayerManager;
+import com.envyful.api.text.Placeholder;
 
 /**
  *
@@ -14,16 +16,6 @@ import com.envyful.api.player.PlayerManager;
  *
  */
 public interface PlatformGuiFactory<T> {
-
-    /**
-     *
-     * Creates a pane from a given config interface
-     *
-     * @param guiSettings The settings for the pane
-     * @return The new pane
-     */
-    Pane createPane(ConfigInterface guiSettings);
-
 
     /**
      *
@@ -90,5 +82,25 @@ public interface PlatformGuiFactory<T> {
      * @return The builder instance
      */
     CloseConsumer.Builder<?, ?> closeConsumerBuilder();
+
+    /**
+     *
+     * Parses a config item to a {@link Displayable}
+     *
+     * @param configItem The config item
+     * @param placeholders The placeholders to apply
+     * @return The displayable
+     */
+    Displayable convertConfigItem(ConfigItem configItem, Placeholder... placeholders);
+
+    /**
+     *
+     * Parses a config item to a {@link Displayable}
+     *
+     * @param configItem The config item
+     * @param placeholders The placeholders to apply
+     * @return The displayable
+     */
+    Displayable.Builder<T> convertConfigItemBuilder(ConfigItem configItem, Placeholder... placeholders);
 
 }

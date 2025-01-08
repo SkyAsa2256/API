@@ -1,5 +1,8 @@
 package com.envyful.api.config.type;
 
+import com.envyful.api.gui.factory.GuiFactory;
+import com.envyful.api.gui.pane.Pane;
+import com.envyful.api.text.Placeholder;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import uk.co.envyware.helios.RequiredMethod;
 
@@ -87,6 +90,25 @@ public class ConfigInterface {
 
     public List<ExtendedConfigItem> getDisplayItems() {
         return List.copyOf(this.displayItems.values());
+    }
+
+    public Pane toPane(Placeholder... placeholders) {
+        var pane = GuiFactory.paneBuilder()
+                .topLeftX(0)
+                .topLeftY(0)
+                .width(9)
+                .height(this.height)
+                .build();
+
+        for (var fillerItem : this.getFillerItems()) {
+            if (!fillerItem.isEnabled()) {
+                continue;
+            }
+
+            pane.add(fillerItem.toDisplayable(placeholders));
+        }
+
+        return pane;
     }
 
     public enum FillType {

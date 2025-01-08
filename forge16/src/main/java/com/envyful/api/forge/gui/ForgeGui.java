@@ -6,9 +6,9 @@ import com.envyful.api.forge.gui.item.EmptySlot;
 import com.envyful.api.forge.gui.pane.ForgeSimplePane;
 import com.envyful.api.forge.player.ForgeEnvyPlayer;
 import com.envyful.api.gui.Gui;
-import com.envyful.api.gui.factory.GuiFactory;
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
+import com.envyful.api.platform.PlatformProxy;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.type.Pair;
 import net.minecraft.entity.player.PlayerEntity;
@@ -257,7 +257,7 @@ public class ForgeGui implements Gui {
 
         @Override
         public ItemStack quickMoveStack(PlayerEntity p_82846_1_, int p_82846_2_) {
-            this.gui.open(GuiFactory.getPlayerManager().getPlayer(this.player.getUUID()));
+            this.gui.open(PlatformProxy.getPlayerManager().getPlayer(this.player.getUUID()));
             return ItemStack.EMPTY;
         }
 
@@ -298,7 +298,7 @@ public class ForgeGui implements Gui {
                 return ItemStack.EMPTY;
             }
 
-            EnvyPlayer<?> envyPlayer = GuiFactory.getPlayerManager().getPlayer(player.getUUID());
+            EnvyPlayer<?> envyPlayer = PlatformProxy.getPlayerManager().getPlayer(player.getUUID());
 
             if (envyPlayer == null) {
                 return ItemStack.EMPTY;
@@ -361,7 +361,7 @@ public class ForgeGui implements Gui {
             super.removed(player);
 
             ServerPlayerEntity sender = (ServerPlayerEntity) playerIn;
-            ForgeEnvyPlayer player = (ForgeEnvyPlayer) GuiFactory.getPlayerManager().getPlayer(playerIn.getUUID());
+            ForgeEnvyPlayer player = (ForgeEnvyPlayer) PlatformProxy.getPlayerManager().getPlayer(playerIn.getUUID());
 
             int windowId = sender.containerMenu.containerId;
 

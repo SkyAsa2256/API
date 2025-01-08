@@ -1,12 +1,14 @@
 package com.envyful.api.gui.factory;
 
 import com.envyful.api.config.type.ConfigInterface;
+import com.envyful.api.config.type.ConfigItem;
 import com.envyful.api.gui.Gui;
 import com.envyful.api.gui.close.CloseConsumer;
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.gui.pane.TickHandler;
 import com.envyful.api.player.PlayerManager;
+import com.envyful.api.text.Placeholder;
 
 /**
  *
@@ -50,22 +52,12 @@ public class GuiFactory {
      * Creates a pane from a given config interface
      *
      * @param guiSettings The settings for the pane
+     * @deprecated Use {@link ConfigInterface#toPane(Placeholder...)} instead
      * @return The new pane
      */
+    @Deprecated(forRemoval = true)
     public static Pane createPane(ConfigInterface guiSettings) {
-        checkThenThrowSetupException();
-        return platformFactory.createPane(guiSettings);
-    }
-
-    /**
-     *
-     * Caches the player manager
-     *
-     * @param playerManager The player manager
-     */
-    public static void setPlayerManager(PlayerManager<?, ?> playerManager) {
-        checkThenThrowSetupException();
-        platformFactory.setPlayerManager(playerManager);
+        return guiSettings.toPane();
     }
 
     /**
@@ -194,6 +186,32 @@ public class GuiFactory {
         }
 
         return empty;
+    }
+
+    /**
+     *
+     * Parses a config item to a {@link Displayable}
+     *
+     * @param configItem The config item
+     * @param placeholders The placeholders to apply
+     * @return The displayable
+     */
+    public static Displayable convertConfigItem(ConfigItem configItem, Placeholder... placeholders) {
+        checkThenThrowSetupException();
+        return platformFactory.convertConfigItem(configItem, placeholders);
+    }
+
+    /**
+     *
+     * Parses a config item to a {@link Displayable}
+     *
+     * @param configItem The config item
+     * @param placeholders The placeholders to apply
+     * @return The displayable
+     */
+    public static <T> Displayable.Builder<T> convertConfigItemBuilder(ConfigItem configItem, Placeholder... placeholders) {
+        checkThenThrowSetupException();
+        return (Displayable.Builder<T>) platformFactory.convertConfigItemBuilder(configItem, placeholders);
     }
 
     private static void checkThenThrowSetupException() {

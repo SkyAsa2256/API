@@ -9,7 +9,6 @@ import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.math.TriConsumer;
 import com.envyful.api.spigot.gui.close.SpigotCloseConsumer;
 import com.envyful.api.spigot.player.SpigotEnvyPlayer;
-import com.envyful.api.spigot.player.SpigotPlayerManager;
 import com.envyful.api.text.Placeholder;
 
 import java.util.ArrayList;
@@ -65,7 +64,6 @@ public class UtilConfigInterface {
         private PaginatedConfigInterface configInterface;
         private List<T> items = new ArrayList<>();
         private Function<T, ConfigItem> itemDisplayableConversion;
-        private SpigotPlayerManager playerManager;
         private SpigotCloseConsumer closeConsumer = (SpigotCloseConsumer) GuiFactory.closeConsumerBuilder().build();
         private TriConsumer<SpigotEnvyPlayer, Displayable.ClickType, T> pageItemClickHandler = (forgeEnvyPlayer, clickType, t) -> {};
         private List<BiConsumer<Pane, Integer>> extraItems = new ArrayList<>();
@@ -91,11 +89,6 @@ public class UtilConfigInterface {
 
         public PaginatedBuilder<T> itemDisplayableConversion(Function<T, ConfigItem> itemDisplayableConversion) {
             this.itemDisplayableConversion = itemDisplayableConversion;
-            return this;
-        }
-
-        public PaginatedBuilder<T> playerManager(SpigotPlayerManager playerManager) {
-            this.playerManager = playerManager;
             return this;
         }
 
@@ -177,7 +170,6 @@ public class UtilConfigInterface {
             }
 
             GuiFactory.guiBuilder()
-                    .setPlayerManager(this.playerManager)
                     .addPane(pane)
                     .height(this.configInterface.getHeight())
                     .closeConsumer(this.closeConsumer)

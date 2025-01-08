@@ -193,7 +193,6 @@ public class UtilConfigInterface {
             }
 
             GuiFactory.guiBuilder()
-                    .setPlayerManager(this.playerManager)
                     .addPane(pane)
                     .height(this.configInterface.getHeight())
                     .closeConsumer(this.closeConsumer)

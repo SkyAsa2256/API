@@ -80,7 +80,6 @@ public class DynamicSelectionUI {
         }
 
         GuiFactory.guiBuilder()
-                .setPlayerManager(config.playerManager)
                 .addPane(pane)
                 .height(config.config.guiSettings.getHeight())
                 .title(PlatformProxy.parse(config.config.guiSettings.getTitle(), placeholders).get(0))

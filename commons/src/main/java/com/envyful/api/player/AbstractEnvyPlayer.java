@@ -37,7 +37,7 @@ public abstract class AbstractEnvyPlayer<T> extends PlatformAgnosticAttributeHol
     }
 
     @Override
-    public <A extends Attribute<B>, B> void setAttribute(A attribute) {
+    public <A extends Attribute> void setAttribute(A attribute) {
         if (attribute == null) {
             return;
         }
@@ -50,7 +50,7 @@ public abstract class AbstractEnvyPlayer<T> extends PlatformAgnosticAttributeHol
     }
 
     @Override
-    public <A extends Attribute<B>, B> void setAttribute(Class<A> attributeClass, CompletableFuture<A> attribute) {
+    public <A extends Attribute> void setAttribute(Class<A> attributeClass, CompletableFuture<A> attribute) {
         attribute.whenComplete((a, throwable) -> {
             if (a instanceof PlayerAttribute) {
                 this.attemptSetParent(a);
@@ -61,7 +61,7 @@ public abstract class AbstractEnvyPlayer<T> extends PlatformAgnosticAttributeHol
     }
 
     @SuppressWarnings("unchecked")
-    private <A extends Attribute<B>, B, C extends EnvyPlayer<T>> void attemptSetParent(A attribute) {
+    private <A extends Attribute, C extends EnvyPlayer<T>> void attemptSetParent(A attribute) {
         ((PlayerAttribute<?, C, T>) attribute).setParent((C) this);
     }
 }

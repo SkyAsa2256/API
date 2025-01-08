@@ -11,6 +11,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface TargetAttribute {
 
-    Class<? extends Attribute<?>> value();
+    Class<? extends Attribute> value();
 
 }

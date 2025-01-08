@@ -1,8 +1,8 @@
 package com.envyful.api.player.attribute.trigger;
 
 import com.envyful.api.player.Attribute;
-import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.attribute.AbstractAttributeTrigger;
+import com.envyful.api.player.attribute.AttributeHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,14 +13,14 @@ import java.util.List;
  *
  * @param <T> The type of the player
  */
-public class ClearAttributeTrigger<T> extends AbstractAttributeTrigger<T> {
+public class ClearAttributeTrigger<T extends AttributeHolder> extends AbstractAttributeTrigger<T> {
 
     @Override
-    public void trigger(EnvyPlayer<T> player) {
-        List<Attribute<?>> attributes = new ArrayList<>();
+    public void trigger(AttributeHolder holder) {
+        List<Attribute> attributes = new ArrayList<>();
 
         for (var data : this.attributes) {
-            attributes.add(player.removeAttribute(data.attributeClass()));
+            attributes.add(holder.removeAttribute(data.attributeClass()));
         }
 
         for (var attribute : attributes) {

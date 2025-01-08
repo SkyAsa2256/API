@@ -1,13 +1,28 @@
 package com.envyful.api.player;
 
+import com.envyful.api.player.attribute.AttributeHolder;
+
+import java.util.UUID;
+
 /**
  *
  * An interface representing data stored about something, typically a player
  *
- * @param <A> The unique identifier type
  */
 @SuppressWarnings({"unused"})
-public interface Attribute<A> {
+public interface Attribute {
+
+    /**
+     *
+     * Gets the unique identifier for the attribute
+     *
+     * @return The unique identifier
+     * @deprecated Use {@link Attribute#getUniqueId()} instead
+     */
+    @Deprecated(forRemoval = true, since = "7.2.8")
+    default UUID getId() {
+        return this.getUniqueId();
+    }
 
     /**
      *
@@ -15,7 +30,7 @@ public interface Attribute<A> {
      *
      * @return The unique identifier
      */
-    A getId();
+    UUID getUniqueId();
 
     /**
      *
@@ -50,11 +65,10 @@ public interface Attribute<A> {
      * @param attributeClass The class of the attribute
      * @return The builder
      * @param <A> The attribute type
-     * @param <B> The id type
-     * @param <C> The platform player type
+     * @param <B> The platform player type
      */
-    static <A extends Attribute<B>, B, C> AttributeBuilder<A, B, C> builder(Class<A> attributeClass) {
-        return new AttributeBuilder<A, B, C>().attributeClass(attributeClass);
+    static <A extends Attribute, B extends AttributeHolder> AttributeBuilder<A, B> builder(Class<A> attributeClass) {
+        return new AttributeBuilder<A, B>().attributeClass(attributeClass);
     }
 
     /**
@@ -64,11 +78,10 @@ public interface Attribute<A> {
      * @param attributeClass The class of the attribute
      * @return The builder
      * @param <A> The attribute type
-     * @param <B> The id type
-     * @param <C> The platform player type
+     * @param <B> The platform player type
      */
-    static <A extends Attribute<B>, B, C> AttributeBuilder<A, B, C> builder(Class<A> attributeClass, Class<C> playerClass) {
-        return new AttributeBuilder<A, B, C>().attributeClass(attributeClass);
+    static <A extends Attribute, B extends AttributeHolder> AttributeBuilder<A, B> builder(Class<A> attributeClass, Class<B> playerClass) {
+        return new AttributeBuilder<A, B>().attributeClass(attributeClass);
     }
 
 }

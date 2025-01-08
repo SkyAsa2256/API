@@ -17,6 +17,8 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.List;
+import java.util.UUID;
+import java.util.function.BiConsumer;
 
 /**
  *
@@ -30,6 +32,10 @@ public class ForgePlayerManager extends AbstractPlayerManager<ForgeEnvyPlayer, S
 
     public ForgePlayerManager() {
         super(ServerPlayer::getUUID);
+    }
+
+    public ForgePlayerManager(BiConsumer<UUID, Throwable> errorHandler) {
+        super(errorHandler, ServerPlayer::getUUID);
 
         MinecraftForge.EVENT_BUS.register(new PlayerListener());
     }
@@ -40,19 +46,21 @@ public class ForgePlayerManager extends AbstractPlayerManager<ForgeEnvyPlayer, S
         this.nameStore = nameStore;
     }
 
+    public ForgePlayerManager(BiConsumer<UUID, Throwable> errorHandler, NameStore nameStore) {
+        this(errorHandler);
+
+        this.nameStore = nameStore;
+    }
+
     @Override
     @SuppressWarnings("unchecked")
-    public <X extends Attribute<Y>, Y> void registerAttribute(AttributeBuilder<X, Y, ServerPlayer> builder) {
+    public <X extends Attribute> void registerAttribute(AttributeBuilder<X, ForgeEnvyPlayer> builder) {
         builder.triggers(
                 ForgeTrigger.singleSet(PlayerEvent.PlayerLoggedInEvent.class, event -> this.cachedPlayers.get(event.getEntity().getUUID())),
                 ForgeTrigger.asyncSingleSaveAndClear(PlayerEvent.PlayerLoggedOutEvent.class, event -> this.cachedPlayers.get(event.getEntity().getUUID())),
                 ForgeTrigger.asyncSave(LevelEvent.Save.class, event -> List.copyOf(this.cachedPlayers.values())),
                 ForgeTrigger.asyncSave(ServerStoppingEvent.class, event -> List.copyOf(this.cachedPlayers.values()))
         );
-
-        if (builder.offlineIdMapper() == null) {
-            builder.offlineIdMapper(uuid -> (Y) uuid);
-        }
 
         super.registerAttribute(builder);
     }

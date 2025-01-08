@@ -24,7 +24,7 @@ public interface AttributeHolder extends Identifiable {
      *
      * @return All the attributes
      */
-    List<Attribute<?>> getAttributes();
+    List<Attribute> getAttributes();
 
     /**
      *
@@ -35,9 +35,8 @@ public interface AttributeHolder extends Identifiable {
      * @param attributeClass The attribute class
      * @return A completable future
      * @param <A> The attribute type
-     * @param <B> The attribute id type
      */
-    <A extends Attribute<B>, B> CompletableFuture<A> getAttribute(Class<A> attributeClass);
+    <A extends Attribute> CompletableFuture<A> getAttribute(Class<A> attributeClass);
 
     /**
      *
@@ -48,9 +47,8 @@ public interface AttributeHolder extends Identifiable {
      * @param attributeClass The attribute class
      * @param consumer The consumer to accept the attribute
      * @param <A> The attribute type
-     * @param <B> The attribute id type
      */
-    default <A extends Attribute<B>, B> void getAttribute(Class<A> attributeClass, Consumer<A> consumer) {
+    default <A extends Attribute> void getAttribute(Class<A> attributeClass, Consumer<A> consumer) {
         var loading = this.getAttribute(attributeClass);
 
         if (loading == null) {
@@ -67,9 +65,8 @@ public interface AttributeHolder extends Identifiable {
      * @param attributeClass The attribute class
      * @return If the player has the attribute
      * @param <A> The attribute type
-     * @param <B> The attribute id type
      */
-    <A extends Attribute<B>, B> boolean hasAttribute(Class<A> attributeClass);
+    <A extends Attribute> boolean hasAttribute(Class<A> attributeClass);
 
     /**
      *
@@ -81,9 +78,8 @@ public interface AttributeHolder extends Identifiable {
      * @param test The test to run on the attribute
      * @return If the player has the attribute and it passes the test
      * @param <A> The attribute type
-     * @param <B> The attribute id type
      */
-    default <A extends Attribute<B>, B> boolean testAttribute(Class<A> attributeClass, Predicate<A> test) {
+    default <A extends Attribute> boolean testAttribute(Class<A> attributeClass, Predicate<A> test) {
         if (!this.hasAttribute(attributeClass)) {
             return false;
         }
@@ -101,19 +97,8 @@ public interface AttributeHolder extends Identifiable {
      * @param attributeClass The attribute class
      * @return The attribute instance
      * @param <A> The attribute type
-     * @param <B> The attribute id type
      */
-    <A extends Attribute<B>, B> A getAttributeNow(Class<A> attributeClass);
-
-    /**
-     *
-     * Sets the attribute for the player
-     *
-     * @param attribute The attribute to set
-     * @param <A> The attribute type
-     * @param <B> The attribute id type
-     */
-    <A extends Attribute<B>, B> void setAttribute(Class<A> attributeClass, CompletableFuture<A> attribute);
+    <A extends Attribute> A getAttributeNow(Class<A> attributeClass);
 
     /**
      *
@@ -122,7 +107,16 @@ public interface AttributeHolder extends Identifiable {
      * @param attribute The attribute to set
      * @param <A> The attribute type
      */
-    <A extends Attribute<B>, B> void setAttribute(A attribute);
+    <A extends Attribute> void setAttribute(Class<A> attributeClass, CompletableFuture<A> attribute);
+
+    /**
+     *
+     * Sets the attribute for the player
+     *
+     * @param attribute The attribute to set
+     * @param <A> The attribute type
+     */
+    <A extends Attribute> void setAttribute(A attribute);
 
     /**
      *
@@ -130,8 +124,7 @@ public interface AttributeHolder extends Identifiable {
      *
      * @param attributeClass The attribute class
      * @param <A> The attribute type
-     * @param <B> The attribute id type
      */
-    <A extends Attribute<B>, B> A removeAttribute(Class<A> attributeClass);
+    <A extends Attribute> A removeAttribute(Class<A> attributeClass);
 
 }

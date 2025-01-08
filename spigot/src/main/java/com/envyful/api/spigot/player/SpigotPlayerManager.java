@@ -21,6 +21,8 @@ import org.bukkit.event.world.WorldSaveEvent;
 import org.bukkit.plugin.Plugin;
 
 import java.util.List;
+import java.util.UUID;
+import java.util.function.BiConsumer;
 
 /**
  *
@@ -34,6 +36,14 @@ public class SpigotPlayerManager extends AbstractPlayerManager<SpigotEnvyPlayer,
 
     protected final Plugin plugin;
 
+    public SpigotPlayerManager(Plugin plugin, BiConsumer<UUID, Throwable> errorHandler) {
+        super(errorHandler, Player::getUniqueId);
+
+        this.plugin = plugin;
+
+        Bukkit.getPluginManager().registerEvents(new PlayerListener(), plugin);
+    }
+
     public SpigotPlayerManager(Plugin plugin) {
         super(Player::getUniqueId);
 
@@ -43,24 +53,20 @@ public class SpigotPlayerManager extends AbstractPlayerManager<SpigotEnvyPlayer,
     }
 
     public SpigotPlayerManager(Plugin plugin, NameStore nameStore) {
-        this(plugin );
+        this(plugin);
 
         this.nameStore = nameStore;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <X extends Attribute<Y>, Y> void registerAttribute(AttributeBuilder<X, Y, Player> builder) {
+    public <X extends Attribute> void registerAttribute(AttributeBuilder<X, SpigotEnvyPlayer> builder) {
         builder.triggers(
                 SpigotTrigger.singleSet(this.plugin, AsyncPlayerPreLoginEvent.class, event -> this.cachedPlayers.get(event.getUniqueId())),
                 SpigotTrigger.singleAsyncSave(this.plugin, PlayerQuitEvent.class, event -> this.cachedPlayers.get(event.getPlayer().getUniqueId())),
                 SpigotTrigger.asyncSave(this.plugin, WorldSaveEvent.class, event -> List.copyOf(this.cachedPlayers.values())),
                 SpigotTrigger.asyncSave(this.plugin, ServerShutdownEvent.class, event -> List.copyOf(this.cachedPlayers.values()))
         );
-
-        if (builder.offlineIdMapper() == null) {
-            builder.offlineIdMapper(uuid -> (Y) uuid);
-        }
 
         super.registerAttribute(builder);
     }

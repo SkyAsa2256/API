@@ -1,19 +1,18 @@
 package com.envyful.api.player.attribute.trigger;
 
 import com.envyful.api.player.Attribute;
-import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.attribute.AbstractAttributeTrigger;
-import com.envyful.api.player.save.SaveManager;
+import com.envyful.api.player.attribute.AttributeHolder;
 import com.envyful.api.type.map.KeyedMap;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public class SetAttributeTrigger<T> extends AbstractAttributeTrigger<T> {
+public class SetAttributeTrigger<T extends AttributeHolder> extends AbstractAttributeTrigger<T> {
 
     @Override
-    public void trigger(EnvyPlayer<T> player) {
+    public void trigger(T player) {
         List<CompletableFuture<?>> attributeFutures = new ArrayList<>();
 
         for (var data : this.attributes) {
@@ -29,12 +28,9 @@ public class SetAttributeTrigger<T> extends AbstractAttributeTrigger<T> {
                             return null;
                         }
 
-                        return loadAttribute(data.saveManager(), data.attributeClass(), id);
-                    })
-                    .exceptionally(throwable -> {
-                        data.saveManager().getErrorHandler().accept(player, throwable);
-                        return null;
+                        return data.manager().loadAttribute(data.attributeClass(), id);
                     });
+
             setAttribute(player, data.attributeClass(), future);
             attributeFutures.add(future);
         }
@@ -47,13 +43,7 @@ public class SetAttributeTrigger<T> extends AbstractAttributeTrigger<T> {
     }
 
     @SuppressWarnings("unchecked")
-    private <A extends Attribute<B>, B, C extends EnvyPlayer<T>> void setAttribute(C player, Class<?> attributeClass, CompletableFuture<? extends Attribute> attribute) {
+    private <A extends Attribute> void setAttribute(T player, Class<?> attributeClass, CompletableFuture<? extends Attribute> attribute) {
         player.setAttribute((Class<A>) attributeClass, (CompletableFuture<A>) attribute);
-    }
-
-    @SuppressWarnings("unchecked")
-    private <A extends Attribute<B>, B> CompletableFuture<A> loadAttribute(
-            SaveManager<T> saveManager, Class<? extends A> attributeClass, Object id) {
-        return saveManager.loadAttribute(attributeClass, (B) id);
     }
 }

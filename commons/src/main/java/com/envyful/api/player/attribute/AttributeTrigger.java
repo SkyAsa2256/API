@@ -1,12 +1,11 @@
 package com.envyful.api.player.attribute;
 
-import com.envyful.api.player.EnvyPlayer;
-import com.envyful.api.player.PlayerManager;
+import com.envyful.api.player.attribute.data.AttributeData;
 
-public interface AttributeTrigger<T> {
+public interface AttributeTrigger<T extends AttributeHolder> {
 
-    void addAttribute(PlayerManager.AttributeData<?, ?, T> attribute);
+    void addAttribute(AttributeData<?, T> attribute);
 
-    void trigger(EnvyPlayer<T> player);
+    void trigger(T holder);
 
 }

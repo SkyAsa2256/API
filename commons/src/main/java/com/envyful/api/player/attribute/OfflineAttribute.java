@@ -17,17 +17,16 @@ import java.util.concurrent.CompletableFuture;
  *
  * Class representing an attribute of a player that is potentially offline
  *
- * @param <A> The type of the attribute id
  * @param <B> The type of the attribute
  */
-public class OfflineAttribute<A, B extends Attribute<A>> implements SimplePlaceholder, Messageable<EnvyPlayer<?>> {
+public class OfflineAttribute<B extends Attribute> implements SimplePlaceholder, Messageable<EnvyPlayer<?>> {
 
     private final Class<B> attributeClass;
     private final UUID uuid;
     private final String name;
 
     private EnvyPlayer<?> cachedPlayer;
-    private A id;
+    private UUID id;
     private B cachedAttribute;
     private CompletableFuture<B> loadingAttribute;
 
@@ -52,7 +51,7 @@ public class OfflineAttribute<A, B extends Attribute<A>> implements SimplePlaceh
 
         this.cachedPlayer = player;
         this.cachedAttribute = player.getAttributeNow(attributeClass);
-        this.id = cachedAttribute.getId();
+        this.id = cachedAttribute.getUniqueId();
     }
 
     /**
@@ -61,7 +60,7 @@ public class OfflineAttribute<A, B extends Attribute<A>> implements SimplePlaceh
      *
      * @return The id
      */
-    public A getId() {
+    public UUID getId() {
         return this.id;
     }
 
@@ -119,7 +118,7 @@ public class OfflineAttribute<A, B extends Attribute<A>> implements SimplePlaceh
             return;
         }
 
-        UtilConcurrency.runAsync(() -> PlatformProxy.getPlayerManager().getSaveManager().saveData(this.id, this.getAttribute()));
+        UtilConcurrency.runAsync(() -> PlatformProxy.getPlayerManager().saveAttribute(this.getAttribute()));
     }
 
 
@@ -172,11 +171,10 @@ public class OfflineAttribute<A, B extends Attribute<A>> implements SimplePlaceh
      * @param attributeClass The class of the attribute
      * @param name The name of the player
      * @return The attribute
-     * @param <X> The type of the player
      * @param <Y> The type of the attribute class
      */
     @SuppressWarnings("unchecked")
-    public static <X, Y extends Attribute<X>> OfflineAttribute<X, Y> fromName(Class<Y> attributeClass, String name) {
+    public static <Y extends Attribute> OfflineAttribute<Y> fromName(Class<Y> attributeClass, String name) {
         var player = PlatformProxy.getPlayerManager().getOnlinePlayer(name);
 
         if (player != null) {

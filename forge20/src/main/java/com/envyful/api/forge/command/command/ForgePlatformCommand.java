@@ -8,6 +8,8 @@ import net.minecraft.commands.CommandSource;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
@@ -30,7 +32,12 @@ public class ForgePlatformCommand extends PlatformCommand<CommandSource> {
 
     @Override
     protected List<String> getOnlinePlayerNames() {
-        return List.of(ServerLifecycleHooks.getCurrentServer().getPlayerNames());
+        var playerNames = ServerLifecycleHooks.getCurrentServer().getPlayerNames();
+        List<String> names = new ArrayList<>();
+
+        names.addAll(Arrays.asList(playerNames));
+
+        return names;
     }
 
     public static Builder builder() {

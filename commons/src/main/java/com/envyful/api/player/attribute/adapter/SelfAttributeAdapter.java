@@ -10,26 +10,25 @@ import java.util.concurrent.CompletableFuture;
  * An ease of use adapter for a self attribute that allows for easy porting of the old attribute
  * loading/saving system
  *
- * @param <A> The type of the attribute
  */
-public interface SelfAttributeAdapter<A> extends AttributeAdapter<SelfAttributeAdapter<A>>, Attribute {
+public interface SelfAttributeAdapter extends AttributeAdapter<SelfAttributeAdapter>, Attribute {
 
     @Override
-    default CompletableFuture<Void> save(SelfAttributeAdapter<A> attribute) {
+    default CompletableFuture<Void> save(SelfAttributeAdapter attribute) {
         return UtilConcurrency.runAsync(this::save);
     }
 
     void save();
 
     @Override
-    default void load(SelfAttributeAdapter<A> attribute) {
+    default void load(SelfAttributeAdapter attribute) {
         this.load();
     }
 
     void load();
 
     @Override
-    default CompletableFuture<Void> delete(SelfAttributeAdapter<A> attribute) {
+    default CompletableFuture<Void> delete(SelfAttributeAdapter attribute) {
         return CompletableFuture.completedFuture(null);
     }
 

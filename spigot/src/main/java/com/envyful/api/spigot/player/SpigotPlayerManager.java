@@ -58,6 +58,12 @@ public class SpigotPlayerManager extends AbstractPlayerManager<SpigotEnvyPlayer,
         this.nameStore = nameStore;
     }
 
+    public SpigotPlayerManager(Plugin plugin, NameStore nameStore, BiConsumer<UUID, Throwable> errorHandler) {
+        this(plugin, errorHandler);
+
+        this.nameStore = nameStore;
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public <X extends Attribute> void registerAttribute(AttributeBuilder<X, SpigotEnvyPlayer> builder) {

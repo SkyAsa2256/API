@@ -3,7 +3,6 @@ package com.envyful.api.gui;
 import com.envyful.api.gui.close.CloseConsumer;
 import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.player.EnvyPlayer;
-import com.envyful.api.player.PlayerManager;
 
 /**
  *
@@ -53,17 +52,6 @@ public interface Gui {
          * @return The builder
          */
         Builder addPane(Pane pane);
-
-        /**
-         *
-         * Sets the player manager for the GUI to reference.
-         * This MUST be set so that the GUI can use the {@link EnvyPlayer} class internally
-         *
-         * @param playerManager the mods player manager
-         * @return The builder
-         */
-        @Deprecated
-        Builder setPlayerManager(PlayerManager<?, ?> playerManager);
 
         /**
          *

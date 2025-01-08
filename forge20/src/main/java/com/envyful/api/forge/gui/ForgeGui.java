@@ -8,8 +8,8 @@ import com.envyful.api.forge.player.ForgeEnvyPlayer;
 import com.envyful.api.gui.Gui;
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
+import com.envyful.api.platform.PlatformProxy;
 import com.envyful.api.player.EnvyPlayer;
-import com.envyful.api.player.PlayerManager;
 import com.envyful.api.type.Pair;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
@@ -38,7 +38,6 @@ public class ForgeGui implements Gui {
 
     private final Component title;
     private final int height;
-    private final PlayerManager<ForgeEnvyPlayer, ServerPlayer> playerManager;
     private final ForgeCloseConsumer closeConsumer;
     private final ForgeSimplePane parentPane;
     private final ForgeSimplePane[] panes;
@@ -46,11 +45,10 @@ public class ForgeGui implements Gui {
 
     private final List<ForgeGuiContainer> containers = new CopyOnWriteArrayList<>();
 
-    ForgeGui(Component title, int height, PlayerManager<ForgeEnvyPlayer, ServerPlayer> playerManager,
+    ForgeGui(Component title, int height,
              ForgeCloseConsumer closeConsumer, Pane... panes) {
         this.title = title;
         this.height = height;
-        this.playerManager = playerManager;
         this.closeConsumer = closeConsumer;
         this.parentPane = (ForgeSimplePane) new ForgeSimplePane.Builder().height(height).topLeftX(0).topLeftY(0).width(9).build();
         this.panes = new ForgeSimplePane[panes.length];
@@ -273,7 +271,7 @@ public class ForgeGui implements Gui {
 
         @Override
         public ItemStack quickMoveStack(Player p_82846_1_, int p_82846_2_) {
-            this.gui.open(this.gui.playerManager.getPlayer(this.player));
+            this.gui.open(PlatformProxy.getPlayerManager().getPlayer(this.player.getUUID()));
             return ItemStack.EMPTY;
         }
 
@@ -310,7 +308,7 @@ public class ForgeGui implements Gui {
                 return;
             }
 
-            EnvyPlayer<?> envyPlayer = this.gui.playerManager.getPlayer((ServerPlayer) player);
+            EnvyPlayer<?> envyPlayer = PlatformProxy.getPlayerManager().getPlayer(player.getUUID());
 
             if (envyPlayer == null) {
                 return;
@@ -365,8 +363,8 @@ public class ForgeGui implements Gui {
             this.closed = true;
             super.removed(player);
 
-            ServerPlayer sender = (ServerPlayer) playerIn;
-            ForgeEnvyPlayer player = this.gui.playerManager.getPlayer(playerIn.getUUID());
+            var sender = (ServerPlayer) playerIn;
+            var player = PlatformProxy.getPlayerManager().getPlayer(playerIn.getUUID());
 
             int windowId = sender.containerMenu.containerId;
 
@@ -374,7 +372,7 @@ public class ForgeGui implements Gui {
 
             sender.connection.send(closeWindowServer);
 
-            this.gui.closeConsumer.handle(player);
+            this.gui.closeConsumer.handle((ForgeEnvyPlayer) player);
 
             ForgeGui.this.containers.remove(this);
 

@@ -3,12 +3,12 @@ package com.envyful.api.spigot.gui;
 import com.envyful.api.gui.Gui;
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
+import com.envyful.api.platform.PlatformProxy;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.spigot.gui.close.SpigotCloseConsumer;
 import com.envyful.api.spigot.gui.item.SpigotSimpleDisplayable;
 import com.envyful.api.spigot.gui.pane.SpigotSimplePane;
 import com.envyful.api.spigot.player.SpigotEnvyPlayer;
-import com.envyful.api.spigot.player.SpigotPlayerManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -27,16 +27,14 @@ public class SpigotGui implements Gui {
 
     private final Component title;
     private final int height;
-    private final SpigotPlayerManager playerManager;
     private final SpigotCloseConsumer closeConsumer;
     private final SpigotSimplePane parentPane;
     private final SpigotSimplePane[] panes;
 
-    SpigotGui(Component title, int height, SpigotPlayerManager playerManager, SpigotCloseConsumer closeConsumer,
+    SpigotGui(Component title, int height, SpigotCloseConsumer closeConsumer,
               Pane... panes) {
         this.title = title;
         this.height = height;
-        this.playerManager = playerManager;
         this.closeConsumer = closeConsumer;
         this.parentPane = (SpigotSimplePane) new SpigotSimplePane.Builder().height(height).topLeftX(0).topLeftY(0).width(9).build();
         this.panes = new SpigotSimplePane[panes.length];
@@ -140,7 +138,7 @@ public class SpigotGui implements Gui {
                             continue;
                         }
 
-                        item.onClick(details.getGui().playerManager.getPlayer(player), clickType);
+                        item.onClick(PlatformProxy.getPlayerManager().getPlayer(player.getUniqueId()), clickType);
                     }
                 }
             }
@@ -166,8 +164,10 @@ public class SpigotGui implements Gui {
                 return;
             }
 
-            details.getGui().closeConsumer.handle(details.getGui().playerManager.getPlayer((Player) event.getPlayer()));
-            SpigotGuiTracker.removePlayer(details.getGui().playerManager.getPlayer((Player) event.getPlayer()));
+            var player = PlatformProxy.getPlayerManager().getPlayer(event.getPlayer().getUniqueId());
+
+            details.getGui().closeConsumer.handle((SpigotEnvyPlayer) player);
+            SpigotGuiTracker.removePlayer(player);
         }
     }
 }

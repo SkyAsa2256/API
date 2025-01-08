@@ -1,15 +1,12 @@
 package com.envyful.api.forge.gui;
 
 import com.envyful.api.forge.gui.close.ForgeCloseConsumer;
-import com.envyful.api.forge.player.ForgeEnvyPlayer;
 import com.envyful.api.gui.Gui;
 import com.envyful.api.gui.close.CloseConsumer;
 import com.envyful.api.gui.factory.GuiFactory;
 import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.platform.PlatformProxy;
-import com.envyful.api.player.PlayerManager;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +20,6 @@ public class ForgeGuiBuilder implements Gui.Builder {
 
     private Component title;
     private int height = 5;
-    private PlayerManager<ForgeEnvyPlayer, ServerPlayer> playerManager;
     private ForgeCloseConsumer closeConsumer =
             (ForgeCloseConsumer) GuiFactory.empty();
 
@@ -54,14 +50,6 @@ public class ForgeGuiBuilder implements Gui.Builder {
         return this;
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public Gui.Builder setPlayerManager(PlayerManager<?, ?> playerManager) {
-        this.playerManager =
-                (PlayerManager<ForgeEnvyPlayer, ServerPlayer>) playerManager;
-        return this;
-    }
-
     @Override
     public Gui.Builder closeConsumer(CloseConsumer<?, ?> closeConsumer) {
         this.closeConsumer = (ForgeCloseConsumer)closeConsumer;
@@ -70,14 +58,8 @@ public class ForgeGuiBuilder implements Gui.Builder {
 
     @Override
     public Gui build() {
-        if (this.playerManager == null) {
-            throw new IllegalArgumentException(
-                    "Cannot build GUI without PlayerManager being set"
-            );
-        }
-
         return new ForgeGui(
-                this.title, this.height, this.playerManager,
+                this.title, this.height,
                 this.closeConsumer, this.panes.toArray(new Pane[0])
         );
     }

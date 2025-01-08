@@ -5,6 +5,7 @@ import com.envyful.api.config.database.DatabaseDetailsRegistry;
 import com.envyful.api.player.Attribute;
 import com.envyful.api.player.AttributeBuilder;
 import com.envyful.api.player.attribute.AttributeHolder;
+import com.envyful.api.player.attribute.adapter.AttributeAdapter;
 import com.envyful.api.player.attribute.data.AttributeData;
 
 import java.util.UUID;
@@ -44,6 +45,16 @@ public interface AttributeManager<A extends AttributeHolder> {
      * @return The attribute instance
      */
     <T extends Attribute> UUID mapId(Class<T> attributeClass, UUID uuid);
+
+    /**
+     *
+     * Gets the adapter for the given attribute class
+     *
+     * @param attributeClass The class of the attribute
+     * @return The adapter
+     * @param <T> The attribute type
+     */
+    <T extends Attribute> AttributeAdapter<T> getAdapter(Class<T> attributeClass);
 
     /**
      *

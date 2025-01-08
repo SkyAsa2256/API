@@ -91,6 +91,12 @@ public class PlatformAgnosticAttributeManager<A extends AttributeHolder> impleme
         }
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T extends Attribute> AttributeAdapter<T> getAdapter(Class<T> attributeClass) {
+        return (AttributeAdapter<T>) this.getAdapter(this.attributeData.get(attributeClass));
+    }
+
     protected <X extends Attribute> AttributeAdapter<X> getAdapter(AttributeData<X, A> data) {
         return data.adapters().get(this.getSaveMode(data.attributeClass()).toLowerCase(Locale.ROOT));
     }

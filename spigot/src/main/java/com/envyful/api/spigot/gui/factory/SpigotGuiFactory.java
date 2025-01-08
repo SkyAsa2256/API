@@ -9,7 +9,7 @@ import com.envyful.api.gui.factory.PlatformGuiFactory;
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.gui.pane.TickHandler;
-import com.envyful.api.player.PlayerManager;
+import com.envyful.api.platform.PlatformProxy;
 import com.envyful.api.spigot.config.UtilConfigItem;
 import com.envyful.api.spigot.gui.SpigotGui;
 import com.envyful.api.spigot.gui.SpigotGuiBuilder;
@@ -30,8 +30,6 @@ public class SpigotGuiFactory implements PlatformGuiFactory<ItemStack> {
 
     private final Plugin plugin;
 
-    private PlayerManager<?, ?> playerManager;
-
     public SpigotGuiFactory(Plugin plugin) {
         this.plugin = plugin;
 
@@ -40,16 +38,6 @@ public class SpigotGuiFactory implements PlatformGuiFactory<ItemStack> {
 
     public Plugin getPlugin() {
         return this.plugin;
-    }
-
-    @Override
-    public void setPlayerManager(PlayerManager<?, ?> playerManager) {
-        this.playerManager = playerManager;
-    }
-
-    @Override
-    public PlayerManager<?, ?> getPlayerManager() {
-        return this.playerManager;
     }
 
     @Override
@@ -65,7 +53,7 @@ public class SpigotGuiFactory implements PlatformGuiFactory<ItemStack> {
     @Override
     public Gui singlePaneGui(ConfigInterface guiSettings, Pane pane) {
         return GuiFactory.guiBuilder()
-                .setPlayerManager(this.playerManager)
+                .setPlayerManager(PlatformProxy.getPlayerManager())
                 .addPane(pane)
                 .height(guiSettings.getHeight())
                 .title(guiSettings.getTitle())

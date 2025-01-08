@@ -15,7 +15,7 @@ import com.envyful.api.gui.factory.PlatformGuiFactory;
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.gui.pane.TickHandler;
-import com.envyful.api.player.PlayerManager;
+import com.envyful.api.platform.PlatformProxy;
 import com.envyful.api.text.Placeholder;
 import net.minecraft.item.ItemStack;
 
@@ -25,18 +25,6 @@ import net.minecraft.item.ItemStack;
  *
  */
 public class ForgeGuiFactory implements PlatformGuiFactory<ItemStack> {
-
-    private PlayerManager<?, ?> playerManager;
-
-    @Override
-    public void setPlayerManager(PlayerManager<?, ?> playerManager) {
-        this.playerManager = playerManager;
-    }
-
-    @Override
-    public PlayerManager<?, ?> getPlayerManager() {
-        return this.playerManager;
-    }
 
     @Override
     public Displayable.Builder<ItemStack> displayableBuilder() {
@@ -51,7 +39,7 @@ public class ForgeGuiFactory implements PlatformGuiFactory<ItemStack> {
     @Override
     public Gui singlePaneGui(ConfigInterface guiSettings, Pane pane) {
         return GuiFactory.guiBuilder()
-                .setPlayerManager(this.playerManager)
+                .setPlayerManager(PlatformProxy.getPlayerManager())
                 .addPane(pane)
                 .height(guiSettings.getHeight())
                 .title(guiSettings.getTitle())

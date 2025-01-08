@@ -7,7 +7,6 @@ import com.envyful.api.gui.close.CloseConsumer;
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.gui.pane.TickHandler;
-import com.envyful.api.player.PlayerManager;
 import com.envyful.api.text.Placeholder;
 
 /**
@@ -16,22 +15,6 @@ import com.envyful.api.text.Placeholder;
  *
  */
 public interface PlatformGuiFactory<T> {
-
-    /**
-     *
-     * Caches the player manager
-     *
-     * @param playerManager The player manager
-     */
-    void setPlayerManager(PlayerManager<?, ?> playerManager);
-
-    /**
-     *
-     * Gets the platform's player manager
-     *
-     * @return The player manager
-     */
-    PlayerManager<?, ?> getPlayerManager();
 
     /**
      *

@@ -7,7 +7,6 @@ import com.envyful.api.gui.close.CloseConsumer;
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.gui.pane.TickHandler;
-import com.envyful.api.player.PlayerManager;
 import com.envyful.api.text.Placeholder;
 
 /**
@@ -58,17 +57,6 @@ public class GuiFactory {
     @Deprecated(forRemoval = true)
     public static Pane createPane(ConfigInterface guiSettings) {
         return guiSettings.toPane();
-    }
-
-    /**
-     *
-     * Gets the platform's player manager
-     *
-     * @return The player manager
-     */
-    public static PlayerManager<?, ?> getPlayerManager() {
-        checkThenThrowSetupException();
-        return platformFactory.getPlayerManager();
     }
 
     /**

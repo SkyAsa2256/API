@@ -70,7 +70,6 @@ public class ConfirmationUI {
         }
 
         GuiFactory.guiBuilder()
-                .setPlayerManager(builder.playerManager)
                 .addPane(pane)
                 .height(config.getGuiSettings().getHeight())
                 .title(PlatformProxy.parse(config.getGuiSettings().getTitle(), placeholders).get(0))

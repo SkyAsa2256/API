@@ -87,6 +87,15 @@ public class PlatformAgnosticAttributeManager<A extends AttributeHolder> impleme
             }
         } else {
             AttributeAdapter<X> adapter = (AttributeAdapter<X>) this.getAdapter(this.attributeData.get(attribute.getClass()));
+
+            if (adapter == null) {
+                if (attribute instanceof AttributeAdapter) {
+                    return ((AttributeAdapter<X>) attribute).save(attribute);
+                } else {
+                    throw new IllegalArgumentException("No save adapter found for " + attribute.getClass().getSimpleName());
+                }
+            }
+
             return adapter.save(attribute);
         }
     }

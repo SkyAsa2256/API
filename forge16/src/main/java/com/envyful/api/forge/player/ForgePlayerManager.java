@@ -32,6 +32,8 @@ public class ForgePlayerManager extends AbstractPlayerManager<ForgeEnvyPlayer, S
 
     public ForgePlayerManager() {
         super(ServerPlayerEntity::getUUID);
+
+        MinecraftForge.EVENT_BUS.register(new PlayerListener());
     }
 
     public ForgePlayerManager(BiConsumer<UUID, Throwable> errorHandler) {

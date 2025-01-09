@@ -22,6 +22,10 @@ import java.util.function.Function;
  */
 public class ForgeTrigger {
 
+    private static final SetAttributeTrigger<ForgeEnvyPlayer> SET_ATTRIBUTE_TRIGGER = new SetAttributeTrigger<>();
+    private static final ClearAttributeTrigger<ForgeEnvyPlayer> CLEAR_ATTRIBUTE_TRIGGER = new ClearAttributeTrigger<>();
+    private static final SaveAttributeTrigger<ForgeEnvyPlayer> SAVE_ATTRIBUTE_TRIGGER = new SaveAttributeTrigger<>();
+
     private ForgeTrigger() {
         throw new UnsupportedOperationException("Cannot instantiate a static class");
     }
@@ -86,9 +90,8 @@ public class ForgeTrigger {
      * @param <A> The event type
      */
     public static <A extends Event> AttributeTrigger<ForgeEnvyPlayer> set(IEventBus eventBus, Class<A> event, Function<A, List<ForgeEnvyPlayer>> converter) {
-        var trigger = new SetAttributeTrigger<ForgeEnvyPlayer>();
-        createHandler(eventBus, event, converter, trigger::trigger);
-        return trigger;
+        createHandler(eventBus, event, converter, SET_ATTRIBUTE_TRIGGER::trigger);
+        return SET_ATTRIBUTE_TRIGGER;
     }
 
     /**
@@ -102,9 +105,8 @@ public class ForgeTrigger {
      * @param <A> The event type
      */
     public static <A extends Event> AttributeTrigger<ForgeEnvyPlayer> asyncSet(IEventBus eventBus, Class<A> event, Function<A, List<ForgeEnvyPlayer>> converter) {
-        var trigger = new SetAttributeTrigger<ForgeEnvyPlayer>();
-        createAsyncHandler(eventBus, event, converter, trigger::trigger);
-        return trigger;
+        createAsyncHandler(eventBus, event, converter, SET_ATTRIBUTE_TRIGGER::trigger);
+        return SET_ATTRIBUTE_TRIGGER;
     }
 
     /**
@@ -166,9 +168,8 @@ public class ForgeTrigger {
      * @param <A> The event type
      */
     public static <A extends Event> AttributeTrigger<ForgeEnvyPlayer> clear(IEventBus eventBus, Class<A> event, Function<A, List<ForgeEnvyPlayer>> converter) {
-        var trigger = new ClearAttributeTrigger<ForgeEnvyPlayer>();
-        createHandler(eventBus, event, converter, trigger::trigger);
-        return trigger;
+        createHandler(eventBus, event, converter, CLEAR_ATTRIBUTE_TRIGGER::trigger);
+        return CLEAR_ATTRIBUTE_TRIGGER;
     }
 
     /**
@@ -239,9 +240,8 @@ public class ForgeTrigger {
      * @param <A> The event type
      */
     public static <A extends Event> AttributeTrigger<ForgeEnvyPlayer> save(IEventBus eventBus, Class<A> event, Function<A, List<ForgeEnvyPlayer>> converter) {
-        var trigger = new SaveAttributeTrigger<ForgeEnvyPlayer>();
-        createHandler(eventBus, event, converter, trigger::trigger);
-        return trigger;
+        createHandler(eventBus, event, converter, SAVE_ATTRIBUTE_TRIGGER::trigger);
+        return SAVE_ATTRIBUTE_TRIGGER;
     }
 
     /**
@@ -268,9 +268,8 @@ public class ForgeTrigger {
      * @param <A> The event type
      */
     public static <A extends Event> AttributeTrigger<ForgeEnvyPlayer> asyncSave(IEventBus eventBus, Class<A> event, Function<A, List<ForgeEnvyPlayer>> converter) {
-        var trigger = new SaveAttributeTrigger<ForgeEnvyPlayer>();
-        createAsyncHandler(eventBus, event, converter, trigger::trigger);
-        return trigger;
+        createAsyncHandler(eventBus, event, converter, SAVE_ATTRIBUTE_TRIGGER::trigger);
+        return SAVE_ATTRIBUTE_TRIGGER;
     }
 
     public static <A extends Event> AttributeTrigger<ForgeEnvyPlayer> asyncSingleSaveAndClear(Class<A> event, Function<A, ForgeEnvyPlayer> converter) {
@@ -288,9 +287,7 @@ public class ForgeTrigger {
      * @param <A> The event type
      */
     public static <A extends Event> AttributeTrigger<ForgeEnvyPlayer> asyncSingleSaveAndClear(IEventBus eventBus, Class<A> event, Function<A, ForgeEnvyPlayer> converter) {
-        var saveTrigger = new SaveAttributeTrigger<ForgeEnvyPlayer>();
-        var clearTrigger = new ClearAttributeTrigger<ForgeEnvyPlayer>();
-        var trigger = new ComposedAttributeTrigger<>(List.of(saveTrigger, clearTrigger));
+        var trigger = new ComposedAttributeTrigger<>(List.of(SAVE_ATTRIBUTE_TRIGGER, CLEAR_ATTRIBUTE_TRIGGER));
         createAsyncHandler(eventBus, event, a -> {
             var player = converter.apply(a);
 
@@ -314,9 +311,7 @@ public class ForgeTrigger {
      * @param <A> The event type
      */
     public static <A extends Event> AttributeTrigger<ForgeEnvyPlayer> asyncSaveAndClear(IEventBus eventBus, Class<A> event, Function<A, List<ForgeEnvyPlayer>> converter) {
-        var saveTrigger = new SaveAttributeTrigger<ForgeEnvyPlayer>();
-        var clearTrigger = new ClearAttributeTrigger<ForgeEnvyPlayer>();
-        var trigger = new ComposedAttributeTrigger<>(List.of(saveTrigger, clearTrigger));
+        var trigger = new ComposedAttributeTrigger<>(List.of(SAVE_ATTRIBUTE_TRIGGER, CLEAR_ATTRIBUTE_TRIGGER));
         createAsyncHandler(eventBus, event, converter, trigger::trigger);
         return trigger;
     }

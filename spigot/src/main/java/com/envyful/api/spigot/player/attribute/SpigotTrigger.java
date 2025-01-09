@@ -22,6 +22,10 @@ import java.util.function.Function;
  */
 public class SpigotTrigger {
 
+    private static final SetAttributeTrigger<SpigotEnvyPlayer> SET_ATTRIBUTE_TRIGGER = new SetAttributeTrigger<>();
+    private static final ClearAttributeTrigger<SpigotEnvyPlayer> CLEAR_ATTRIBUTE_TRIGGER = new ClearAttributeTrigger<>();
+    private static final SaveAttributeTrigger<SpigotEnvyPlayer> SAVE_ATTRIBUTE_TRIGGER = new SaveAttributeTrigger<>();
+
     private SpigotTrigger() {
         throw new UnsupportedOperationException("Cannot instantiate a static class");
     }
@@ -59,9 +63,8 @@ public class SpigotTrigger {
      * @param <A> the event type
      */
     public static <A extends Event> AttributeTrigger<SpigotEnvyPlayer> set(Plugin plugin, Class<A> event, Function<A, List<SpigotEnvyPlayer>> converter) {
-        var trigger = new SetAttributeTrigger<SpigotEnvyPlayer>();
-        createHandler(plugin, event, converter, trigger::trigger);
-        return trigger;
+        createHandler(plugin, event, converter, SET_ATTRIBUTE_TRIGGER::trigger);
+        return SET_ATTRIBUTE_TRIGGER;
     }
 
     /**
@@ -97,9 +100,8 @@ public class SpigotTrigger {
      * @param <A> the event type
      */
     public static <A extends Event> AttributeTrigger<SpigotEnvyPlayer> clear(Plugin plugin, Class<A> event, Function<A, List<SpigotEnvyPlayer>> converter) {
-        var trigger = new ClearAttributeTrigger<SpigotEnvyPlayer>();
-        createHandler(plugin, event, converter, trigger::trigger);
-        return trigger;
+        createHandler(plugin, event, converter, CLEAR_ATTRIBUTE_TRIGGER::trigger);
+        return CLEAR_ATTRIBUTE_TRIGGER;
     }
 
     /**
@@ -157,9 +159,8 @@ public class SpigotTrigger {
      * @param <A> the event type
      */
     public static <A extends Event> AttributeTrigger<SpigotEnvyPlayer> save(Plugin plugin, Class<A> event, Function<A, List<SpigotEnvyPlayer>> converter) {
-        var trigger = new SaveAttributeTrigger<SpigotEnvyPlayer>();
-        createHandler(plugin, event, converter, trigger::trigger);
-        return trigger;
+        createHandler(plugin, event, converter, SAVE_ATTRIBUTE_TRIGGER::trigger);
+        return SAVE_ATTRIBUTE_TRIGGER;
     }
 
     /**
@@ -173,9 +174,8 @@ public class SpigotTrigger {
      * @param <A> the event type
      */
     public static <A extends Event> AttributeTrigger<SpigotEnvyPlayer> asyncSave(Plugin plugin, Class<A> event, Function<A, List<SpigotEnvyPlayer>> converter) {
-        var trigger = new SaveAttributeTrigger<SpigotEnvyPlayer>();
-        createAsyncHandler(plugin, event, converter, trigger::trigger);
-        return trigger;
+        createAsyncHandler(plugin, event, converter, SAVE_ATTRIBUTE_TRIGGER::trigger);
+        return SAVE_ATTRIBUTE_TRIGGER;
     }
 
     @SuppressWarnings("unchecked")

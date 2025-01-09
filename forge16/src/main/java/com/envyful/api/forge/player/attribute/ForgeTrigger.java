@@ -12,7 +12,6 @@ import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.IEventBus;
 
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -90,7 +89,7 @@ public class ForgeTrigger {
      * @param <A> The event type
      */
     public static <A extends Event> AttributeTrigger<ForgeEnvyPlayer> set(IEventBus eventBus, Class<A> event, Function<A, List<ForgeEnvyPlayer>> converter) {
-        createHandler(eventBus, event, converter, SET_ATTRIBUTE_TRIGGER::trigger);
+        createHandler(eventBus, event, converter, SET_ATTRIBUTE_TRIGGER);
         return SET_ATTRIBUTE_TRIGGER;
     }
 
@@ -105,7 +104,7 @@ public class ForgeTrigger {
      * @param <A> The event type
      */
     public static <A extends Event> AttributeTrigger<ForgeEnvyPlayer> asyncSet(IEventBus eventBus, Class<A> event, Function<A, List<ForgeEnvyPlayer>> converter) {
-        createAsyncHandler(eventBus, event, converter, SET_ATTRIBUTE_TRIGGER::trigger);
+        createAsyncHandler(eventBus, event, converter, SET_ATTRIBUTE_TRIGGER);
         return SET_ATTRIBUTE_TRIGGER;
     }
 
@@ -168,7 +167,7 @@ public class ForgeTrigger {
      * @param <A> The event type
      */
     public static <A extends Event> AttributeTrigger<ForgeEnvyPlayer> clear(IEventBus eventBus, Class<A> event, Function<A, List<ForgeEnvyPlayer>> converter) {
-        createHandler(eventBus, event, converter, CLEAR_ATTRIBUTE_TRIGGER::trigger);
+        createHandler(eventBus, event, converter, CLEAR_ATTRIBUTE_TRIGGER);
         return CLEAR_ATTRIBUTE_TRIGGER;
     }
 
@@ -240,7 +239,7 @@ public class ForgeTrigger {
      * @param <A> The event type
      */
     public static <A extends Event> AttributeTrigger<ForgeEnvyPlayer> save(IEventBus eventBus, Class<A> event, Function<A, List<ForgeEnvyPlayer>> converter) {
-        createHandler(eventBus, event, converter, SAVE_ATTRIBUTE_TRIGGER::trigger);
+        createHandler(eventBus, event, converter, SAVE_ATTRIBUTE_TRIGGER);
         return SAVE_ATTRIBUTE_TRIGGER;
     }
 
@@ -268,7 +267,7 @@ public class ForgeTrigger {
      * @param <A> The event type
      */
     public static <A extends Event> AttributeTrigger<ForgeEnvyPlayer> asyncSave(IEventBus eventBus, Class<A> event, Function<A, List<ForgeEnvyPlayer>> converter) {
-        createAsyncHandler(eventBus, event, converter, SAVE_ATTRIBUTE_TRIGGER::trigger);
+        createAsyncHandler(eventBus, event, converter, SAVE_ATTRIBUTE_TRIGGER);
         return SAVE_ATTRIBUTE_TRIGGER;
     }
 
@@ -296,7 +295,7 @@ public class ForgeTrigger {
             }
 
             return List.of(player);
-        }, trigger::trigger);
+        }, trigger);
         return trigger;
     }
 
@@ -312,36 +311,46 @@ public class ForgeTrigger {
      */
     public static <A extends Event> AttributeTrigger<ForgeEnvyPlayer> asyncSaveAndClear(IEventBus eventBus, Class<A> event, Function<A, List<ForgeEnvyPlayer>> converter) {
         var trigger = new ComposedAttributeTrigger<>(List.of(SAVE_ATTRIBUTE_TRIGGER, CLEAR_ATTRIBUTE_TRIGGER));
-        createAsyncHandler(eventBus, event, converter, trigger::trigger);
+        createAsyncHandler(eventBus, event, converter, trigger);
         return trigger;
     }
 
     @SuppressWarnings("unchecked")
-    private static <A extends Event> void createHandler(IEventBus eventBus, Class<A> eventClass, Function<A, List<ForgeEnvyPlayer>> converter, Consumer<ForgeEnvyPlayer> trigger) {
+    private static <A extends Event> void createHandler(IEventBus eventBus, Class<A> eventClass, Function<A, List<ForgeEnvyPlayer>> converter, AttributeTrigger<?> trigger) {
+        if (trigger.registeredFor(eventBus, eventClass)) {
+            return;
+        }
+
+        trigger.addEvent(eventBus, eventClass);
+
         eventBus.addListener(event -> {
-            if (!eventClass.isAssignableFrom(event.getClass())) {
+            if (!trigger.registeredFor(eventBus, event.getClass())) {
                 return;
             }
 
             for (var player : converter.apply((A) event)) {
                 if (player != null) {
-                    trigger.accept(player);
+                    trigger.handle(player);
                 }
             }
         });
     }
 
     @SuppressWarnings("unchecked")
-    private static <A extends Event> void createAsyncHandler(IEventBus eventBus, Class<A> eventClass, Function<A, List<ForgeEnvyPlayer>> converter, Consumer<ForgeEnvyPlayer> trigger) {
+    private static <A extends Event> void createAsyncHandler(IEventBus eventBus, Class<A> eventClass, Function<A, List<ForgeEnvyPlayer>> converter, AttributeTrigger<?> trigger) {
+        if (trigger.registeredFor(eventBus, eventClass)) {
+            return;
+        }
+
         eventBus.addListener(event -> {
-            if (!eventClass.isAssignableFrom(event.getClass())) {
+            if (!trigger.registeredFor(eventBus, event.getClass())) {
                 return;
             }
 
             UtilConcurrency.runAsync(() -> {
                 for (var player : converter.apply((A) event)) {
                     if (player != null) {
-                        trigger.accept(player);
+                        trigger.handle(player);
                     }
                 }
             });

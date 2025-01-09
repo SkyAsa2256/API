@@ -1,12 +1,13 @@
 package com.envyful.api.player.attribute.trigger;
 
+import com.envyful.api.player.attribute.AbstractAttributeTrigger;
 import com.envyful.api.player.attribute.AttributeHolder;
 import com.envyful.api.player.attribute.AttributeTrigger;
 import com.envyful.api.player.attribute.data.AttributeData;
 
 import java.util.List;
 
-public class ComposedAttributeTrigger<T extends AttributeHolder> implements AttributeTrigger<T> {
+public class ComposedAttributeTrigger<T extends AttributeHolder> extends AbstractAttributeTrigger<T> {
 
     private final List<AttributeTrigger<T>> triggers;
 

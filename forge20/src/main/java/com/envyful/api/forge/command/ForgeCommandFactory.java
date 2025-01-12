@@ -66,7 +66,7 @@ public class ForgeCommandFactory extends InjectedCommandFactory<CommandDispatche
             @Nullable ForgePlayerManager playerManager) {
         super(commandParser);
 
-        SenderTypeFactory.register(new ConsoleSenderType(), new ForgePlayerSenderType(), new MessageableSenderType());
+        SenderTypeFactory.register(new ConsoleSenderType(), new ForgePlayerSenderType(), new MessageableSenderType(playerManager));
 
         if (playerManager != null) {
             SenderTypeFactory.register(new ForgeEnvyPlayerSenderType(playerManager));

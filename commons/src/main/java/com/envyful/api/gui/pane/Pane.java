@@ -1,6 +1,12 @@
 package com.envyful.api.gui.pane;
 
+import com.envyful.api.config.type.ConfigInterface;
+import com.envyful.api.gui.Gui;
+import com.envyful.api.gui.factory.GuiFactory;
 import com.envyful.api.gui.item.Displayable;
+import com.envyful.api.platform.PlatformProxy;
+import com.envyful.api.player.EnvyPlayer;
+import com.envyful.api.text.Placeholder;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
@@ -77,6 +83,35 @@ public interface Pane {
      *
      */
     void clear();
+
+    /**
+     *
+     * Creates a single pane GUI with the settings provided
+     *
+     * @param guiSettings The settings for the GUI
+     * @param placeholders The placeholders to parse
+     * @return The new GUI
+     */
+    default Gui create(ConfigInterface guiSettings, Placeholder... placeholders) {
+        return GuiFactory.guiBuilder()
+                .addPane(this)
+                .height(guiSettings.getHeight())
+                .title(PlatformProxy.flatParse(guiSettings.getTitle(), placeholders))
+                .build();
+    }
+
+    /**
+     *
+     * Creates a single pane GUI with the settings provided,
+     * and then opens it for the player
+     *
+     * @param player The player to open the GUI for
+     * @param guiSettings The settings for the GUI
+     * @param placeholders The placeholders to parse
+     */
+    default void open(EnvyPlayer<?> player, ConfigInterface guiSettings, Placeholder... placeholders) {
+        this.create(guiSettings, placeholders).open(player);
+    }
 
     /**
      *

@@ -33,6 +33,16 @@ public class UtilTimeFormat {
 
     private static final Map<String, DateFormat> DATE_FORMATS = new HashMap<>();
 
+    /**
+     *
+     * Formats the duration, converting it into milliseconds from the specified
+     * unit, to the specified format in the {@link TimeFormatConfig} provided.
+     *
+     * @param duration The duration
+     * @param config The format config
+     * @return The formatted duration
+     * @deprecated Use {@link TimeFormatConfig#format(Duration)}
+     */
     public static String format(Duration duration, TimeFormatConfig config) {
         return format(duration.toMillis(), config);
     }
@@ -46,6 +56,7 @@ public class UtilTimeFormat {
      * @param timeUnit The time unit
      * @param config The format config
      * @return The formatted duration
+     * @deprecated Use {@link TimeFormatConfig#format(long, TimeUnit)}
      */
     public static String format(long time, TimeUnit timeUnit, TimeFormatConfig config) {
         return format(timeUnit.toMillis(time), config);
@@ -64,7 +75,6 @@ public class UtilTimeFormat {
         return format(time - System.currentTimeMillis(), config);
     }
 
-
     /**
      *
      * Formats the duration, converting it into milliseconds from the specified
@@ -74,7 +84,9 @@ public class UtilTimeFormat {
      * @param unit The time unit
      * @param config The format config
      * @return The formatted duration
+     * @deprecated Use {@link TimeFormatConfig#format(long, TimeUnit)}
      */
+    @Deprecated
     public static String formatWithUnit(long duration, TimeUnit unit, TimeFormatConfig config) {
         return format(unit.toMillis(duration), config);
     }
@@ -92,7 +104,9 @@ public class UtilTimeFormat {
      * @param time The time duration in milliseconds
      * @param config The formatting config
      * @return The formatted duration
+     * @deprecated Use {@link TimeFormatConfig#format(long)}
      */
+    @Deprecated
     public static String format(long time, TimeFormatConfig config) {
         if (containsInvalidPlaceholders(config.getPlaceholders().keySet())) {
             UtilLogger.logger().ifPresent(logger ->

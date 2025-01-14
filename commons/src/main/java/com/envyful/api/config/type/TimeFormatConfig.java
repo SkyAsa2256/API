@@ -7,6 +7,7 @@ import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -31,12 +32,7 @@ import java.util.Map;
 @ConfigSerializable
 public class TimeFormatConfig {
 
-    public static final transient TimeFormatConfig DEFAULT = TimeFormatConfig.builder()
-            .placeholder("days", "%days_value% days ")
-            .placeholder("hours", "%hours_value% hours ")
-            .placeholder("minutes", "%minutes_value% minutes ")
-            .placeholder("seconds", "%seconds_value% seconds")
-            .build();
+    public static final TimeFormatConfig DEFAULT = new TimeFormatConfig();
 
     private String format = "%days%%hours%%minutes%%seconds%";
     private Map<String, String> placeholders = Map.of(
@@ -64,6 +60,18 @@ public class TimeFormatConfig {
 
     public static TimeFormatConfig getDefault() {
         return DEFAULT;
+    }
+
+    public String format(Duration duration) {
+        return this.format(duration.toMillis());
+    }
+
+    public String format(long duration, TimeUnit timeUnit) {
+        return this.format(timeUnit.toMillis(duration));
+    }
+
+    public String format(long duration) {
+        return UtilTimeFormat.format(duration, this);
     }
 
     public Placeholder wrap(Duration duration) {

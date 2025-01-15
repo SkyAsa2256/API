@@ -7,6 +7,12 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ *
+ * Config version of the {@link RandomWeightedSet} class
+ *
+ * @param <A> The type of the object
+ */
 @ConfigSerializable
 public class ConfigRandomWeightedSet<A> implements Serializable {
 

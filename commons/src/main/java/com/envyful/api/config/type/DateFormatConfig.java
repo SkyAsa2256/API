@@ -7,6 +7,14 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
 
+/**
+ *
+ * Represents a configurable date format.
+ * <br>
+ * The format is the format that the date will be formatted to when using the
+ * {@link DateFormatConfig#format(Instant)} method.
+ *
+ */
 @ConfigSerializable
 public class DateFormatConfig {
 

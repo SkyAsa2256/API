@@ -8,6 +8,13 @@ import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 import java.util.*;
 
+/**
+ *
+ * An extended version of the {@link ConfigItem} that allows for more advanced
+ * configuration options such as requiring permission to view the item, executing commands
+ * on click, and more.
+ *
+ */
 @ConfigSerializable
 public class ExtendedConfigItem {
 

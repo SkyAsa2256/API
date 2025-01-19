@@ -5,6 +5,11 @@ import com.envyful.api.database.Database;
 import com.envyful.api.database.impl.SimpleLettuceDatabase;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
+/**
+ *
+ * A class representing the details of a Redis database
+ *
+ */
 @ConfigSerializable
 public class RedisDatabaseDetails implements DatabaseDetailsConfig {
 

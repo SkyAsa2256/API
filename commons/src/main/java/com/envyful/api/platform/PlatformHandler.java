@@ -2,10 +2,14 @@ package com.envyful.api.platform;
 
 import com.envyful.api.config.ConfigToast;
 import com.envyful.api.player.EnvyPlayer;
+import com.envyful.api.player.attribute.AttributeHolder;
+import com.envyful.api.player.attribute.AttributeTrigger;
 import com.envyful.api.text.Placeholder;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  *
@@ -109,4 +113,7 @@ public interface PlatformHandler<A> {
      */
     void sendToast(EnvyPlayer<A> player, ConfigToast configToast);
 
+    <Y extends AttributeTrigger<X>, X extends AttributeHolder> void registerAttributeTrigger(Class<Y> triggerClass, Supplier<Y> constructor);
+
+    <X extends AttributeHolder, Y> AttributeTrigger<X> getAttributeTriggerInstance(Class<Y> eventClass, Class<? extends AttributeTrigger<X>> triggerClass, Function<Y, List<X>> converter);
 }

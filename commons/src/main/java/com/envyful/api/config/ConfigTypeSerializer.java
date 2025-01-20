@@ -6,6 +6,12 @@ import org.spongepowered.configurate.serialize.TypeSerializer;
 
 import java.util.regex.Pattern;
 
+/**
+ *
+ * A class used to register and store the serializers for different types
+ *
+ * @param <T> The type of the serializer
+ */
 public class ConfigTypeSerializer<T> {
 
     static {

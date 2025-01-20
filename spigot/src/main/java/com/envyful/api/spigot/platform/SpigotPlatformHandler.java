@@ -2,19 +2,26 @@ package com.envyful.api.spigot.platform;
 
 import com.envyful.api.config.ConfigToast;
 import com.envyful.api.platform.PlatformHandler;
+import com.envyful.api.platform.StandardPlatformHandler;
 import com.envyful.api.player.EnvyPlayer;
+import com.envyful.api.player.attribute.AttributeHolder;
+import com.envyful.api.player.attribute.AttributeTrigger;
+import com.envyful.api.spigot.listener.GenericListener;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.Plugin;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
 
-public class SpigotPlatformHandler implements PlatformHandler<Audience> {
+public class SpigotPlatformHandler extends StandardPlatformHandler<Audience> {
 
     protected final Plugin plugin;
 
@@ -86,5 +93,30 @@ public class SpigotPlatformHandler implements PlatformHandler<Audience> {
     @Override
     public void sendToast(EnvyPlayer<Audience> player, ConfigToast configToast) {
         //TODO:
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    protected <X extends AttributeHolder, Y> void registerListeners(Class<Y> eventClass, Function<Y, List<X>> converter, AttributeTrigger<X> trigger) {
+        var listener = new GenericListener<>() {
+            @Override
+            public void onEvent(Event event) {
+                // Spigot requires this but we don't really need to do anything here
+            }
+        };
+
+        Bukkit.getPluginManager().registerEvent((Class<? extends Event>) eventClass, listener, EventPriority.NORMAL, (listener1, event) -> {
+            if (!(listener1 instanceof GenericListener<?>) || !eventClass.isAssignableFrom(event.getClass())) {
+                return;
+            }
+
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                for (var player : converter.apply((Y) event)) {
+                    if (player != null) {
+                        trigger.trigger(player);
+                    }
+                }
+            });
+        }, plugin);
     }
 }

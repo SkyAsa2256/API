@@ -5,10 +5,10 @@ import com.envyful.api.concurrency.UtilConcurrency;
 import com.envyful.api.player.Attribute;
 import com.envyful.api.player.AttributeBuilder;
 import com.envyful.api.player.PlayerManager;
+import com.envyful.api.player.attribute.AttributeTrigger;
 import com.envyful.api.player.manager.AbstractPlayerManager;
 import com.envyful.api.player.name.NameStore;
 import com.envyful.api.spigot.event.ServerShutdownEvent;
-import com.envyful.api.spigot.player.attribute.SpigotTrigger;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -68,10 +68,10 @@ public class SpigotPlayerManager extends AbstractPlayerManager<SpigotEnvyPlayer,
     @SuppressWarnings("unchecked")
     public <X extends Attribute> void registerAttribute(AttributeBuilder<X, SpigotEnvyPlayer> builder) {
         builder.triggers(
-                SpigotTrigger.singleSet(this.plugin, AsyncPlayerPreLoginEvent.class, event -> this.cachedPlayers.get(event.getUniqueId())),
-                SpigotTrigger.singleAsyncSave(this.plugin, PlayerQuitEvent.class, event -> this.cachedPlayers.get(event.getPlayer().getUniqueId())),
-                SpigotTrigger.asyncSave(this.plugin, WorldSaveEvent.class, event -> List.copyOf(this.cachedPlayers.values())),
-                SpigotTrigger.asyncSave(this.plugin, ServerShutdownEvent.class, event -> List.copyOf(this.cachedPlayers.values()))
+                AttributeTrigger.singleSet(AsyncPlayerPreLoginEvent.class, playerLoggedInEvent -> this.cachedPlayers.get(playerLoggedInEvent.getUniqueId())),
+                AttributeTrigger.singleSave(PlayerQuitEvent.class, playerLoggedInEvent -> this.cachedPlayers.get(playerLoggedInEvent.getPlayer().getUniqueId())),
+                AttributeTrigger.save(WorldSaveEvent.class, event -> List.copyOf(this.cachedPlayers.values())),
+                AttributeTrigger.save(ServerShutdownEvent.class, event -> List.copyOf(this.cachedPlayers.values()))
         );
 
         super.registerAttribute(builder);

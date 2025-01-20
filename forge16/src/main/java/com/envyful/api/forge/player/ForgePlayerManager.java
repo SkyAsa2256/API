@@ -2,10 +2,10 @@ package com.envyful.api.forge.player;
 
 import com.envyful.api.concurrency.UtilConcurrency;
 import com.envyful.api.forge.concurrency.UtilForgeConcurrency;
-import com.envyful.api.forge.player.attribute.ForgeTrigger;
 import com.envyful.api.player.Attribute;
 import com.envyful.api.player.AttributeBuilder;
 import com.envyful.api.player.PlayerManager;
+import com.envyful.api.player.attribute.AttributeTrigger;
 import com.envyful.api.player.manager.AbstractPlayerManager;
 import com.envyful.api.player.name.NameStore;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -55,13 +55,12 @@ public class ForgePlayerManager extends AbstractPlayerManager<ForgeEnvyPlayer, S
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public <X extends Attribute> void registerAttribute(AttributeBuilder<X, ForgeEnvyPlayer> builder) {
         builder.triggers(
-                ForgeTrigger.singleSet(PlayerEvent.PlayerLoggedInEvent.class, event -> this.cachedPlayers.get(event.getEntity().getUUID())),
-                ForgeTrigger.asyncSingleSaveAndClear(PlayerEvent.PlayerLoggedOutEvent.class, event -> this.cachedPlayers.get(event.getEntity().getUUID())),
-                ForgeTrigger.asyncSave(WorldEvent.Save.class, event -> List.copyOf(this.cachedPlayers.values())),
-                ForgeTrigger.asyncSave(FMLServerStoppingEvent.class, event -> List.copyOf(this.cachedPlayers.values()))
+                AttributeTrigger.singleSet(PlayerEvent.PlayerLoggedInEvent.class, playerLoggedInEvent -> this.cachedPlayers.get(playerLoggedInEvent.getPlayer().getUUID())),
+                AttributeTrigger.singleSave(PlayerEvent.PlayerLoggedOutEvent.class, playerLoggedInEvent -> this.cachedPlayers.get(playerLoggedInEvent.getPlayer().getUUID())),
+                AttributeTrigger.save(WorldEvent.Save.class, event -> List.copyOf(this.cachedPlayers.values())),
+                AttributeTrigger.save(FMLServerStoppingEvent.class, event -> List.copyOf(this.cachedPlayers.values()))
         );
 
         super.registerAttribute(builder);

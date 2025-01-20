@@ -8,7 +8,10 @@ import com.envyful.api.forge.player.util.UtilToast;
 import com.envyful.api.forge.server.UtilForgeServer;
 import com.envyful.api.platform.PlatformHandler;
 import com.envyful.api.platform.PlatformProxy;
+import com.envyful.api.platform.StandardPlatformHandler;
 import com.envyful.api.player.EnvyPlayer;
+import com.envyful.api.player.attribute.AttributeHolder;
+import com.envyful.api.player.attribute.AttributeTrigger;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
 import net.minecraft.commands.CommandSource;
@@ -16,6 +19,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.forgespi.language.ModFileScanData;
 import net.minecraftforge.server.ServerLifecycleHooks;
@@ -25,13 +29,14 @@ import org.objectweb.asm.Type;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  *
  * Platform handler for the Forge platform
  *
  */
-public class ForgePlatformHandler implements PlatformHandler<CommandSource> {
+public class ForgePlatformHandler extends StandardPlatformHandler<CommandSource> {
 
     private static final ForgePlatformHandler INSTANCE = new ForgePlatformHandler();
 
@@ -151,5 +156,21 @@ public class ForgePlatformHandler implements PlatformHandler<CommandSource> {
         }
 
         UtilToast.sendToast((ServerPlayer) player, configToast);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    protected <X extends AttributeHolder, Y> void registerListeners(Class<Y> eventClass, Function<Y, List<X>> converter, AttributeTrigger<X> trigger) {
+        MinecraftForge.EVENT_BUS.addListener(event -> {
+            if (!eventClass.isAssignableFrom(event.getClass())) {
+                return;
+            }
+
+            for (var holder : converter.apply((Y) event)) {
+                if (holder != null) {
+                    trigger.trigger(holder);
+                }
+            }
+        });
     }
 }

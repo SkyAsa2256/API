@@ -5,12 +5,14 @@ import com.envyful.api.concurrency.UtilConcurrency;
 import com.envyful.api.player.Attribute;
 import com.envyful.api.player.AttributeBuilder;
 import com.envyful.api.player.PlayerManager;
+import com.envyful.api.player.attribute.AttributeTrigger;
 import com.envyful.api.player.manager.AbstractPlayerManager;
 import com.envyful.api.player.name.NameStore;
 import com.envyful.api.spigot.event.ServerShutdownEvent;
-import com.envyful.api.spigot.player.attribute.SpigotTrigger;
+import com.envyful.api.spigot.listener.GenericListener;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -23,6 +25,7 @@ import org.bukkit.plugin.Plugin;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 /**
  *
@@ -68,13 +71,36 @@ public class SpigotPlayerManager extends AbstractPlayerManager<SpigotEnvyPlayer,
     @SuppressWarnings("unchecked")
     public <X extends Attribute> void registerAttribute(AttributeBuilder<X, SpigotEnvyPlayer> builder) {
         builder.triggers(
-                SpigotTrigger.singleSet(this.plugin, AsyncPlayerPreLoginEvent.class, event -> this.cachedPlayers.get(event.getUniqueId())),
-                SpigotTrigger.singleAsyncSave(this.plugin, PlayerQuitEvent.class, event -> this.cachedPlayers.get(event.getPlayer().getUniqueId())),
-                SpigotTrigger.asyncSave(this.plugin, WorldSaveEvent.class, event -> List.copyOf(this.cachedPlayers.values())),
-                SpigotTrigger.asyncSave(this.plugin, ServerShutdownEvent.class, event -> List.copyOf(this.cachedPlayers.values()))
+                singleSet(AsyncPlayerPreLoginEvent.class, playerLoggedInEvent -> this.cachedPlayers.get(playerLoggedInEvent.getUniqueId())),
+                singleSave(PlayerQuitEvent.class, playerLoggedInEvent -> this.cachedPlayers.get(playerLoggedInEvent.getPlayer().getUniqueId())),
+                save(WorldSaveEvent.class, event -> List.copyOf(this.cachedPlayers.values())),
+                save(ServerShutdownEvent.class, event -> List.copyOf(this.cachedPlayers.values()))
         );
 
         super.registerAttribute(builder);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    protected <Y> void registerListeners(Class<Y> eventClass, Function<Y, List<SpigotEnvyPlayer>> converter, AttributeTrigger<SpigotEnvyPlayer> trigger) {
+        var listener = new GenericListener<>() {
+            @Override
+            public void onEvent(Event event) {
+                // Spigot requires this but we don't really need to do anything here
+            }
+        };
+
+        Bukkit.getPluginManager().registerEvent((Class<? extends Event>) eventClass, listener, EventPriority.NORMAL, (listener1, event) -> {
+            if (!(listener1 instanceof GenericListener<?>) || !eventClass.isAssignableFrom(event.getClass())) {
+                return;
+            }
+
+            for (var attributeHolder : converter.apply((Y) event)) {
+                if (attributeHolder != null) {
+                    trigger.trigger(attributeHolder);
+                }
+            }
+        }, plugin);
     }
 
     private final class PlayerListener implements Listener {

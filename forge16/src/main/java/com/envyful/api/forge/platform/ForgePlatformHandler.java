@@ -8,6 +8,7 @@ import com.envyful.api.forge.player.util.UtilToast;
 import com.envyful.api.forge.server.UtilForgeServer;
 import com.envyful.api.platform.PlatformHandler;
 import com.envyful.api.platform.PlatformProxy;
+import com.envyful.api.platform.StandardPlatformHandler;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
@@ -33,7 +34,7 @@ import java.util.List;
  * The Forge implementation of the {@link PlatformHandler} interface
  *
  */
-public class ForgePlatformHandler implements PlatformHandler<ICommandSource> {
+public class ForgePlatformHandler extends StandardPlatformHandler<ICommandSource> {
 
     private static final Type DATA_ANNOTATION = Type.getType(Initialized.class);
     private static final ForgePlatformHandler INSTANCE = new ForgePlatformHandler();

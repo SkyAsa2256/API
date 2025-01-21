@@ -2,6 +2,7 @@ package com.envyful.api.spigot.platform;
 
 import com.envyful.api.config.ConfigToast;
 import com.envyful.api.platform.PlatformHandler;
+import com.envyful.api.platform.StandardPlatformHandler;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
@@ -14,7 +15,7 @@ import org.bukkit.plugin.Plugin;
 import java.util.Collection;
 import java.util.List;
 
-public class SpigotPlatformHandler implements PlatformHandler<Audience> {
+public class SpigotPlatformHandler extends StandardPlatformHandler<Audience> {
 
     protected final Plugin plugin;
 

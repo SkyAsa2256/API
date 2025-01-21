@@ -288,4 +288,5 @@ public class PlatformProxy {
     public static String strip(String text) {
         return textFormatter.strip(text);
     }
+
 }

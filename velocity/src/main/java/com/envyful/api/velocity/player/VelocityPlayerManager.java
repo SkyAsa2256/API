@@ -3,9 +3,9 @@ package com.envyful.api.velocity.player;
 import com.envyful.api.player.Attribute;
 import com.envyful.api.player.AttributeBuilder;
 import com.envyful.api.player.PlayerManager;
+import com.envyful.api.player.attribute.AttributeTrigger;
 import com.envyful.api.player.manager.AbstractPlayerManager;
 import com.envyful.api.player.name.NameStore;
-import com.envyful.api.velocity.player.attribute.VelocityTrigger;
 import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.DisconnectEvent;
@@ -13,7 +13,9 @@ import com.velocitypowered.api.event.connection.LoginEvent;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 /**
  *
@@ -47,11 +49,26 @@ public class VelocityPlayerManager extends AbstractPlayerManager<VelocityEnvyPla
     @SuppressWarnings("unchecked")
     public <X extends Attribute> void registerAttribute(AttributeBuilder<X, VelocityEnvyPlayer> builder) {
         builder.triggers(
-                VelocityTrigger.singleSet(proxyServer, plugin, LoginEvent.class, event -> this.cachedPlayers.get(event.getPlayer().getUniqueId())),
-                VelocityTrigger.singleSave(proxyServer, plugin, DisconnectEvent.class, event -> this.cachedPlayers.get(event.getPlayer().getUniqueId()))
+                this.singleSet(LoginEvent.class, event -> this.cachedPlayers.get(event.getPlayer().getUniqueId())),
+                this.singleSave(DisconnectEvent.class, event -> this.cachedPlayers.get(event.getPlayer().getUniqueId()))
         );
 
         super.registerAttribute(builder);
+    }
+
+    @Override
+    protected <Y> void registerListeners(Class<Y> eventClass, Function<Y, List<VelocityEnvyPlayer>> converter, AttributeTrigger<VelocityEnvyPlayer> trigger) {
+        this.proxyServer.getEventManager().register(plugin, eventClass, PostOrder.LAST, event -> {
+            if (!eventClass.isAssignableFrom(event.getClass())) {
+                return;
+            }
+
+            for (var player : converter.apply(event)) {
+                if (player != null) {
+                    trigger.trigger(player);
+                }
+            }
+        });
     }
 
     private final class PlayerListener {

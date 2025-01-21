@@ -2,10 +2,10 @@ package com.envyful.api.forge.player;
 
 import com.envyful.api.concurrency.UtilConcurrency;
 import com.envyful.api.forge.concurrency.UtilForgeConcurrency;
-import com.envyful.api.forge.player.attribute.ForgeTrigger;
 import com.envyful.api.player.Attribute;
 import com.envyful.api.player.AttributeBuilder;
 import com.envyful.api.player.PlayerManager;
+import com.envyful.api.player.attribute.AttributeTrigger;
 import com.envyful.api.player.manager.AbstractPlayerManager;
 import com.envyful.api.player.name.NameStore;
 import net.minecraft.server.level.ServerPlayer;
@@ -19,6 +19,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 /**
  *
@@ -58,13 +59,30 @@ public class ForgePlayerManager extends AbstractPlayerManager<ForgeEnvyPlayer, S
     @SuppressWarnings("unchecked")
     public <X extends Attribute> void registerAttribute(AttributeBuilder<X, ForgeEnvyPlayer> builder) {
         builder.triggers(
-                ForgeTrigger.singleSet(PlayerEvent.PlayerLoggedInEvent.class, event -> this.cachedPlayers.get(event.getEntity().getUUID())),
-                ForgeTrigger.asyncSingleSaveAndClear(PlayerEvent.PlayerLoggedOutEvent.class, event -> this.cachedPlayers.get(event.getEntity().getUUID())),
-                ForgeTrigger.asyncSave(LevelEvent.Save.class, event -> List.copyOf(this.cachedPlayers.values())),
-                ForgeTrigger.asyncSave(ServerStoppingEvent.class, event -> List.copyOf(this.cachedPlayers.values()))
+                singleSet(PlayerEvent.PlayerLoggedInEvent.class, playerLoggedInEvent -> this.cachedPlayers.get(playerLoggedInEvent.getEntity().getUUID())),
+                singleSave(PlayerEvent.PlayerLoggedOutEvent.class, playerLoggedInEvent -> this.cachedPlayers.get(playerLoggedInEvent.getEntity().getUUID())),
+                save(LevelEvent.Save.class, event -> List.copyOf(this.cachedPlayers.values())),
+                save(ServerStoppingEvent.class, event -> List.copyOf(this.cachedPlayers.values()))
         );
 
         super.registerAttribute(builder);
+    }
+
+
+    @Override
+    @SuppressWarnings("unchecked")
+    protected <Y> void registerListeners(Class<Y> eventClass, Function<Y, List<ForgeEnvyPlayer>> converter, AttributeTrigger<ForgeEnvyPlayer> trigger) {
+        MinecraftForge.EVENT_BUS.addListener(event -> {
+            if (!eventClass.isAssignableFrom(event.getClass())) {
+                return;
+            }
+
+            for (var holder : converter.apply((Y) event)) {
+                if (holder != null) {
+                    trigger.trigger(holder);
+                }
+            }
+        });
     }
 
     private final class PlayerListener {

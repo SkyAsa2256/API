@@ -37,7 +37,7 @@ public class SetAttributeTrigger<T extends AttributeHolder> extends AbstractAttr
 
         CompletableFuture.allOf(attributeFutures.toArray(new CompletableFuture[0])).thenRun(() -> {
             for (var attribute : player.getAttributes()) {
-                attribute.onPlayerLoaded();
+                attribute.onAttributesLoaded();
             }
         });
     }

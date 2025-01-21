@@ -48,8 +48,21 @@ public interface Attribute {
      * loading logic. This is useful for when you need to perform logic that requires
      * other attributes to be loaded first.
      *
+     * @deprecated Use {@link Attribute#onAttributesLoaded()} instead
      */
+    @Deprecated(forRemoval = true, since = "7.4.3")
     default void onPlayerLoaded() {}
+
+    /**
+     *
+     * This method is called when all the registered attributes have finished their
+     * loading logic. This is useful for when you need to perform logic that requires
+     * other attributes to be loaded first.
+     *
+     */
+    default void onAttributesLoaded() {
+        this.onPlayerLoaded();
+    }
 
     /**
      *

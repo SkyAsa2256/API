@@ -19,6 +19,7 @@ import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 /**
  *
@@ -57,13 +58,29 @@ public class ForgePlayerManager extends AbstractPlayerManager<ForgeEnvyPlayer, S
     @Override
     public <X extends Attribute> void registerAttribute(AttributeBuilder<X, ForgeEnvyPlayer> builder) {
         builder.triggers(
-                AttributeTrigger.singleSet(PlayerEvent.PlayerLoggedInEvent.class, playerLoggedInEvent -> this.cachedPlayers.get(playerLoggedInEvent.getPlayer().getUUID())),
-                AttributeTrigger.singleSave(PlayerEvent.PlayerLoggedOutEvent.class, playerLoggedInEvent -> this.cachedPlayers.get(playerLoggedInEvent.getPlayer().getUUID())),
-                AttributeTrigger.save(WorldEvent.Save.class, event -> List.copyOf(this.cachedPlayers.values())),
-                AttributeTrigger.save(FMLServerStoppingEvent.class, event -> List.copyOf(this.cachedPlayers.values()))
+                singleSet(PlayerEvent.PlayerLoggedInEvent.class, playerLoggedInEvent -> this.cachedPlayers.get(playerLoggedInEvent.getPlayer().getUUID())),
+                singleSave(PlayerEvent.PlayerLoggedOutEvent.class, playerLoggedInEvent -> this.cachedPlayers.get(playerLoggedInEvent.getPlayer().getUUID())),
+                save(WorldEvent.Save.class, event -> List.copyOf(this.cachedPlayers.values())),
+                save(FMLServerStoppingEvent.class, event -> List.copyOf(this.cachedPlayers.values()))
         );
 
         super.registerAttribute(builder);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    protected <Y> void registerListeners(Class<Y> eventClass, Function<Y, List<ForgeEnvyPlayer>> converter, AttributeTrigger<ForgeEnvyPlayer> trigger) {
+        MinecraftForge.EVENT_BUS.addListener(event -> {
+            if (!eventClass.isAssignableFrom(event.getClass())) {
+                return;
+            }
+
+            for (var holder : converter.apply((Y) event)) {
+                if (holder != null) {
+                    trigger.trigger(holder);
+                }
+            }
+        });
     }
 
     private final class PlayerListener {

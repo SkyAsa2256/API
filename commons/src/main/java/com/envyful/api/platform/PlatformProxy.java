@@ -6,15 +6,11 @@ import com.envyful.api.config.database.DatabaseDetailsRegistry;
 import com.envyful.api.platform.text.TextFormatter;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
-import com.envyful.api.player.attribute.AttributeHolder;
-import com.envyful.api.player.attribute.AttributeTrigger;
 import com.envyful.api.text.Placeholder;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  *
@@ -293,11 +289,4 @@ public class PlatformProxy {
         return textFormatter.strip(text);
     }
 
-    public static <Y extends AttributeTrigger<X>, X extends AttributeHolder> void registerAttributeTrigger(Class<Y> triggerClass, Supplier<Y> constructor) {
-        handler.registerAttributeTrigger(triggerClass, constructor);
-    }
-
-    public static <X extends AttributeHolder, Y> AttributeTrigger<X> getAttributeTriggerInstance(Class<Y> eventClass, Class<? extends AttributeTrigger<X>> triggerClass, Function<Y, List<X>> converter) {
-        return handler.getAttributeTriggerInstance(eventClass, triggerClass, converter);
-    }
 }

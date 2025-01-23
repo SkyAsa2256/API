@@ -1,5 +1,6 @@
 package com.envyful.api.config;
 
+import com.envyful.api.text.Placeholder;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 /**
@@ -32,5 +33,13 @@ public class ProgressBar {
         return this.progressBar
                 .replace("%filled%", this.filledProgressBar.repeat(filled))
                 .replace("%empty%", this.emptyProgressBar.repeat(empty));
+    }
+
+    public Placeholder placeholder(double progress, double total) {
+        return Placeholder.simple("%progress_bar%", this.createProgressBar(progress / total));
+    }
+
+    public Placeholder placeholder(double percentage) {
+        return Placeholder.simple("%progress_bar%", this.createProgressBar(percentage));
     }
 }

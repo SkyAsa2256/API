@@ -20,6 +20,11 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
+/**
+ *
+ * Static utility class for handling {@link ConfigInterface} objects
+ *
+ */
 public class UtilConfigInterface {
 
     public static void fillBackground(ForgeEnvyPlayer player,

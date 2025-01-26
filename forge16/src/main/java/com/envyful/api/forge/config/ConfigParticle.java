@@ -8,6 +8,11 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.server.ServerWorld;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
+/**
+ *
+ * Config class for displaying particles in the world
+ *
+ */
 @ConfigSerializable
 public class ConfigParticle {
 

@@ -11,7 +11,10 @@ import com.envyful.api.player.attribute.trigger.ClearAttributeTrigger;
 import com.envyful.api.player.attribute.trigger.SaveAttributeTrigger;
 import com.envyful.api.player.attribute.trigger.SetAttributeTrigger;
 
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
@@ -31,8 +34,8 @@ public abstract class PlatformAgnosticAttributeManager<A extends AttributeHolder
     protected final Map<Class<? extends Attribute>, Map<UUID, Attribute>> sharedAttributes = new ConcurrentHashMap<>();
     protected final Map<Class<? extends Attribute>, String> attributeSaveModes = new ConcurrentHashMap<>();
 
-    protected final Map<Class<?>, AttributeTrigger<A>> triggersByEvent = new HashMap<>();
-    protected final Map<Class<?>, Supplier<AttributeTrigger<A>>> registeredTriggers = new HashMap<>();
+    protected final Map<Class<?>, AttributeTrigger<A>> triggersByEvent = new ConcurrentHashMap<>();
+    protected final Map<Class<?>, Supplier<AttributeTrigger<A>>> registeredTriggers = new ConcurrentHashMap<>();
 
     protected String globalSaveMode;
     protected BiConsumer<UUID, Throwable> errorHandler = (a, throwable) -> UtilLogger.logger().ifPresent(logger -> logger.error("Failed to load attribute for id " + a.toString(), throwable));

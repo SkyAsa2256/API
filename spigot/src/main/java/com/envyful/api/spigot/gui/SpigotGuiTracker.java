@@ -24,6 +24,10 @@ public class SpigotGuiTracker {
         OPEN_GUIS.put(player.getUniqueId(), new InventoryDetails(player.getUniqueId(), inventory, gui));
     }
 
+    public static InventoryDetails getDetails(EnvyPlayer<?> player) {
+        return getDetails(player.getUniqueId());
+    }
+
     public static InventoryDetails getDetails(Player player) {
         return getDetails(player.getUniqueId());
     }

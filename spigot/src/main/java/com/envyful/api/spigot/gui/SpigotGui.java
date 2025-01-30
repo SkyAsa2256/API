@@ -57,8 +57,10 @@ public class SpigotGui implements Gui {
         }
 
         Player parent = (Player)player.getParent();
-        SpigotGuiTracker.InventoryDetails details = SpigotGuiTracker.getDetails(((SpigotEnvyPlayer) player).getParent());
+        SpigotGuiTracker.InventoryDetails details = SpigotGuiTracker.getDetails(player);
         Inventory inventory = details != null ? details.getInventory() : Bukkit.createInventory(null, this.height * 9, this.title);
+
+        inventory.clear();
 
         for (SpigotSimplePane pane : panes) {
             if (pane == null) {

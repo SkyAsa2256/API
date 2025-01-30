@@ -34,10 +34,12 @@ public class UtilSprite {
         throw new UnsupportedOperationException("Static utility class");
     }
 
+    @Deprecated
     public static ItemStack getPokemonElement(Pokemon pokemon) {
         return getPokemonElement(pokemon, SpriteConfig.DEFAULT);
     }
 
+    @Deprecated
     public static ItemStack getPokemonElement(Pokemon pokemon, SpriteConfig config, Placeholder... transformers) {
         var itemStack = getPixelmonSprite(pokemon);
         var placeholders = getPokemonPlaceholders(pokemon, config, transformers);

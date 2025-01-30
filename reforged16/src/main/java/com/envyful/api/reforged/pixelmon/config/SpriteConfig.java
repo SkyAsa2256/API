@@ -1,6 +1,10 @@
 package com.envyful.api.reforged.pixelmon.config;
 
+import com.envyful.api.reforged.pixelmon.sprite.UtilSprite;
+import com.envyful.api.text.Placeholder;
 import com.google.common.collect.Lists;
+import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
+import net.minecraft.item.ItemStack;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 import java.util.List;
@@ -8,7 +12,7 @@ import java.util.List;
 @ConfigSerializable
 public class SpriteConfig {
 
-    public static final transient SpriteConfig DEFAULT = new SpriteConfig();
+    public static final SpriteConfig DEFAULT = new SpriteConfig();
 
     private String name = "&b%species_name% %nickname%";
     private String eggName = "Egg";
@@ -163,6 +167,10 @@ public class SpriteConfig {
 
     public String getEggName() {
         return this.eggName;
+    }
+
+    public ItemStack fromPokemon(Pokemon pokemon, Placeholder... placeholders) {
+        return UtilSprite.getPokemonElement(pokemon, this, placeholders);
     }
 
     public static Builder builder() {

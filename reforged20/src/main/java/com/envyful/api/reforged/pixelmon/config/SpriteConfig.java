@@ -1,6 +1,10 @@
 package com.envyful.api.reforged.pixelmon.config;
 
+import com.envyful.api.reforged.pixelmon.sprite.UtilSprite;
+import com.envyful.api.text.Placeholder;
 import com.google.common.collect.Lists;
+import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
+import net.minecraft.world.item.ItemStack;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 import java.util.List;
@@ -163,6 +167,10 @@ public class SpriteConfig {
 
     public String getEggName() {
         return this.eggName;
+    }
+
+    public ItemStack fromPokemon(Pokemon pokemon, Placeholder... placeholders) {
+        return UtilSprite.getPokemonElement(pokemon, this, placeholders);
     }
 
     public static Builder builder() {

@@ -4,6 +4,7 @@ import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.database.Database;
 import com.envyful.api.database.SQLFunction;
 import com.envyful.api.database.leaderboard.Order;
+import com.envyful.api.text.Placeholder;
 import com.envyful.api.type.TimeOutHashMap;
 
 import java.sql.Connection;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 
 public class Leaderboard<A> {
 
@@ -73,6 +75,24 @@ public class Leaderboard<A> {
 
     private String getSQL() {
         return "SELECT * FROM `" + this.table + "` " + ((this.extraClauses == null || this.extraClauses.isEmpty()) ? "" : "WHERE " + this.extraClauses) + this.order.getSqlText(this.orderColumn) + ";";
+    }
+
+    public Placeholder getPagePlaceholder(int page, BiFunction<Integer, A, List<Placeholder>> placeholderFunction) {
+        var data = this.getPage(page);
+
+        if (data == null) {
+            return null;
+        }
+
+        List<Placeholder> placeholders = new ArrayList<>();
+
+        for (int i = 0; i < this.perPage; i++) {
+            var pos = i + (page * this.perPage);
+            var dataAtIndex = i >= data.size() ? null : data.get(i);
+            placeholders.addAll(placeholderFunction.apply(pos, dataAtIndex));
+        }
+
+        return Placeholder.composition(placeholders.toArray(new Placeholder[0]));
     }
 
     @SuppressWarnings("unused")

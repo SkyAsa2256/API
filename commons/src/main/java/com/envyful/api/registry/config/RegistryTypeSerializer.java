@@ -1,6 +1,5 @@
 package com.envyful.api.registry.config;
 
-import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.registry.Registry;
 import com.envyful.api.type.ExceptionThrowingBiFunction;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -33,12 +32,15 @@ public class RegistryTypeSerializer<A, B, C> implements TypeSerializer<C> {
             return null;
         }
 
+        if (!node.hasChild("id")) {
+            throw new SerializationException("No id provided for registry type");
+        }
+
         var id = node.node("id").getString();
         var expectedType = this.registry.get(this.keySerializer.deserialize(id));
 
         if (expectedType == null) {
-            UtilLogger.logger().ifPresent(logger -> logger.error("Invalid id provided: {}", id));
-            return null;
+            throw new SerializationException("Unknown registry type: " + id);
         }
 
         return this.converter.get(expectedType, node);
@@ -52,6 +54,11 @@ public class RegistryTypeSerializer<A, B, C> implements TypeSerializer<C> {
         }
 
         var id = registry.getKey(inverter.apply(obj));
+
+        if (id == null) {
+            throw new SerializationException("Unknown registry type: " + obj);
+        }
+
         node.node("id").set(id);
         this.save(obj, node);
     }

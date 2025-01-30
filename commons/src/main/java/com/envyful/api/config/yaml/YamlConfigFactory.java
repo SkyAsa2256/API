@@ -182,7 +182,7 @@ public class YamlConfigFactory {
                 instance.config = reference;
                 instance.path = listFile.toPath();
                 loadedConfigs.add(instance);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 throw new IOException("Error loading config " + listFile.getName(), e);
             }
         }

@@ -164,9 +164,8 @@ public abstract class PlatformAgnosticAttributeManager<A extends AttributeHolder
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public <Y> AttributeTrigger<A> getAttributeTriggerInstance(Class<Y> eventClass, Class<? extends AttributeTrigger<A>> triggerClass, Function<Y, List<A>> converter) {
-        var trigger = triggersByEvent.computeIfAbsent(eventClass, aClass -> {
+        return triggersByEvent.computeIfAbsent(eventClass, aClass -> {
             var supplier = this.registeredTriggers.get(triggerClass);
 
             if (supplier == null) {
@@ -179,8 +178,6 @@ public abstract class PlatformAgnosticAttributeManager<A extends AttributeHolder
 
             return instance;
         });
-
-        return trigger;
     }
 
     protected abstract <Y> void registerListeners(Class<Y> eventClass, Function<Y, List<A>> converter, AttributeTrigger<A> trigger);

@@ -70,6 +70,14 @@ public class UtilSprite {
         return PlaceholderFactory.handlePlaceholders(pokemon.isEgg() ? config.getEggLore() : config.getLore(), PlatformProxy::parse, placeholders);
     }
 
+    /**
+     * Gets the placeholders for the given Pokemon
+     *
+     * @param pokemon The Pokemon to get the placeholders for
+     * @param config The config to use
+     * @param otherPlaceholders Any other placeholders to include
+     * @return The list of placeholders
+     */
     public static List<Placeholder> getPokemonPlaceholders(Pokemon pokemon, SpriteConfig config, Placeholder... otherPlaceholders) {
         var iVs = pokemon.getIVs();
         var ivHP = iVs.getStat(BattleStatsType.HP);

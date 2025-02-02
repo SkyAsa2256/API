@@ -3,6 +3,11 @@ package com.envyful.api.reforged.pixelmon;
 import com.envyful.api.text.parse.SimplePlaceholder;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 
+/**
+ *
+ * A simple placeholder for a Pokemon
+ *
+ */
 public class PokemonPlaceholder implements SimplePlaceholder {
 
     private final Pokemon pokemon;

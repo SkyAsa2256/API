@@ -115,12 +115,12 @@ public class SpriteConfig {
         return itemStack;
     }
 
-    public List<String> getLore(Pokemon pokemon) {
+    public List<Component> getLore(Pokemon pokemon) {
         var placeholders = this.getPokemonPlaceholders(pokemon);
         return this.getLore(pokemon, placeholders);
     }
 
-    protected List<String> getLore(Pokemon pokemon, Placeholder... placeholders) {
+    protected List<Component> getLore(Pokemon pokemon, Placeholder... placeholders) {
         if (pokemon.isEgg()) {
             return PlaceholderFactory.handlePlaceholders(this.eggLore, PlatformProxy::parse, placeholders);
         }

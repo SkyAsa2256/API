@@ -122,6 +122,16 @@ public interface Placeholder {
     static Placeholder composition(Placeholder... placeholders) {
        return ComposedPlaceholder.of(placeholders);
     }
+    /**
+     *
+     * Composes multiple placeholders into a single placeholder
+     *
+     * @param placeholders The placeholders to compose
+     * @return The composed placeholder
+     */
+    static Placeholder composition(List<Placeholder> placeholders) {
+       return ComposedPlaceholder.of(placeholders);
+    }
 
     /**
      *

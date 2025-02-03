@@ -1,12 +1,23 @@
 package com.envyful.api.reforged.pixelmon.config;
 
+import com.envyful.api.forge.items.UtilItemStack;
+import com.envyful.api.platform.PlatformProxy;
 import com.envyful.api.reforged.pixelmon.sprite.UtilSprite;
 import com.envyful.api.text.Placeholder;
+import com.envyful.api.text.PlaceholderFactory;
 import com.google.common.collect.Lists;
+import com.pixelmonmod.api.Flags;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
+import com.pixelmonmod.pixelmon.api.pokemon.species.gender.Gender;
+import com.pixelmonmod.pixelmon.api.pokemon.stats.BattleStatsType;
+import com.pixelmonmod.pixelmon.api.pokemon.stats.IVStore;
+import com.pixelmonmod.pixelmon.api.pokemon.stats.extraStats.LakeTrioStats;
+import com.pixelmonmod.pixelmon.api.pokemon.stats.extraStats.MewStats;
 import net.minecraft.item.ItemStack;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @ConfigSerializable
@@ -55,7 +66,7 @@ public class SpriteConfig {
             "&aEgg Description: %egg_description%"
     );
 
-    private String untrdeableTrueFormat = "&aTRUE";
+    private String untradeableTrueFormat = "&aTRUE";
     private String untradeableFalseFormat = "&cFALSE";
     private String haFormat = " &7(&c&lHA&7)";
     private String notHaFormat = "";
@@ -77,100 +88,190 @@ public class SpriteConfig {
 
     public SpriteConfig() {}
 
-    public String getHaFormat() {
-        return this.haFormat;
+    public ItemStack fromPokemon(Pokemon pokemon, Placeholder... additionalPlaceholders) {
+        var itemStack = UtilSprite.getPixelmonSprite(pokemon);
+        var placeholders = this.getPokemonPlaceholders(pokemon, additionalPlaceholders);
+
+        UtilItemStack.setLore(itemStack, this.getLore(pokemon, placeholders));
+        UtilItemStack.setName(itemStack, PlatformProxy.flatParse(pokemon.isEgg() ? this.eggName : this.name, placeholders));
+
+        return itemStack;
     }
 
-    public String getNotHaFormat() {
-        return this.notHaFormat;
+    public List<String> getLore(Pokemon pokemon) {
+        var placeholders = this.getPokemonPlaceholders(pokemon);
+        return this.getLore(pokemon, placeholders);
     }
 
-    public String getName() {
-        return this.name;
+    protected List<String> getLore(Pokemon pokemon, Placeholder... placeholders) {
+        if (pokemon.isEgg()) {
+            return PlaceholderFactory.handlePlaceholders(this.eggLore, PlatformProxy::parse, placeholders);
+        }
+
+        return PlaceholderFactory.handlePlaceholders(this.lore, PlatformProxy::parse, placeholders);
     }
 
-    public List<String> getLore() {
-        return this.lore;
+    public Placeholder getPokemonPlaceholders(Pokemon pokemon, Placeholder... otherPlaceholders) {
+        var iVs = pokemon.getIVs();
+        var ivHP = iVs.getStat(BattleStatsType.HP);
+        var ivAtk = iVs.getStat(BattleStatsType.ATTACK);
+        var ivDef = iVs.getStat(BattleStatsType.DEFENSE);
+        var ivSpeed = iVs.getStat(BattleStatsType.SPEED);
+        var ivSAtk = iVs.getStat(BattleStatsType.SPECIAL_ATTACK);
+        var ivSDef = iVs.getStat(BattleStatsType.SPECIAL_DEFENSE);
+        var percentage = Math.round(((ivHP + ivDef + ivAtk + ivSpeed + ivSAtk + ivSDef) / 186f) * 100);
+        var evHP = pokemon.getEVs().getStat(BattleStatsType.HP);
+        var evAtk = pokemon.getEVs().getStat(BattleStatsType.ATTACK);
+        var evDef = pokemon.getEVs().getStat(BattleStatsType.DEFENSE);
+        var evSpeed = pokemon.getEVs().getStat(BattleStatsType.SPEED);
+        var evSAtk = pokemon.getEVs().getStat(BattleStatsType.SPECIAL_ATTACK);
+        var evSDef = pokemon.getEVs().getStat(BattleStatsType.SPECIAL_DEFENSE);
+        var extraStats = pokemon.getExtraStats();
+
+        List<Placeholder> placeholders = new ArrayList<>(Arrays.asList(otherPlaceholders));
+
+        if (pokemon.isEgg()) {
+            placeholders.add(Placeholder.simple("%egg_cycles%", pokemon.getEggCycles()));
+            placeholders.add(Placeholder.simple("%egg_steps%", pokemon.getEggSteps()));
+            placeholders.add(Placeholder.simple("%egg_description%", pokemon.getEggDescription()));
+            return Placeholder.composition(placeholders);
+        }
+
+        placeholders.add(Placeholder.simple("%species_name%", pokemon.getSpecies().getLocalizedName()));
+        placeholders.add(Placeholder.simple("%nickname%", pokemon.getDisplayName()));
+        placeholders.add(Placeholder.simple("%held_item%", pokemon.getHeldItem().getHoverName().getString()));
+        placeholders.add(Placeholder.simple("%type%", getType(pokemon)));
+        placeholders.add(Placeholder.simple("%palette%", pokemon.getPalette().getLocalizedName()));
+        placeholders.add(Placeholder.simple("%level%", pokemon.getPokemonLevel()));
+        placeholders.add(this.getGenderPlaceholder(pokemon));
+        placeholders.add(Placeholder.simple("%breedable%", !pokemon.hasFlag(Flags.UNBREEDABLE) ? this.breedableTrueFormat : this.breedableFalseFormat));
+        placeholders.add(Placeholder.simple("%nature%", this.natureFormat.replace("%nature_name%",
+                        pokemon.getMintNature() != null ?
+                                pokemon.getBaseNature().getLocalizedName() :
+                                pokemon.getNature().getLocalizedName())
+                .replace("%mint_nature%", pokemon.getMintNature() != null ?
+                        this.mintNatureFormat.replace("%mint_nature_name%", pokemon.getMintNature().getLocalizedName()) : "")));
+        placeholders.add(Placeholder.simple("%ability_name%", pokemon.getAbility().getLocalizedName()));
+        placeholders.add(Placeholder.simple("%ability_ha%", pokemon.hasHiddenAbility() ? this.haFormat : this.notHaFormat));
+        placeholders.add(Placeholder.simple("%friendship%", pokemon.getFriendship()));
+        placeholders.add(Placeholder.simple("%untradeable%", pokemon.isUntradeable() ? this.untradeableTrueFormat : this.untradeableFalseFormat));
+        placeholders.add(Placeholder.simple("%iv_percentage%", percentage));
+        placeholders.add(Placeholder.simple("%iv_hp%", getColour(iVs, BattleStatsType.HP) + ivHP));
+        placeholders.add(Placeholder.simple("%iv_attack%", getColour(iVs, BattleStatsType.ATTACK) + ivAtk));
+        placeholders.add(Placeholder.simple("%iv_defence%", getColour(iVs, BattleStatsType.DEFENSE) + ivDef));
+        placeholders.add(Placeholder.simple("%iv_spattack%", getColour(iVs, BattleStatsType.SPECIAL_ATTACK) + ivSAtk));
+        placeholders.add(Placeholder.simple("%iv_spdefence%", getColour(iVs, BattleStatsType.SPECIAL_DEFENSE) + ivSDef));
+        placeholders.add(Placeholder.simple("%iv_speed%", getColour(iVs, BattleStatsType.SPEED) + ivSpeed));
+        placeholders.add(Placeholder.simple("%ev_hp%", evHP));
+        placeholders.add(Placeholder.simple("%ev_attack%", evAtk));
+        placeholders.add(Placeholder.simple("%ev_defence%", evDef));
+        placeholders.add(Placeholder.simple("%ev_spattack%", evSAtk));
+        placeholders.add(Placeholder.simple("%ev_spdefence%", evSDef));
+        placeholders.add(Placeholder.simple("%ev_speed%", evSpeed));
+        placeholders.add(getMovePlaceholder(pokemon, 0));
+        placeholders.add(getMovePlaceholder(pokemon, 1));
+        placeholders.add(getMovePlaceholder(pokemon, 2));
+        placeholders.add(getMovePlaceholder(pokemon, 3));
+        placeholders.add(Placeholder.simple("%shiny%", pokemon.isShiny() ? this.shinyTrueFormat : this.shinyFalseFormat));
+        placeholders.add(Placeholder.simple("%form%", pokemon.getForm().getLocalizedName()));
+        placeholders.add(Placeholder.simple("%size%", pokemon.getGrowth().getLocalizedName()));
+        placeholders.add(Placeholder.simple("%friendship%", pokemon.getFriendship() + ""));
+        placeholders.add(Placeholder.simple("%gmaxfactor%", pokemon.hasGigantamaxFactor() ? this.gmaxFactorTrueFormat : this.gmaxFactorFalseFormat));
+        placeholders.add(
+                Placeholder.require(() -> pokemon.getOriginalTrainer() != null)
+                        .placeholder(Placeholder.simple("%original_trainer%", pokemon.getOriginalTrainer()))
+                        .elsePlaceholder(Placeholder.empty("%original_trainer%"))
+                        .build()
+        );
+
+        placeholders.add(
+                Placeholder.require(() -> extraStats instanceof MewStats)
+                        .placeholder(Placeholder.simple(s -> s
+                                .replace("%mew_cloned%", this.mewClonedFormat)
+                                .replace("%cloned%", ((MewStats) extraStats).numCloned + ""))
+                        )
+                        .elsePlaceholder(Placeholder.composition(Placeholder.empty("%mew_cloned%"), Placeholder.empty("%cloned%")))
+                        .build()
+        );
+
+        placeholders.add(
+                Placeholder.require(() -> extraStats instanceof LakeTrioStats)
+                        .placeholder(Placeholder.simple(s -> s
+                                .replace("%trio_gemmed%", this.gemmedFormat)
+                                .replace("%gemmed%", ((LakeTrioStats) extraStats).numEnchanted + ""))
+                        )
+                        .elsePlaceholder(Placeholder.composition(Placeholder.empty("%trio_gemmed%"), Placeholder.empty("%gemmed%")))
+                        .build()
+        );
+
+        return Placeholder.composition(placeholders);
     }
 
-    public String getUntrdeableTrueFormat() {
-        return this.untrdeableTrueFormat;
+    public Placeholder getGenderPlaceholder(Pokemon pokemon) {
+        if (pokemon == null) {
+            return Placeholder.empty("%gender%");
+        }
+
+        if (pokemon.getGender() == Gender.MALE) {
+            return Placeholder.simple("%gender%", this.maleFormat);
+        }
+
+        if (pokemon.getGender() == Gender.FEMALE) {
+            return Placeholder.simple("%gender%", this.femaleFormat);
+        }
+
+        return Placeholder.simple("%gender%", this.noneFormat);
     }
 
-    public String getUntradeableFalseFormat() {
-        return this.untradeableFalseFormat;
+    private String getType(Pokemon pokemon) {
+        var types = pokemon.getForm().getTypes();
+        var typeInfo = new StringBuilder();
+
+        for (var type : types) {
+            typeInfo.append(type.getLocalizedName()).append(" ");
+        }
+
+        return typeInfo.toString();
     }
 
-    public String getMaleFormat() {
-        return this.maleFormat;
-    }
+    private String getColour(IVStore ivStore, BattleStatsType statsType) {
+        if (ivStore.isHyperTrained(statsType)) {
+            return this.hyperIvColour;
+        }
 
-    public String getFemaleFormat() {
-        return this.femaleFormat;
-    }
-
-    public String getBreedableTrueFormat() {
-        return this.breedableTrueFormat;
-    }
-
-    public String getBreedableFalseFormat() {
-        return this.breedableFalseFormat;
-    }
-
-    public String getNoneFormat() {
-        return this.noneFormat;
-    }
-
-    public String getMewClonedFormat() {
-        return this.mewClonedFormat;
-    }
-
-    public String getGemmedFormat() {
-        return this.gemmedFormat;
-    }
-
-    public String getNatureFormat() {
-        return this.natureFormat;
-    }
-
-    public String getMintNatureFormat() {
-        return this.mintNatureFormat;
-    }
-
-    public String getNormalIvColour() {
         return this.normalIvColour;
     }
 
-    public String getHyperIvColour() {
-        return this.hyperIvColour;
+    private String getMove(Pokemon pokemon, int pos) {
+        if (pokemon.getMoveset() == null) {
+            return "";
+        }
+
+        if (pokemon.getMoveset().attacks.length <= pos) {
+            return "";
+        }
+
+        if (pokemon.getMoveset().attacks[pos] == null) {
+            return "";
+        }
+
+        return pokemon.getMoveset().attacks[pos].getActualMove().getLocalizedName();
     }
 
-    public String getShinyTrueFormat() {
-        return this.shinyTrueFormat;
-    }
+    private Placeholder getMovePlaceholder(Pokemon pokemon, int pos) {
+        return Placeholder.require(() -> {
+                    if (pokemon.getMoveset() == null) {
+                        return false;
+                    }
 
-    public String getShinyFalseFormat() {
-        return this.shinyFalseFormat;
-    }
+                    if (pokemon.getMoveset().attacks.length <= pos) {
+                        return false;
+                    }
 
-    public String getGmaxFactorFalseFormat() {
-        return this.gmaxFactorFalseFormat;
-    }
-
-    public String getGmaxFactorTrueFormat() {
-        return this.gmaxFactorTrueFormat;
-    }
-
-    public List<String> getEggLore() {
-        return this.eggLore;
-    }
-
-    public String getEggName() {
-        return this.eggName;
-    }
-
-    public ItemStack fromPokemon(Pokemon pokemon, Placeholder... placeholders) {
-        return UtilSprite.getPokemonElement(pokemon, this, placeholders);
+                    return pokemon.getMoveset().attacks[pos] != null;
+                }).placeholder(Placeholder.simple("%move_" + (pos + 1) + "%", getMove(pokemon, pos)))
+                .elsePlaceholder(Placeholder.empty("%move_" + (pos + 1) + "%"))
+                .build();
     }
 
     public static Builder builder() {
@@ -202,7 +303,7 @@ public class SpriteConfig {
         }
 
         public Builder untrdeableTrueFormat(String untrdeableTrueFormat) {
-            this.config.untrdeableTrueFormat = untrdeableTrueFormat;
+            this.config.untradeableTrueFormat = untrdeableTrueFormat;
             return this;
         }
 

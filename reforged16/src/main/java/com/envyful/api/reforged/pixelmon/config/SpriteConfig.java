@@ -2,23 +2,29 @@ package com.envyful.api.reforged.pixelmon.config;
 
 import com.envyful.api.forge.items.UtilItemStack;
 import com.envyful.api.platform.PlatformProxy;
+import com.envyful.api.reforged.pixelmon.sprite.SpriteBuilder;
 import com.envyful.api.reforged.pixelmon.sprite.UtilSprite;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
 import com.google.common.collect.Lists;
 import com.pixelmonmod.api.Flags;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
+import com.pixelmonmod.pixelmon.api.pokemon.species.Species;
+import com.pixelmonmod.pixelmon.api.pokemon.species.Stats;
 import com.pixelmonmod.pixelmon.api.pokemon.species.gender.Gender;
+import com.pixelmonmod.pixelmon.api.pokemon.species.palette.PaletteProperties;
 import com.pixelmonmod.pixelmon.api.pokemon.stats.BattleStatsType;
 import com.pixelmonmod.pixelmon.api.pokemon.stats.IVStore;
 import com.pixelmonmod.pixelmon.api.pokemon.stats.extraStats.LakeTrioStats;
 import com.pixelmonmod.pixelmon.api.pokemon.stats.extraStats.MewStats;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 
 @ConfigSerializable
 public class SpriteConfig {
@@ -88,6 +94,17 @@ public class SpriteConfig {
 
     public SpriteConfig() {}
 
+    public ItemStack fromPokemon(Species species, Stats form, Gender gender, PaletteProperties palette) {
+        var itemStack = new SpriteBuilder().species(species).form(form).gender(gender).palette(palette.getName()).build();
+        var placeholders = this.getPokemonPlaceholders(species, form, gender, palette);
+        List<ITextComponent> lore = PlaceholderFactory.handlePlaceholders(this.lore, (Function<String, ITextComponent>) PlatformProxy::parse, placeholders);
+
+        UtilItemStack.setLore(itemStack, lore);
+        UtilItemStack.setName(itemStack, PlatformProxy.flatParse(this.name, placeholders));
+
+        return itemStack;
+    }
+
     public ItemStack fromPokemon(Pokemon pokemon, Placeholder... additionalPlaceholders) {
         var itemStack = UtilSprite.getPixelmonSprite(pokemon);
         var placeholders = this.getPokemonPlaceholders(pokemon, additionalPlaceholders);
@@ -109,6 +126,16 @@ public class SpriteConfig {
         }
 
         return PlaceholderFactory.handlePlaceholders(this.lore, PlatformProxy::parse, placeholders);
+    }
+
+    public Placeholder getPokemonPlaceholders(Species species, Stats form, Gender gender, PaletteProperties palette, Placeholder... additionalPlaceholders) {
+        List<Placeholder> placeholders = new ArrayList<>(Arrays.asList(additionalPlaceholders));
+        placeholders.add(Placeholder.simple("%species_name%", species.getLocalizedName()));
+        placeholders.add(Placeholder.simple("%form%", form.getLocalizedName()));
+        placeholders.add(Placeholder.simple("%shiny%", palette.getName().equals("shiny") ? this.shinyTrueFormat : this.shinyFalseFormat));
+        placeholders.add(Placeholder.simple("%palette%", palette.getLocalizedName()));
+        placeholders.add(this.getGenderPlaceholder(gender));
+        return Placeholder.composition(placeholders);
     }
 
     public Placeholder getPokemonPlaceholders(Pokemon pokemon, Placeholder... otherPlaceholders) {
@@ -212,11 +239,19 @@ public class SpriteConfig {
             return Placeholder.empty("%gender%");
         }
 
-        if (pokemon.getGender() == Gender.MALE) {
+        return getGenderPlaceholder(pokemon.getGender());
+    }
+
+    public Placeholder getGenderPlaceholder(Gender gender) {
+        if (gender == null) {
+            return Placeholder.empty("%gender%");
+        }
+
+        if (gender == Gender.MALE) {
             return Placeholder.simple("%gender%", this.maleFormat);
         }
 
-        if (pokemon.getGender() == Gender.FEMALE) {
+        if (gender == Gender.FEMALE) {
             return Placeholder.simple("%gender%", this.femaleFormat);
         }
 

@@ -18,7 +18,7 @@ public class SpriteBuilder {
 
     private Species species;
     private Gender gender = Gender.MALE;
-    private boolean shiny = false;
+    private String palette = "none";
 
     private String nick = null;
     private Stats form = null;
@@ -35,8 +35,12 @@ public class SpriteBuilder {
         return this;
     }
 
-    public SpriteBuilder shiny(boolean shiny) {
-        this.shiny = shiny;
+    public SpriteBuilder shiny() {
+        return this.palette("shiny");
+    }
+
+    public SpriteBuilder palette(String palette) {
+        this.palette = palette;
         return this;
     }
 
@@ -59,7 +63,7 @@ public class SpriteBuilder {
         }
 
         itemStack.addTagElement("gender", ByteTag.valueOf((byte)this.gender.ordinal()));
-        itemStack.addTagElement("palette", StringTag.valueOf(this.shiny ? "shiny" : "none"));
+        itemStack.addTagElement("palette", StringTag.valueOf(this.palette));
 
         if (this.nick != null && !this.nick.isEmpty()) {
             itemStack.addTagElement("Nickname", StringTag.valueOf(this.nick));

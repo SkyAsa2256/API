@@ -26,6 +26,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
+/**
+ *
+ * Class for handling the configuration of the sprite item
+ *
+ */
 @ConfigSerializable
 public class SpriteConfig {
 

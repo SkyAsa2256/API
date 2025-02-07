@@ -96,6 +96,8 @@ public class SpriteConfig {
     private String hyperIvColour = "&e";
     private String gmaxFactorTrueFormat = "&aTRUE";
     private String gmaxFactorFalseFormat = "&cFALSE";
+    private String emptyMoveSlot = "&7Empty";
+    private boolean removeEmptyMoveSlots = true;
 
     public SpriteConfig() {}
 
@@ -310,7 +312,7 @@ public class SpriteConfig {
 
                     return pokemon.getMoveset().attacks[pos] != null;
                 }).placeholder(Placeholder.simple("%move_" + (pos + 1) + "%", getMove(pokemon, pos)))
-                .elsePlaceholder(Placeholder.empty("%move_" + (pos + 1) + "%"))
+                .elsePlaceholder(this.removeEmptyMoveSlots ? Placeholder.empty("%move_" + (pos + 1) + "%") : Placeholder.simple("%move_" + (pos + 1) + "%", this.emptyMoveSlot))
                 .build();
     }
 

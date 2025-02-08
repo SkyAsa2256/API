@@ -1,5 +1,6 @@
 package com.envyful.api.discord.yaml;
 
+import com.envyful.api.concurrency.UtilConcurrency;
 import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.config.yaml.AbstractYamlConfig;
 import com.envyful.api.text.Placeholder;
@@ -13,6 +14,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
 
 @ConfigSerializable
 public class DiscordWebHookConfig extends AbstractYamlConfig {
@@ -40,6 +43,37 @@ public class DiscordWebHookConfig extends AbstractYamlConfig {
     }
 
     public DiscordWebHookConfig() {
+    }
+
+    /**
+     *
+     * Sends the message to the web hook URL asynchronously
+     *
+     * @param placeholders The placeholders to replace in the message
+     * @return The future of the task
+     */
+    public CompletableFuture<Void> executeAsync(Placeholder... placeholders) {
+        return this.executeAsync(UtilConcurrency.SCHEDULED_EXECUTOR_SERVICE, placeholders);
+    }
+
+    /**
+     *
+     * Sends the message to the web hook URL asynchronously
+     *
+     * @param executorService The executor service to run the task on
+     * @param placeholders The placeholders to replace in the message
+     * @return The future of the task
+     */
+    public CompletableFuture<Void> executeAsync(ExecutorService executorService, Placeholder... placeholders) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                this.execute(placeholders);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            return null;
+        }, executorService);
     }
 
     /**

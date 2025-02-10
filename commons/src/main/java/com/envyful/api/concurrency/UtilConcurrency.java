@@ -31,7 +31,7 @@ public class UtilConcurrency {
                     .setDaemon(true)
                     .setNameFormat("envyware_concurrency_%d")
                     .setUncaughtExceptionHandler(
-                            new DefaultUncaughtExceptionHandler()
+                            (t, e) -> UtilLogger.getLogger().error("Error while executing async task", e)
                     )
                     .build());
 

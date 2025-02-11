@@ -154,7 +154,15 @@ public interface AttributeManager<A extends AttributeHolder> {
     <Y> AttributeTrigger<A> getAttributeTriggerInstance(Class<Y> eventClass, Class<? extends AttributeTrigger<A>> triggerClass, Function<Y, List<A>> converter);
 
     default <B> AttributeTrigger<A> singleSet(Class<B> eventClass, Function<B, A> converter) {
-        return set(eventClass, b -> List.of(converter.apply(b)));
+        return set(eventClass, b -> {
+            var attribute = converter.apply(b);
+
+            if (attribute == null) {
+                return List.of();
+            }
+
+            return List.of(attribute);
+        });
     }
 
     default <B> AttributeTrigger<A> set(Class<B> eventClass, Function<B, List<A>> converter) {
@@ -162,7 +170,15 @@ public interface AttributeManager<A extends AttributeHolder> {
     }
 
     default <B> AttributeTrigger<A> singleClear(Class<B> eventClass, Function<B, A> converter) {
-        return clear(eventClass, b -> List.of(converter.apply(b)));
+        return clear(eventClass, b -> {
+            var attribute = converter.apply(b);
+
+            if (attribute == null) {
+                return List.of();
+            }
+
+            return List.of(attribute);
+        });
     }
 
     default <B> AttributeTrigger<A> clear(Class<B> eventClass, Function<B, List<A>> converter) {
@@ -170,7 +186,15 @@ public interface AttributeManager<A extends AttributeHolder> {
     }
 
     default <B> AttributeTrigger<A> singleSave(Class<B> eventClass, Function<B, A> converter) {
-        return save(eventClass, b -> List.of(converter.apply(b)));
+        return save(eventClass, b -> {
+            var attribute = converter.apply(b);
+
+            if (attribute == null) {
+                return List.of();
+            }
+
+            return List.of(attribute);
+        });
     }
 
     default <B> AttributeTrigger<A> save(Class<B> eventClass, Function<B, List<A>> converter) {

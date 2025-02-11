@@ -134,7 +134,7 @@ public class ForgePlatformHandler extends StandardPlatformHandler<ICommandSource
 
     @Override
     public void executeConsoleCommands(List<String> commands, Placeholder... placeholders) {
-        if (ServerLifecycleHooks.getCurrentServer() == null || ServerLifecycleHooks.getCurrentServer().isShutdown()) {
+        if (ServerLifecycleHooks.getCurrentServer() == null || !ServerLifecycleHooks.getCurrentServer().getRunningThread().isAlive()) {
             return;
         }
 

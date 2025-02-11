@@ -1,6 +1,6 @@
-package com.envyful.api.forge.concurrency;
+package com.envyful.api.concurrency;
 
-import com.envyful.api.concurrency.UtilConcurrency;
+import com.envyful.api.platform.PlatformProxy;
 
 import java.util.function.Consumer;
 
@@ -28,9 +28,9 @@ public class ScheduledConsumer<T> implements Consumer<T> {
         }
 
         if (this.delayTicks == -1) {
-            UtilForgeConcurrency.runSync(() -> this.handler.accept(t));
+            PlatformProxy.runSync(() -> this.handler.accept(t));
         } else {
-            UtilForgeConcurrency.runLater(() -> this.handler.accept(t), (int) this.delayTicks);
+            PlatformProxy.runLater(() -> this.handler.accept(t), (int) this.delayTicks);
         }
     }
 

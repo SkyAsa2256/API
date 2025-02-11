@@ -56,7 +56,17 @@ public class SpigotPlatformHandler extends StandardPlatformHandler<Audience> {
     }
 
     @Override
+    public boolean isServerThread() {
+        return Bukkit.getServer().isPrimaryThread();
+    }
+
+    @Override
     public void runSync(Runnable runnable) {
+        if (Bukkit.getServer().isPrimaryThread()) {
+            runnable.run();
+            return;
+        }
+
         Bukkit.getScheduler().runTask(this.plugin, runnable);
     }
 

@@ -209,6 +209,15 @@ public class PlatformProxy {
         handler.sendMessage(player, message, placeholders);
     }
 
+    public static boolean isServerThread() {
+        if (handler == null) {
+            UtilLogger.getLogger().error("No platform handler set but isServerThread was called");
+            return false;
+        }
+
+        return handler.isServerThread();
+    }
+
     public static void runSync(Runnable runnable) {
         if (handler == null) {
             UtilLogger.logger().ifPresent(logger -> logger.error("No platform handler set but runSync was called"));

@@ -59,6 +59,14 @@ public interface PlatformHandler<A> {
 
     /**
      *
+     * Checks if the current thread is the server thread
+     *
+     * @return If the current thread is the server thread
+     */
+    boolean isServerThread();
+
+    /**
+     *
      * Execute a runnable on the main server's thread
      *
      * @param runnable The runnable to execute

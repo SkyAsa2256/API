@@ -1,7 +1,7 @@
 package com.envyful.api.forge.player;
 
 import com.envyful.api.concurrency.UtilConcurrency;
-import com.envyful.api.forge.concurrency.UtilForgeConcurrency;
+import com.envyful.api.platform.PlatformProxy;
 import com.envyful.api.player.Attribute;
 import com.envyful.api.player.AttributeBuilder;
 import com.envyful.api.player.PlayerManager;
@@ -99,7 +99,7 @@ public class ForgePlayerManager extends AbstractPlayerManager<ForgeEnvyPlayer, S
 
         @SubscribeEvent(priority = EventPriority.LOWEST)
         public void onPlayerQuit(PlayerEvent.PlayerLoggedOutEvent event) {
-            UtilForgeConcurrency.runLater(() -> cachedPlayers.remove(event.getEntity().getUUID()), 40);
+            PlatformProxy.runLater(() -> cachedPlayers.remove(event.getEntity().getUUID()), 40);
         }
 
         @SubscribeEvent(priority = EventPriority.HIGHEST)

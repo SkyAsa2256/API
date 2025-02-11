@@ -2,12 +2,11 @@ package com.envyful.api.forge.config;
 
 import com.envyful.api.config.type.ConfigItem;
 import com.envyful.api.config.type.ExtendedConfigItem;
-import com.envyful.api.forge.concurrency.UtilForgeConcurrency;
 import com.envyful.api.forge.gui.item.ForgeSimpleDisplayable;
 import com.envyful.api.forge.player.ForgeEnvyPlayer;
-import com.envyful.api.forge.server.UtilForgeServer;
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
+import com.envyful.api.platform.PlatformProxy;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.type.Pair;
@@ -67,7 +66,7 @@ public class ConfigItemBuilder extends ForgeSimpleDisplayable.Builder {
         return this.clickHandler((player, clickType) -> {
             if (configItem.shouldCloseOnClick() || (configItem.getCommandsExecuted() != null && !configItem.getCommandsExecuted().isEmpty())) {
                 if (this.async) {
-                    UtilForgeConcurrency.runSync(() -> this.handleCommands(configItem, (ForgeEnvyPlayer) player));
+                    PlatformProxy.runSync(() -> this.handleCommands(configItem, (ForgeEnvyPlayer) player));
                 } else {
                     this.handleCommands(configItem, (ForgeEnvyPlayer) player);
                 }
@@ -81,13 +80,11 @@ public class ConfigItemBuilder extends ForgeSimpleDisplayable.Builder {
 
     protected void handleCommands(ExtendedConfigItem configItem, ForgeEnvyPlayer player) {
         if (!configItem.getCommandsExecuted().isEmpty()) {
-            for (String s : configItem.getCommandsExecuted()) {
-                UtilForgeServer.executeCommand(player.getParent(), s);
-            }
+            PlatformProxy.executeConsoleCommands(configItem.getCommandsExecuted(), player);
         }
 
         if (configItem.shouldCloseOnClick()) {
-            player.getParent().closeContainer();
+            player.closeInventory();
         }
     }
 

@@ -1,9 +1,9 @@
 package com.envyful.api.forge.gui.close;
 
 import com.envyful.api.concurrency.UtilConcurrency;
-import com.envyful.api.forge.concurrency.UtilForgeConcurrency;
 import com.envyful.api.forge.player.ForgeEnvyPlayer;
 import com.envyful.api.gui.close.CloseConsumer;
+import com.envyful.api.platform.PlatformProxy;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.function.Consumer;
@@ -38,7 +38,7 @@ public class ForgeCloseConsumer implements CloseConsumer<ForgeEnvyPlayer, Server
             if (this.async) {
                 UtilConcurrency.runAsync(() -> this.handler.accept(player));
             } else {
-                UtilForgeConcurrency.runSync(() -> this.handler.accept(player));
+                PlatformProxy.runSync(() -> this.handler.accept(player));
             }
             return;
         }
@@ -46,7 +46,7 @@ public class ForgeCloseConsumer implements CloseConsumer<ForgeEnvyPlayer, Server
         if (this.async) {
             UtilConcurrency.runLater(() -> this.handler.accept(player), this.delayTicks * 50L);
         } else {
-            UtilForgeConcurrency.runLater(() -> this.handler.accept(player), this.delayTicks);
+            PlatformProxy.runLater(() -> this.handler.accept(player), this.delayTicks);
         }
     }
 

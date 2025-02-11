@@ -1,8 +1,8 @@
 package com.envyful.api.forge.gui.ticker;
 
-import com.envyful.api.forge.concurrency.UtilForgeConcurrency;
 import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.gui.pane.TickHandler;
+import com.envyful.api.platform.PlatformProxy;
 
 import java.util.function.Consumer;
 
@@ -41,7 +41,7 @@ public class ForgeGuiTickHandler implements TickHandler {
         if (this.async) {
             this.handler.accept(pane);
         } else {
-            UtilForgeConcurrency.runSync(() -> this.handler.accept(pane));
+            PlatformProxy.runSync(() -> this.handler.accept(pane));
         }
     }
 

@@ -18,16 +18,6 @@ public class UtilForgeConcurrency {
         MinecraftForge.EVENT_BUS.register(TICK_LISTENER);
     }
 
-    /**
-     *
-     * Passes runnable task to be run on the main minecraft thread
-     *
-     * @param runnable The runnable to be run on the main thread
-     */
-    public static void runSync(Runnable runnable) {
-        TICK_LISTENER.addTask(runnable);
-    }
-
 
     /**
      *

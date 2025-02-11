@@ -5,7 +5,6 @@ import com.envyful.api.config.ConfigToast;
 import com.envyful.api.forge.InitializationTask;
 import com.envyful.api.forge.Initialized;
 import com.envyful.api.forge.player.util.UtilToast;
-import com.envyful.api.forge.server.UtilForgeServer;
 import com.envyful.api.platform.PlatformHandler;
 import com.envyful.api.platform.PlatformProxy;
 import com.envyful.api.platform.StandardPlatformHandler;
@@ -135,11 +134,20 @@ public class ForgePlatformHandler extends StandardPlatformHandler<ICommandSource
 
     @Override
     public void executeConsoleCommands(List<String> commands, Placeholder... placeholders) {
-        for (String command : commands) {
-            for (String handlePlaceholder : PlaceholderFactory.handlePlaceholders(command, placeholders)) {
-                UtilForgeServer.executeCommand(handlePlaceholder);
-            }
+        if (ServerLifecycleHooks.getCurrentServer() == null || ServerLifecycleHooks.getCurrentServer().isShutdown()) {
+            return;
         }
+
+        runSync(() -> {
+            var server = ServerLifecycleHooks.getCurrentServer();
+            var commandSourceStack = server.createCommandSourceStack();
+
+            for (String command : commands) {
+                for (String handlePlaceholder : PlaceholderFactory.handlePlaceholders(command, placeholders)) {
+                    server.getCommands().performCommand(commandSourceStack, handlePlaceholder);
+                }
+            }
+        });
     }
 
     @Override

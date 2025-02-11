@@ -82,7 +82,7 @@ public class PlatformProxy {
      */
     public static void executeConsoleCommands(List<String> commands, Placeholder... placeholders) {
         if (handler == null) {
-            UtilLogger.logger().ifPresent(logger -> logger.error("No platform handler set but executeConsoleCommands was called"));
+            UtilLogger.getLogger().error("No platform handler set but executeConsoleCommands was called");
             return;
         }
 
@@ -99,7 +99,7 @@ public class PlatformProxy {
      */
     public static boolean hasPermission(Object player, String permission) {
         if (handler == null) {
-            UtilLogger.logger().ifPresent(logger -> logger.error("No platform handler set but hasPermission was called"));
+            UtilLogger.getLogger().error("No platform handler set but hasPermission was called");
             return false;
         }
 
@@ -116,7 +116,7 @@ public class PlatformProxy {
      */
     public static boolean hasPermission(EnvyPlayer<?> player, String permission) {
         if (handler == null) {
-            UtilLogger.logger().ifPresent(logger -> logger.error("No platform handler set but hasPermission was called"));
+            UtilLogger.getLogger().error("No platform handler set but hasPermission was called");
             return false;
         }
 
@@ -132,7 +132,7 @@ public class PlatformProxy {
      */
     public static boolean isOP(EnvyPlayer<?> player) {
         if (handler == null) {
-            UtilLogger.logger().ifPresent(logger -> logger.error("No platform handler set but isOP was called"));
+            UtilLogger.getLogger().error("No platform handler set but isOP was called");
             return false;
         }
 
@@ -148,7 +148,7 @@ public class PlatformProxy {
      */
     public static void sendToast(Object player, ConfigToast configToast) {
         if (handler == null) {
-            UtilLogger.logger().ifPresent(logger -> logger.error("No platform handler set but sendToast was called"));
+            UtilLogger.getLogger().error("No platform handler set but sendToast was called");
             return;
         }
 
@@ -164,7 +164,7 @@ public class PlatformProxy {
      */
     public static void sendToast(EnvyPlayer<?> player, ConfigToast configToast) {
         if (handler == null) {
-            UtilLogger.logger().ifPresent(logger -> logger.error("No platform handler set but sendToast was called"));
+            UtilLogger.getLogger().error("No platform handler set but sendToast was called");
             return;
         }
 
@@ -173,7 +173,7 @@ public class PlatformProxy {
 
     public static void broadcastMessage(Collection<String> message, Placeholder... placeholders) {
         if (handler == null) {
-            UtilLogger.logger().ifPresent(logger -> logger.error("No platform handler set but broadcastMessage was called"));
+            UtilLogger.getLogger().error("No platform handler set but broadcastMessage was called");
             return;
         }
 
@@ -202,7 +202,7 @@ public class PlatformProxy {
 
     public static void sendMessage(Object player, Collection<String> message, Placeholder... placeholders) {
         if (handler == null) {
-            UtilLogger.logger().ifPresent(logger -> logger.error("No platform handler set but sendMessage was called"));
+            UtilLogger.getLogger().error("No platform handler set but sendMessage was called");
             return;
         }
 
@@ -220,7 +220,7 @@ public class PlatformProxy {
 
     public static void runSync(Runnable runnable) {
         if (handler == null) {
-            UtilLogger.logger().ifPresent(logger -> logger.error("No platform handler set but runSync was called"));
+            UtilLogger.getLogger().error("No platform handler set but runSync was called");
             return;
         }
 
@@ -229,7 +229,7 @@ public class PlatformProxy {
 
     public static void runLater(Runnable runnable, int delayTicks) {
         if (handler == null) {
-            UtilLogger.logger().ifPresent(logger -> logger.error("No platform handler set but runLater was called"));
+            UtilLogger.getLogger().error("No platform handler set but runLater was called");
             return;
         }
 
@@ -238,7 +238,7 @@ public class PlatformProxy {
 
     public static double getTPS() {
         if (handler == null) {
-            UtilLogger.logger().ifPresent(logger -> logger.error("No platform handler set but getTPS was called"));
+            UtilLogger.getLogger().error("No platform handler set but getTPS was called");
             return 0.0;
         }
 

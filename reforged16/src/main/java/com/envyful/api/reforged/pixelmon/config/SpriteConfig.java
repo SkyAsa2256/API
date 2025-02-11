@@ -24,7 +24,6 @@ import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
 
 /**
  *
@@ -101,10 +100,13 @@ public class SpriteConfig {
 
     public SpriteConfig() {}
 
-    public ItemStack fromPokemon(Species species, Stats form, Gender gender, PaletteProperties palette) {
+    public ItemStack fromPokemon(Species species, Stats form, Gender gender, PaletteProperties palette, Placeholder... additionalPlaceholders) {
         var itemStack = new SpriteBuilder().species(species).form(form).gender(gender).palette(palette.getName()).build();
         var placeholders = this.getPokemonPlaceholders(species, form, gender, palette);
-        List<ITextComponent> lore = PlaceholderFactory.handlePlaceholders(this.lore, (Function<String, ITextComponent>) PlatformProxy::parse, placeholders);
+        var allPlaceholders = new ArrayList<>(Arrays.asList(additionalPlaceholders));
+        allPlaceholders.add(placeholders);
+
+        List<ITextComponent> lore = PlaceholderFactory.handlePlaceholders(this.lore, PlatformProxy::parse, allPlaceholders.toArray(new Placeholder[0]));
 
         UtilItemStack.setLore(itemStack, lore);
         UtilItemStack.setName(itemStack, PlatformProxy.flatParse(this.name, placeholders));

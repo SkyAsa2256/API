@@ -6,7 +6,6 @@ import com.envyful.api.config.type.ExtendedConfigItem;
 import com.envyful.api.forge.items.ItemBuilder;
 import com.envyful.api.forge.items.ItemFlag;
 import com.envyful.api.forge.player.ForgeEnvyPlayer;
-import com.envyful.api.forge.player.util.UtilPlayer;
 import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.platform.PlatformProxy;
 import com.envyful.api.text.Placeholder;
@@ -67,7 +66,7 @@ public class UtilConfigItem {
                 permissibleConfigItem.getPermission() == null ||
                 permissibleConfigItem.getPermission().isEmpty() ||
                 permissibleConfigItem.getPermission().equalsIgnoreCase("none") ||
-                UtilPlayer.hasPermission(player, permissibleConfigItem.getPermission());
+                PlatformProxy.hasPermission(player, permissibleConfigItem.getPermission());
     }
 
     public static ItemStack fromConfigItem(ExtendedConfigItem configItem, Placeholder... placeholders) {

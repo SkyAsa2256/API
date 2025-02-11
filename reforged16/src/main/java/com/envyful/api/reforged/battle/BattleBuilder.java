@@ -1,7 +1,7 @@
 package com.envyful.api.reforged.battle;
 
 import com.envyful.api.concurrency.UtilConcurrency;
-import com.envyful.api.forge.concurrency.UtilForgeConcurrency;
+import com.envyful.api.platform.PlatformProxy;
 import com.pixelmonmod.pixelmon.api.events.PixelmonFaintEvent;
 import com.pixelmonmod.pixelmon.api.events.SpawnPixelmonEntityForBattleEvent;
 import com.pixelmonmod.pixelmon.api.events.battles.BattleEndEvent;
@@ -155,7 +155,7 @@ public class BattleBuilder {
     public void start() {
         if (this.startDelayMillis != -1) {
             if (this.startSync) {
-                UtilForgeConcurrency.runLater(this::startBattle, (int) (this.startDelayMillis / 50L));
+                PlatformProxy.runLater(this::startBattle, (int) (this.startDelayMillis / 50L));
             } else {
                 UtilConcurrency.runLater(this::startBattle, this.startDelayMillis);
             }

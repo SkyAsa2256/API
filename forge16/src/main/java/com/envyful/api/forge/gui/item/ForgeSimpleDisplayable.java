@@ -1,8 +1,8 @@
 package com.envyful.api.forge.gui.item;
 
 import com.envyful.api.concurrency.UtilConcurrency;
-import com.envyful.api.forge.concurrency.UtilForgeConcurrency;
 import com.envyful.api.gui.item.Displayable;
+import com.envyful.api.platform.PlatformProxy;
 import com.envyful.api.player.EnvyPlayer;
 import net.minecraft.item.ItemStack;
 
@@ -65,7 +65,7 @@ public class ForgeSimpleDisplayable implements Displayable {
             if (this.async) {
                 UtilConcurrency.runAsync(() -> this.clickHandler.accept(player, clickType));
             } else {
-                UtilForgeConcurrency.runSync(() -> this.clickHandler.accept(player, clickType));
+                PlatformProxy.runSync(() -> this.clickHandler.accept(player, clickType));
             }
 
             return;
@@ -74,7 +74,7 @@ public class ForgeSimpleDisplayable implements Displayable {
         if (this.async) {
             UtilConcurrency.runLater(() -> this.clickHandler.accept(player, clickType), this.tickDelay * 50L);
         } else {
-            UtilForgeConcurrency.runLater(() -> this.clickHandler.accept(player, clickType), this.tickDelay);
+            PlatformProxy.runLater(() -> this.clickHandler.accept(player, clickType), this.tickDelay);
         }
     }
 

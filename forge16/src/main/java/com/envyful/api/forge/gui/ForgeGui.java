@@ -83,7 +83,7 @@ public class ForgeGui implements Gui {
 
         if (ForgeGuiTracker.inGui(player) && parent.containerMenu != parent.inventoryMenu &&
                 Objects.equals(parent.containerMenu.getType(), this.getContainerType())) {
-            UtilForgeConcurrency.runSync(() -> {
+            PlatformProxy.runSync(() -> {
                 if (parent.containerMenu instanceof ForgeGuiContainer) {
                     ((ForgeGuiContainer)parent.containerMenu).gui.closeConsumer.handle((ForgeEnvyPlayer)player);
                     this.containers.remove((parent.containerMenu));
@@ -96,7 +96,7 @@ public class ForgeGui implements Gui {
             return;
         }
 
-        UtilForgeConcurrency.runSync(() -> {
+        PlatformProxy.runSync(() -> {
             parent.closeContainer();
 
             ForgeGuiContainer container = new ForgeGuiContainer(this, parent);
@@ -353,7 +353,7 @@ public class ForgeGui implements Gui {
                 return;
             }
 
-            UtilForgeConcurrency.runSync(() -> this.handleClose(playerIn));
+            PlatformProxy.runSync(() -> this.handleClose(playerIn));
         }
 
         private void handleClose(PlayerEntity playerIn) {

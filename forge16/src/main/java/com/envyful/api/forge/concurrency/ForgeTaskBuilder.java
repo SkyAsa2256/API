@@ -1,6 +1,7 @@
 package com.envyful.api.forge.concurrency;
 
 import com.envyful.api.concurrency.UtilConcurrency;
+import com.envyful.api.platform.PlatformProxy;
 
 /**
  *
@@ -115,7 +116,7 @@ public class ForgeTaskBuilder {
                 if (this.taskBuilder.async) {
                     UtilConcurrency.runAsync(() -> this.taskBuilder.task.run());
                 } else {
-                    UtilForgeConcurrency.runSync(this.taskBuilder.task);
+                    PlatformProxy.runSync(this.taskBuilder.task);
                 }
             }
         }

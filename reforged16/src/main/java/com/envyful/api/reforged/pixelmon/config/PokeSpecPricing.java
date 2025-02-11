@@ -1,6 +1,6 @@
 package com.envyful.api.reforged.pixelmon.config;
 
-import com.envyful.api.forge.player.util.UtilPlayer;
+import com.envyful.api.platform.PlatformProxy;
 import com.pixelmonmod.api.Specification;
 import com.pixelmonmod.api.pokemon.PokemonSpecificationProxy;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -53,7 +53,7 @@ public class PokeSpecPricing implements Comparable<PokeSpecPricing> {
             return true;
         }
 
-        return UtilPlayer.hasPermission(player, this.requiredPermission);
+        return PlatformProxy.hasPermission(player, this.requiredPermission);
     }
 
     @Override

@@ -1,12 +1,8 @@
 package com.envyful.api.forge.player.util;
 
-import com.envyful.api.platform.PlatformProxy;
-import com.envyful.api.player.EnvyPlayer;
 import net.minecraft.command.ICommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.server.management.OpEntry;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
-import net.minecraftforge.server.permission.PermissionAPI;
 
 import java.util.UUID;
 
@@ -23,29 +19,6 @@ public class UtilPlayer {
         }
 
         return "CONSOLE";
-    }
-
-    /**
-     *
-     * Checks if the player has the given permission
-     *
-     * @param player The player
-     * @param permission The permission
-     * @return true if they have access to said permission
-     * @deprecated Use {@link PlatformProxy#hasPermission(EnvyPlayer, String)} instead
-     */
-    @Deprecated
-    public static boolean hasPermission(ServerPlayerEntity player, String permission) {
-        if (player == null || permission == null) {
-            return false;
-        }
-
-        return (PermissionAPI.hasPermission(player, permission) || isOP(player));
-    }
-
-    public static boolean isOP(ServerPlayerEntity player) {
-        OpEntry entry = ServerLifecycleHooks.getCurrentServer().getPlayerList().getOps().get(player.getGameProfile());
-        return entry != null;
     }
 
     /**

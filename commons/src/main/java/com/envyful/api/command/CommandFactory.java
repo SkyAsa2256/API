@@ -4,6 +4,7 @@ import com.envyful.api.command.exception.CommandParseException;
 import com.envyful.api.command.injector.ArgumentInjectionFunction;
 import com.envyful.api.command.injector.ArgumentInjector;
 import com.envyful.api.command.injector.TabCompleter;
+import com.envyful.api.platform.PlatformProxy;
 
 import java.util.function.BiFunction;
 
@@ -54,7 +55,9 @@ public interface CommandFactory<A, B> {
      * @param permission The node being checked
      * @return True if they have access to that permission
      */
-    boolean hasPermission(B sender, String permission);
+    default boolean hasPermission(B sender, String permission) {
+        return PlatformProxy.hasPermission(sender, permission);
+    }
 
     /**
      *

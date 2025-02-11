@@ -2,7 +2,7 @@ package com.envyful.api.forge.concurrency;
 
 import com.envyful.api.concurrency.UpdateBuilder;
 import com.envyful.api.forge.listener.LazyListener;
-import com.envyful.api.forge.player.util.UtilPlayer;
+import com.envyful.api.platform.PlatformProxy;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.StringTextComponent;
@@ -19,7 +19,7 @@ import java.util.function.BiPredicate;
  */
 public class ForgeUpdateBuilder extends UpdateBuilder<ServerPlayerEntity> {
 
-    private static final BiPredicate<ServerPlayerEntity, String> PERM_PREDICATE = (ServerPlayerEntity, s) -> UtilPlayer.hasPermission(ServerPlayerEntity, s);
+    private static final BiPredicate<ServerPlayerEntity, String> PERM_PREDICATE = (ServerPlayerEntity, s) -> PlatformProxy.hasPermission(ServerPlayerEntity, s);
     private static final BiConsumer<ServerPlayerEntity, String> MESSAGE_CONSUMER = (ServerPlayerEntity, s) -> ServerPlayerEntity.sendMessage(new StringTextComponent(s), Util.NIL_UUID);
 
     public static ForgeUpdateBuilder instance() {

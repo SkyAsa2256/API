@@ -18,7 +18,6 @@ import com.envyful.api.forge.command.injector.ForgeFunctionInjector;
 import com.envyful.api.forge.command.parser.ForgeAnnotationCommandParser;
 import com.envyful.api.forge.player.ForgeEnvyPlayer;
 import com.envyful.api.forge.player.ForgePlayerManager;
-import com.envyful.api.forge.player.util.UtilPlayer;
 import com.envyful.api.platform.PlatformProxy;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -130,15 +129,6 @@ public class ForgeCommandFactory extends InjectedCommandFactory<CommandDispatche
     @Override
     public PlatformCommand<ICommandSource> parseCommand(Object o) throws CommandParseException {
         return this.commandParser.parseCommand(o);
-    }
-
-    @Override
-    public boolean hasPermission(ICommandSource sender, String permission) {
-        if (!(sender instanceof ServerPlayerEntity)) {
-            return true;
-        }
-
-        return UtilPlayer.hasPermission((ServerPlayerEntity) sender, permission);
     }
 
     /**

@@ -34,7 +34,7 @@ public class PermissionCheck {
     }
 
     public boolean test(ServerPlayerEntity player) {
-        if (!this.enabled || UtilPlayer.hasPermission(player, this.permission)) {
+        if (!this.enabled || PlatformProxy.hasPermission(player, this.permission)) {
             return true;
         }
 

@@ -30,7 +30,6 @@ import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
 import javax.annotation.Nullable;
@@ -120,15 +119,6 @@ public class ForgeCommandFactory extends InjectedCommandFactory<CommandDispatche
     @Override
     public PlatformCommand<CommandSource> parseCommand(Object o) throws CommandParseException {
         return this.commandParser.parseCommand(o);
-    }
-
-    @Override
-    public boolean hasPermission(CommandSource sender, String permission) {
-        if (!(sender instanceof Player)) {
-            return true;
-        }
-
-        return PlatformProxy.hasPermission(sender, permission);
     }
 
     /**

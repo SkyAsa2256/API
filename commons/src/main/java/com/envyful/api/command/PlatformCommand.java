@@ -64,12 +64,12 @@ public abstract class PlatformCommand<C> {
 
     public void execute(C sender, String[] args) throws IllegalArgumentException {
         if (sender == null) {
-            UtilLogger.logger().ifPresent(logger -> logger.error("No sender provided for command {}", this.name));
+            UtilLogger.getLogger().error("No sender provided for command {}", this.name);
             return;
         }
 
         if (args == null) {
-            UtilLogger.logger().ifPresent(logger -> logger.error("No args provided for command {}", this.name));
+            UtilLogger.getLogger().error("No args provided for command {}", this.name);
             return;
         }
 
@@ -128,12 +128,12 @@ public abstract class PlatformCommand<C> {
 
     public CompletableFuture<List<String>> getTabCompletions(C sender, String[] args) {
         if (sender == null) {
-            UtilLogger.logger().ifPresent(logger -> logger.error("No sender provided for command {}", this.name));
+            UtilLogger.getLogger().error("No sender provided for command {}", this.name);
             return CompletableFuture.completedFuture(new ArrayList<>());
         }
 
         if (args == null) {
-            UtilLogger.logger().ifPresent(logger -> logger.error("No args provided for command {}", this.name));
+            UtilLogger.getLogger().error("No args provided for command {}", this.name);
             return CompletableFuture.completedFuture(new ArrayList<>());
         }
 

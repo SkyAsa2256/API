@@ -213,15 +213,31 @@ public class YamlConfigFactory {
             );
         }
 
-        NodeStyle style = getNodeStyle(clazz);
+        return getInstance(clazz, annotation.value(), placeholders);
+    }
 
-        List<String> configDir = PlaceholderFactory.handlePlaceholders(Collections.singletonList(annotation.value()), placeholders);
+    /**
+     *
+     * Gets the instance of the given config from
+     * the class using Sponge's Configurate
+     *
+     * @param clazz The class that represents a config file
+     * @param filePath The path to the config file
+     * @param placeholders The placeholders used for handling placeholders in the config path
+     * @param <T> The type of the class
+     * @return The config instance
+     * @throws IOException If an error occurs whilst loading the file
+     */
+    public static <T extends AbstractYamlConfig> T
+    getInstance(Class<T> clazz, String filePath, Placeholder... placeholders) throws IOException {
+        var style = getNodeStyle(clazz);
+        var configDir = PlaceholderFactory.handlePlaceholders(Collections.singletonList(filePath), placeholders);
 
         if (configDir.isEmpty()) {
             throw new IOException("Config directory is empty (usually a placeholder error)");
         }
 
-        Path configFile = Paths.get(configDir.get(0));
+        var configFile = Paths.get(configDir.get(0));
 
         if (!configDir.get(0).endsWith(".yml")) {
             throw new IOException("Config location provided is not a .yml file");
@@ -233,21 +249,19 @@ public class YamlConfigFactory {
         }
 
         List<Class<? extends ScalarSerializer<?>>> serializers = new ArrayList<>();
-        ScalarSerializers serializedData = clazz.getAnnotation(ScalarSerializers.class);
+        var serializedData = clazz.getAnnotation(ScalarSerializers.class);
 
         if (serializedData != null) {
             serializers.addAll(Arrays.asList(serializedData.value()));
         }
 
-        ConfigurationReference<CommentedConfigurationNode> base =
-                listenToConfig(configFile, serializers, style);
+        var base = listenToConfig(configFile, serializers, style);
 
         if (base == null) {
             throw new IOException("Error config loaded as null");
         }
 
-        ValueReference<T, CommentedConfigurationNode> reference =
-                base.referenceTo(clazz);
+        var reference = base.referenceTo(clazz);
         T instance = reference.get();
 
         if (instance == null) {

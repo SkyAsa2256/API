@@ -315,7 +315,7 @@ public class YamlConfigFactory {
                             }
                         } catch (InstantiationException
                                  | IllegalAccessException e) {
-                            UtilLogger.logger().ifPresent(logger -> logger.error("Error creating serializer for config " + configFile.getFileName(), e));
+                            UtilLogger.getLogger().error("Error creating serializer for config " + configFile.getFileName(), e);
                         }
                     }).nativeTypes(
                             Set.of(

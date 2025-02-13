@@ -92,6 +92,14 @@ public class ConfigInterface {
         return List.copyOf(this.displayItems.values());
     }
 
+    public Pane.Builder toPaneBuilder() {
+        return GuiFactory.paneBuilder()
+                .topLeftX(0)
+                .topLeftY(0)
+                .width(9)
+                .height(this.height);
+    }
+
     public Pane toPane(Placeholder... placeholders) {
         var pane = GuiFactory.paneBuilder()
                 .topLeftX(0)
@@ -100,6 +108,12 @@ public class ConfigInterface {
                 .height(this.height)
                 .build();
 
+        this.fillPane(pane);
+
+        return pane;
+    }
+
+    public void fillPane(Pane pane, Placeholder... placeholders) {
         for (var fillerItem : this.getFillerItems()) {
             if (!fillerItem.isEnabled()) {
                 continue;
@@ -107,8 +121,6 @@ public class ConfigInterface {
 
             pane.add(fillerItem.toDisplayable(placeholders));
         }
-
-        return pane;
     }
 
     public enum FillType {

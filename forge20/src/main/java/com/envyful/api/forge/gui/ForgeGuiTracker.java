@@ -1,6 +1,7 @@
 package com.envyful.api.forge.gui;
 
 import com.envyful.api.concurrency.UtilConcurrency;
+import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.player.EnvyPlayer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.server.ServerLifecycleHooks;
@@ -28,7 +29,11 @@ public class ForgeGuiTracker {
             }
 
             for (ForgeGui value : OPEN_GUIS.values()) {
-                value.update();
+                try {
+                    value.update();
+                } catch (Exception e) {
+                    UtilLogger.getLogger().error("Error when ticking GUI", e);
+                }
             }
         }, 50L, 50L);
     }

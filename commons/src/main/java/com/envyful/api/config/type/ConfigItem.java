@@ -265,6 +265,34 @@ public class ConfigItem {
             return this;
         }
 
+        public Builder nbt(String key, int value) {
+            return this.nbt(key, new ConfigItem.NBTValue("int", String.valueOf(value)));
+        }
+
+        public Builder nbt(String key, double value) {
+            return this.nbt(key, new ConfigItem.NBTValue("double", String.valueOf(value)));
+        }
+
+        public Builder nbt(String key, long value) {
+            return this.nbt(key, new ConfigItem.NBTValue("long", String.valueOf(value)));
+        }
+
+        public Builder nbt(String key, String value) {
+            return this.nbt(key, new ConfigItem.NBTValue("string", value));
+        }
+
+        public Builder nbt(String key, short value) {
+            return this.nbt(key, new ConfigItem.NBTValue("short", String.valueOf(value)));
+        }
+
+        public Builder nbt(String key, float value) {
+            return this.nbt(key, new ConfigItem.NBTValue("float", String.valueOf(value)));
+        }
+
+        public Builder nbt(String key, byte value) {
+            return this.nbt(key, new ConfigItem.NBTValue("byte", String.valueOf(value)));
+        }
+
         public ConfigItem build() {
             return new ConfigItem(this.enabled, this.type,
                     this.amount, this.damage, this.name,

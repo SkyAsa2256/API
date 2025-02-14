@@ -1,5 +1,9 @@
 package com.envyful.api.config.type;
 
+import com.envyful.api.gui.factory.GuiFactory;
+import com.envyful.api.gui.item.Displayable;
+import com.envyful.api.gui.pane.Pane;
+import com.envyful.api.platform.PlatformProxy;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
@@ -146,6 +150,50 @@ public class ExtendedConfigItem {
         return new ConfigItem(enabled, type,
                 amount, name,
                 flags, lore, enchants, nbt);
+    }
+
+    public Displayable.Builder<?> convert(EnvyPlayer<?> player, Placeholder... placeholders) {
+        if (!this.isEnabled()) {
+            return null;
+        }
+
+        if (this.hasPermission(player)) {
+            var builder = GuiFactory.convertConfigItemBuilder(this.asConfigItem(), placeholders);
+
+            if (this.shouldCloseOnClick() || !this.getCommandsExecuted().isEmpty()) {
+                builder.clickHandler((clicker, clickType) -> {
+                    PlatformProxy.runSync(() -> {
+                        if (this.shouldCloseOnClick()) {
+                            clicker.closeInventory();
+                        }
+
+                        for (var command : this.getCommandsExecuted()) {
+                            clicker.executeCommand(command);
+                        }
+                    });
+                });
+            }
+
+            return builder;
+        }
+
+        if (this.getElseItem() == null || !this.getElseItem().isEnabled()) {
+            return null;
+        }
+
+        return GuiFactory.convertConfigItemBuilder(this.getElseItem(), placeholders);
+    }
+
+    public Displayable.Builder<?> convertToBuilder(EnvyPlayer<?> player, Placeholder... placeholders) {
+        return new ExtendedConfigItemDisplayableBuilder<>(this, player, placeholders);
+    }
+
+    public Displayable.Builder<?> convertToBuilder(EnvyPlayer<?> player, Pane pane, Placeholder... placeholders) {
+        return new ExtendedConfigItemDisplayableBuilder<>(this, player, pane, placeholders);
+    }
+
+    public Displayable convert(EnvyPlayer<?> player, Pane pane, Placeholder... placeholders) {
+        return new ExtendedConfigItemDisplayableBuilder<>(this, player, pane, placeholders).build();
     }
 
     public static Builder builder() {

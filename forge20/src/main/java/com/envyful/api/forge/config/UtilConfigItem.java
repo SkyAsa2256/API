@@ -31,6 +31,7 @@ public class UtilConfigItem {
         throw new UnsupportedOperationException("Static utility class");
     }
 
+    @Deprecated(since = "7.6.7", forRemoval = true)
     public static ConfigItemBuilder builder() {
         return new ConfigItemBuilder();
     }

@@ -88,23 +88,6 @@ public class ExtendedConfigItem {
         return integers.get(0);
     }
 
-    public byte getDamage() {
-        return (byte) UtilParse.parseInt(this.damage).orElse(0);
-    }
-
-    public byte getDamage(List<Placeholder> placeholders) {
-        List<Integer> integers = PlaceholderFactory.handlePlaceholders(
-                Collections.singletonList(damage),
-                s -> UtilParse.parseInt(s).orElse(0),
-                placeholders);
-
-        if (integers.isEmpty()) {
-            return 0;
-        }
-
-        return (byte) integers.get(0).intValue();
-    }
-
     public String getName() {
         return this.name;
     }
@@ -151,7 +134,7 @@ public class ExtendedConfigItem {
 
     public ConfigItem asConfigItem() {
         return new ConfigItem(enabled, type,
-                amount, damage, name,
+                amount, name,
                 flags, lore, enchants, nbt);
     }
 

@@ -20,7 +20,6 @@ public class ConfigItem {
     private boolean enabled = true;
     private String type = "minecraft:stained_glass_pane";
     private String amount = "1";
-    private String damage;
     private String name = " ";
     private List<String> flags = new ArrayList<>();
     private List<String> lore = new ArrayList<>();
@@ -30,13 +29,12 @@ public class ConfigItem {
     public ConfigItem() {}
 
     ConfigItem(boolean enabled, String type, String amount,
-               String damage, String name, List<String> flags,
+               String name, List<String> flags,
                List<String> lore, Map<String, EnchantData> enchants,
                Map<String, NBTValue> nbt) {
         this.enabled = enabled;
         this.type = type;
         this.amount = amount;
-        this.damage = damage;
         this.name = name;
         this.flags = flags;
         this.lore = lore;
@@ -67,23 +65,6 @@ public class ConfigItem {
         }
 
         return integers.get(0);
-    }
-
-    public byte getDamage() {
-        return (byte) UtilParse.parseInt(this.damage).orElse(0);
-    }
-
-    public byte getDamage(List<Placeholder> placeholders) {
-        List<Integer> integers = PlaceholderFactory.handlePlaceholders(
-                Collections.singletonList(damage),
-                s -> UtilParse.parseInt(s).orElse(0),
-                placeholders);
-
-        if (integers.isEmpty()) {
-            return 0;
-        }
-
-        return (byte) integers.get(0).intValue();
     }
 
     public String getName() {
@@ -187,7 +168,6 @@ public class ConfigItem {
         private boolean enabled = true;
         private String type = "minecraft:stained_glass_pane";
         private String amount = "1";
-        private String damage;
         private String name = " ";
         private List<String> flags = new ArrayList<>();
         private List<String> lore = new ArrayList<>();
@@ -213,11 +193,6 @@ public class ConfigItem {
 
         public Builder amount(int amount) {
             this.amount = String.valueOf(amount);
-            return this;
-        }
-
-        public Builder damage(double damage) {
-            this.damage = String.valueOf(damage);
             return this;
         }
 
@@ -295,7 +270,7 @@ public class ConfigItem {
 
         public ConfigItem build() {
             return new ConfigItem(this.enabled, this.type,
-                    this.amount, this.damage, this.name,
+                    this.amount, this.name,
                     this.flags, this.lore, this.enchants,
                     this.nbt);
         }

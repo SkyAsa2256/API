@@ -13,7 +13,6 @@ import com.envyful.api.type.Pair;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 /**
  *
@@ -115,11 +114,6 @@ public class ConfigItemBuilder extends ForgeSimpleDisplayable.Builder {
     @Override
     public ConfigItemBuilder clickHandler(BiConsumer<EnvyPlayer<?>, Displayable.ClickType> clickHandler) {
         return (ConfigItemBuilder) super.clickHandler(clickHandler);
-    }
-
-    @Override
-    public ConfigItemBuilder updateHandler(Consumer<EnvyPlayer<?>> updateHandler) {
-        return (ConfigItemBuilder) super.updateHandler(updateHandler);
     }
 
     @Override

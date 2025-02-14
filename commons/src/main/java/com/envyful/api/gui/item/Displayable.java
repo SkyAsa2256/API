@@ -3,7 +3,6 @@ package com.envyful.api.gui.item;
 import com.envyful.api.player.EnvyPlayer;
 
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 /**
  *
@@ -20,14 +19,6 @@ public interface Displayable {
      * @param clickType The type of click that occurred
      */
     void onClick(EnvyPlayer<?> player, ClickType clickType);
-
-    /**
-     *
-     * Called periodically by the parent page / container to update the item on display (if it's a changing item)
-     *
-     * @param viewer The player viewing the current page / container for which the update should occur
-     */
-    void update(EnvyPlayer<?> viewer);
 
     /**
      *
@@ -65,6 +56,14 @@ public interface Displayable {
 
         /**
          *
+         * Gets the click handler set in the builder
+         *
+         * @return The click handler
+         */
+        BiConsumer<EnvyPlayer<?>, Displayable.ClickType> clickHandler();
+
+        /**
+         *
          * Sets the click handler for the displayable
          *
          * @param clickHandler The consumer for when the displayable is clicked
@@ -89,6 +88,16 @@ public interface Displayable {
          */
         default Builder<T> asyncClick() {
             return this.asyncClick(true);
+        }
+
+        /**
+         *
+         * Sets the click to be handled synchronously
+         *
+         * @return The builder
+         */
+        default Builder<T> syncClick() {
+            return this.asyncClick(false);
         }
 
         /**

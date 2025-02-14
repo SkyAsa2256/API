@@ -73,15 +73,6 @@ public interface Displayable {
 
         /**
          *
-         * Sets the update handler for the displayable
-         *
-         * @param updateHandler The consumer for when the displayable is updated
-         * @return The builder
-         */
-        Builder<T> updateHandler(Consumer<EnvyPlayer<?>> updateHandler);
-
-        /**
-         *
          * Sets the click to be handled asynchronously
          *
          * @return The builder

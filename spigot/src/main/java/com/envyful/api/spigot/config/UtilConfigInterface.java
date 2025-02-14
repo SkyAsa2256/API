@@ -15,8 +15,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.function.ObjIntConsumer;
 
 /**
  *
@@ -24,36 +24,6 @@ import java.util.function.Function;
  *
  */
 public class UtilConfigInterface {
-
-    public static void fillBackground(Pane pane, ConfigInterface settings, Placeholder... transformers) {
-        for (ConfigItem fillerItem : settings.getFillerItems()) {
-            if (!fillerItem.isEnabled()) {
-                continue;
-            }
-
-            pane.add(GuiFactory.displayable(UtilConfigItem.fromConfigItem(fillerItem, transformers)));
-        }
-    }
-
-    public static void fillBackground(SpigotEnvyPlayer player,
-                                      Pane pane, ConfigInterface settings,
-                                      Placeholder... transformers) {
-        for (var fillerItem : settings.getFillerItems()) {
-            if (!fillerItem.isEnabled()) {
-                continue;
-            }
-
-            pane.add(
-                    GuiFactory.displayable(
-                            UtilConfigItem.fromConfigItem(
-                                    fillerItem, transformers
-                            )));
-        }
-
-        for (var displayItem : settings.getDisplayItems()) {
-            UtilConfigItem.builder().extendedConfigItem(player, pane, displayItem, transformers);
-        }
-    }
 
     public static <T> PaginatedBuilder<T> paginatedBuilder(List<T> items) {
         return new PaginatedBuilder<T>().items(items);
@@ -66,7 +36,7 @@ public class UtilConfigInterface {
         private Function<T, ConfigItem> itemDisplayableConversion;
         private SpigotCloseConsumer closeConsumer = (SpigotCloseConsumer) GuiFactory.closeConsumerBuilder().build();
         private TriConsumer<SpigotEnvyPlayer, Displayable.ClickType, T> pageItemClickHandler = (forgeEnvyPlayer, clickType, t) -> {};
-        private List<BiConsumer<Pane, Integer>> extraItems = new ArrayList<>();
+        private List<ObjIntConsumer<Pane>> extraItems = new ArrayList<>();
 
         private PaginatedBuilder() {
             // Private constructor for static factory method
@@ -102,12 +72,12 @@ public class UtilConfigInterface {
             return this;
         }
 
-        public PaginatedBuilder<T> extraItems(Collection<BiConsumer<Pane, Integer>> extraItems) {
+        public PaginatedBuilder<T> extraItems(Collection<ObjIntConsumer<Pane>> extraItems) {
             this.extraItems.addAll(extraItems);
             return this;
         }
 
-        public PaginatedBuilder<T> extraItems(BiConsumer<Pane, Integer>... extraItems) {
+        public PaginatedBuilder<T> extraItems(ObjIntConsumer<Pane>... extraItems) {
             this.extraItems.addAll(Arrays.asList(extraItems));
             return this;
         }
@@ -117,15 +87,7 @@ public class UtilConfigInterface {
         }
 
         public void open(SpigotEnvyPlayer player, int page, Placeholder... placeholders) {
-            Pane pane = GuiFactory.paneBuilder()
-                    .topLeftX(0)
-                    .topLeftY(0)
-                    .width(9)
-                    .height(this.configInterface.getHeight())
-                    .build();
-
-            UtilConfigInterface.fillBackground(pane, this.configInterface, placeholders);
-
+            var pane = this.configInterface.toPane(placeholders);
             int pages = this.items.size() / this.configInterface.getPositions().size();
 
             if (this.shouldShowChangePageButtons(page, pages)) {
@@ -165,7 +127,7 @@ public class UtilConfigInterface {
                         .build());
             }
 
-            for (BiConsumer<Pane, Integer> extraItem : this.extraItems) {
+            for (var extraItem : this.extraItems) {
                 extraItem.accept(pane, page);
             }
 

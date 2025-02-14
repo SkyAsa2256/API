@@ -3,12 +3,9 @@ package com.envyful.api.forge.gui.config;
 import com.envyful.api.config.type.ConfigInterface;
 import com.envyful.api.config.type.ConfigItem;
 import com.envyful.api.config.type.ExtendedConfigItem;
-import com.envyful.api.forge.config.UtilConfigInterface;
-import com.envyful.api.forge.config.UtilConfigItem;
 import com.envyful.api.forge.player.ForgeEnvyPlayer;
 import com.envyful.api.gui.factory.GuiFactory;
 import com.envyful.api.gui.item.Displayable;
-import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.platform.PlatformProxy;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.text.Placeholder;
@@ -67,41 +64,35 @@ public class ConfirmationUI {
 
     protected void open(ForgeEnvyPlayer player, Builder builder) {
         var placeholders = builder.placeholders.toArray(new Placeholder[0]);
-        Pane pane = GuiFactory.paneBuilder()
-                .topLeftX(0)
-                .topLeftY(0)
-                .width(9)
-                .height(this.guiSettings.getHeight())
-                .build();
+        var pane = this.guiSettings.toPane(placeholders);
 
-        UtilConfigInterface.fillBackground(pane, this.guiSettings, placeholders);
-
-        UtilConfigItem.builder()
+        this.confirmItem.convertToBuilder(player, pane, placeholders)
                 .singleClick()
                 .clickHandler(builder.confirmHandler)
-                .extendedConfigItem(player, pane, this.confirmItem, placeholders);
+                .build();
 
-        UtilConfigItem.builder()
+        this.returnItem.convertToBuilder(player, pane, placeholders)
                 .singleClick()
                 .clickHandler(builder.returnHandler)
-                .extendedConfigItem(player, pane, this.returnItem, placeholders);
+                .build();
 
-        UtilConfigItem.builder()
+        this.denyItem.convertToBuilder(player, pane, placeholders)
                 .singleClick()
                 .clickHandler(builder.denyHandler)
-                .extendedConfigItem(player, pane, this.denyItem, placeholders);
+                .build();
 
-        for (ExtendedConfigItem value : this.additionalItems.values()) {
-            UtilConfigItem.builder()
-                    .singleClick()
-                    .extendedConfigItem(player, pane, value, placeholders);
+        for (var value : this.additionalItems.values()) {
+            value.convertToBuilder(player, pane, placeholders)
+                            .singleClick()
+                            .build();
         }
 
         GuiFactory.guiBuilder()
                 .addPane(pane)
                 .height(this.guiSettings.getHeight())
-                .title(PlatformProxy.parse(this.guiSettings.getTitle(), placeholders).get(0))
-                .build().open(player);
+                .title(PlatformProxy.flatParse(this.guiSettings.getTitle(), placeholders))
+                .build()
+                .open(player);
     }
 
     /**

@@ -5,7 +5,6 @@ import com.envyful.api.config.type.ConfigItem;
 import com.envyful.api.config.type.PaginatedConfigInterface;
 import com.envyful.api.forge.gui.close.ForgeCloseConsumer;
 import com.envyful.api.forge.player.ForgeEnvyPlayer;
-import com.envyful.api.forge.player.ForgePlayerManager;
 import com.envyful.api.gui.factory.GuiFactory;
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
@@ -17,8 +16,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.function.ObjIntConsumer;
 
 /**
  *
@@ -27,62 +26,6 @@ import java.util.function.Function;
  */
 public class UtilConfigInterface {
 
-    public static void fillBackground(ForgeEnvyPlayer player,
-            Pane pane, ConfigInterface settings,
-            Placeholder... transformers) {
-        for (var fillerItem : settings.getFillerItems()) {
-            if (!fillerItem.isEnabled()) {
-                continue;
-            }
-
-            pane.add(
-                    GuiFactory.displayable(
-                            UtilConfigItem.fromConfigItem(
-                                    fillerItem, transformers
-                            )));
-        }
-
-        for (var displayItem : settings.getDisplayItems()) {
-            UtilConfigItem.builder().extendedConfigItem(player, pane, displayItem, transformers);
-        }
-    }
-
-    public static void fillBackground(
-            Pane pane, ConfigInterface settings,
-            Placeholder... transformers) {
-        for (ConfigItem fillerItem : settings.getFillerItems()) {
-            if (!fillerItem.isEnabled()) {
-                continue;
-            }
-
-            pane.add(
-                    GuiFactory.displayable(
-                            UtilConfigItem.fromConfigItem(
-                                    fillerItem, transformers
-                            )));
-        }
-    }
-
-    public static void setBackground(
-            Pane pane, ConfigInterface settings,
-            Placeholder... transformers) {
-        int position = 0;
-
-        for (ConfigItem fillerItem : settings.getFillerItems()) {
-            if (!fillerItem.isEnabled()) {
-                ++position;
-                continue;
-            }
-
-            pane.set(position % 9, position / 9,
-                    GuiFactory.displayable(
-                            UtilConfigItem.fromConfigItem(
-                                    fillerItem, transformers
-                            )));
-            ++position;
-        }
-    }
-
     public static <T> PaginatedBuilder<T> paginatedBuilder(List<T> items) {
         return new PaginatedBuilder<T>().items(items);
     }
@@ -90,23 +33,18 @@ public class UtilConfigInterface {
     public static class PaginatedBuilder<T> {
 
         private PaginatedConfigInterface configInterface;
+        private List<T> items = new ArrayList<>();
         private Function<T, ConfigItem> itemConfigItemConversion;
         private Function<T, Displayable> itemDisplayableConversion;
-        private ForgePlayerManager playerManager;
-        private ForgeCloseConsumer closeConsumer =
-                (ForgeCloseConsumer) GuiFactory.empty();
-        private TriConsumer<ForgeEnvyPlayer, Displayable.ClickType, T>
-                pageItemClickHandler = (forgeEnvyPlayer, clickType, t) -> {};
-
-        private final List<T> items = new ArrayList<>();
-        private final List<BiConsumer<Pane, Integer>> extraItems = new ArrayList<>();
+        private ForgeCloseConsumer closeConsumer = (ForgeCloseConsumer) GuiFactory.closeConsumerBuilder().build();
+        private TriConsumer<ForgeEnvyPlayer, Displayable.ClickType, T> pageItemClickHandler = (forgeEnvyPlayer, clickType, t) -> {};
+        private List<ObjIntConsumer<Pane>> extraItems = new ArrayList<>();
 
         private PaginatedBuilder() {
             // Private constructor for static factory method
         }
 
-        public PaginatedBuilder<T> configSettings(
-                PaginatedConfigInterface configInterface) {
+        public PaginatedBuilder<T> configSettings(PaginatedConfigInterface configInterface) {
             this.configInterface = configInterface;
             return this;
         }
@@ -121,45 +59,32 @@ public class UtilConfigInterface {
             return this;
         }
 
-        public PaginatedBuilder<T> itemDisplayableConversion(
-                Function<T, ConfigItem> itemDisplayableConversion) {
+        public PaginatedBuilder<T> itemDisplayableConversion(Function<T, ConfigItem> itemDisplayableConversion) {
             this.itemConfigItemConversion = itemDisplayableConversion;
             return this;
         }
 
-        public PaginatedBuilder<T> itemConversion(
-                Function<T, Displayable> itemDisplayableConversion) {
+        public PaginatedBuilder<T> itemConversion(Function<T, Displayable> itemDisplayableConversion) {
             this.itemDisplayableConversion = itemDisplayableConversion;
             return this;
         }
 
-        public PaginatedBuilder<T> playerManager(
-                ForgePlayerManager playerManager) {
-            this.playerManager = playerManager;
-            return this;
-        }
-
-        public PaginatedBuilder<T> closeConsumer(
-                ForgeCloseConsumer closeConsumer) {
+        public PaginatedBuilder<T> closeConsumer(ForgeCloseConsumer closeConsumer) {
             this.closeConsumer = closeConsumer;
             return this;
         }
 
-        public PaginatedBuilder<T> pageItemClickHandler(
-                TriConsumer<ForgeEnvyPlayer, Displayable.ClickType, T>
-                        pageItemClickHandler) {
+        public PaginatedBuilder<T> pageItemClickHandler(TriConsumer<ForgeEnvyPlayer, Displayable.ClickType, T> pageItemClickHandler) {
             this.pageItemClickHandler = pageItemClickHandler;
             return this;
         }
 
-        public PaginatedBuilder<T> extraItems(
-                Collection<BiConsumer<Pane, Integer>> extraItems) {
+        public PaginatedBuilder<T> extraItems(Collection<ObjIntConsumer<Pane>> extraItems) {
             this.extraItems.addAll(extraItems);
             return this;
         }
 
-        public PaginatedBuilder<T> extraItems(
-                BiConsumer<Pane, Integer>... extraItems) {
+        public PaginatedBuilder<T> extraItems(ObjIntConsumer<Pane>... extraItems) {
             this.extraItems.addAll(Arrays.asList(extraItems));
             return this;
         }
@@ -168,47 +93,31 @@ public class UtilConfigInterface {
             open(player, 1, placeholders);
         }
 
-        public void open(
-                ForgeEnvyPlayer player, int page,
-                Placeholder... placeholders) {
-            Pane pane = GuiFactory.paneBuilder()
-                    .topLeftX(0)
-                    .topLeftY(0)
-                    .width(9)
-                    .height(this.configInterface.getHeight())
-                    .build();
-
-            UtilConfigInterface.fillBackground(
-                    pane, this.configInterface, placeholders);
-
-            int items = this.items.size();
-            int pages = items / this.configInterface.getPositions().size();
+        public void open(ForgeEnvyPlayer player, int page, Placeholder... placeholders) {
+            var pane = this.configInterface.toPane(placeholders);
+            int pages = this.items.size() / this.configInterface.getPositions().size();
 
             if (this.shouldShowChangePageButtons(page, pages)) {
-                UtilConfigItem.builder()
+                this.configInterface.getNextPageButton()
+                        .convertToBuilder(player, pane, placeholders)
                         .clickHandler((envyPlayer, clickType) -> {
                             if (this.configInterface.isLoopPages()) {
-                                open(player, (page - 1) == pages ?
-                                        1 : page + 1, placeholders);
+                                open(player, page == pages ? 1 : page + 1, placeholders);
                             }
-                        }).extendedConfigItem(player, pane,
-                                this.configInterface.getNextPageButton(),
-                                placeholders);
+                        })
+                        .build();
 
-                UtilConfigItem.builder()
+                this.configInterface.getPreviousPageButton()
+                        .convertToBuilder(player, pane, placeholders)
                         .clickHandler((envyPlayer, clickType) -> {
                             if (this.configInterface.isLoopPages()) {
-                                open(player, page == 1 ?
-                                        pages : page - 1, placeholders);
+                                open(player, page == 1 ? pages : page - 1, placeholders);
                             }
-                        }).extendedConfigItem(player, pane,
-                                this.configInterface.getPreviousPageButton(),
-                                placeholders);
+                        })
+                        .build();
             }
 
-            int positions = this.configInterface.getPositions().size();
-
-            for (int i = 0; i < positions; i++) {
+            for (int i = 0; i < this.configInterface.getPositions().size(); i++) {
                 int itemId = ((page - 1) * this.configInterface.getPositions().size()) + i;
 
                 if (itemId >= (this.items.size())) {
@@ -220,11 +129,10 @@ public class UtilConfigInterface {
                 int posY = position / 9;
                 T item = this.items.get(itemId);
 
-                pane.set(posX, posY,
-                        this.getDisplayable(player, item, placeholders));
+                pane.set(posX, posY, this.getDisplayable(player, item, placeholders));
             }
 
-            for (BiConsumer<Pane, Integer> extraItem : this.extraItems) {
+            for (var extraItem : this.extraItems) {
                 extraItem.accept(pane, page);
             }
 
@@ -232,8 +140,9 @@ public class UtilConfigInterface {
                     .addPane(pane)
                     .height(this.configInterface.getHeight())
                     .closeConsumer(this.closeConsumer)
-                    .title(PlatformProxy.parse(this.configInterface.getTitle(), placeholders).get(0))
-                    .build().open(player);
+                    .title(PlatformProxy.flatParse(this.configInterface.getTitle(), placeholders))
+                    .build()
+                    .open(player);
         }
 
         private boolean shouldShowChangePageButtons(int page, int pages) {
@@ -244,23 +153,16 @@ public class UtilConfigInterface {
             return page == pages || page == 1;
         }
 
-        private Displayable getDisplayable(
-                ForgeEnvyPlayer player, T
-                item, Placeholder... placeholders) {
-
+        private Displayable getDisplayable(ForgeEnvyPlayer player, T item, Placeholder... placeholders) {
             if (this.itemDisplayableConversion != null) {
                 return this.itemDisplayableConversion.apply(item);
             }
 
             return GuiFactory.displayableBuilder(
-                            UtilConfigItem.fromConfigItem(
-                                    this.itemConfigItemConversion.apply(item),
-                                    placeholders))
+                            UtilConfigItem.fromConfigItem(this.itemConfigItemConversion.apply(item), placeholders))
                     .singleClick()
                     .asyncClick()
-                    .clickHandler((envyPlayer, clickType) ->
-                            this.pageItemClickHandler.execute(
-                                    player, clickType, item))
+                    .clickHandler((envyPlayer, clickType) -> this.pageItemClickHandler.execute(player, clickType, item))
                     .build();
         }
     }

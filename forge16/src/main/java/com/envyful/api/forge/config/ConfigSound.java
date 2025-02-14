@@ -1,5 +1,6 @@
 package com.envyful.api.forge.config;
 
+import com.envyful.api.forge.player.ForgeEnvyPlayer;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.play.server.SPlaySoundPacket;
 import net.minecraft.util.ResourceLocation;
@@ -31,6 +32,21 @@ public class ConfigSound {
     }
 
     public ConfigSound() {
+    }
+
+    public void playSound(ForgeEnvyPlayer... players) {
+        if (this.cachedSound == null) {
+            this.cachedSound = ResourceLocation.tryParse(this.sound);
+        }
+
+        if (this.cachedSound == null) {
+            return;
+        }
+
+        for (var player : players) {
+            player.getParent().connection.send(new SPlaySoundPacket(this.cachedSound, this.source,
+                    new Vector3d(player.getParent().getX(), player.getParent().getY(), player.getParent().getZ()), 1.0f, 1.0f));
+        }
     }
 
     public void playSound(ServerPlayerEntity... players) {

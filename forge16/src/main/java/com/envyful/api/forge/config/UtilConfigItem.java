@@ -90,7 +90,7 @@ public class UtilConfigItem {
         var type = PlaceholderFactory.handlePlaceholders(configItem.getType(), placeholders);
 
         if (type.isEmpty()) {
-            UtilLogger.logger().ifPresent(logger -> logger.error("Invalid type provided for config item: {}", configItem.getType()));
+            UtilLogger.getLogger().error("Invalid type provided for config item: {}", configItem.getType());
             return null;
         }
 

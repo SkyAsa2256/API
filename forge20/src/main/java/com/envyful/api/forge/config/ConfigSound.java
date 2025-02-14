@@ -1,5 +1,6 @@
 package com.envyful.api.forge.config;
 
+import com.envyful.api.forge.player.ForgeEnvyPlayer;
 import net.minecraft.core.Holder;
 import net.minecraft.network.protocol.game.ClientboundSoundPacket;
 import net.minecraft.resources.ResourceLocation;
@@ -34,6 +35,21 @@ public class ConfigSound {
     public ConfigSound() {
     }
 
+    public void playSound(ForgeEnvyPlayer... players) {
+        if (this.cachedSound == null) {
+            this.cachedSound = SoundEvent.createVariableRangeEvent(ResourceLocation.tryParse(this.sound));
+        }
+
+        if (this.cachedSound == null) {
+            return;
+        }
+
+        for (var player : players) {
+            player.getParent().connection.send(new ClientboundSoundPacket(Holder.direct(this.cachedSound),
+                    this.source, player.getParent().getX(), player.getParent().getY(), player.getParent().getZ(), 1.0f, 1.0f, 1));
+        }
+    }
+
     public void playSound(ServerPlayer... players) {
         if (this.cachedSound == null) {
             this.cachedSound = SoundEvent.createVariableRangeEvent(ResourceLocation.tryParse(this.sound));
@@ -44,7 +60,8 @@ public class ConfigSound {
         }
 
         for (ServerPlayer player : players) {
-            player.connection.send(new ClientboundSoundPacket(Holder.direct(this.cachedSound), this.source, player.getX(), player.getY(), player.getZ(), 1.0f, 1.0f, 1));
+            player.connection.send(new ClientboundSoundPacket(Holder.direct(this.cachedSound),
+                    this.source, player.getX(), player.getY(), player.getZ(), 1.0f, 1.0f, 1));
         }
     }
 }

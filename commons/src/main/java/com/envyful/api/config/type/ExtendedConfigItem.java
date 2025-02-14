@@ -147,9 +147,33 @@ public class ExtendedConfigItem {
     }
 
     public ConfigItem asConfigItem() {
-        return new ConfigItem(enabled, type,
-                amount, name,
-                flags, lore, enchants, nbt);
+        return new InternalConfigItem(this);
+    }
+
+    public Displayable toDisplayable(Placeholder... placeholders) {
+        return this.toDisplayableBuilder(placeholders).build();
+    }
+
+    public Displayable.Builder<?> toDisplayableBuilder(Placeholder... placeholders) {
+        var builder = this.toDisplayableBuilder(placeholders);
+
+        if (builder == null) {
+            return null;
+        }
+
+        builder.clickHandler((clicker, clickType) -> {
+            PlatformProxy.runSync(() -> {
+                if (this.shouldCloseOnClick()) {
+                    clicker.closeInventory();
+                }
+
+                for (var command : this.getCommandsExecuted()) {
+                    clicker.executeCommand(command);
+                }
+            });
+        });
+
+        return builder;
     }
 
     public Displayable.Builder<?> convert(EnvyPlayer<?> player, Placeholder... placeholders) {
@@ -388,6 +412,70 @@ public class ExtendedConfigItem {
                     this.nbt, this.positions, this.requiresPermission,
                     this.permission, this.elseItem, this.closeOnClick,
                     this.commandsExecuted);
+        }
+    }
+
+    public static class InternalConfigItem extends ConfigItem {
+
+        private final ExtendedConfigItem parent;
+
+        public InternalConfigItem(ExtendedConfigItem parent) {
+            this.parent = parent;
+        }
+
+        @Override
+        public <T> Displayable.Builder<T> toDisplayableBuilder(Placeholder... placeholders) {
+            return GuiFactory.convertConfigItemBuilder(this, placeholders);
+        }
+
+        @Override
+        public Displayable toDisplayable(Placeholder... placeholders) {
+            return GuiFactory.convertConfigItem(this, placeholders);
+        }
+
+        @Override
+        public Map<String, NBTValue> getNbt() {
+            return parent.getNbt();
+        }
+
+        @Override
+        public List<String> getFlags() {
+            return parent.getFlags();
+        }
+
+        @Override
+        public Map<String, EnchantData> getEnchants() {
+            return parent.getEnchants();
+        }
+
+        @Override
+        public List<String> getLore() {
+            return parent.getLore();
+        }
+
+        @Override
+        public String getName() {
+            return parent.getName();
+        }
+
+        @Override
+        public int getAmount(List<Placeholder> placeholders) {
+            return parent.getAmount(placeholders);
+        }
+
+        @Override
+        public int getAmount() {
+            return parent.getAmount();
+        }
+
+        @Override
+        public String getType() {
+            return parent.getType();
+        }
+
+        @Override
+        public boolean isEnabled() {
+            return parent.isEnabled();
         }
     }
 }

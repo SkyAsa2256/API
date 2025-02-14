@@ -40,46 +40,50 @@ public class NumberModificationUI {
         UtilConfigInterface.fillBackground(pane, config.config.getGuiSettings(), placeholders);
 
         for (var button : config.config.getButtons()) {
-            UtilConfigItem.builder()
-                            .clickHandler((envyPlayer, clickType) -> {
-                                int newValue = config.currentValue + button.getAmountModifier();
+            button.getConfigItem().convertToBuilder(config.player, pane, placeholders)
+                    .clickHandler((envyPlayer, clickType) -> {
+                        int newValue = config.currentValue + button.getAmountModifier();
 
-                                if (newValue >= config.config.maxValue) {
-                                    config.currentValue(config.config.maxValue);
-                                } else if (newValue <= config.config.minValue) {
-                                    config.currentValue(config.config.minValue);
-                                } else {
-                                    config.currentValue(newValue);
-                                }
+                        if (newValue >= config.config.maxValue) {
+                            config.currentValue(config.config.maxValue);
+                        } else if (newValue <= config.config.minValue) {
+                            config.currentValue(config.config.minValue);
+                        } else {
+                            config.currentValue(newValue);
+                        }
 
-                                open(config);
-                            }).extendedConfigItem((ForgeEnvyPlayer) config.player, pane, button.getConfigItem(), placeholders);
+                        open(config);
+                    })
+                    .build();
         }
 
-        UtilConfigItem.builder()
+        config.config.getBackButton()
+                .convertToBuilder(config.player, pane, placeholders)
                 .clickHandler(config.returnHandler)
-                .extendedConfigItem((ForgeEnvyPlayer) config.player, pane, config.config.getBackButton(), placeholders);
+                .build();
 
-        UtilConfigItem.builder()
-                .clickHandler((envyPlayer, clickType) -> {
-                    config.confirm.descriptionItem(config.displayItems.get(config.displayItems.size() - 1).getItemStack());
-                    config.confirm.returnHandler((envyPlayer1, clickType1) -> open(config));
-                    config.confirm.confirmHandler((clicker, clickerType) -> config.acceptHandler.accept(clicker, clickerType, config.currentValue));
-                    config.confirm.playerManager(config.playerManager);
-                    config.confirm.player(envyPlayer);
-                    config.confirm.transformers(config.transformers);
-                    config.confirm.open();
-                }).extendedConfigItem((ForgeEnvyPlayer) config.player, pane, config.config.getConfirmItem(), placeholders);
+        config.config.getConfirmItem()
+                        .convertToBuilder(config.player, pane, placeholders)
+                                .clickHandler((envyPlayer, clickType) -> {
+                                    config.confirm.descriptionItem(config.displayItems.get(config.displayItems.size() - 1).getItemStack());
+                                    config.confirm.returnHandler((envyPlayer1, clickType1) -> open(config));
+                                    config.confirm.confirmHandler((clicker, clickerType) -> config.acceptHandler.accept(clicker, clickerType, config.currentValue));
+                                    config.confirm.playerManager(config.playerManager);
+                                    config.confirm.player(envyPlayer);
+                                    config.confirm.transformers(config.transformers);
+                                    config.confirm.open();
+                                })
+                                        .build();
 
         for (var position : config.config.currentValue.getPositions()) {
             if (config.config.currentValue.isEnabled()) {
                 pane.set(position.getX(), position.getY(),
-                         GuiFactory.displayable(new ItemBuilder(UtilConfigItem.fromConfigItem(config.config.currentValue, config.transformers))
-                                                        .name(PlatformProxy.<ITextComponent>parse(
-                                                                config.config.currentValue.getName()
-                                                                        .replace("%value%", config.currentValue + "")
-                                                        ))
-                                                        .build())
+                        GuiFactory.displayable(new ItemBuilder(UtilConfigItem.fromConfigItem(config.config.currentValue, config.transformers))
+                                .name(PlatformProxy.<ITextComponent>parse(
+                                        config.config.currentValue.getName()
+                                                .replace("%value%", config.currentValue + "")
+                                ))
+                                .build())
                 );
             }
         }

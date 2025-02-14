@@ -101,6 +101,19 @@ public class ConfigInterface {
                 .height(this.height);
     }
 
+    public Pane toPane(EnvyPlayer<?> player, Placeholder... placeholders) {
+        var pane = GuiFactory.paneBuilder()
+                .topLeftX(0)
+                .topLeftY(0)
+                .width(9)
+                .height(this.height)
+                .build();
+
+        this.fillPane(player, pane, placeholders);
+
+        return pane;
+    }
+
     public Pane toPane(Placeholder... placeholders) {
         var pane = GuiFactory.paneBuilder()
                 .topLeftX(0)

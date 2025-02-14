@@ -1,5 +1,6 @@
 package com.envyful.api.config.type;
 
+import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
 import com.envyful.api.type.Pair;
@@ -130,6 +131,15 @@ public class ExtendedConfigItem {
 
     public List<String> getCommandsExecuted() {
         return this.commandsExecuted;
+    }
+
+    public boolean hasPermission(EnvyPlayer<?> player) {
+        if (!this.requiresPermission || this.permission == null || this.permission.isEmpty() ||
+        this.permission.equalsIgnoreCase("none")) {
+            return true;
+        }
+
+        return player.hasPermission(this.permission);
     }
 
     public ConfigItem asConfigItem() {

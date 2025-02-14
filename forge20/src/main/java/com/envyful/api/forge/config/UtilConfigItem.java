@@ -6,8 +6,6 @@ import com.envyful.api.config.type.ExtendedConfigItem;
 import com.envyful.api.forge.items.ItemBuilder;
 import com.envyful.api.forge.items.ItemFlag;
 import com.envyful.api.forge.player.ForgeEnvyPlayer;
-import com.envyful.api.forge.player.util.UtilPlayer;
-import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.platform.PlatformProxy;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
@@ -18,7 +16,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -38,20 +35,16 @@ public class UtilConfigItem {
         return new ConfigItemBuilder();
     }
 
-    public static void addExtendedConfigItem(Pane pane, ForgeEnvyPlayer player, ExtendedConfigItem configItem, Placeholder... transformers) {
-        builder().extendedConfigItem(player, pane, configItem, transformers);
-    }
-
-    public static ItemStack fromPermissibleItem(ServerPlayer player, ExtendedConfigItem permissibleConfigItem, Placeholder... transformers) {
+    public static ItemStack fromPermissibleItem(ForgeEnvyPlayer player, ExtendedConfigItem permissibleConfigItem, Placeholder... transformers) {
         return fromPermissibleItem(player, permissibleConfigItem, List.of(transformers));
     }
 
-    public static ItemStack fromPermissibleItem(ServerPlayer player, ExtendedConfigItem permissibleConfigItem, List<Placeholder> transformers) {
+    public static ItemStack fromPermissibleItem(ForgeEnvyPlayer player, ExtendedConfigItem permissibleConfigItem, List<Placeholder> transformers) {
         if (!permissibleConfigItem.isEnabled()) {
             return null;
         }
 
-        if (hasPermission(player, permissibleConfigItem)) {
+        if (permissibleConfigItem.hasPermission(player)) {
             return fromConfigItem(permissibleConfigItem, transformers);
         }
 
@@ -60,14 +53,6 @@ public class UtilConfigItem {
         }
 
         return fromConfigItem(permissibleConfigItem.getElseItem(), transformers);
-    }
-
-    public static boolean hasPermission(ServerPlayer player, ExtendedConfigItem permissibleConfigItem) {
-        return !permissibleConfigItem.requiresPermission() ||
-                permissibleConfigItem.getPermission() == null ||
-                permissibleConfigItem.getPermission().isEmpty() ||
-                permissibleConfigItem.getPermission().equalsIgnoreCase("none") ||
-                UtilPlayer.hasPermission(player, permissibleConfigItem.getPermission());
     }
 
     public static ItemStack fromConfigItem(ExtendedConfigItem configItem, Placeholder... transformers) {
@@ -91,7 +76,7 @@ public class UtilConfigItem {
         var type = PlaceholderFactory.handlePlaceholders(configItem.getType(), placeholders);
 
         if (type.isEmpty()) {
-            UtilLogger.logger().ifPresent(logger -> logger.error("Invalid type provided for config item: {}", configItem.getType()));
+            UtilLogger.getLogger().error("Invalid type provided for config item: {}", configItem.getType());
             return null;
         }
 

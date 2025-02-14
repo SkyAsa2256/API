@@ -6,14 +6,12 @@ import com.envyful.api.config.type.ExtendedConfigItem;
 import com.envyful.api.forge.items.ItemBuilder;
 import com.envyful.api.forge.items.ItemFlag;
 import com.envyful.api.forge.player.ForgeEnvyPlayer;
-import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.platform.PlatformProxy;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
 import com.envyful.api.type.Pair;
 import com.envyful.api.type.UtilParse;
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.*;
@@ -37,20 +35,16 @@ public class UtilConfigItem {
         return new ConfigItemBuilder();
     }
 
-    public static void addExtendedConfigItem(Pane pane, ForgeEnvyPlayer player, ExtendedConfigItem configItem, Placeholder... placeholders) {
-        builder().extendedConfigItem(player, pane, configItem, placeholders);
-    }
-
-    public static ItemStack fromPermissibleItem(ServerPlayerEntity player, ExtendedConfigItem permissibleConfigItem, Placeholder... placeholders) {
+    public static ItemStack fromPermissibleItem(ForgeEnvyPlayer player, ExtendedConfigItem permissibleConfigItem, Placeholder... placeholders) {
         return fromPermissibleItem(player, permissibleConfigItem, List.of(placeholders));
     }
 
-    public static ItemStack fromPermissibleItem(ServerPlayerEntity player, ExtendedConfigItem permissibleConfigItem, List<Placeholder> placeholders) {
+    public static ItemStack fromPermissibleItem(ForgeEnvyPlayer player, ExtendedConfigItem permissibleConfigItem, List<Placeholder> placeholders) {
         if (!permissibleConfigItem.isEnabled()) {
             return null;
         }
 
-        if (hasPermission(player, permissibleConfigItem)) {
+        if (permissibleConfigItem.hasPermission(player)) {
             return fromConfigItem(permissibleConfigItem, placeholders);
         }
 
@@ -59,14 +53,6 @@ public class UtilConfigItem {
         }
 
         return fromConfigItem(permissibleConfigItem.getElseItem(), placeholders);
-    }
-
-    public static boolean hasPermission(ServerPlayerEntity player, ExtendedConfigItem permissibleConfigItem) {
-        return !permissibleConfigItem.requiresPermission() ||
-                permissibleConfigItem.getPermission() == null ||
-                permissibleConfigItem.getPermission().isEmpty() ||
-                permissibleConfigItem.getPermission().equalsIgnoreCase("none") ||
-                PlatformProxy.hasPermission(player, permissibleConfigItem.getPermission());
     }
 
     public static ItemStack fromConfigItem(ExtendedConfigItem configItem, Placeholder... placeholders) {

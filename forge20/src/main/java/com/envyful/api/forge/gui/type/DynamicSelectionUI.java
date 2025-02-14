@@ -3,14 +3,11 @@ package com.envyful.api.forge.gui.type;
 import com.envyful.api.config.type.ConfigInterface;
 import com.envyful.api.config.type.ConfigItem;
 import com.envyful.api.config.type.ExtendedConfigItem;
-import com.envyful.api.forge.config.UtilConfigInterface;
 import com.envyful.api.forge.config.UtilConfigItem;
 import com.envyful.api.forge.gui.item.PositionableItem;
 import com.envyful.api.forge.items.ItemBuilder;
-import com.envyful.api.forge.player.ForgeEnvyPlayer;
 import com.envyful.api.gui.factory.GuiFactory;
 import com.envyful.api.gui.item.Displayable;
-import com.envyful.api.gui.pane.Pane;
 import com.envyful.api.platform.PlatformProxy;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
@@ -28,16 +25,8 @@ import java.util.function.BiConsumer;
 public class DynamicSelectionUI {
 
     private static void open(Builder config) {
-        Pane pane = GuiFactory.paneBuilder()
-                .topLeftX(0)
-                .topLeftY(0)
-                .width(9)
-                .height(config.config.guiSettings.getHeight())
-                .build();
-
-        Placeholder[] placeholders = config.placeholders.toArray(new Placeholder[0]);
-
-        UtilConfigInterface.fillBackground(pane, config.config.getGuiSettings(), placeholders);
+        var placeholders = config.placeholders.toArray(new Placeholder[0]);
+        var pane = config.config.guiSettings.toPane(placeholders);
 
         for (int i = 0; i < config.config.optionPositions.size(); i++) {
             int pos = config.config.optionPositions.get(i);
@@ -67,15 +56,17 @@ public class DynamicSelectionUI {
             );
         }
 
-        UtilConfigItem.builder()
-                .clickHandler(config.returnHandler)
-                .extendedConfigItem((ForgeEnvyPlayer) config.player, pane, config.config.getBackButton(), placeholders);
+        config.config.getBackButton()
+                        .convertToBuilder(config.player, pane, placeholders)
+                                .singleClick()
+                                        .clickHandler(config.returnHandler)
+                                                .build();
 
-        for (ExtendedConfigItem displayItem : config.displayConfigItems) {
-            UtilConfigItem.builder().extendedConfigItem((ForgeEnvyPlayer) config.player, pane, displayItem, placeholders);
+        for (var displayItem : config.displayConfigItems) {
+            displayItem.convert(config.player, pane, placeholders);
         }
 
-        for (PositionableItem displayItem : config.displayItems) {
+        for (var displayItem : config.displayItems) {
             pane.set(displayItem.getPosX(), displayItem.getPosY(), GuiFactory.displayable(displayItem.getItemStack()));
         }
 

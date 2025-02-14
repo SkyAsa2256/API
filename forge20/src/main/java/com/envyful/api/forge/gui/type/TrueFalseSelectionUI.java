@@ -2,14 +2,11 @@ package com.envyful.api.forge.gui.type;
 
 import com.envyful.api.config.type.ConfigInterface;
 import com.envyful.api.config.type.ExtendedConfigItem;
-import com.envyful.api.forge.config.UtilConfigInterface;
 import com.envyful.api.forge.config.UtilConfigItem;
 import com.envyful.api.forge.gui.item.PositionableItem;
 import com.envyful.api.forge.player.ForgeEnvyPlayer;
 import com.envyful.api.gui.factory.GuiFactory;
 import com.envyful.api.gui.item.Displayable;
-import com.envyful.api.gui.pane.Pane;
-import com.envyful.api.platform.PlatformProxy;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.text.Placeholder;
@@ -23,16 +20,8 @@ import java.util.function.BiConsumer;
 public class TrueFalseSelectionUI {
 
     private static void open(Builder config) {
-        Pane pane = GuiFactory.paneBuilder()
-                .topLeftX(0)
-                .topLeftY(0)
-                .width(9)
-                .height(config.config.guiSettings.getHeight())
-                .build();
-
-        Placeholder[] placeholders = config.transformers.toArray(new Placeholder[0]);
-
-        UtilConfigInterface.fillBackground(pane, config.config.getGuiSettings(), placeholders);
+        var placeholders = config.transformers.toArray(new Placeholder[0]);
+        var pane = config.config.guiSettings.toPane(placeholders);
 
         if (config.startsTrue) {
             UtilConfigItem.builder().clickHandler((envyPlayer, clickType) -> {
@@ -76,11 +65,7 @@ public class TrueFalseSelectionUI {
             pane.set(displayItem.getPosX(), displayItem.getPosY(), GuiFactory.displayable(displayItem.getItemStack()));
         }
 
-        GuiFactory.guiBuilder()
-                .addPane(pane)
-                .height(config.config.guiSettings.getHeight())
-                .title(PlatformProxy.parse(config.config.guiSettings.getTitle(), placeholders).get(0))
-                .build().open(config.player);
+        pane.open(config.player, config.config.guiSettings, placeholders);
     }
 
     public static Builder builder() {

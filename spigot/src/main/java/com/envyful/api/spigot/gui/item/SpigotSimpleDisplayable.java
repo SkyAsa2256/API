@@ -10,7 +10,6 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 /**
  *
@@ -22,7 +21,6 @@ public class SpigotSimpleDisplayable implements Displayable {
 
     private final ItemStack itemStack;
     private final BiConsumer<EnvyPlayer<?>, ClickType> clickHandler;
-    private final Consumer<EnvyPlayer<?>> updateHandler;
     private final int tickDelay;
     private final boolean async;
     private final boolean singleClick;
@@ -34,11 +32,10 @@ public class SpigotSimpleDisplayable implements Displayable {
     private int clicks = 0;
 
     public SpigotSimpleDisplayable(ItemStack itemStack, BiConsumer<EnvyPlayer<?>, ClickType> clickHandler,
-                                  Consumer<EnvyPlayer<?>> updateHandler, int tickDelay, boolean async, boolean singleClick,
+                                   int tickDelay, boolean async, boolean singleClick,
                                   long clickDelay, int lockOutClicks) {
         this.itemStack = itemStack;
         this.clickHandler = clickHandler;
-        this.updateHandler = updateHandler;
         this.tickDelay = tickDelay;
         this.async = async;
         this.singleClick = singleClick;
@@ -84,11 +81,6 @@ public class SpigotSimpleDisplayable implements Displayable {
         }
     }
 
-    @Override
-    public void update(EnvyPlayer<?> viewer) {
-        this.updateHandler.accept(viewer);
-    }
-
     public static final class Converter {
         public static ItemStack toNative(Displayable displayable) {
             if (!(displayable instanceof SpigotSimpleDisplayable)) {
@@ -103,7 +95,6 @@ public class SpigotSimpleDisplayable implements Displayable {
 
         protected ItemStack itemStack;
         protected BiConsumer<EnvyPlayer<?>, ClickType> clickHandler = (envyPlayer, clickType) -> {};
-        protected Consumer<EnvyPlayer<?>> updateHandler = envyPlayer -> {};
         protected int tickDelay = 0;
         protected boolean async = true;
         protected boolean singleClick = false;
@@ -117,14 +108,13 @@ public class SpigotSimpleDisplayable implements Displayable {
         }
 
         @Override
-        public Displayable.Builder<ItemStack> clickHandler(BiConsumer<EnvyPlayer<?>, ClickType> clickHandler) {
-            this.clickHandler = clickHandler;
-            return this;
+        public BiConsumer<EnvyPlayer<?>, ClickType> clickHandler() {
+            return this.clickHandler;
         }
 
         @Override
-        public Displayable.Builder<ItemStack> updateHandler(Consumer<EnvyPlayer<?>> updateHandler) {
-            this.updateHandler = updateHandler;
+        public Displayable.Builder<ItemStack> clickHandler(BiConsumer<EnvyPlayer<?>, ClickType> clickHandler) {
+            this.clickHandler = clickHandler;
             return this;
         }
 
@@ -164,7 +154,7 @@ public class SpigotSimpleDisplayable implements Displayable {
                 throw new RuntimeException("Cannot create displayable without itemstack");
             }
 
-            return new SpigotSimpleDisplayable(this.itemStack, this.clickHandler, this.updateHandler, this.tickDelay,
+            return new SpigotSimpleDisplayable(this.itemStack, this.clickHandler, this.tickDelay,
                     this.async, this.singleClick, this.clickDelay, this.lockOutClicks);
         }
     }

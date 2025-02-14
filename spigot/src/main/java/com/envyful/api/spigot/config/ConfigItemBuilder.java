@@ -13,7 +13,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 /**
  *
@@ -109,11 +108,6 @@ public class ConfigItemBuilder extends SpigotSimpleDisplayable.Builder {
     @Override
     public ConfigItemBuilder clickHandler(BiConsumer<EnvyPlayer<?>, Displayable.ClickType> clickHandler) {
         return (ConfigItemBuilder) super.clickHandler(clickHandler);
-    }
-
-    @Override
-    public ConfigItemBuilder updateHandler(Consumer<EnvyPlayer<?>> updateHandler) {
-        return (ConfigItemBuilder) super.updateHandler(updateHandler);
     }
 
     @Override

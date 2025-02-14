@@ -2,6 +2,7 @@ package com.envyful.api.config.type;
 
 import com.envyful.api.gui.factory.GuiFactory;
 import com.envyful.api.gui.pane.Pane;
+import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.text.Placeholder;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import uk.co.envyware.helios.RequiredMethod;
@@ -108,18 +109,28 @@ public class ConfigInterface {
                 .height(this.height)
                 .build();
 
-        this.fillPane(pane);
+        this.fillPane(pane, placeholders);
 
         return pane;
     }
 
     public void fillPane(Pane pane, Placeholder... placeholders) {
+        this.fillPane(null, pane, placeholders);
+    }
+
+    public void fillPane(EnvyPlayer<?> player, Pane pane, Placeholder... placeholders) {
         for (var fillerItem : this.getFillerItems()) {
             if (!fillerItem.isEnabled()) {
                 continue;
             }
 
             pane.add(fillerItem.toDisplayable(placeholders));
+        }
+
+        if (player != null) {
+            for (var displayItem : this.displayItems.values()) {
+                displayItem.convert(player, pane, placeholders);
+            }
         }
     }
 

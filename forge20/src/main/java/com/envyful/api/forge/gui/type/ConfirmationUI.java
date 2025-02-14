@@ -2,14 +2,9 @@ package com.envyful.api.forge.gui.type;
 
 import com.envyful.api.config.type.ConfigInterface;
 import com.envyful.api.config.type.ExtendedConfigItem;
-import com.envyful.api.forge.config.UtilConfigInterface;
-import com.envyful.api.forge.config.UtilConfigItem;
 import com.envyful.api.forge.gui.item.PositionableItem;
-import com.envyful.api.forge.player.ForgeEnvyPlayer;
 import com.envyful.api.gui.factory.GuiFactory;
 import com.envyful.api.gui.item.Displayable;
-import com.envyful.api.gui.pane.Pane;
-import com.envyful.api.platform.PlatformProxy;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
 import com.envyful.api.text.Placeholder;
@@ -36,44 +31,36 @@ public class ConfirmationUI {
      */
     private static void open(Builder builder) {
         ConfirmConfig config = builder.confirmConfig;
-        Pane pane = GuiFactory.paneBuilder()
-                .topLeftX(0)
-                .topLeftY(0)
-                .width(9)
-                .height(config.getGuiSettings().getHeight())
+        var placeholders = builder.placeholders.toArray(new Placeholder[0]);
+        var pane = config.getGuiSettings().toPane(placeholders);
+
+        config.getAcceptItem()
+                .convertToBuilder(builder.player, pane, placeholders)
+                .singleClick()
+                .clickHandler(builder.confirmHandler)
                 .build();
 
-        Placeholder[] placeholders = builder.placeholders.toArray(new Placeholder[0]);
-
-        UtilConfigInterface.fillBackground(pane, config.getGuiSettings(), placeholders);
-
-        UtilConfigItem.builder()
-                .clickHandler(builder.confirmHandler)
-                .extendedConfigItem((ForgeEnvyPlayer) builder.player, pane, config.getAcceptItem(), placeholders);
-
-        UtilConfigItem.builder()
+        config.getDeclineItem()
+                .convertToBuilder(builder.player, pane, placeholders)
+                .singleClick()
                 .clickHandler(builder.returnHandler)
-                .extendedConfigItem((ForgeEnvyPlayer) builder.player, pane, config.getDeclineItem(), placeholders);
+                .build();
 
         if (builder.descriptionItem != null) {
             pane.set(config.getDescriptionPosition() % 9, config.getDescriptionPosition() / 9,
-                     GuiFactory.displayable(builder.descriptionItem)
+                    GuiFactory.displayable(builder.descriptionItem)
             );
         }
 
-        for (ExtendedConfigItem displayItem : builder.displayConfigItems) {
-            UtilConfigItem.builder().extendedConfigItem((ForgeEnvyPlayer) builder.player, pane, displayItem, placeholders);
+        for (var displayItem : builder.displayConfigItems) {
+            displayItem.convert(builder.player, pane, placeholders);
         }
 
-        for (PositionableItem displayItem : builder.displayItems) {
+        for (var displayItem : builder.displayItems) {
             pane.set(displayItem.getPosX(), displayItem.getPosY(), GuiFactory.displayable(displayItem.getItemStack()));
         }
 
-        GuiFactory.guiBuilder()
-                .addPane(pane)
-                .height(config.getGuiSettings().getHeight())
-                .title(PlatformProxy.parse(config.getGuiSettings().getTitle(), placeholders).get(0))
-                .build().open(builder.player);
+        pane.open(builder.player, config.getGuiSettings(), placeholders);
     }
 
     /**

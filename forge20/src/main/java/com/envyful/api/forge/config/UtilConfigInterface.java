@@ -158,12 +158,14 @@ public class UtilConfigInterface {
             int pages = this.items.size() / this.configInterface.getPositions().size();
 
             if (this.shouldShowChangePageButtons(page, pages)) {
-                UtilConfigItem.builder()
+                this.configInterface.getNextPageButton()
+                        .convertToBuilder(player, pane, placeholders)
                         .clickHandler((envyPlayer, clickType) -> {
                             if (this.configInterface.isLoopPages()) {
                                 open(player, page == pages ? 1 : page + 1, placeholders);
                             }
-                        }).extendedConfigItem(player, pane, this.configInterface.getNextPageButton(), placeholders);
+                        })
+                        .build();
 
                 UtilConfigItem.builder()
                         .clickHandler((envyPlayer, clickType) -> {

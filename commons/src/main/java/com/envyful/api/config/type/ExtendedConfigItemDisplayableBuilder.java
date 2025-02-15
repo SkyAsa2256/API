@@ -89,9 +89,10 @@ public class ExtendedConfigItemDisplayableBuilder<T> implements Displayable.Buil
         }
 
         if (this.clickHandler != null) {
+            var originalHandler = builder.clickHandler();
             builder.clickHandler((envyPlayer, clickType) -> {
-                if (builder.clickHandler() != null) {
-                    builder.clickHandler().accept(envyPlayer, clickType);
+                if (originalHandler != null) {
+                    originalHandler.accept(envyPlayer, clickType);
                 }
 
                 this.clickHandler.accept(envyPlayer, clickType);

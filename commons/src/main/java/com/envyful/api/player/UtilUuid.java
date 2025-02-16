@@ -80,7 +80,7 @@ public class UtilUuid {
 
             return UtilGson.GSON.fromJson(response.toString(), PlayerProfile.class);
         } catch (IOException e) {
-            UtilLogger.getLogger().error("Failed to get name from UUID: " + uuid.toString(), e));
+            UtilLogger.getLogger().error("Failed to get name from UUID: " + uuid.toString(), e);
         }
 
         return null;

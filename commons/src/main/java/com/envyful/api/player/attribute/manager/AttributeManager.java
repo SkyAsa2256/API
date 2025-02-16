@@ -72,6 +72,17 @@ public interface AttributeManager<A extends AttributeHolder> {
      * @param attributeClass The class of the attribute
      * @param saveMode       The save mode
      */
+    @SuppressWarnings("unchecked")
+    default void overrideSaveMode(Class<? extends Attribute> attributeClass, DatabaseDetailsConfig saveMode) {
+        this.overrideSaveMode(attributeClass, DatabaseDetailsRegistry.getRegistry().getKey((Class<DatabaseDetailsConfig>) saveMode.getClass()));
+    }
+
+    /**
+     * Sets the save mode for the given attribute
+     *
+     * @param attributeClass The class of the attribute
+     * @param saveMode       The save mode
+     */
     void overrideSaveMode(Class<? extends Attribute> attributeClass, String saveMode);
 
     /**

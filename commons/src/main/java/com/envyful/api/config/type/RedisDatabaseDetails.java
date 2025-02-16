@@ -28,6 +28,11 @@ public class RedisDatabaseDetails implements DatabaseDetailsConfig {
         this.password = password;
     }
 
+    @Override
+    public String id() {
+        return ID;
+    }
+
     public String getIp() {
         return this.ip;
     }

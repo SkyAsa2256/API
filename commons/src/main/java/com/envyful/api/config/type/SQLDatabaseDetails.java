@@ -43,6 +43,11 @@ public  class SQLDatabaseDetails implements DatabaseDetailsConfig {
         this.maxLifeTimeSeconds = maxLifeTimeSeconds;
     }
 
+    @Override
+    public String id() {
+        return ID;
+    }
+
     public String getPoolName() {
         return this.poolName;
     }

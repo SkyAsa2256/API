@@ -30,6 +30,11 @@ public class SQLiteDatabaseDetailsConfig implements DatabaseDetailsConfig {
     }
 
     @Override
+    public String id() {
+        return ID;
+    }
+
+    @Override
     public Database createDatabase() {
         File file = new File(this.filePath);
 

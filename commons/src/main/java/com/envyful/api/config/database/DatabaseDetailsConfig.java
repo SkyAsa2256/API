@@ -6,6 +6,8 @@ import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 @ConfigSerializable
 public interface DatabaseDetailsConfig {
 
+    String id();
+
     Database createDatabase();
 
 }

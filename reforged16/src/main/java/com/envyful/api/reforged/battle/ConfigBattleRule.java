@@ -44,7 +44,7 @@ public class ConfigBattleRule {
             if (clause != null) {
                 clauses.add(clause);
             } else {
-                UtilLogger.logger().ifPresent(logger -> logger.error("Invalid battle rule or clause found `{}`", this.battleRuleType));
+                UtilLogger.getLogger().error("Invalid battle rule or clause found `{}`", this.battleRuleType);
             }
         }
 

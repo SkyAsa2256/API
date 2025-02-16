@@ -26,7 +26,7 @@ public class SQLiteDatabase implements Database {
         try {
             Class.forName("org.sqlite.JDBC");
         } catch (ClassNotFoundException e) {
-            UtilLogger.logger().ifPresent(logger -> logger.error("Failed to load H2 driver"));
+            UtilLogger.getLogger().error("Failed to load H2 driver");
         }
     }
 
@@ -40,7 +40,7 @@ public class SQLiteDatabase implements Database {
         try {
             this.connection.forceClose();
         } catch (SQLException e) {
-            UtilLogger.logger().ifPresent(logger -> logger.error("Failed to close H2 connection", e));
+            UtilLogger.getLogger().error("Failed to close H2 connection", e);
         }
     }
 }

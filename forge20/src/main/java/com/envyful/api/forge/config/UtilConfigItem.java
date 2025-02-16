@@ -205,13 +205,13 @@ public class UtilConfigItem {
             int integer = UtilParse.parseInt(data).orElse(-1);
 
             if (integer == -1) {
-                UtilLogger.logger().ifPresent(logger -> logger.error("Invalid item type provided: " + data));
+                UtilLogger.getLogger().error("Invalid item type provided: " + data);
                 return null;
             }
 
             return Item.byId(integer);
         } catch (ResourceLocationException e) {
-            UtilLogger.logger().ifPresent(logger -> logger.error("Invalid item type provided: " + data));
+            UtilLogger.getLogger().error("Invalid item type provided: " + data);
             return null;
         }
     }

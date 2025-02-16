@@ -44,7 +44,7 @@ public class ForgeAnnotationCommandParser extends AnnotationCommandParser<ForgeP
                 try {
                     return (boolean) declaredMethod.invoke(o, sender, args);
                 } catch (Exception e) {
-                    UtilLogger.logger().ifPresent(logger -> logger.error("Error occurred when performing permission check for command " + o.getClass().getSimpleName(), e));
+                    UtilLogger.getLogger().error("Error occurred when performing permission check for command " + o.getClass().getSimpleName(), e);
                 }
 
                 return false;

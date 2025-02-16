@@ -40,7 +40,7 @@ public class UtilSql {
         try {
             DriverManager.registerDriver(new Driver());
         } catch (SQLException e) {
-            UtilLogger.logger().ifPresent(logger -> logger.error("Error occured when registering MySQL JDBC driver", e));
+            UtilLogger.getLogger().error("Error occured when registering MySQL JDBC driver", e);
         }
     }
 
@@ -64,7 +64,7 @@ public class UtilSql {
 
             return preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            UtilLogger.logger().ifPresent(logger -> logger.error("Error executing SQL (" + query + ")", e));
+            UtilLogger.getLogger().error("Error executing SQL (" + query + ")", e);
         }
 
         return -1;
@@ -97,7 +97,7 @@ public class UtilSql {
 
             return preparedStatement.executeBatch();
         } catch (SQLException e) {
-            UtilLogger.logger().ifPresent(logger -> logger.error("Error executing SQL (" + query + ")", e));
+            UtilLogger.getLogger().error("Error executing SQL (" + query + ")", e);
         }
 
         return new int[0];
@@ -123,7 +123,7 @@ public class UtilSql {
 
             return preparedStatement.executeQuery();
         } catch (SQLException e) {
-            UtilLogger.logger().ifPresent(logger -> logger.error("Error executing SQL (" + query + ")", e));
+            UtilLogger.getLogger().error("Error executing SQL (" + query + ")", e);
         }
 
         return null;
@@ -164,7 +164,7 @@ public class UtilSql {
                 return convertedData;
             }
         } catch (SQLException e) {
-            UtilLogger.logger().ifPresent(logger -> logger.error("Error executing SQL (" + query + ")", e));
+            UtilLogger.getLogger().error("Error executing SQL (" + query + ")", e);
         }
         
         return Collections.emptyList();
@@ -266,7 +266,7 @@ public class UtilSql {
             try (ResultSet resultSet = this.execute()) {
                 consumer.accept(resultSet);
             } catch (SQLException e) {
-                UtilLogger.logger().ifPresent(logger -> logger.error("Error reading SQL result set", e));
+                UtilLogger.getLogger().error("Error reading SQL result set", e);
             }
         }
 

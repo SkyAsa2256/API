@@ -109,8 +109,7 @@ public class UtilTimeFormat {
     @Deprecated
     public static String format(long time, TimeFormatConfig config) {
         if (containsInvalidPlaceholders(config.getPlaceholders().keySet())) {
-            UtilLogger.logger().ifPresent(logger ->
-                    logger.error("Invalid placeholders found in TimeFormatConfig - please avoid using %seconds_value%, %minutes_value%, %hours_value%, %days_value% as placeholder keys"));
+            UtilLogger.getLogger().error("Invalid placeholders found in TimeFormatConfig - please avoid using %seconds_value%, %minutes_value%, %hours_value%, %days_value% as placeholder keys");
             return "";
         }
 

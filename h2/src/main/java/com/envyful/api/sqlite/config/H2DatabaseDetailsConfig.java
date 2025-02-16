@@ -46,7 +46,7 @@ public class H2DatabaseDetailsConfig implements DatabaseDetailsConfig {
             try {
                 file.createNewFile();
             } catch (IOException e) {
-                UtilLogger.logger().ifPresent(logger -> logger.error("Failed to create SQLite database file", e));
+                UtilLogger.getLogger().error("Failed to create SQLite database file", e);
                 return null;
             }
         }
@@ -54,7 +54,7 @@ public class H2DatabaseDetailsConfig implements DatabaseDetailsConfig {
         try {
             return new H2Database(this.filePath);
         } catch (Exception e) {
-            UtilLogger.logger().ifPresent(logger -> logger.error("Failed to create SQLite database", e));
+            UtilLogger.getLogger().error("Failed to create SQLite database", e);
         }
 
         return null;

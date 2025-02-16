@@ -53,7 +53,7 @@ public class ForgePlatformHandler extends StandardPlatformHandler<ICommandSource
                     } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException |
                              IllegalAccessException | IllegalArgumentException |
                              InvocationTargetException e) {
-                        UtilLogger.logger().ifPresent(logger -> logger.error("Error loading class", e));
+                        UtilLogger.getLogger().error("Error loading class", e);
                     }
                 });
     }

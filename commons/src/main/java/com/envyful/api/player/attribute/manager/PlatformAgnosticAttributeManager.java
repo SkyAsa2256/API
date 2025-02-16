@@ -38,7 +38,7 @@ public abstract class PlatformAgnosticAttributeManager<A extends AttributeHolder
     protected final Map<Class<?>, Supplier<AttributeTrigger<A>>> registeredTriggers = new ConcurrentHashMap<>();
 
     protected String globalSaveMode;
-    protected BiConsumer<UUID, Throwable> errorHandler = (a, throwable) -> UtilLogger.logger().ifPresent(logger -> logger.error("Failed to load attribute for id " + a.toString(), throwable));
+    protected BiConsumer<UUID, Throwable> errorHandler = (a, throwable) -> UtilLogger.getLogger().error("Failed to load attribute for id " + a.toString(), throwable);
 
     protected PlatformAgnosticAttributeManager() {
         this.registerAttributeTrigger(SetAttributeTrigger.class, SetAttributeTrigger::new);

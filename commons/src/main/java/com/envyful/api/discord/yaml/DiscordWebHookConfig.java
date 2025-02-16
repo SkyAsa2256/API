@@ -107,7 +107,7 @@ public class DiscordWebHookConfig extends AbstractYamlConfig {
             connection.getInputStream().close();
             connection.disconnect();
         } catch (IOException e) {
-            UtilLogger.logger().ifPresent(logger -> logger.error("Error executing Discord WebHook: '" + this.url + "' JSON: '" + text + "'", e));
+            UtilLogger.getLogger().error("Error executing Discord WebHook: '" + this.url + "' JSON: '" + text + "'", e);
         }
     }
 

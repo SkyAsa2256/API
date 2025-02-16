@@ -19,7 +19,7 @@ public class UtilConfig {
         try {
             return node.node(path).getList(type);
         } catch (SerializationException e) {
-            UtilLogger.logger().ifPresent(logger -> logger.error("Error reading type as a list for " + Arrays.toString(path), e));
+            UtilLogger.getLogger().error("Error reading type as a list for " + Arrays.toString(path), e);
         }
 
         return Collections.emptyList();

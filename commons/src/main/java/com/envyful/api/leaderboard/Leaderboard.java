@@ -67,7 +67,7 @@ public class Leaderboard<A> {
             this.cachedEntries.put(page, data);
             return data;
         } catch (SQLException e) {
-            UtilLogger.logger().ifPresent(logger -> logger.error("Failed to load leaderboard page", e));
+            UtilLogger.getLogger().error("Failed to load leaderboard page", e);
         }
 
         return Collections.emptyList();

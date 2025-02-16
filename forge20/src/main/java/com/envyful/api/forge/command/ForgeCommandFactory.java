@@ -159,7 +159,7 @@ public class ForgeCommandFactory extends InjectedCommandFactory<CommandDispatche
         String[] args = this.getArgs(context);
         return command.getTabCompletions(context.getSource().source, args)
                 .exceptionally(throwable -> {
-                    UtilLogger.logger().ifPresent(logger -> logger.error("Error when tab completing command", throwable));
+                    UtilLogger.getLogger().error("Error when tab completing command", throwable);
                     return new ArrayList<>();
                 })
                 .thenApply(completions -> {

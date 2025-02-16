@@ -18,7 +18,7 @@ public class SaveAttributeTrigger<T extends AttributeHolder> extends AbstractAtt
         UtilConcurrency.runAsync(() -> {
             for (var data : this.attributes) {
                 if (!holder.hasAttribute(data.attributeClass())) {
-                    UtilLogger.logger().ifPresent(logger -> logger.error("Player " + holder.getName() + " does not have attribute " + data.attributeClass().getSimpleName()));
+                    UtilLogger.getLogger().error("Player " + holder.getName() + " does not have attribute " + data.attributeClass().getSimpleName());
                     continue;
                 }
 

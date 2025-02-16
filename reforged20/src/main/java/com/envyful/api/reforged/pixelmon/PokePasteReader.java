@@ -51,7 +51,7 @@ public class PokePasteReader {
         try {
             return PokemonConverterFactory.importText(lines);
         } catch (PokemonImportException e) {
-            UtilLogger.logger().ifPresent(logger -> logger.error("Failed to import pokemon from PokePaste", e));
+            UtilLogger.getLogger().error("Failed to import pokemon from PokePaste", e);
         }
 
         return Collections.emptyList();
@@ -61,7 +61,7 @@ public class PokePasteReader {
         try {
             this.reader.close();
         } catch (IOException e) {
-            UtilLogger.logger().ifPresent(logger -> logger.error("Failed to import pokemon from PokePaste", e));
+            UtilLogger.getLogger().error("Failed to import pokemon from PokePaste", e);
         }
     }
 
@@ -69,7 +69,7 @@ public class PokePasteReader {
         try {
             return reader.readLine();
         } catch (IOException e) {
-            UtilLogger.logger().ifPresent(logger -> logger.error("Failed to import pokemon from PokePaste", e));
+            UtilLogger.getLogger().error("Failed to import pokemon from PokePaste", e);
         }
 
         return null;
@@ -106,7 +106,7 @@ public class PokePasteReader {
         try {
             return new URL(paste);
         } catch (MalformedURLException e) {
-            UtilLogger.logger().ifPresent(logger -> logger.error("Failed to import pokemon from PokePaste", e));
+            UtilLogger.getLogger().error("Failed to import pokemon from PokePaste", e);
         }
 
         return null;
@@ -116,7 +116,7 @@ public class PokePasteReader {
         try {
             return url.openStream();
         } catch (IOException e) {
-            UtilLogger.logger().ifPresent(logger -> logger.error("Failed to import pokemon from PokePaste", e));
+            UtilLogger.getLogger().error("Failed to import pokemon from PokePaste", e);
         }
 
         return null;
@@ -147,7 +147,7 @@ public class PokePasteReader {
         try {
             return new FileInputStream(file);
         } catch (FileNotFoundException e) {
-            UtilLogger.logger().ifPresent(logger -> logger.error("Failed to import pokemon from PokePaste", e));
+            UtilLogger.getLogger().error("Failed to import pokemon from PokePaste", e);
         }
 
         return null;

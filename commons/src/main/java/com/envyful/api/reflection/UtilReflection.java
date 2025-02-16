@@ -51,7 +51,7 @@ public class UtilReflection {
             field.set(isStatic ? null : of, value);
             return true;
         } catch (IllegalAccessException e) {
-            UtilLogger.logger().ifPresent(logger -> logger.error("Error setting field value", e));
+            UtilLogger.getLogger().error("Error setting field value", e);
         }
         return false;
     }

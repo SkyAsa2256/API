@@ -50,7 +50,7 @@ public class ForgePlatformHandler extends StandardPlatformHandler<CommandSource>
                     } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException |
                              IllegalAccessException | IllegalArgumentException |
                              InvocationTargetException e) {
-                        UtilLogger.logger().ifPresent(logger -> logger.error("Error loading class", e));
+                        UtilLogger.getLogger().error("Error loading class", e);
                     }
                 });
     }
@@ -72,7 +72,7 @@ public class ForgePlatformHandler extends StandardPlatformHandler<CommandSource>
         var permissionNode = UtilPlayer.getPermission(permission);
 
         if (permissionNode == null) {
-            UtilLogger.logger().ifPresent(logger -> logger.error("Unregistered permission node is attempted to be used: {}", permission));
+            UtilLogger.getLogger().error("Unregistered permission node is attempted to be used: {}", permission);
             return false;
         }
 

@@ -108,7 +108,7 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
                 try {
                     return (boolean) declaredMethod.invoke(o, sender, args);
                 } catch (Exception e) {
-                    UtilLogger.logger().ifPresent(logger -> logger.error("Error occurred when performing permission check for command " + o.getClass().getSimpleName(), e));
+                    UtilLogger.getLogger().error("Error occurred when performing permission check for command " + o.getClass().getSimpleName(), e);
                 }
 
                 return false;
@@ -150,7 +150,7 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
                 try {
                     return (List<String>) declaredMethod.invoke(o, sender, args);
                 } catch (Exception e) {
-                    UtilLogger.logger().ifPresent(logger -> logger.error("Error occurred when performing description handling for command " + o.getClass().getSimpleName(), e));
+                    UtilLogger.getLogger().error("Error occurred when performing description handling for command " + o.getClass().getSimpleName(), e);
                 }
 
                 return Collections.emptyList();
@@ -337,7 +337,7 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
                 return CompletableFuture.supplyAsync(() -> data.getCompletions(sender, args, data.annotations.toArray(new Annotation[0])),
                                 UtilConcurrency.SCHEDULED_EXECUTOR_SERVICE)
                         .exceptionally(throwable -> {
-                            UtilLogger.logger().ifPresent(logger -> logger.error("Error when handling tab completions", throwable));
+                            UtilLogger.getLogger().error("Error when handling tab completions", throwable);
                             return new ArrayList<>();
                         });
             }
@@ -354,7 +354,7 @@ public class AnnotationCommandParser<A extends PlatformCommand<B>, B> implements
                         }
                     }, UtilConcurrency.SCHEDULED_EXECUTOR_SERVICE)
                     .exceptionally(throwable -> {
-                        UtilLogger.logger().ifPresent(logger -> logger.error("Error when handling tab completions", throwable));
+                        UtilLogger.getLogger().error("Error when handling tab completions", throwable);
                         return new ArrayList<>();
                     });
         };

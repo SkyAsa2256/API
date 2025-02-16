@@ -30,7 +30,7 @@ public class TextNameStore implements NameStore {
             try {
                 this.createFiles();
             } catch (IOException e) {
-                UtilLogger.logger().ifPresent(logger -> logger.error("Failed to create username cache file", e));
+                UtilLogger.getLogger().error("Failed to create username cache file", e);
             }
 
             try (var fileReader = new FileReader(file);
@@ -42,7 +42,7 @@ public class TextNameStore implements NameStore {
                     this.nameCache.put(UUID.fromString(args[0]), args[1]);
                 }
             } catch (IOException e) {
-                UtilLogger.logger().ifPresent(logger -> logger.error("Failed to load username cache", e));
+                UtilLogger.getLogger().error("Failed to load username cache", e);
             }
         });
 
@@ -79,7 +79,7 @@ public class TextNameStore implements NameStore {
 
             this.saving = false;
         } catch (IOException e) {
-            UtilLogger.logger().ifPresent(logger -> logger.error("Failed to save username cache", e));
+            UtilLogger.getLogger().error("Failed to save username cache", e);
         }
     }
 

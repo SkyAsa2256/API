@@ -20,7 +20,7 @@ public class AttributeInstance<A extends Attribute> {
         this.attribute = null;
         this.loadingAttribute = loadingAttribute.whenComplete((a, throwable) -> {
             if (throwable != null) {
-                UtilLogger.logger().ifPresent(logger -> logger.error("Failed to load attribute", throwable));
+                UtilLogger.getLogger().error("Failed to load attribute", throwable);
             } else {
                 this.attribute = a;
                 this.loadingAttribute = null;

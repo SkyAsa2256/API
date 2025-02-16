@@ -74,14 +74,14 @@ public class AnnotationPlatformCommandExecutor<C> implements PlatformCommandExec
             try {
                 this.method.invoke(this.instance,values);
             } catch (IllegalAccessException | InvocationTargetException e) {
-                UtilLogger.logger().ifPresent(logger -> logger.error("Error when executing command " + this.instance.getClass().getSimpleName() + " with method " + this.method.getName(), e));
+                UtilLogger.getLogger().error("Error when executing command " + this.instance.getClass().getSimpleName() + " with method " + this.method.getName(), e);
             }
         } else {
             PlatformProxy.runSync(() -> {
                 try {
                     this.method.invoke(this.instance,values);
                 } catch (IllegalAccessException | InvocationTargetException e) {
-                    UtilLogger.logger().ifPresent(logger -> logger.error("Error when executing command " + this.instance.getClass().getSimpleName() + " with method " + this.method.getName(), e));
+                    UtilLogger.getLogger().error("Error when executing command " + this.instance.getClass().getSimpleName() + " with method " + this.method.getName(), e);
                 }
             });
         }

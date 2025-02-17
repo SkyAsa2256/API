@@ -112,11 +112,6 @@ public class ForgePlatformHandler extends StandardPlatformHandler<ICommandSource
 
     @Override
     public void runSync(Runnable runnable) {
-        if (ServerLifecycleHooks.getCurrentServer().isSameThread()) {
-            runnable.run();
-            return;
-        }
-
         ServerLifecycleHooks.getCurrentServer().execute(runnable);
     }
 

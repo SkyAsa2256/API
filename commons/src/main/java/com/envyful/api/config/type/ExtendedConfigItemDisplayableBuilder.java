@@ -2,7 +2,6 @@ package com.envyful.api.config.type;
 
 import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.gui.pane.Pane;
-import com.envyful.api.platform.PlatformProxy;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.text.Placeholder;
 
@@ -89,24 +88,20 @@ public class ExtendedConfigItemDisplayableBuilder<T> implements Displayable.Buil
             return null;
         }
 
+        builder.asyncClick(this.async)
+                .clickDelay(this.clickDelay)
+                .lockOutClicks(this.lockOutClicks)
+                .singleClick(this.singleClick)
+                .delayTicks(this.tickDelay);
+
         if (this.clickHandler != null) {
             var originalHandler = builder.clickHandler();
             builder.clickHandler((envyPlayer, clickType) -> {
-                if (this.async) {
-                    if (originalHandler != null) {
-                        originalHandler.accept(envyPlayer, clickType);
-                    }
-
-                    this.clickHandler.accept(envyPlayer, clickType);
-                } else {
-                    PlatformProxy.runSync(() -> {
-                        if (originalHandler != null) {
-                            originalHandler.accept(envyPlayer, clickType);
-                        }
-
-                        this.clickHandler.accept(envyPlayer, clickType);
-                    });
+                if (originalHandler != null) {
+                    originalHandler.accept(envyPlayer, clickType);
                 }
+
+                this.clickHandler.accept(envyPlayer, clickType);
             });
         }
 

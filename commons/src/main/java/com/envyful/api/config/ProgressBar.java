@@ -31,8 +31,8 @@ public class ProgressBar {
         int empty = this.progressBarLength - filled;
 
         return this.progressBar
-                .replace("%filled%", this.filledProgressBar.repeat(filled))
-                .replace("%empty%", this.emptyProgressBar.repeat(empty));
+                .replace("%filled%", this.filledProgressBar.repeat(Math.max(0, filled)))
+                .replace("%empty%", this.emptyProgressBar.repeat(Math.max(0, empty)));
     }
 
     public Placeholder placeholder(double progress, double total) {

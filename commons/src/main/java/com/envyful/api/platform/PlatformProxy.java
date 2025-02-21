@@ -285,15 +285,39 @@ public class PlatformProxy {
         return parsed.get(0);
     }
 
+    /**
+     *
+     * Unresolves an object to a string
+     *
+     * @param object The object to unresolve
+     * @return The unresolved string
+     * @param <T> The type of the object
+     */
     @SuppressWarnings("unchecked")
     public static <T> String unresolve(T object) {
         return unresolve((TextFormatter<T>) textFormatter, object);
     }
 
+    /**
+     *
+     * Unresolves an object to a string
+     *
+     * @param textFormatter The text formatter
+     * @param object The object to unresolve
+     * @param <T> The type of the object
+     * @return The unresolved string
+     */
     private static <T> String unresolve(TextFormatter<T> textFormatter, T object) {
         return textFormatter.unresolve(object);
     }
 
+    /**
+     *
+     * Strips the colour codes from a string
+     *
+     * @param text The text to strip
+     * @return The stripped text
+     */
     public static String strip(String text) {
         return textFormatter.strip(text);
     }

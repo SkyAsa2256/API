@@ -113,6 +113,6 @@ public class ForgeEnvyPlayer extends AbstractEnvyPlayer<ServerPlayer> {
 
     @Override
     public void closeInventory() {
-        PlatformProxy.runSync(() -> this.getParent().closeContainer());
+        this.getParent().closeContainer();
     }
 }

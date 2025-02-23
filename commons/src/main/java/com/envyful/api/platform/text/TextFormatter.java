@@ -20,7 +20,15 @@ import java.util.List;
  */
 public interface TextFormatter<T> {
 
-    TextFormatter<String> PLAIN = new TextFormatter<String>() {
+    /**
+     *
+     * The default text formatter that does not convert the text.
+     * Acts as {@link java.util.function.Function#identity()} for text.
+     * <br>
+     * This should be used when no conversion is needed and so is the default.
+     *
+     */
+    TextFormatter<String> PLAIN = new TextFormatter<>() {
         @Override
         public List<String> parse(List<String> text, Placeholder... placeholders) {
             return PlaceholderFactory.handlePlaceholders(text, placeholders);

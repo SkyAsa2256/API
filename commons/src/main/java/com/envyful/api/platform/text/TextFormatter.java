@@ -50,22 +50,73 @@ public interface TextFormatter<T> {
         }
     };
 
+    /**
+     *
+     * Parses the text and replaces the placeholders
+     *
+     * @param text The text to parse
+     * @param placeholders The placeholders to replace
+     * @return The parsed text
+     */
     default List<T> parse(String text, Placeholder... placeholders) {
         return this.parse(List.of(text), placeholders);
     }
 
+    /**
+     *
+     * Parses the text and replaces the placeholders
+     *
+     * @param text The text to parse
+     * @param placeholders The placeholders to replace
+     * @return The parsed text
+     */
     default List<T> parse(Collection<String> text, Placeholder... placeholders) {
         return this.parse(List.copyOf(text), placeholders);
     }
 
+    /**
+     *
+     * Parses the text and replaces the placeholders
+     *
+     * @param text The text to parse
+     * @param placeholders The placeholders to replace
+     * @return The parsed text
+     */
     List<T> parse(List<String> text, Placeholder... placeholders);
 
+    /**
+     *
+     * Parses the text
+     *
+     * @param text The text to parse
+     * @return The parsed text
+     */
     T parse(String text);
 
+    /**
+     *
+     * Unresolves the text from the type to it's original form
+     *
+     * @param text The text to unresolve
+     * @return The unresolved text
+     */
     String unresolve(T text);
 
+    /**
+     *
+     * Strips the text of any formatting
+     *
+     * @param text The text to strip
+     * @return The stripped text
+     */
     String strip(String text);
 
+    /**
+     *
+     * Gets the default text formatter that does not convert the text
+     *
+     * @return The default text formatter
+     */
     static TextFormatter<String> plain() {
         return PLAIN;
     }

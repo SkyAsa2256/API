@@ -264,6 +264,18 @@ public class PlatformProxy {
         return (List<T>) textFormatter.parse(text, placeholders);
     }
 
+    /**
+     *
+     * Parses text using the provided placeholders into a single object.
+     * <br>
+     * If the text is invalid, null is returned.
+     * This will most likely happen when there are invalid placeholders in the text.
+     *
+     * @param text The text to parse
+     * @param placeholders The placeholders
+     * @param <T> The type of the object
+     * @return The parsed object
+     */
     public static <T> T flatParse(String text, Placeholder... placeholders) {
         List<T> parsed = parse(text, placeholders);
 
@@ -274,6 +286,19 @@ public class PlatformProxy {
         return parsed.get(0);
     }
 
+    /**
+     *
+     * Parses text using the provided placeholders into a single object.
+     * <br>
+     * If the text is invalid, the error handler is called (with the text as the parameter) and null is returned.
+     * This will most likely happen when there are invalid placeholders in the text.
+     *
+     * @param text The text to parse
+     * @param errorHandler The error handler
+     * @param placeholders The placeholders
+     * @param <T> The type of the object
+     * @return The parsed objects
+     */
     public static <T> T flatParse(String text, Consumer<String> errorHandler, Placeholder... placeholders) {
         List<T> parsed = parse(text, placeholders);
 

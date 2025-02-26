@@ -245,20 +245,55 @@ public class PlatformProxy {
         return handler.getTPS();
     }
 
+    /**
+     *
+     * Parses the text provided
+     *
+     * @param text The text to parse
+     * @return The parsed text
+     * @param <T> The type of the object
+     */
     public static <T> T parse(String text) {
         return (T) textFormatter.parse(text);
     }
 
+    /**
+     *
+     * Parses the text provided into a list and also applies the placeholders
+     *
+     * @param text The text to parse
+     * @param placeholders The placeholders to apply
+     * @return The parsed text
+     * @param <T> The type of the object
+     */
     @SuppressWarnings("unchecked")
     public static <T> List<T> parse(String text, Placeholder... placeholders) {
         return (List<T>) textFormatter.parse(text, placeholders);
     }
 
+    /**
+     *
+     * Parses the text provided into a list and also applies the placeholders
+     *
+     * @param text The text to parse
+     * @param placeholders The placeholders to apply
+     * @return The parsed text
+     * @param <T> The type of the object
+     */
     @SuppressWarnings("unchecked")
     public static <T> List<T> parse(Collection<String> text, Placeholder... placeholders) {
         return (List<T>) textFormatter.parse(text, placeholders);
     }
 
+    /**
+     *
+     * Parses the text provided into a list and also applies the placeholders
+     *
+     * @param text The text to parse
+     * @param placeholders The placeholders to apply
+     * @return The parsed text
+     * @param <T> The type of the object
+     */
     @SuppressWarnings("unchecked")
     public static <T> List<T> parse(List<String> text, Placeholder... placeholders) {
         return (List<T>) textFormatter.parse(text, placeholders);

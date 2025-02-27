@@ -236,6 +236,12 @@ public class PlatformProxy {
         handler.runLater(runnable, delayTicks);
     }
 
+    /**
+     *
+     * Gets the current TPS (ticks per second) of the server from the platform handler
+     *
+     * @return The TPS
+     */
     public static double getTPS() {
         if (handler == null) {
             UtilLogger.getLogger().error("No platform handler set but getTPS was called");

@@ -209,6 +209,12 @@ public class PlatformProxy {
         handler.sendMessage(player, message, placeholders);
     }
 
+    /**
+     *
+     * Checks if the current thread is the platform's main thread
+     *
+     * @return If the current thread is the platform's main thread
+     */
     public static boolean isServerThread() {
         if (handler == null) {
             UtilLogger.getLogger().error("No platform handler set but isServerThread was called");
@@ -218,6 +224,12 @@ public class PlatformProxy {
         return handler.isServerThread();
     }
 
+    /**
+     *
+     * Runs a task on the platform's main thread
+     *
+     * @param runnable The task to run
+     */
     public static void runSync(Runnable runnable) {
         if (handler == null) {
             UtilLogger.getLogger().error("No platform handler set but runSync was called");
@@ -227,6 +239,12 @@ public class PlatformProxy {
         handler.runSync(runnable);
     }
 
+    /**
+     *
+     * Runs a task after the given interval (in ticks) on the platform's main thread
+     *
+     * @param runnable The task to run
+     */
     public static void runLater(Runnable runnable, int delayTicks) {
         if (handler == null) {
             UtilLogger.getLogger().error("No platform handler set but runLater was called");

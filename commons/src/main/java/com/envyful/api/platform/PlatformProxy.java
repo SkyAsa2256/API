@@ -180,26 +180,71 @@ public class PlatformProxy {
         handler.broadcastMessage(message, placeholders);
     }
 
+    /**
+     *
+     * Sends a message to the player
+     *
+     * @param player The player to send the message to
+     * @param message The message to send
+     */
     public static void sendMessage(Messageable<?> player, String... message) {
         sendMessage(player.getParent(), List.of(message));
     }
 
+    /**
+     *
+     * Sends a message to the player
+     *
+     * @param player The player to send the message to
+     * @param message The message to send
+     */
     public static void sendMessage(Object player, String... message) {
         sendMessage(player, List.of(message));
     }
 
+    /**
+     *
+     * Sends a message to the player
+     *
+     * @param player The player to send the message to
+     * @param message The message to send
+     */
     public static void sendMessage(Messageable<?> player, String message, Placeholder... placeholders) {
         sendMessage(player.getParent(), message, placeholders);
     }
 
+    /**
+     *
+     * Sends a message to the player
+     *
+     * @param player The player to send the message to
+     * @param message The message to send
+     * @param placeholders The placeholders to apply
+     */
     public static void sendMessage(Object player, String message, Placeholder... placeholders) {
         sendMessage(player, List.of(message), placeholders);
     }
 
+    /**
+     *
+     * Sends a message to the player
+     *
+     * @param player The player to send the message to
+     * @param message The message to send
+     * @param placeholders The placeholders to apply
+     */
     public static void sendMessage(Messageable<?> player, Collection<String> message, Placeholder... placeholders) {
         sendMessage(player.getParent(), message, placeholders);
     }
 
+    /**
+     *
+     * Sends a message to the player
+     *
+     * @param player The player to send the message to
+     * @param message The message to send
+     * @param placeholders The placeholders to apply
+     */
     public static void sendMessage(Object player, Collection<String> message, Placeholder... placeholders) {
         if (handler == null) {
             UtilLogger.getLogger().error("No platform handler set but sendMessage was called");

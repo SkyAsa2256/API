@@ -171,6 +171,13 @@ public class PlatformProxy {
         handler.sendToast(player, configToast);
     }
 
+    /**
+     *
+     * Broadcasts a message to the server
+     *
+     * @param message The message to broadcast
+     * @param placeholders The placeholders to apply
+     */
     public static void broadcastMessage(Collection<String> message, Placeholder... placeholders) {
         if (handler == null) {
             UtilLogger.getLogger().error("No platform handler set but broadcastMessage was called");

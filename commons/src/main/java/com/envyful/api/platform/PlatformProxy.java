@@ -50,6 +50,12 @@ public class PlatformProxy {
         PlatformProxy.playerManager = playerManager;
     }
 
+    /**
+     *
+     * Sets the text formatter that will be used to parse and unparse text
+     *
+     * @param textFormatter The text formatter
+     */
     public static void setTextFormatter(TextFormatter<?> textFormatter) {
         PlatformProxy.textFormatter = textFormatter;
     }

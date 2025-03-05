@@ -166,6 +166,13 @@ public class UtilUuid {
         return uuid.length() == 32 ? convertUnDashedUuid(uuid.replaceAll("-", "")) : UUID.fromString(uuid);
     }
 
+    /**
+     *
+     * Converts a UUID string without dashes into a UUID object
+     *
+     * @param uuid The UUID string
+     * @return The UUID object
+     */
     public static UUID convertUnDashedUuid(String uuid) {
         if (uuid == null || uuid.length() != 32) {
             throw new IllegalArgumentException();

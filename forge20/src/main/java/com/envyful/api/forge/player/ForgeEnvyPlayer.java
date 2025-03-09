@@ -107,8 +107,10 @@ public class ForgeEnvyPlayer extends AbstractEnvyPlayer<ServerPlayer> {
 
     @Override
     public void teleport(ConfigLocation location) {
-        this.getParent().teleportTo((ServerLevel) UtilWorld.findWorld(location.getWorldName()),
-                location.getPosX(), location.getPosY(), location.getPosZ(), (float)location.getPitch(), (float)location.getYaw());
+        PlatformProxy.runSync(() -> {
+            this.getParent().teleportTo((ServerLevel) UtilWorld.findWorld(location.getWorldName()),
+                    location.getPosX(), location.getPosY(), location.getPosZ(), (float) location.getPitch(), (float) location.getYaw());
+        });
     }
 
     @Override

@@ -10,6 +10,9 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.IServerWorldInfo;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * Static utility class for world methods
@@ -95,6 +98,16 @@ public class UtilWorld {
         }
 
         return null;
+    }
+
+    public static List<String> getWorldNames() {
+        List<String> names = new ArrayList<>();
+
+        for (ServerWorld world : ServerLifecycleHooks.getCurrentServer().getAllLevels()) {
+            names.add(getName(world));
+        }
+
+        return names;
     }
 
     /**

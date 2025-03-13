@@ -10,6 +10,9 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.storage.ServerLevelData;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * Static utility class for world methods
@@ -95,6 +98,16 @@ public class UtilWorld {
         }
 
         return null;
+    }
+
+    public static List<String> getWorldNames() {
+        List<String> worldNames = new ArrayList<>();
+
+        for (ServerLevel world : ServerLifecycleHooks.getCurrentServer().getAllLevels()) {
+            worldNames.add(getName(world));
+        }
+
+        return worldNames;
     }
 
     /**

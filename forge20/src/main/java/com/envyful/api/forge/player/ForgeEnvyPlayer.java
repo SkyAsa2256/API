@@ -1,5 +1,6 @@
 package com.envyful.api.forge.player;
 
+import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.config.ConfigLocation;
 import com.envyful.api.forge.world.UtilWorld;
 import com.envyful.api.platform.PlatformProxy;
@@ -108,7 +109,14 @@ public class ForgeEnvyPlayer extends AbstractEnvyPlayer<ServerPlayer> {
     @Override
     public void teleport(ConfigLocation location) {
         PlatformProxy.runSync(() -> {
-            this.getParent().teleportTo((ServerLevel) UtilWorld.findWorld(location.getWorldName()),
+            var world = (ServerLevel) UtilWorld.findWorld(location.getWorldName());
+
+            if (world == null) {
+                UtilLogger.getLogger().error("Failed to find world " + location.getWorldName() + " when teleporting " + this.getName() + " possible worlds are: " + String.join(", ", UtilWorld.getWorldNames()));
+                return;
+            }
+
+            this.getParent().teleportTo(world,
                     location.getPosX(), location.getPosY(), location.getPosZ(), (float) location.getPitch(), (float) location.getYaw());
         });
     }

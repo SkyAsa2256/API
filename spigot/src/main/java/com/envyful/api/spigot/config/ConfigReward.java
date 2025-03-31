@@ -61,6 +61,14 @@ public class ConfigReward {
         }
     }
 
+    public Builder toBuilder() {
+        return new Builder()
+                .displayName(this.displayName)
+                .displayItem(this.displayItem)
+                .commands(this.commands)
+                .messages(this.messages);
+    }
+
     public static Builder builder() {
         return new Builder();
     }

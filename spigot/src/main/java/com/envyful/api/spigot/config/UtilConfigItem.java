@@ -87,9 +87,17 @@ public class UtilConfigItem {
         ItemBuilder itemBuilder = new ItemBuilder(Material.valueOf(PlaceholderFactory.handlePlaceholders(configItem.getType(),placeholders).get(0)))
                 .amount(configItem.getAmount(placeholders));
 
-        itemBuilder.lore(PlaceholderFactory.handlePlaceholders(configItem.getLore(), input -> MiniMessage.miniMessage().deserialize(input).decoration(TextDecoration.ITALIC, false), placeholders));
-        itemBuilder.itemFlags(PlaceholderFactory.handlePlaceholders(configItem.getFlags(), s -> ItemFlag.valueOf(s.toUpperCase(Locale.ROOT)), placeholders).toArray(new ItemFlag[0]));
-        itemBuilder.name(PlaceholderFactory.handlePlaceholders(Collections.singletonList(name), input -> MiniMessage.miniMessage().deserialize(input).decoration(TextDecoration.ITALIC, false), placeholders).get(0));
+        if (configItem.getLore() != null && !configItem.getLore().isEmpty()) {
+            itemBuilder.lore(PlaceholderFactory.handlePlaceholders(configItem.getLore(), input -> MiniMessage.miniMessage().deserialize(input).decoration(TextDecoration.ITALIC, false), placeholders));
+        }
+
+        if (configItem.getFlags() != null && !configItem.getFlags().isEmpty()) {
+            itemBuilder.itemFlags(PlaceholderFactory.handlePlaceholders(configItem.getFlags(), s -> ItemFlag.valueOf(s.toUpperCase(Locale.ROOT)), placeholders).toArray(new ItemFlag[0]));
+        }
+
+        if (configItem.getName() != null && !configItem.getName().isEmpty()) {
+            itemBuilder.name(PlaceholderFactory.handlePlaceholders(Collections.singletonList(name), input -> MiniMessage.miniMessage().deserialize(input).decoration(TextDecoration.ITALIC, false), placeholders).get(0));
+        }
 
         for (ConfigItem.EnchantData value : configItem.getEnchants().values()) {
             String enchantName = value.getEnchant();

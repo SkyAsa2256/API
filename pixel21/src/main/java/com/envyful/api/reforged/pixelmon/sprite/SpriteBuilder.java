@@ -3,11 +3,14 @@ package com.envyful.api.reforged.pixelmon.sprite;
 import com.pixelmonmod.pixelmon.api.pokemon.species.Species;
 import com.pixelmonmod.pixelmon.api.pokemon.species.Stats;
 import com.pixelmonmod.pixelmon.api.pokemon.species.gender.Gender;
-import com.pixelmonmod.pixelmon.api.registries.PixelmonItems;
+import com.pixelmonmod.pixelmon.init.registry.ItemRegistration;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.ByteTag;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ShortTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 
 /**
  *
@@ -55,20 +58,22 @@ public class SpriteBuilder {
     }
 
     public ItemStack build() {
-        ItemStack itemStack = new ItemStack(PixelmonItems.pixelmon_sprite);
-        itemStack.addTagElement("ndex", ShortTag.valueOf((short) this.species.getDex()));
+        ItemStack itemStack = new ItemStack(ItemRegistration.PIXELMON_SPRITE.get());
+        var data = new CompoundTag();
+        data.put("ndex", ShortTag.valueOf((short) this.species.getDex()));
 
         if (this.form != null) {
-            itemStack.addTagElement("form", StringTag.valueOf(this.form.getName()));
+            data.put("form", StringTag.valueOf(this.form.getName()));
         }
 
-        itemStack.addTagElement("gender", ByteTag.valueOf((byte)this.gender.ordinal()));
-        itemStack.addTagElement("palette", StringTag.valueOf(this.palette));
+        data.put("gender", ByteTag.valueOf((byte)this.gender.ordinal()));
+        data.put("palette", StringTag.valueOf(this.palette));
 
         if (this.nick != null && !this.nick.isEmpty()) {
-            itemStack.addTagElement("Nickname", StringTag.valueOf(this.nick));
+            data.put("Nickname", StringTag.valueOf(this.nick));
         }
 
+        itemStack.set(DataComponents.CUSTOM_DATA, CustomData.of(data));
         return itemStack;
     }
 }

@@ -1,6 +1,6 @@
 package com.envyful.api.reforged.pixelmon.config;
 
-import com.envyful.api.forge.items.UtilItemStack;
+import com.envyful.api.neoforge.items.UtilItemStack;
 import com.envyful.api.platform.PlatformProxy;
 import com.envyful.api.reforged.pixelmon.sprite.SpriteBuilder;
 import com.envyful.api.reforged.pixelmon.sprite.UtilSprite;
@@ -169,7 +169,7 @@ public class SpriteConfig {
         }
 
         placeholders.add(Placeholder.simple("%species_name%", pokemon.getSpecies().getLocalizedName()));
-        placeholders.add(Placeholder.simple("%nickname%", pokemon.getDisplayName()));
+        placeholders.add(Placeholder.simple("%nickname%", pokemon.getNickname().getString()));
         placeholders.add(Placeholder.simple("%held_item%", pokemon.getHeldItem().getHoverName().getString()));
         placeholders.add(Placeholder.simple("%type%", getType(pokemon)));
         placeholders.add(Placeholder.simple("%palette%", pokemon.getPalette().getLocalizedName()));
@@ -205,7 +205,7 @@ public class SpriteConfig {
         placeholders.add(getMovePlaceholder(pokemon, 3));
         placeholders.add(Placeholder.simple("%shiny%", pokemon.isShiny() ? this.shinyTrueFormat : this.shinyFalseFormat));
         placeholders.add(Placeholder.simple("%form%", pokemon.getForm().getLocalizedName()));
-        placeholders.add(Placeholder.simple("%size%", pokemon.getGrowth().getLocalizedName()));
+        placeholders.add(Placeholder.simple("%size%", pokemon.getSize()));
         placeholders.add(Placeholder.simple("%friendship%", pokemon.getFriendship() + ""));
         placeholders.add(Placeholder.simple("%gmaxfactor%", pokemon.hasGigantamaxFactor() ? this.gmaxFactorTrueFormat : this.gmaxFactorFalseFormat));
         placeholders.add(

@@ -1,6 +1,6 @@
 package com.envyful.api.reforged.pixelmon.config;
 
-import com.envyful.api.forge.player.util.UtilPlayer;
+import com.envyful.api.neoforge.player.util.UtilPlayer;
 import com.pixelmonmod.api.Specification;
 import com.pixelmonmod.api.pokemon.PokemonSpecificationProxy;
 import net.minecraft.server.level.ServerPlayer;

@@ -1,7 +1,7 @@
 package com.envyful.api.reforged.config;
 
-import com.envyful.api.forge.chat.UtilChatColour;
-import com.envyful.api.forge.config.ConfigCost;
+import com.envyful.api.neoforge.chat.UtilChatColour;
+import com.envyful.api.neoforge.config.ConfigCost;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
 import com.pixelmonmod.pixelmon.api.economy.BankAccount;

@@ -5,6 +5,7 @@ import com.envyful.api.gui.item.Displayable;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
 import com.envyful.api.type.UtilParse;
+import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 import java.util.*;
@@ -25,21 +26,20 @@ public class ConfigItem {
     private List<String> lore = new ArrayList<>();
     private Map<String, EnchantData> enchants = new HashMap<>();
     private Map<String, NBTValue> nbt = new HashMap<>();
+    private CommentedConfigurationNode components = CommentedConfigurationNode.root();
 
     public ConfigItem() {}
 
-    ConfigItem(boolean enabled, String type, String amount,
-               String name, List<String> flags,
-               List<String> lore, Map<String, EnchantData> enchants,
-               Map<String, NBTValue> nbt) {
-        this.enabled = enabled;
-        this.type = type;
-        this.amount = amount;
-        this.name = name;
-        this.flags = flags;
-        this.lore = lore;
-        this.enchants = enchants;
-        this.nbt = nbt;
+    ConfigItem(Builder builder) {
+        this.enabled = builder.enabled;
+        this.type = builder.type;
+        this.amount = builder.amount;
+        this.name = builder.name;
+        this.flags = builder.flags;
+        this.lore = builder.lore;
+        this.enchants = builder.enchants;
+        this.nbt = builder.nbt;
+        this.components = builder.components;
     }
 
     public boolean isEnabled() {
@@ -85,6 +85,10 @@ public class ConfigItem {
 
     public Map<String, NBTValue> getNbt() {
         return this.nbt;
+    }
+
+    public CommentedConfigurationNode getComponents() {
+        return this.components;
     }
 
     public Displayable toDisplayable(Placeholder... placeholders) {
@@ -173,6 +177,7 @@ public class ConfigItem {
         private List<String> lore = new ArrayList<>();
         private Map<String, EnchantData> enchants = new HashMap<>();
         private Map<String, NBTValue> nbt = new HashMap<>();
+        private CommentedConfigurationNode components = CommentedConfigurationNode.root();
 
         protected Builder() {}
 
@@ -269,10 +274,7 @@ public class ConfigItem {
         }
 
         public ConfigItem build() {
-            return new ConfigItem(this.enabled, this.type,
-                    this.amount, this.name,
-                    this.flags, this.lore, this.enchants,
-                    this.nbt);
+            return new ConfigItem(this);
         }
     }
 }

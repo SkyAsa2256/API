@@ -4,6 +4,8 @@ import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.config.ConfigTypeSerializerRegistry;
 import com.envyful.api.config.data.ConfigPath;
 import com.envyful.api.config.data.ScalarSerializers;
+import com.envyful.api.config.type.resource.ResourceLocationHolder;
+import com.envyful.api.config.type.resource.ResourceLocationHolderTypeSerializer;
 import com.envyful.api.config.yaml.data.YamlConfigStyle;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
@@ -313,6 +315,8 @@ public class YamlConfigFactory {
 
                                 register(builder, typeToken, serializer);
                             }
+
+                            builder.register(ResourceLocationHolder.class, ResourceLocationHolderTypeSerializer.getInstance());
                         } catch (InstantiationException
                                  | IllegalAccessException e) {
                             UtilLogger.getLogger().error("Error creating serializer for config " + configFile.getFileName(), e);

@@ -1,0 +1,51 @@
+plugins {
+    id 'net.neoforged.moddev' version '2.0.80'
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+neoForge {
+    version = "21.1.162"
+}
+
+repositories {
+    maven {
+        name = 'spongepowered-repo'
+        url = 'https://repo.spongepowered.org/maven'
+    }
+
+    ivy {
+        setUrl('https://download.nodecdn.net/containers/reforged/server/release')
+        metadataSources {
+            artifact()
+        }
+        patternLayout {
+            artifact('[revision]/[artifact].[ext]')
+        }
+    }
+}
+
+dependencies {
+    shadow group: 'org.spongepowered', name: 'configurate-yaml', version: '4.0.0'
+
+    shadow project(':commons')
+    shadow(project(':neo21')) {
+        transitive = false
+    }
+
+    implementation 'pixelmon:Pixelmon-1.21.1-9.3.0-server:9.3.0'
+    implementation 'uk.co.envyware:helios:1.1-SNAPSHOT'
+}
+
+shadowJar {
+    configurations = [project.configurations.shadow]
+
+    relocate('org.spongepowered.configurate', 'com.envyful.api.commons.shade.configurate')
+    relocate('org.yaml.snakeyaml', 'com.envyful.api.commons.shade.snakeyaml')
+    relocate('io.leangen.geantyref', 'com.envyful.api.commons.shade.geantyref')
+
+    exclude 'net.minecraft'
+    exclude "**/module-info.class"
+}

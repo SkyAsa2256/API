@@ -28,6 +28,7 @@ include 'jexl'
 include 'sqlite'
 include 'h2'
 include 'neo21'
+include 'pixel21'
 //include 'fabric'
 
 // Mods

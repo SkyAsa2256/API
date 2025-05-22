@@ -77,16 +77,19 @@ public class ForgeGui implements Gui {
             return;
         }
 
-        ServerPlayer parent = (ServerPlayer) player.getParent();
-        parent.closeContainer();
 
-        var provider = new SimpleMenuProvider((i, inventory, player1) -> new ForgeGuiContainer(this, parent), this.title);
+        PlatformProxy.runSync(() -> {
+            ServerPlayer parent = (ServerPlayer) player.getParent();
+            parent.closeContainer();
 
-        parent.openMenu(provider);
-        ForgeGuiTracker.dequeueUpdate(parent);
-        parent.containerMenu.broadcastChanges();
-        this.containers.add(((ForgeGuiContainer) parent.containerMenu));
-        ForgeGuiTracker.addGui(player, this);
+            var provider = new SimpleMenuProvider((i, inventory, player1) -> new ForgeGuiContainer(this, parent), this.title);
+
+            parent.openMenu(provider);
+            ForgeGuiTracker.dequeueUpdate(parent);
+            parent.containerMenu.broadcastChanges();
+            this.containers.add(((ForgeGuiContainer) parent.containerMenu));
+            ForgeGuiTracker.addGui(player, this);
+        });
     }
 
     public void update() {

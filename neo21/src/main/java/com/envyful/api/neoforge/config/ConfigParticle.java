@@ -2,12 +2,12 @@ package com.envyful.api.neoforge.config;
 
 import com.envyful.api.math.Vector;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 @ConfigSerializable
@@ -58,8 +58,8 @@ public class ConfigParticle {
         protected Builder() {
         }
 
-        public Builder particleType(Holder<ParticleOptions> particleType) {
-            this.particleType = particleType.unwrapKey().get().location().toString();
+        public Builder particleType(ParticleOptions particleType) {
+            this.particleType = ServerLifecycleHooks.getCurrentServer().registryAccess().registryOrThrow(Registries.PARTICLE_TYPE).getKey(particleType.getType()).toString();
             return this;
         }
 

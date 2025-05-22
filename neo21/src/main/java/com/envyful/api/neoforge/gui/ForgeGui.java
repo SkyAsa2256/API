@@ -12,7 +12,6 @@ import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.type.Pair;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.game.ClientboundContainerClosePacket;
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.SimpleMenuProvider;
@@ -76,7 +75,6 @@ public class ForgeGui implements Gui {
         if (!(player instanceof ForgeEnvyPlayer)) {
             return;
         }
-
 
         PlatformProxy.runSync(() -> {
             ServerPlayer parent = (ServerPlayer) player.getParent();
@@ -347,8 +345,8 @@ public class ForgeGui implements Gui {
 
             int windowId = sender.containerMenu.containerId;
 
-            ClientboundContainerClosePacket closeWindowServer = new ClientboundContainerClosePacket(windowId);
-            sender.connection.send(closeWindowServer);
+//            ClientboundContainerClosePacket closeWindowServer = new ClientboundContainerClosePacket(windowId);
+//            sender.connection.send(closeWindowServer);
 
             this.gui.closeConsumer.handle((ForgeEnvyPlayer) player);
 

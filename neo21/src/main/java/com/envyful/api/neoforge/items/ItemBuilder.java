@@ -1,10 +1,10 @@
 package com.envyful.api.neoforge.items;
 
 import com.envyful.api.platform.PlatformProxy;
+import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.component.PatchedDataComponentMap;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -15,7 +15,6 @@ import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.component.Unbreakable;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -301,10 +300,8 @@ public class ItemBuilder implements Cloneable {
             itemStack.set(DataComponents.UNBREAKABLE, new Unbreakable(true));
         }
 
-        var registry = ServerLifecycleHooks.getCurrentServer().registryAccess().registryOrThrow(Registries.ENCHANTMENT);
-
         for (Enchantment enchantment : enchants.keySet()) {
-            itemStack.enchant(registry.createIntrusiveHolder(enchantment), enchants.get(enchantment));
+            itemStack.enchant(Holder.direct(enchantment), enchants.get(enchantment));
         }
 
         if (this.itemFlags != null && !this.itemFlags.isEmpty()) {

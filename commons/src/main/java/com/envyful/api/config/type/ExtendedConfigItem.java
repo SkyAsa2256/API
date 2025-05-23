@@ -9,6 +9,7 @@ import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
 import com.envyful.api.type.Pair;
 import com.envyful.api.type.UtilParse;
+import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 import java.util.*;
@@ -26,7 +27,6 @@ public class ExtendedConfigItem {
     private boolean enabled = true;
     private String type = "minecraft:stained_glass_pane";
     private String amount = "1";
-    private String damage;
     private String name = " ";
     private List<String> flags = new ArrayList<>();
     private List<String> lore = new ArrayList<>();
@@ -38,6 +38,7 @@ public class ExtendedConfigItem {
     private ConfigItem elseItem;
     private boolean closeOnClick;
     private List<String> commandsExecuted;
+    private CommentedConfigurationNode components = CommentedConfigurationNode.root();
 
     public ExtendedConfigItem() {
     }
@@ -51,7 +52,7 @@ public class ExtendedConfigItem {
                                boolean requiresPermission,
                                String permission, ConfigItem elseItem,
                                boolean closeOnClick,
-                               List<String> commandsExecuted) {
+                               List<String> commandsExecuted, CommentedConfigurationNode components) {
         this.enabled = enabled;
         this.type = type;
         this.amount = String.valueOf(amount);
@@ -66,6 +67,7 @@ public class ExtendedConfigItem {
         this.elseItem = elseItem;
         this.closeOnClick = closeOnClick;
         this.commandsExecuted = commandsExecuted;
+        this.components = components;
     }
 
     public boolean isEnabled() {
@@ -235,7 +237,8 @@ public class ExtendedConfigItem {
                 .enchants(configItem.enchants.values().toArray(new ConfigItem.EnchantData[0]))
                 .nbt(configItem.nbt)
                 .positions(configItem.positions.values().toArray(new Pair[0]))
-                .executeCommands(configItem.commandsExecuted.toArray(new String[0]));
+                .executeCommands(configItem.commandsExecuted.toArray(new String[0]))
+                .dataComponents(configItem.components);
 
         if (configItem.requiresPermission) {
             builder.requiresPermission(configItem.permission, configItem.elseItem);
@@ -260,6 +263,7 @@ public class ExtendedConfigItem {
         private String permission;
         private ConfigItem elseItem;
         private boolean closeOnClick = false;
+        private CommentedConfigurationNode components = CommentedConfigurationNode.root();
 
         private final Map<String, ConfigItem.EnchantData> enchants = new HashMap<>();
         private final List<String> commandsExecuted = new ArrayList<>();
@@ -267,6 +271,7 @@ public class ExtendedConfigItem {
         private final List<String> lore = new ArrayList<>();
         private final Map<String, ConfigItem.NBTValue> nbt = new HashMap<>();
         private final Map<String, Pair<Integer, Integer>> positions = new HashMap<>();
+
 
         protected Builder() {
         }
@@ -405,13 +410,18 @@ public class ExtendedConfigItem {
             return this;
         }
 
+        public Builder dataComponents(CommentedConfigurationNode components) {
+            this.components = components;
+            return this;
+        }
+
         public ExtendedConfigItem build() {
             return new ExtendedConfigItem(
                     this.enabled, this.type, this.amount,
                     this.name, this.flags, this.lore, this.enchants,
                     this.nbt, this.positions, this.requiresPermission,
                     this.permission, this.elseItem, this.closeOnClick,
-                    this.commandsExecuted);
+                    this.commandsExecuted, this.components);
         }
     }
 
@@ -476,6 +486,11 @@ public class ExtendedConfigItem {
         @Override
         public boolean isEnabled() {
             return parent.isEnabled();
+        }
+
+        @Override
+        public CommentedConfigurationNode getComponents() {
+            return this.parent.components;
         }
     }
 }

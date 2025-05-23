@@ -110,7 +110,8 @@ public class ConfigItem {
                 .lore(configItem.lore.toArray(new String[0]))
                 .name(configItem.name)
                 .flags(configItem.flags.toArray(new String[0]))
-                .enchants(configItem.enchants.values().toArray(new EnchantData[0]));
+                .enchants(configItem.enchants.values().toArray(new EnchantData[0]))
+                .dataComponents(configItem.components);
     }
 
     @ConfigSerializable
@@ -271,6 +272,11 @@ public class ConfigItem {
 
         public Builder nbt(String key, byte value) {
             return this.nbt(key, new ConfigItem.NBTValue("byte", String.valueOf(value)));
+        }
+
+        public Builder dataComponents(CommentedConfigurationNode components) {
+            this.components = components;
+            return this;
         }
 
         public ConfigItem build() {

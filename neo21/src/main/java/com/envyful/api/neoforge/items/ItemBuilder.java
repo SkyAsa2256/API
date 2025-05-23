@@ -65,6 +65,10 @@ public class ItemBuilder implements Cloneable {
      * @return The builder
      */
     public ItemBuilder type(Item type) {
+        if (type == null) {
+            throw new IllegalArgumentException("Invalid item provided");
+        }
+
         this.type = type;
         return this;
     }
@@ -276,6 +280,10 @@ public class ItemBuilder implements Cloneable {
      * @return The forge item
      */
     public ItemStack build() {
+        if (this.type == null) {
+            throw new IllegalArgumentException("Invalid item provided");
+        }
+
         ItemStack itemStack = new ItemStack(this.type, this.amount);
 
         if (!customData.isEmpty()) {

@@ -19,7 +19,7 @@ import java.util.*;
 public class ConfigItem {
 
     private boolean enabled = true;
-    private String type = "minecraft:stained_glass_pane";
+    private String type = "minecraft:black_stained_glass_pane";
     private String amount = "1";
     private String name = " ";
     private List<String> flags = new ArrayList<>();
@@ -171,7 +171,7 @@ public class ConfigItem {
     public static class Builder {
 
         private boolean enabled = true;
-        private String type = "minecraft:stained_glass_pane";
+        private String type = "minecraft:black_stained_glass_pane";
         private String amount = "1";
         private String name = " ";
         private List<String> flags = new ArrayList<>();

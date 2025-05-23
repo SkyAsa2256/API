@@ -25,7 +25,7 @@ import java.util.*;
 public class ExtendedConfigItem {
 
     private boolean enabled = true;
-    private String type = "minecraft:stained_glass_pane";
+    private String type = "minecraft:black_stained_glass_pane";
     private String amount = "1";
     private String name = " ";
     private List<String> flags = new ArrayList<>();
@@ -256,7 +256,7 @@ public class ExtendedConfigItem {
     public static class Builder {
 
         private boolean enabled = true;
-        private String type = "minecraft:stained_glass_pane";
+        private String type = "minecraft:black_stained_glass_pane";
         private String amount = "1";
         private String name = " ";
         private boolean requiresPermission = false;

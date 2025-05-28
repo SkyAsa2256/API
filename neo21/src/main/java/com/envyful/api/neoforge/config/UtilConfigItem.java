@@ -21,7 +21,6 @@ import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.Enchantment;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 
@@ -104,10 +103,11 @@ public class UtilConfigItem {
             }
 
             var registry = ServerLifecycleHooks.getCurrentServer().registryAccess().registryOrThrow(Registries.ENCHANTMENT);
-            Enchantment enchantment = registry.get(ResourceLocation.tryParse(enchantName.toLowerCase()));
+            var enchantment = registry.getHolder(ResourceLocation.tryParse(enchantName.toLowerCase())).orElse(null);
             int parsedLevel = UtilParse.parseInt(level).orElse(1);
 
             if (enchantment == null) {
+                UtilLogger.getLogger().error("Invalid enchantment provided: {}", enchantName);
                 continue;
             }
 

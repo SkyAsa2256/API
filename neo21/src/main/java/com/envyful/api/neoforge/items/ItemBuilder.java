@@ -33,7 +33,7 @@ public class ItemBuilder implements Cloneable {
     private List<Component> lore = new ArrayList<>();
     private List<ItemFlag> itemFlags = new ArrayList<>();
     private Map<String, Tag> customData = new HashMap<>();
-    private Map<Enchantment, Integer> enchants = new HashMap<>();
+    private Map<Holder<Enchantment>, Integer> enchants = new HashMap<>();
     private PatchedDataComponentMap dataComponents = new PatchedDataComponentMap(DataComponentMap.EMPTY);
 
     /**
@@ -243,7 +243,7 @@ public class ItemBuilder implements Cloneable {
      * @param level The level of the enchant
      * @return The builder
      */
-    public ItemBuilder enchant(Enchantment enchantment, int level) {
+    public ItemBuilder enchant(Holder<Enchantment> enchantment, int level) {
         this.enchants.put(enchantment, level);
         return this;
     }
@@ -308,8 +308,8 @@ public class ItemBuilder implements Cloneable {
             itemStack.set(DataComponents.UNBREAKABLE, new Unbreakable(true));
         }
 
-        for (Enchantment enchantment : enchants.keySet()) {
-            itemStack.enchant(Holder.direct(enchantment), enchants.get(enchantment));
+        for (var entry : enchants.entrySet()) {
+            itemStack.enchant(entry.getKey(), entry.getValue());
         }
 
         if (this.itemFlags != null && !this.itemFlags.isEmpty()) {

@@ -269,9 +269,6 @@ public class ForgeGui implements Gui {
         }
 
         @Override
-        public void broadcastChanges() {}
-
-        @Override
         public void clicked(int slot, int dragType, ClickType clickTypeIn, Player player) {
             if (slot <= -1 || locked) {
                 return;

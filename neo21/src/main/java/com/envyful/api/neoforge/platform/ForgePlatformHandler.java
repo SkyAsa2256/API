@@ -35,7 +35,7 @@ public class ForgePlatformHandler extends StandardPlatformHandler<CommandSource>
 
     private static final ForgePlatformHandler INSTANCE = new ForgePlatformHandler();
 
-    private ForgePlatformHandler() {
+    protected ForgePlatformHandler() {
         ModList.get().getAllScanData().stream()
                 .map(ModFileScanData::getClasses)
                 .flatMap(Collection::stream)

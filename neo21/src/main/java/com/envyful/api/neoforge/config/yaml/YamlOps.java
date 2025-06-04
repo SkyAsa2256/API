@@ -74,11 +74,10 @@ public class YamlOps implements DynamicOps<CommentedConfigurationNode> {
     public CommentedConfigurationNode createNumeric(Number i) {
         var empty = this.empty();
         try {
-            empty.set(i);
+            return empty.set(i);
         } catch (SerializationException e) {
             throw new RuntimeException(e);
         }
-        return empty;
     }
 
     @Override
@@ -96,11 +95,10 @@ public class YamlOps implements DynamicOps<CommentedConfigurationNode> {
     public CommentedConfigurationNode createBoolean(boolean value) {
         var empty = this.empty();
         try {
-            empty.set(value);
+            return empty.set(value);
         } catch (SerializationException e) {
             throw new RuntimeException(e);
         }
-        return empty;
     }
 
     @Override
@@ -118,11 +116,10 @@ public class YamlOps implements DynamicOps<CommentedConfigurationNode> {
     public CommentedConfigurationNode createString(String value) {
         var empty = this.empty();
         try {
-            empty.set(value);
+            return empty.set(value);
         } catch (SerializationException e) {
             throw new RuntimeException(e);
         }
-        return empty;
     }
 
     @Override
@@ -469,13 +466,17 @@ public class YamlOps implements DynamicOps<CommentedConfigurationNode> {
 
         @Override
         protected CommentedConfigurationNode append(String key, CommentedConfigurationNode value, CommentedConfigurationNode builder) {
-            builder.node(key, value);
+            builder.node(key).from(value);
             return builder;
         }
 
         @Override
         protected DataResult<CommentedConfigurationNode> build(CommentedConfigurationNode builder, CommentedConfigurationNode prefix) {
             if (prefix == null) {
+                return DataResult.success(builder);
+            }
+
+            if (prefix.empty()) {
                 return DataResult.success(builder);
             }
 
@@ -500,7 +501,7 @@ public class YamlOps implements DynamicOps<CommentedConfigurationNode> {
             }
 
             var empty = ops().empty();
-            empty.node(prefix, builder);
+            empty.node(prefix).mergeFrom(builder);
             return DataResult.success(empty);
         }
     }

@@ -1,7 +1,9 @@
 package com.envyful.api.config;
 
+import com.envyful.api.config.serializer.CommentedConfigurationNodeSerializer;
 import com.envyful.api.config.serializer.PatternSerializer;
 import io.leangen.geantyref.TypeToken;
+import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.serialize.TypeSerializer;
 
 import java.util.regex.Pattern;
@@ -16,6 +18,7 @@ public class ConfigTypeSerializer<T> {
 
     static {
         register(PatternSerializer.get(), Pattern.class);
+        register(new CommentedConfigurationNodeSerializer(), CommentedConfigurationNode.class);
     }
 
     private final Class<T> clazz;

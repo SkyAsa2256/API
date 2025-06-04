@@ -53,7 +53,7 @@ public class ItemBuilder implements Cloneable {
         this.type = itemStack.getItem();
         this.amount = itemStack.getCount();
         this.name = itemStack.getHoverName();
-        this.lore = UtilItemStack.getRealLore(itemStack);
+        this.lore = new ArrayList<>(UtilItemStack.getRealLore(itemStack));
         this.dataComponents.setAll(itemStack.getComponents());
     }
 

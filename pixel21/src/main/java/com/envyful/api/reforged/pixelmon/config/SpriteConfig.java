@@ -205,7 +205,7 @@ public class SpriteConfig {
         placeholders.add(getMovePlaceholder(pokemon, 3));
         placeholders.add(Placeholder.simple("%shiny%", pokemon.isShiny() ? this.shinyTrueFormat : this.shinyFalseFormat));
         placeholders.add(Placeholder.simple("%form%", pokemon.getForm().getLocalizedName()));
-        placeholders.add(Placeholder.simple("%size%", pokemon.getSize()));
+        placeholders.add(Placeholder.simple("%size%", String.format("%.2f", pokemon.getSize())));
         placeholders.add(Placeholder.simple("%friendship%", pokemon.getFriendship() + ""));
         placeholders.add(Placeholder.simple("%gmaxfactor%", pokemon.hasGigantamaxFactor() ? this.gmaxFactorTrueFormat : this.gmaxFactorFalseFormat));
         placeholders.add(

@@ -9,7 +9,6 @@ import com.envyful.api.neoforge.gui.pane.ForgeSimplePane;
 import com.envyful.api.neoforge.player.ForgeEnvyPlayer;
 import com.envyful.api.platform.PlatformProxy;
 import com.envyful.api.player.EnvyPlayer;
-import com.envyful.api.type.Pair;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
@@ -188,33 +187,39 @@ public class ForgeGui implements Gui {
                 this.inventoryItemStacks.add(ItemStack.EMPTY);
             }
 
-            for (ForgeSimplePane pane : panes) {
+            for (var pane : panes) {
                 if (pane == null) {
                     continue;
                 }
 
                 for (int y = 0; y < pane.getItems().length; y++) {
-                    ForgeSimplePane.SimpleDisplayableSlot[] row = pane.getItems()[y];
+                    var row = pane.getItems()[y];
 
                     for (int x = 0; x < row.length; x++) {
-                        ForgeSimplePane.SimpleDisplayableSlot item = row[x];
-
+                        var item = row[x];
                         int index = pane.updateIndex((9 * y) + x);
 
-                        this.slots.set(index, item);
+                        if (index >= this.slots.size()) {
+                            this.addSlot(item);
+                        } else {
+                            this.slots.set(index, item);
+                        }
+
                         this.inventoryItemStacks.set(index, item.getItem());
                     }
                 }
             }
 
-            for (int i = 9; i < 36; i++) {
-                ItemStack itemStack = player.getInventory().items.get(i);
-                this.addSlot(new Slot(player.getInventory(), i, 0, 0), itemStack);
-            }
-            // Sets the slots for the hotbar.
-            for (int i = 0; i < 9; i++) {
-                ItemStack itemStack = player.getInventory().items.get(i);
-                this.addSlot(new Slot(player.getInventory(), i, 0, 0), itemStack);
+            if (this.slots.size() <= (9 * this.gui.height)) {
+                for (int i = 9; i < 36; i++) {
+                    ItemStack itemStack = player.getInventory().items.get(i);
+                    this.addSlot(new Slot(player.getInventory(), i, 0, 0), itemStack);
+                }
+                // Sets the slots for the hotbar.
+                for (int i = 0; i < 9; i++) {
+                    ItemStack itemStack = player.getInventory().items.get(i);
+                    this.addSlot(new Slot(player.getInventory(), i, 0, 0), itemStack);
+                }
             }
 
             if (force || ForgeGuiTracker.requiresUpdate(this.player)) {
@@ -292,12 +297,12 @@ public class ForgeGui implements Gui {
             int xPos = slot % 9;
             int yPos = slot / 9;
 
-            for (ForgeSimplePane pane : this.gui.panes) {
+            for (var pane : this.gui.panes) {
                 if (!pane.inPane(xPos, yPos)) {
                     continue;
                 }
 
-                Pair<Integer, Integer> panePosition = pane.convertXandY(xPos, yPos);
+                var panePosition = pane.convertXandY(xPos, yPos);
 
                 ForgeSimplePane.SimpleDisplayableSlot simpleDisplayableSlot = pane.getItems()[panePosition.getY()][panePosition.getX()];
                 simpleDisplayableSlot.getDisplayable().onClick(envyPlayer, clickType);

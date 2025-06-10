@@ -147,6 +147,9 @@ public class ForgeSimplePane implements Pane {
 
     @Override
     public void clear() {
+        this.full = false;
+        this.lastPos = Pair.of(0, 0);
+
         for (int x = 0; x < this.width; x++) {
             for (int y = 0; y < this.height; y++) {
                 this.set(x, y, null);

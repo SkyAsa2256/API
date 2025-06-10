@@ -3,6 +3,7 @@ package com.envyful.api.gui.item;
 import com.envyful.api.player.EnvyPlayer;
 
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 /**
  *
@@ -151,7 +152,20 @@ public interface Displayable {
          *
          * @return The new displayable implementation
          */
-        Displayable build();
+        default Displayable build() {
+            return this.build(item -> {});
+        }
 
+
+        /**
+         *
+         * Creates the displayable from the specifications and applies the item consumer
+         *
+         * @param itemConsumer The consumer to apply to the item
+         * @return The new displayable implementation
+         */
+        default Displayable build(Consumer<T> itemConsumer) {
+            return this.build();
+        }
     }
 }

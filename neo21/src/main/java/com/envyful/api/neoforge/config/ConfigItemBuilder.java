@@ -88,15 +88,6 @@ public class ConfigItemBuilder extends ForgeSimpleDisplayable.Builder {
     }
 
     @Override
-    public Displayable build() {
-        if (this.itemStack == null) {
-            return null;
-        }
-
-        return super.build();
-    }
-
-    @Override
     public ConfigItemBuilder asyncClick() {
         return (ConfigItemBuilder) super.asyncClick();
     }

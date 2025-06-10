@@ -7,6 +7,7 @@ import com.envyful.api.player.EnvyPlayer;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 /**
  *
@@ -139,12 +140,17 @@ public class ForgeSimpleDisplayable implements Displayable {
         }
 
         @Override
-        public Displayable build() {
+        public Displayable build(Consumer<ItemStack> itemConsumer) {
             if (this.itemStack == null) {
                 throw new RuntimeException("Cannot create displayable without itemstack");
             }
 
-            return new ForgeSimpleDisplayable(this.itemStack, this.clickHandler, this.tickDelay,
+            var itemStack = this.itemStack;
+            if (itemConsumer != null) {
+                itemConsumer.accept(itemStack);
+            }
+
+            return new ForgeSimpleDisplayable(itemStack, this.clickHandler, this.tickDelay,
                     this.async, this.singleClick, this.clickDelay, this.lockOutClicks);
         }
     }

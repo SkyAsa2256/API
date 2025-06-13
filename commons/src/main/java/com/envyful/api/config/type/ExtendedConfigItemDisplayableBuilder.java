@@ -6,6 +6,7 @@ import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.text.Placeholder;
 
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public class ExtendedConfigItemDisplayableBuilder<T> implements Displayable.Builder<T> {
 
@@ -81,8 +82,12 @@ public class ExtendedConfigItemDisplayableBuilder<T> implements Displayable.Buil
     }
 
     @Override
-    public Displayable build() {
-        var builder = this.configItem.convert(this.player, this.placeholders);
+    public Displayable build(Consumer<T> itemConsumer) {
+        if (!this.configItem.isEnabled()) {
+            return null;
+        }
+
+        Displayable.Builder<T> builder = (Displayable.Builder<T>) this.configItem.convert(this.player, this.placeholders);
 
         if (builder == null) {
             return null;
@@ -105,7 +110,7 @@ public class ExtendedConfigItemDisplayableBuilder<T> implements Displayable.Buil
             });
         }
 
-        var displayable = builder.build();
+        var displayable = builder.build(itemConsumer);
 
         if (this.pane != null) {
             for (var position : this.configItem.getPositions()) {

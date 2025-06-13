@@ -29,6 +29,10 @@ public class ConfigItemBuilder extends ForgeSimpleDisplayable.Builder {
     }
 
     public Displayable extendedConfigItem(Pane pane, ItemStack item, ExtendedConfigItem configItem) {
+        if (!configItem.isEnabled()) {
+            return null;
+        }
+
         Displayable build = this.itemStack(item).build();
 
         if (build == null) {

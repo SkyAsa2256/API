@@ -50,6 +50,7 @@ public class InventorySnapshot {
         restore(player.getInventory().items, this.items);
         restore(player.getInventory().offhand, this.offhand);
         restore(player.getInventory().armor, this.armor);
+        player.inventoryMenu.broadcastFullState();
     }
 
     private void restore(NonNullList<ItemStack> list, ItemStack[] array) {

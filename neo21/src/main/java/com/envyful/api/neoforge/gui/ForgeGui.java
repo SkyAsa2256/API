@@ -124,6 +124,7 @@ public class ForgeGui implements Gui {
         private boolean closed = false;
         private boolean locked = false;
         private boolean updating = false;
+        protected boolean suppressSlotUpdates = false;
 
         public ForgeGuiContainer(ForgeGui gui, ServerPlayer player) {
             super(gui.getContainerType(), 1);
@@ -131,11 +132,21 @@ public class ForgeGui implements Gui {
             this.gui = gui;
             this.player = player;
 
-            this.update(this.gui.panes, false);
+            this.create(this.gui.panes);
         }
 
-        public void setGui(ForgeGui gui) {
-            this.gui = gui;
+        @Override
+        public void suppressRemoteUpdates() {
+            super.suppressRemoteUpdates();
+
+            this.suppressSlotUpdates = true;
+        }
+
+        @Override
+        public void resumeRemoteUpdates() {
+            super.resumeRemoteUpdates();
+
+            this.suppressSlotUpdates = false;
         }
 
         @Override
@@ -164,32 +175,25 @@ public class ForgeGui implements Gui {
             return nonnulllist;
         }
 
+        public void create(ForgeSimplePane[] panes) {
+            for (int i = 0; i < (9 * this.gui.height); i++) {
+                var emptySlot = new EmptySlot(this.gui.parentPane, i);
+
+                this.addSlot(emptySlot);
+
+                this.emptySlots.add(emptySlot);
+                this.inventoryItemStacks.add(ItemStack.EMPTY);
+            }
+
+            this.update(panes, false);
+        }
+
         public void update(ForgeSimplePane[] panes, boolean force) {
             if (this.updating) {
                 return;
             }
 
             this.updating = true;
-
-            this.slots.clear();
-            this.inventoryItemStacks.clear();
-            boolean createEmptySlots = this.emptySlots.isEmpty();
-
-            if (!createEmptySlots) {
-                this.slots.addAll(this.emptySlots);
-            }
-
-            for (int i = 0; i < (9 * this.gui.height); i++) {
-                if (createEmptySlots) {
-                    EmptySlot emptySlot = new EmptySlot(this.gui.parentPane, i);
-
-                    this.addSlot(emptySlot);
-
-                    this.emptySlots.add(emptySlot);
-                }
-
-                this.inventoryItemStacks.add(ItemStack.EMPTY);
-            }
 
             for (var pane : panes) {
                 if (pane == null) {
@@ -258,7 +262,6 @@ public class ForgeGui implements Gui {
 
         @Override
         public ItemStack quickMoveStack(Player p_82846_1_, int p_82846_2_) {
-            this.gui.open(PlatformProxy.getPlayerManager().getPlayer(this.player.getUUID()));
             return ItemStack.EMPTY;
         }
 
@@ -283,7 +286,6 @@ public class ForgeGui implements Gui {
                 return;
             }
 
-            this.refreshPlayerContents();
             this.clearPlayerCursor();
 
             Displayable.ClickType clickType = this.convertClickType(dragType, clickTypeIn);
@@ -324,8 +326,12 @@ public class ForgeGui implements Gui {
         }
 
         public void refreshPlayerContents() {
+            if (this.suppressSlotUpdates) {
+                return;
+            }
+
             ForgeGuiTracker.dequeueUpdate(this.player);
-            this.player.containerMenu.broadcastChanges();
+            this.player.containerMenu.broadcastFullState();
         }
 
         private void clearPlayerCursor() {

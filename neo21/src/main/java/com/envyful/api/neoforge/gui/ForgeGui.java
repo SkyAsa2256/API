@@ -140,6 +140,10 @@ public class ForgeGui implements Gui {
 
         @Override
         public Slot getSlot(int slotId) {
+            if (this.slots.isEmpty()) {
+                return null;
+            }
+
             if (slotId >= this.slots.size()) {
                 slotId = this.slots.size() - 1;
             } else if (slotId < 0) {

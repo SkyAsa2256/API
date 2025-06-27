@@ -267,7 +267,7 @@ public class SpriteConfig {
         var typeInfo = new StringBuilder();
 
         for (var type : types) {
-            typeInfo.append(type.getLocalizedName()).append(" ");
+            typeInfo.append(type.value().name().getString()).append(" ");
         }
 
         return typeInfo.toString();

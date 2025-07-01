@@ -2,6 +2,7 @@ package com.envyful.api.config.type;
 
 import com.envyful.api.gui.factory.GuiFactory;
 import com.envyful.api.gui.item.Displayable;
+import com.envyful.api.platform.PlatformProxy;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
 import com.envyful.api.type.UtilParse;
@@ -97,6 +98,10 @@ public class ConfigItem {
 
     public <T> Displayable.Builder<T> toDisplayableBuilder(Placeholder... placeholders) {
         return GuiFactory.convertConfigItemBuilder(this, placeholders);
+    }
+
+    public boolean matches(Object itemStack) {
+        return PlatformProxy.isItem(itemStack, this);
     }
 
     public static Builder builder() {

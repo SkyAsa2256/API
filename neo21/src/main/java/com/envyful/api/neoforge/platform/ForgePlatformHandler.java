@@ -2,7 +2,9 @@ package com.envyful.api.neoforge.platform;
 
 import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.config.ConfigToast;
+import com.envyful.api.config.type.ConfigItem;
 import com.envyful.api.neoforge.InitializationTask;
+import com.envyful.api.neoforge.config.yaml.YamlOps;
 import com.envyful.api.neoforge.player.util.UtilPlayer;
 import com.envyful.api.neoforge.player.util.UtilToast;
 import com.envyful.api.platform.PlatformHandler;
@@ -12,10 +14,14 @@ import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.text.Placeholder;
 import com.envyful.api.text.PlaceholderFactory;
 import net.minecraft.commands.CommandSource;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import net.neoforged.neoforge.server.permission.PermissionAPI;
@@ -25,6 +31,7 @@ import org.objectweb.asm.Type;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 /**
  *
@@ -165,5 +172,77 @@ public class ForgePlatformHandler extends StandardPlatformHandler<CommandSource>
         }
 
         UtilToast.sendToast((ServerPlayer) player, configToast);
+    }
+
+    @Override
+    public boolean isItem(Object originalItemStack, ConfigItem item) {
+        if (!(originalItemStack instanceof ItemStack itemStack)) {
+            return false;
+        }
+
+        if (!itemStack.getItem().builtInRegistryHolder().getRegisteredName().toString().equals(item.getType())) {
+            return false;
+        }
+
+        if (item.getComponents().empty()) {
+            return this.compareTag(itemStack, item);
+        }
+
+        var components = DataComponentMap.CODEC.decode(RegistryOps.create(YamlOps.INSTANCE, ServerLifecycleHooks.getCurrentServer().registryAccess()), item.getComponents()).getOrThrow().getFirst();
+        var itemComponents = itemStack.getComponents();
+
+        for (var data : components) {
+            if (!itemComponents.has(data.type())) {
+                return false;
+            }
+
+            var itemData = itemComponents.get(data.type());
+
+            if (!Objects.equals(itemData, data.value())) {
+                return false;
+            }
+        }
+
+        return this.compareTag(itemStack, item);
+    }
+
+    private boolean compareTag(ItemStack itemStack, ConfigItem configItem) {
+        if (configItem.getNbt().isEmpty()) {
+            return true;
+        }
+
+        if (!itemStack.has(DataComponents.CUSTOM_DATA)) {
+            return false;
+        }
+
+        var tag = itemStack.get(DataComponents.CUSTOM_DATA).getUnsafe();
+
+        for (var entry : configItem.getNbt().entrySet()) {
+            if (!tag.contains(entry.getKey())) {
+                return false;
+            }
+
+            if (entry.getValue().getType().equals("string") && !tag.getString(entry.getKey()).equals(entry.getValue().getData())) {
+                return false;
+            }
+
+            if (entry.getValue().getType().equals("int") && tag.getInt(entry.getKey()) != Integer.parseInt(entry.getValue().getData())) {
+                return false;
+            }
+
+            if (entry.getValue().getType().equals("double") && tag.getDouble(entry.getKey()) != Double.parseDouble(entry.getValue().getData())) {
+                return false;
+            }
+
+            if (entry.getValue().getType().equals("float") && tag.getFloat(entry.getKey()) != Float.parseFloat(entry.getValue().getData())) {
+                return false;
+            }
+
+            if (entry.getValue().getType().equals("long") && tag.getLong(entry.getKey()) != Long.parseLong(entry.getValue().getData())) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

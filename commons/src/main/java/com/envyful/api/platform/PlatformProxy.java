@@ -3,6 +3,7 @@ package com.envyful.api.platform;
 import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.config.ConfigToast;
 import com.envyful.api.config.database.DatabaseDetailsRegistry;
+import com.envyful.api.config.type.ConfigItem;
 import com.envyful.api.platform.text.TextFormatter;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.player.PlayerManager;
@@ -325,6 +326,23 @@ public class PlatformProxy {
         }
 
         return handler.getTPS();
+    }
+
+    /**
+     *
+     * Checks if the item stack is the given config item
+     *
+     * @param itemStack The item stack to check
+     * @param item The item to check against
+     * @return If the item stack is an item
+     */
+    public static boolean isItem(Object itemStack, ConfigItem item) {
+        if (handler == null) {
+            UtilLogger.getLogger().error("No platform handler set but isItem was called");
+            return false;
+        }
+
+        return handler.isItem(itemStack, item);
     }
 
     /**

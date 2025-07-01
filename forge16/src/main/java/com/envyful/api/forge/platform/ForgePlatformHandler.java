@@ -2,6 +2,7 @@ package com.envyful.api.forge.platform;
 
 import com.envyful.api.concurrency.UtilLogger;
 import com.envyful.api.config.ConfigToast;
+import com.envyful.api.config.type.ConfigItem;
 import com.envyful.api.forge.InitializationTask;
 import com.envyful.api.forge.Initialized;
 import com.envyful.api.forge.player.util.UtilToast;
@@ -157,5 +158,10 @@ public class ForgePlatformHandler extends StandardPlatformHandler<ICommandSource
         }
 
         UtilToast.sendToast((ServerPlayerEntity) player, configToast);
+    }
+
+    @Override
+    public boolean isItem(Object itemStack, ConfigItem item) {
+        return false;
     }
 }

@@ -1,6 +1,7 @@
 package com.envyful.api.spigot.platform;
 
 import com.envyful.api.config.ConfigToast;
+import com.envyful.api.config.type.ConfigItem;
 import com.envyful.api.platform.PlatformHandler;
 import com.envyful.api.platform.StandardPlatformHandler;
 import com.envyful.api.player.EnvyPlayer;
@@ -97,5 +98,10 @@ public class SpigotPlatformHandler extends StandardPlatformHandler<Audience> {
     @Override
     public void sendToast(EnvyPlayer<Audience> player, ConfigToast configToast) {
         //TODO:
+    }
+
+    @Override
+    public boolean isItem(Object itemStack, ConfigItem item) {
+        return false;
     }
 }

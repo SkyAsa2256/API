@@ -1,6 +1,7 @@
 package com.envyful.api.platform;
 
 import com.envyful.api.config.ConfigToast;
+import com.envyful.api.config.type.ConfigItem;
 import com.envyful.api.player.EnvyPlayer;
 import com.envyful.api.text.Placeholder;
 
@@ -116,5 +117,15 @@ public interface PlatformHandler<A> {
      * @param configToast The toast to send
      */
     void sendToast(EnvyPlayer<A> player, ConfigToast configToast);
+
+    /**
+     *
+     * Checks if an item stack is a specific item
+     *
+     * @param itemStack The item stack to check
+     * @param item The item to check against
+     * @return True if the item stack is the same as the item
+     */
+    boolean isItem(Object itemStack, ConfigItem item);
 
 }

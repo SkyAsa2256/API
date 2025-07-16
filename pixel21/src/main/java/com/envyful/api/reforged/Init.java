@@ -2,6 +2,7 @@ package com.envyful.api.reforged;
 
 import com.envyful.api.config.ConfigTypeSerializer;
 import com.envyful.api.neoforge.InitializationTask;
+import com.envyful.api.reforged.battle.BattleRulesConfigRegistry;
 import com.envyful.api.reforged.config.PokemonSpecSerializer;
 import com.pixelmonmod.api.pokemon.PokemonSpecification;
 
@@ -15,6 +16,7 @@ public class Init implements InitializationTask {
 
     @Override
     public void run() {
+        BattleRulesConfigRegistry.init();
         ConfigTypeSerializer.register(PokemonSpecSerializer.getInstance(), PokemonSpecification.class);
     }
 }

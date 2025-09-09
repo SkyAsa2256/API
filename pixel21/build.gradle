@@ -37,8 +37,9 @@ dependencies {
         transitive = false
     }
 
-    implementation 'pixelmon:Pixelmon-1.21.1-9.3.7-universal:9.3.7'
-    interfaceInjectionData("pixelmon:Pixelmon-1.21.1-9.3.7-universal-interfaceinjection:9.3.7@json")
+    var pixelmonVersion = "9.3.7"
+    implementation "pixelmon:Pixelmon-1.21.1-${pixelmonVersion}-universal:${pixelmonVersion}"
+    interfaceInjectionData("pixelmon:Pixelmon-1.21.1-${pixelmonVersion}-universal-interfaceinjection:${pixelmonVersion}@json")
     implementation 'uk.co.envyware:helios:1.1-SNAPSHOT'
 }
 

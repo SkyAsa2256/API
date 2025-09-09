@@ -27,6 +27,10 @@ public class RandomWeightedSet<A> extends HashMap<A, Double> {
     }
 
     public RandomWeightedSet<A> add(A a, double weight) {
+        if (weight <= 0) {
+            return this;
+        }
+
         super.put(a, weight);
         this.totalWeight += weight;
         this.treeMap.put(this.totalWeight, a);

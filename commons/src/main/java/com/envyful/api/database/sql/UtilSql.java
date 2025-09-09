@@ -72,6 +72,34 @@ public class UtilSql {
 
     /**
      *
+     * Executes the query provided as an update {@link PreparedStatement#executeUpdate()}
+     * <br>
+     * Any errors will log to {@link UtilLogger} if set
+     *
+     * @param database The database to query
+     * @param query The query
+     * @param data The data to add
+     * @return The result set of the generated keys
+     */
+    public static ResultSet executeInsert(Database database, String query, SqlType... data) {
+        try (var connection = database.getConnection();
+             var preparedStatement = connection.prepareStatement(query)) {
+            for (int i = 0; i < data.length; i++) {
+                data[i].add(i + 1, preparedStatement);
+            }
+
+            preparedStatement.executeUpdate();
+
+            return preparedStatement.getGeneratedKeys();
+        } catch (SQLException e) {
+            UtilLogger.getLogger().error("Error executing SQL (" + query + ")", e);
+        }
+
+        return null;
+    }
+
+    /**
+     *
      * Executes a batch query provided as an update {@link PreparedStatement#executeUpdate()}
      * <br>
      * Any errors will log to {@link UtilLogger} if set
@@ -351,6 +379,17 @@ public class UtilSql {
         @RequiredMethod({
                 "database", "query"
         })
+        public ResultSet executeInsertion() {
+            if (this.database == null) {
+                throw new IllegalArgumentException("Database cannot be null");
+            }
+
+            return executeInsert(this.database, this.query, this.data.toArray(new SqlType[0]));
+        }
+
+        @RequiredMethod({
+                "database", "query"
+        })
         public CompletableFuture<Integer> executeAsync() {
             return this.executeAsync(UtilConcurrency.SCHEDULED_EXECUTOR_SERVICE);
         }
@@ -360,6 +399,21 @@ public class UtilSql {
         })
         public CompletableFuture<Integer> executeAsync(Executor executor) {
             return CompletableFuture.supplyAsync(this::execute, executor);
+        }
+
+        @RequiredMethod({
+                "database", "query"
+        })
+        public CompletableFuture<ResultSet> executeInsertionAsync() {
+            return this.executeInsertionAsync(UtilConcurrency.SCHEDULED_EXECUTOR_SERVICE);
+        }
+
+
+        @RequiredMethod({
+                "database", "query"
+        })
+        public CompletableFuture<ResultSet> executeInsertionAsync(Executor executor) {
+            return CompletableFuture.supplyAsync(this::executeInsertion, executor);
         }
     }
 

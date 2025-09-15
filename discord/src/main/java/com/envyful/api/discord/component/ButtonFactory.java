@@ -2,11 +2,11 @@ package com.envyful.api.discord.component;
 
 import com.envyful.api.discord.listener.SubscribeEvent;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.components.buttons.Button;
+import net.dv8tion.jda.api.components.buttons.ButtonStyle;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
-import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle;
-import net.dv8tion.jda.internal.interactions.component.ButtonImpl;
+import net.dv8tion.jda.internal.components.buttons.ButtonImpl;
 
 import java.util.Locale;
 import java.util.Map;

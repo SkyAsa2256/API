@@ -2,15 +2,13 @@ package com.envyful.api.discord.component;
 
 import com.envyful.api.discord.listener.SubscribeEvent;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.components.ModalTopLevelComponent;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.actionrow.ActionRowChildComponent;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
-import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.ItemComponent;
-import net.dv8tion.jda.api.interactions.modals.Modal;
+import net.dv8tion.jda.api.modals.Modal;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
@@ -47,7 +45,7 @@ public class ModalFactory {
 
         protected String id;
         protected String title;
-        protected final List<ActionRow> components = new ArrayList<>(5);
+        protected final List<ModalTopLevelComponent> components = new ArrayList<>(5);
         protected Consumer<ModalInteractionEvent> interactionHandler;
 
         private Builder() {
@@ -63,12 +61,12 @@ public class ModalFactory {
             return this;
         }
 
-        public Builder row(ItemComponent... components) {
-            this.components.add(ActionRow.of(components));
+        public Builder row(ModalTopLevelComponent... components) {
+            this.components.addAll(List.of(components));
             return this;
         }
 
-        public Builder rows(ActionRow... rows) {
+        public Builder rows(ModalTopLevelComponent... rows) {
             this.components.addAll(List.of(rows));
             return this;
         }
@@ -87,7 +85,7 @@ public class ModalFactory {
             REGISTERED_MODALS.put(this.id.toLowerCase(Locale.ROOT), this);
             var builder = Modal.create(this.id, this.title);
 
-            for (ActionRow component : this.components) {
+            for (var component : this.components) {
                 builder.addComponents(component);
             }
 
